@@ -38,7 +38,7 @@ graph TB
 |---|---|---|
 | houki-egov-mcp | 0.5.3 | Phase 2-7（`search_fulltext` を FTS5 に接続）完了。編（Part）を持つ法令の取り込み漏れを v0.5.1 で修正。tools/call の引数を `inputSchema` で検証し `INVALID_ARGUMENT` を返す（v0.5.3） |
 | houki-nta-mcp | 0.10.2 | SDK v2 移行（v0.10.0）でエラー応答を family contract に統一。Issue #17（算式画像プレースホルダ）/ #18（2 文字語の LIKE 補完、`--refresh` 修正）対応済み。family の参照実装 |
-| houki-abbreviations | 0.5.0 | 逆引き（`lookupByLawId` / `lookupByLawNum`）+ 検証（`validateAllEntries` / `extractLawNames`）。toolchain は ESLint + Prettier のまま（MCP 2 つは Biome） |
+| houki-abbreviations | 0.5.0（MCP が取り込んでいるのは 0.4.1） | 逆引き（`lookupByLawId` / `lookupByLawNum`）+ 検証（`validateAllEntries` / `extractLawNames`）。両 MCP の依存は `^0.4.1` で、0.x の `^` は minor を跨がないため 0.5.0 は入っていない（辞書は同一・MCP が呼ぶ 3 関数は両版にあるので動作差なし）。toolchain は ESLint + Prettier のまま（MCP 2 つは Biome） |
 | houki-research-skill | 0.1.0（ローカルは 0.2.0 コミット済み・未 push） | 2026-09-07 に egov 0.5.3 / nta 0.10.2 へ追随（例文の引数名修正、`search_fulltext` を手順に追加）。plugin 化 + Release 自動化済み。`docs/` に ARCHITECTURE / BUSINESS-LAW / CITATION / ERROR-HANDLING / ERROR-CODES。examples は invoice-registration と error-recovery-patterns |
 | houki-hub（本 repo） | — | 2026-09-07 に pdf-agent-stack 同型へ再構成。site/ は VitePress の雛形のみ。未公開 |
 
@@ -56,8 +56,9 @@ graph TB
    - 2-8: 差分同期（`file_section=3&update_date` 方式）
    - 2-13: API enrichment で `category` を投入し、domain 絞り込みを実効化
    - 既知の未対応: `get_toc` が附則の条を編・章の外に平坦に並べる / 民法・消費税法の応答が長い
-4. **houki-abbreviations v0.6.0**
-   - `expandToFormalNames`（nta #3 と連動）
+4. **houki-abbreviations v0.5.1 → v0.6.0**（計画は abbreviations の `docs/v0.5.1-v0.6.0-plan.md`）
+   - v0.5.1: `verify-law-ids.mjs` の本実装と月次 workflow 化
+   - v0.6.0: `expandToFormalNames`（nta #3 と連動）。**minor を上げたら egov / nta の `package.json` を `^0.6.0` に上げて publish し直す**（0.x の `^` は minor を跨がない）
    - `verify-law-ids.mjs` の月次 GitHub Actions 化（雛形のみの状態）
    - `lookupByLawNum` の漢数字↔算用数字正規化、`isValidLawId` の DF 系・M 省令系パターン
    - 任意: toolchain を Biome / TS 7 に揃える

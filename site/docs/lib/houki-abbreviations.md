@@ -5,10 +5,10 @@ description: 法令・通達の略称を正式名と法令 ID に解決し、全
 
 # houki-abbreviations
 
-法令・通達の略称辞書と、それを取り巻く小さな関数群です。houki-hub family の全 MCP サーバーが依存しています。
+法令・通達の略称辞書と、それを取り巻く小さな関数群です。houki-hub family の MCP サーバーはすべてこのパッケージを依存に持ちます。
 MCP サーバーではなく、開発者のコードが import するライブラリです。
 
-- npm: [`@shuji-bonji/houki-abbreviations`](https://www.npmjs.com/package/@shuji-bonji/houki-abbreviations)（0.5.0）
+- npm: [`@shuji-bonji/houki-abbreviations`](https://www.npmjs.com/package/@shuji-bonji/houki-abbreviations)（最新 0.5.0。houki-egov-mcp 0.5.3 と houki-nta-mcp 0.10.2 が取り込んでいるのは 0.4.1）
 - リポジトリ: [shuji-bonji/houki-abbreviations](https://github.com/shuji-bonji/houki-abbreviations)
 - 動作環境: Node.js 20 以上。依存パッケージなし
 
@@ -28,6 +28,14 @@ MCP サーバーではなく、開発者のコードが import するライブ�
 種別で見ると、法律 138、省令 16、政令 8、基本通達 8、個別通達 1、規則 2、憲法 1 です。
 各エントリは正式名称、法令 ID（e-Gov の `law_id`）、法令番号、別名（「インボイス」→「適格請求書」など）、
 そして **どの MCP が担当するか**（`source_mcp_hint`: `houki-egov` 165 件 / `houki-nta` 9 件）を持ちます。
+
+## MCP が使っている版と最新版の関係
+
+houki-egov-mcp と houki-nta-mcp の `package.json` は `^0.4.1` を指定しています。0.x 系の `^` は minor を跨がないので、
+両 MCP に入るのは 0.4.x で、0.5.0 は入りません。0.5.0 で足した逆引きと検証は MCP からは呼ばれておらず、辞書の中身は 0.4.1 と 0.5.0 で同じなので、
+動作上の差はありません。MCP から呼ぶ関数は `resolveAbbreviation`、`normalizeJpText`、`normalizeSearchQuery` の 3 つです。
+
+このパッケージを minor で上げたときは、MCP 側の依存範囲も上げて publish し直す必要があります（次は 0.6.0 の略称展開を houki-nta-mcp が使うとき）。
 
 ## 提供する機能
 
