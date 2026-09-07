@@ -19,7 +19,7 @@
 - 公開の条件: 何が揃ったら push トリガーを有効化するか（候補: ガイド 4 ページ + MCP 2 ページ + Skill 1 ページ + ツールリファレンス自動生成が通ること）
 - ツールリファレンスの生成: pdf-agent-stack の `scripts/generate-reference.mjs`（MCP サーバーを stdio で起動して `tools/list` を Markdown にする）を移植するか。houki-nta-mcp は better-sqlite3 を使うため CI で起動できるかの確認が要る
 - llms.txt: vitepress-plugin-llms でサイト全体の llms.txt を出す。各 MCP リポジトリの llms.txt（houki-nta-mcp は自己生成済み）との関係をどうするか（サイトから各リポジトリの llms.txt にリンクするだけにする案が有力）
-- 英語ページ（`/en/`）を足す時期: 公開後、英語圏からのアクセスや問い合わせがあってから。足すときの順序と読者像は上の決定済みを参照
+- 英語ページ（`/en/`）を足す時期: 公開後、英語圏からのアクセスや問い合わせがあってから。足すときの順序と読者像は上の決定済みを参照。条文本文の英訳は自前で持たず、法務省の日本法令外国語訳データベース（JLT）への参照と、DeepL MCP など精度の高い翻訳ツールの利用案内で対応する案。法令用語の対訳辞書（JLT の標準対訳辞書）を houki-abbreviations 側で提供する案もある
 - houki-research-skill の配布方法: claude-plugins marketplace 経由で足りるか、GitHub Release も併用するか
 - meta-package `@shuji-bonji/houki-hub`（一括 install）を本 repo に同居させるか。pdf-agent-stack には無い要素なので、必要になるまで作らない
 - skill-contract-probe / version-mentions の移植時期
