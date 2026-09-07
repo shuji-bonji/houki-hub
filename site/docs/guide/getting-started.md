@@ -57,10 +57,20 @@ npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything
 Skill は「どの MCP をどの順に呼ぶか」「出典をどう書くか」「業法の注意喚起をいつ出すか」を LLM に指示します。
 Claude Code では、marketplace の [claude-plugins](https://github.com/shuji-bonji/claude-plugins) から plugin として入れるのが簡単です。
 
-plugin 名は `houki-research` です。同じ marketplace に `houki-egov-mcp` / `houki-nta-mcp` の plugin もあり、
-こちらを使えば手順 1 の設定を手で書かずに済みます。marketplace の登録コマンドと plugin の一覧は claude-plugins の README にあります。
+```text
+/plugin marketplace add shuji-bonji/claude-plugins
+/plugin install houki-research@shuji-bonji
+```
 
-<!-- TODO(公開前): claude-plugins の README から marketplace 登録コマンドの実文を転記する -->
+同じ marketplace に `houki-egov-mcp` / `houki-nta-mcp` の plugin もあり、こちらを使えば手順 1 の設定を手で書かずに済みます。
+
+```text
+/plugin install houki-egov-mcp@shuji-bonji
+/plugin install houki-nta-mcp@shuji-bonji
+```
+
+Cowork では、Settings → Customize → Plugins → Marketplace に `https://github.com/shuji-bonji/claude-plugins` を追加するか、
+[houki-research-skill の Release](https://github.com/shuji-bonji/houki-research-skill/releases) にある `houki-research-<版>.plugin` を drag&drop します。
 
 Claude Desktop など plugin の仕組みがない環境では、
 [houki-research-skill](https://github.com/shuji-bonji/houki-research-skill) の `skills/houki-research/` を
