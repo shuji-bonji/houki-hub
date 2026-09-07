@@ -1,0 +1,222 @@
+{
+  "$comment": [
+    "houki-hub（法規シリーズ）の構成表。**手で書くのは scripts/generate-stack.mjs の REGISTRY だけ**。",
+    "版は実測（npm view / ローカルの package.json・git tag）で、推測は書かない。",
+    "正典は npm（published）。local は「手元が公開版より進んでいないか」の参考値。",
+    "layer = 役割 / form = 配布形態（誰が起動するか）/ status = released・planned・concept。",
+    "planned / concept は名前と束ねる単位を予約しているだけで、ディレクトリも npm も無い。"
+  ],
+  "generatedAt": "2026-09-07T12:16:43.922Z",
+  "generatedBy": "scripts/generate-stack.mjs",
+  "npmScope": "@shuji-bonji",
+  "repos": [
+    {
+      "name": "houki-egov-mcp",
+      "dir": "mcp/houki-egov-mcp",
+      "npm": "@shuji-bonji/houki-egov-mcp",
+      "layer": "source",
+      "form": "mcp-server",
+      "status": "released",
+      "public": true,
+      "note": "e-Gov 法令 API v2。法律・政令・省令の本文・目次・改正履歴 + ローカル SQLite FTS5 全文検索。7 tools",
+      "published": "0.5.3",
+      "local": {
+        "version": "0.5.3",
+        "tag": "v0.5.3",
+        "dirty": false,
+        "unpushedCommits": 0
+      },
+      "consistency": {
+        "status": "match",
+        "detail": "0.5.3"
+      }
+    },
+    {
+      "name": "houki-nta-mcp",
+      "dir": "mcp/houki-nta-mcp",
+      "npm": "@shuji-bonji/houki-nta-mcp",
+      "layer": "source",
+      "form": "mcp-server",
+      "status": "released",
+      "public": true,
+      "note": "国税庁。法令解釈通達・質疑応答事例・タックスアンサー・文書回答・事務運営指針・改正通達。14 tools。family の参照実装",
+      "published": "0.10.2",
+      "local": {
+        "version": "0.10.2",
+        "tag": "v0.10.2",
+        "dirty": true,
+        "unpushedCommits": 0
+      },
+      "consistency": {
+        "status": "match",
+        "detail": "0.10.2"
+      }
+    },
+    {
+      "name": "houki-abbreviations",
+      "dir": "lib/houki-abbreviations",
+      "npm": "@shuji-bonji/houki-abbreviations",
+      "layer": "dictionary",
+      "form": "library",
+      "status": "released",
+      "public": true,
+      "note": "略称辞書 174 エントリ（6 分野）+ 全角ゆらぎ正規化 + 鮮度判定 + 逆引き + 検証ヘルパ。全 MCP が依存",
+      "published": "0.5.0",
+      "local": {
+        "version": "0.5.0",
+        "tag": "v0.5.0",
+        "dirty": true,
+        "unpushedCommits": 0
+      },
+      "consistency": {
+        "status": "match",
+        "detail": "0.5.0"
+      }
+    },
+    {
+      "name": "houki-research-skill",
+      "dir": "skill/houki-research-skill",
+      "npm": null,
+      "layer": "procedure",
+      "form": "skill",
+      "status": "released",
+      "public": true,
+      "note": "family 横断の手順。error contract / citation / 業法独占規定（弁護士法 72 条・税理士法 52 条・社労士法 27 条）の正典。workflow は tax-research のみ",
+      "published": null,
+      "local": {
+        "version": "0.1.0",
+        "tag": "v0.1.0",
+        "dirty": false,
+        "unpushedCommits": 0
+      },
+      "consistency": {
+        "status": "not_published",
+        "detail": "npm 未公開のため照合対象外"
+      }
+    },
+    {
+      "name": "houki-hub",
+      "dir": ".",
+      "npm": null,
+      "layer": "hub",
+      "form": "site",
+      "status": "released",
+      "public": true,
+      "note": "本リポジトリ。site/ に VitePress（GitHub Pages。公開は準備中）",
+      "published": null,
+      "local": {
+        "version": null,
+        "tag": null,
+        "dirty": null,
+        "unpushedCommits": null
+      },
+      "consistency": {
+        "status": "not_published",
+        "detail": "npm 未公開のため照合対象外"
+      }
+    },
+    {
+      "name": "houki-metadata-mcp",
+      "dir": "mcp/houki-metadata-mcp",
+      "npm": "@shuji-bonji/houki-metadata-mcp",
+      "layer": "source",
+      "form": "mcp-server",
+      "status": "planned",
+      "public": false,
+      "note": "法令メタデータの時系列横串（公布→施行ラグ、改正予定）。J-SOX 型「施行前フォロー期」が主用途。mhlw より先に着手する判断 (2026-05)",
+      "published": null,
+      "local": null,
+      "consistency": {
+        "status": "not_started",
+        "detail": "planned（未着手のため照合対象外）"
+      }
+    },
+    {
+      "name": "houki-mhlw-mcp",
+      "dir": "mcp/houki-mhlw-mcp",
+      "npm": "@shuji-bonji/houki-mhlw-mcp",
+      "layer": "source",
+      "form": "mcp-server",
+      "status": "planned",
+      "public": false,
+      "note": "厚生労働省。労働基準・社会保険系の通達・通知・指針",
+      "published": null,
+      "local": null,
+      "consistency": {
+        "status": "not_started",
+        "detail": "planned（未着手のため照合対象外）"
+      }
+    },
+    {
+      "name": "houki-saiketsu-mcp",
+      "dir": "mcp/houki-saiketsu-mcp",
+      "npm": "@shuji-bonji/houki-saiketsu-mcp",
+      "layer": "source",
+      "form": "mcp-server",
+      "status": "concept",
+      "public": false,
+      "note": "裁決全般（行政不服審査）。初版は国税不服審判所 (kfs.go.jp) のみ。名前は広く、初版スコープは README で明示する流儀",
+      "published": null,
+      "local": null,
+      "consistency": {
+        "status": "not_started",
+        "detail": "concept（未着手のため照合対象外）"
+      }
+    },
+    {
+      "name": "houki-court-mcp",
+      "dir": "mcp/houki-court-mcp",
+      "npm": "@shuji-bonji/houki-court-mcp",
+      "layer": "source",
+      "form": "mcp-server",
+      "status": "concept",
+      "public": false,
+      "note": "判例全般。初版は民事判決オープンデータ API のみ",
+      "published": null,
+      "local": null,
+      "consistency": {
+        "status": "not_started",
+        "detail": "concept（未着手のため照合対象外）"
+      }
+    },
+    {
+      "name": "houki-specialist-plugin",
+      "dir": "agent/houki-specialist-plugin",
+      "npm": null,
+      "layer": "orchestration",
+      "form": "plugin",
+      "status": "concept",
+      "public": false,
+      "note": "pdf-specialist-plugin と同型。MCP 群 + houki-research を 1 つのサブエージェントに束ねる。識別子付き法規エージェント (L2) の入れ物",
+      "published": null,
+      "local": null,
+      "consistency": {
+        "status": "not_started",
+        "detail": "concept（未着手のため照合対象外）"
+      }
+    }
+  ],
+  "external": [
+    {
+      "name": "pdf-reader-mcp",
+      "layer": "source",
+      "form": "mcp-server",
+      "public": true,
+      "note": "houki-nta-mcp の PDF 経路（nta_inspect_pdf_meta の reader_hints）が前提にする。PDF Agent Stack の一員なので束ねの外"
+    },
+    {
+      "name": "claude-plugins",
+      "layer": "distribution",
+      "form": "marketplace",
+      "public": true,
+      "note": "houki-egov-mcp / houki-nta-mcp / houki-research の plugin 配布先。法規専用ではないので束ねの外"
+    },
+    {
+      "name": "laws-api-mirror",
+      "layer": "source",
+      "form": "data",
+      "public": true,
+      "note": "構想: 検索 tier はミラー、引用時だけ e-Gov に照合する verify-on-cite の相手先"
+    }
+  ]
+}

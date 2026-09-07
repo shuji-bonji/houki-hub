@@ -1,0 +1,19 @@
+# 各リポジトリの作業コピー。独立した git リポジトリなので、
+# ここで `git add` すると gitlink（submodule もどき）として登録されてしまう。それを防ぐ。
+# 秘匿が目的ではない。clone しても中身は入らない。
+/mcp/
+/lib/
+/agent/
+/skill/
+
+# stack.json 生成やサイトのビルドで出るもの
+node_modules/
+site/docs/.vitepress/dist/
+site/docs/.vitepress/cache/
+site/docs/.vitepress/*.timestamp-*
+
+# macOS
+.DS_Store
+
+# vitepress build の途中生成物（削除できない環境で残ることがある）
+site/docs/.vitepress/.temp/

@@ -1,0 +1,83 @@
+---
+title: 導入手順
+description: houki-egov-mcp / houki-nta-mcp / houki-research Skill を Claude Desktop・Claude Code に入れる手順
+---
+
+# 導入手順
+
+必要なものは Node.js 22 以上だけです。データベースの構築は任意で、なくても API 経由で動きます。
+
+## 1. MCP サーバーを設定に追加する
+
+Claude Desktop の `claude_desktop_config.json`、または Claude Code の `.mcp.json` に次を追加します。
+まずは houki-egov-mcp だけで十分です。
+
+```jsonc
+{
+  "mcpServers": {
+    "houki-egov": {
+      "command": "npx",
+      "args": ["-y", "@shuji-bonji/houki-egov-mcp@latest"]
+    },
+    // 税務の通達・Q&A が必要になったら追加
+    "houki-nta": {
+      "command": "npx",
+      "args": ["-y", "@shuji-bonji/houki-nta-mcp@latest"]
+    }
+  }
+}
+```
+
+再起動後、「消費税法第 57 条の 2 を見せて」「インボイス制度の登録要件は」のように尋ねると、
+`search_law` → `get_law` の順に呼ばれ、法令番号と e-Gov の URL 付きで本文が返ります。
+
+## 2. ローカル DB を作る（全文検索を使う場合）
+
+houki-egov-mcp の `search_fulltext` は、条文本文を横断検索するツールです。
+ローカル DB がないときは `search_law`（法令名の検索）に切り替わり、応答の `source` が `"api-fallback"` になります。
+本文の全文検索を使うには、一度だけ次を実行します。
+
+```sh
+npx -y @shuji-bonji/houki-egov-mcp --bulk-download-everything
+```
+
+DB は `~/.cache/houki-egov-mcp/laws.db` にでき、`HOUKI_EGOV_DB_PATH` で場所を変えられます。
+構築後に MCP サーバーを再起動する必要はありません。
+
+houki-nta-mcp も同じ形で、通達本体・改正通達・タックスアンサーなどを取り込みます。
+
+```sh
+npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything
+```
+
+国税庁サイトからの取得なので、初回は数分かかります。2 回目以降は変更があった節だけを取り直します。
+
+## 3. houki-research Skill を入れる
+
+Skill は「どの MCP をどの順に呼ぶか」「出典をどう書くか」「業法の注意喚起をいつ出すか」を LLM に指示します。
+Claude Code では、marketplace の [claude-plugins](https://github.com/shuji-bonji/claude-plugins) から plugin として入れるのが簡単です。
+
+plugin 名は `houki-research` です。同じ marketplace に `houki-egov-mcp` / `houki-nta-mcp` の plugin もあり、
+こちらを使えば手順 1 の設定を手で書かずに済みます。marketplace の登録コマンドと plugin の一覧は claude-plugins の README にあります。
+
+<!-- TODO(公開前): claude-plugins の README から marketplace 登録コマンドの実文を転記する -->
+
+Claude Desktop など plugin の仕組みがない環境では、
+[houki-research-skill](https://github.com/shuji-bonji/houki-research-skill) の `skills/houki-research/` を
+プロジェクトの `.claude/skills/` に置いてください。
+
+## 4. 動作を確かめる
+
+次の 3 つを順に尋ねると、各層が動いていることを確認できます。
+
+| 尋ねること | 動く部品 | 応答に含まれるもの |
+| --- | --- | --- |
+| 「法基通 とは正式には何ですか」 | houki-abbreviations（`resolve_abbreviation`） | 正式名称「法人税基本通達」と担当 MCP の案内 |
+| 「民法第 709 条の本文」 | houki-egov-mcp（`get_law`） | 法令番号（明治二十九年法律第八十九号）、条文、e-Gov の URL |
+| 「消基通で軽減税率の対象を確認したい」 | houki-nta-mcp（`nta_search_tsutatsu`） | 通達番号、本文、`legal_status`（通達は国民を拘束しない旨） |
+
+## 次に読むもの
+
+- [全体構成と責務](/guide/architecture) — 3 層がそれぞれ何を決めるか
+- [houki-egov-mcp](/mcp/houki-egov) / [houki-nta-mcp](/mcp/houki-nta) — ツールごとの説明
+- [houki-research Skill](/skills/houki-research) — 手順と注意喚起の中身

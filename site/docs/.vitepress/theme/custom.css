@@ -1,0 +1,20 @@
+/* 法規シリーズの配色。pdf-agent-stack（赤系）と区別するため藍色系にする */
+:root {
+  --vp-c-brand-1: #1f4e79;
+  --vp-c-brand-2: #2a6399;
+  --vp-c-brand-3: #3b7bb8;
+  --vp-c-brand-soft: rgba(31, 78, 121, 0.14);
+}
+
+.dark {
+  --vp-c-brand-1: #7fb2e5;
+  --vp-c-brand-2: #5f9bd6;
+  --vp-c-brand-3: #4a86c2;
+  --vp-c-brand-soft: rgba(127, 178, 229, 0.16);
+}
+
+/* 表が本文幅を超えたら横スクロールにする（ツール一覧・構成表） */
+.vp-doc table {
+  display: block;
+  overflow-x: auto;
+}
