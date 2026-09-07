@@ -28,6 +28,8 @@ description: 国税庁サイトの基本通達・改正通達・事務運営指�
 
 ## ツール
 
+引数の詳細と実測の呼び出し例は[ツールリファレンス](/reference/mcp/houki-nta)にあります。
+
 | ツール | 用途 |
 | --- | --- |
 | `nta_get_tsutatsu` / `nta_search_tsutatsu` | 基本通達の本文取得と全文検索 |

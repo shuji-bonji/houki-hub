@@ -1,0 +1,846 @@
+---
+title: "houki-nta-mcp — ツールリファレンス"
+description: "houki-nta-mcp v0.10.2 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+---
+
+# houki-nta-mcp — ツールリファレンス
+
+<!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
+
+::: info
+**v0.10.2** の `tools/list` から自動生成しました（14 ツール・2026-09-08）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+:::
+
+**このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-nta)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
+
+`nta_get_*` はローカル DB（`houki-nta-mcp --bulk-download-everything` で構築）を先に引き、無ければ国税庁サイトから直接取得します。`nta_search_*` はローカル DB の FTS5 を使うので、DB が無いと結果が空になります。すべての応答に `legal_status`（通達は国民を拘束しない旨）と、DB から返した場合は `freshness` が付きます。
+
+## ツール一覧
+
+| ツール | 概要 |
+|---|---|
+| [`nta_search_tsutatsu`](#nta-search-tsutatsu) | 国税庁の基本通達（消基通・所基通・法基通・相基通の 4 通達）を FTS5 でキーワード検索する。 |
+| [`nta_get_tsutatsu`](#nta-get-tsutatsu) | 基本通達の本文を取得する。 |
+| [`nta_search_qa`](#nta-search-qa) | 国税庁の質疑応答事例（9 税目: 所得税/源泉所得税/譲渡所得/相続税・贈与税/財産の評価/法人税/消費税/印紙税/法定調書）を FTS5 でキーワード検索する。 |
+| [`nta_get_qa`](#nta-get-qa) | 国税庁の質疑応答事例 1 件を取得する。 |
+| [`nta_search_tax_answer`](#nta-search-tax-answer) | タックスアンサー（一般納税者向け解説、約 750 件）を FTS5 でキーワード検索する。 |
+| [`nta_get_tax_answer`](#nta-get-tax-answer) | 国税庁のタックスアンサー（よくある税の質問）本文を番号で取得する。 |
+| [`nta_search_kaisei_tsutatsu`](#nta-search-kaisei-tsutatsu) | 改正通達（一部改正通達）を FTS5 でキーワード検索する。 |
+| [`nta_get_kaisei_tsutatsu`](#nta-get-kaisei-tsutatsu) | 改正通達の本文を docId で取得する（DB 経由）。 |
+| [`nta_search_jimu_unei`](#nta-search-jimu-unei) | 事務運営指針（jimu-unei）を FTS5 でキーワード検索する。 |
+| [`nta_get_jimu_unei`](#nta-get-jimu-unei) | 事務運営指針の本文を docId で取得する（DB 経由）。 |
+| [`nta_search_bunshokaitou`](#nta-search-bunshokaitou) | 文書回答事例（bunshokaitou）を FTS5 でキーワード検索する。 |
+| [`nta_get_bunshokaitou`](#nta-get-bunshokaitou) | 文書回答事例の本文を docId で取得する（DB 経由）。 |
+| [`nta_inspect_pdf_meta`](#nta-inspect-pdf-meta) | 指定した文書の添付 PDF メタ一覧（kind / size / URL）と pdf-reader-mcp 呼び出し例だけを返す軽量 API。 |
+| [`resolve_abbreviation`](#resolve-abbreviation) | 略称・通称から houki-abbreviations 経由でエントリを解決する。 |
+
+## nta_search_tsutatsu
+
+国税庁の基本通達（消基通・所基通・法基通・相基通の 4 通達）を FTS5 でキーワード検索する。事前に `--bulk-download-all` で DB 投入が必要。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `keyword` | string | **必須** |  | 検索キーワード。例: "軽減税率", "電子帳簿", "棚卸資産"。略称も可（例: "電帳法"）。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `type` | `"kihon-tsutatsu"` \| `"kobetsu-tsutatsu"` | 任意 |  | 通達種別で絞り込み。kihon-tsutatsu=法令解釈通達, kobetsu-tsutatsu=個別通達 |
+| `domain` | `"tax"` \| `"labor"` \| `"accounting"` \| `"commercial"` \| `"civil"` \| `"administrative"` | 任意 |  | 分野タグで絞り込み（略称辞書ベース） |
+| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+
+::: warning ローカル DB が必要です
+`houki-nta-mcp --bulk-download-all` で基本通達 4 種を取り込んでいないと、結果は空になります。応答の `freshness.staleness` が `outdated` のときは、同じコマンドで取り直してください。
+:::
+
+::: details 呼び出し例 — 「軽減税率に関係する通達の節は」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: あり（一部が 126 日前のデータで `staleness: "outdated"`。その警告もそのまま載せています）
+
+**引数**
+
+```jsonc
+{ "keyword": "軽減税率", "limit": 2 }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "keyword": "軽減税率",
+  "count": 2,
+  "hits": [
+    {
+      "tsutatsu": "消費税法基本通達",
+      "abbr": "消基通",
+      "clauseNumber": "5-9-10",
+      "title": "持ち帰りのための飲食料品の譲渡か否かの判定",
+      "snippet": " … の譲渡に該当し<b>軽減税率</b>の適用対象とな … ",
+      "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/05/09.htm",
+      "score": 0.441,
+      "scoreReasons": ["doc_type=tsutatsu weight 1.00", "abbreviation expanded: 軽減税率 → 消費税法"]
+    },
+    {
+      "tsutatsu": "消費税法基本通達",
+      "abbr": "消基通",
+      "clauseNumber": "5-9-5",
+      "title": "自動販売機による譲渡",
+      "snippet": " … のであるから、<b>軽減税率</b>の適用対象とな … ",
+      "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/05/09.htm",
+      "score": 0.438,
+      "scoreReasons": ["doc_type=tsutatsu weight 1.00", "abbreviation expanded: 軽減税率 → 消費税法"]
+    }
+  ],
+  "freshness": {
+    "oldest_fetched_at": "2026-05-04T00:34:38.918Z",
+    "newest_fetched_at": "2026-09-07T11:53:51.084Z",
+    "staleness": "outdated",
+    "days_since_oldest": 126,
+    "warning": "一部ドキュメントが 126 日前のデータです。最新化するには `--bulk-download-all` を実行してください"
+  },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": true,
+    "note": "通達は行政内部文書。納税者・裁判所には直接的拘束力なし。ただし税務署員は職務として守る義務あり（最高裁 昭和43.12.24）"
+  }
+}
+```
+
+`hits[].clauseNumber` と `hits[].abbr` をそのまま `nta_get_tsutatsu` の `clause` / `name` に渡すと本文が取れます。
+:::
+
+## nta_get_tsutatsu
+
+基本通達の本文を取得する。略称（消基通・所基通・法基通・相基通）対応、条項指定可能。DB 投入済（`--bulk-download-all`）の場合は DB から、未投入の場合はライブ fetch（結果は DB に書き戻し）。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `name` | string | **必須** |  | 通達名または略称。例: "消費税法基本通達", "消基通", "所得税基本通達", "所基通" |
+| `clause` | string | 任意 |  | 通達番号。例: "5-1-9", "11-2-10"（章-項-号 形式） |
+| `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
+
+::: details 呼び出し例 — 「消基通 1-7-2（登録番号の構成）の本文」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: あり（`source: "db"`。無ければ国税庁サイトから取得し `source` が `"live"` になります）
+
+**引数**
+
+```jsonc
+{ "name": "消基通", "clause": "1-7-2", "format": "json" }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "tsutatsu": "消費税法基本通達",
+  "clause": {
+    "clauseNumber": "1-7-2",
+    "title": "登録番号の構成",
+    "paragraphs": [
+      { "indent": 1, "text": "適格請求書発行事業者登録簿（法第57条の2第4項《適格請求書発行事業者の登録等》に規定する「適格請求書発行事業者登録簿」をいう。…）に登載する登録番号（…）は、次の区分に応じ、それぞれ次によるものとする。（令5課消2-9により追加、令7課消2-4により改正）" },
+      { "indent": 2, "text": "(1) 法人番号を有する課税事業者 法人番号（…）及びその前に付されたローマ字の大文字Ｔにより構成されるもの" },
+      { "indent": 2, "text": "(2) (1)以外の課税事業者 13桁の数字（法人番号と重複しないものとし、…）及びその前に付されたローマ字の大文字Ｔにより構成されるもの" }
+    ],
+    "fullText": "登録番号の構成\n適格請求書発行事業者登録簿（…"
+  },
+  "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/01/07.htm",
+  "fetchedAt": "2026-09-07T11:47:23.588Z",
+  "source": "db",
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": true,
+    "note": "通達は行政内部文書。納税者・裁判所には直接的拘束力なし。ただし税務署員は職務として守る義務あり（最高裁 昭和43.12.24）"
+  }
+}
+```
+
+引用するときは「消費税法基本通達 1-7-2」と `sourceUrl` を添え、`legal_status.binds_citizens: false`（通達は国民を拘束しない）を回答に残してください。`name` に法令名（「消費税法」）を渡すと、`OUT_OF_SCOPE` で houki-egov-mcp への案内が返ります。
+:::
+
+## nta_search_qa
+
+国税庁の質疑応答事例（9 税目: 所得税/源泉所得税/譲渡所得/相続税・贈与税/財産の評価/法人税/消費税/印紙税/法定調書）を FTS5 でキーワード検索する。事前に `--bulk-download-qa` で DB 投入が必要。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `keyword` | string | **必須** |  | 検索キーワード。例: "社内会議 軽減税率", "テレワーク 必要経費"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `domain` | `"tax"` \| `"labor"` \| `"accounting"` \| `"commercial"` \| `"civil"` \| `"administrative"` | 任意 |  | 税目で絞り込み |
+| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+| `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。質疑応答事例は現状すべて HTML のみで PDF を持たないため true 指定時は空配列になる |
+
+::: details 呼び出し例 — 「テレワークに関係する質疑応答事例」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: あり（`staleness: "outdated"` の警告付き）
+
+**引数**
+
+```jsonc
+{ "keyword": "テレワーク", "limit": 2 }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "keyword": "テレワーク",
+  "results": [
+    {
+      "docType": "qa-jirei",
+      "docId": "hojin/04/16",
+      "taxonomy": "hojin",
+      "title": "中小企業者等が取得をした働き方改革に資する減価償却資産の中小企業経営強化税制（租税特別措置法第42条の12の4）の適用について",
+      "sourceUrl": "https://www.nta.go.jp/law/shitsugi/hojin/04/16.htm",
+      "snippet": " … る器具備品（<b>テレワーク</b>用電子計算機等 … ",
+      "score": 0.307,
+      "scoreReasons": ["doc_type=qa weight 0.70"]
+    }
+  ],
+  "freshness": { "staleness": "outdated", "days_since_oldest": 126, "warning": "… `--bulk-download-qa` を実行してください" /* … */ },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": false,
+    "note": "タックスアンサー・質疑応答事例は国税庁の参考解説資料。法的拘束力はなく、実務判断は通達・法令本文に基づく必要がある"
+  }
+}
+```
+
+`docId` の `hojin/04/16` は、`nta_get_qa` の `topic` / `category` / `id` にそのまま分かれます。質疑応答事例は PDF を持たないので `hasPdf: true` を付けると空になります。
+:::
+
+## nta_get_qa
+
+国税庁の質疑応答事例 1 件を取得する。URL 形式: /law/shitsugi/{topic}/{category}/{id}.htm
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `topic` | `"shotoku"` \| `"gensen"` \| `"joto"` \| `"sozoku"` \| `"hyoka"` \| `"hojin"` \| `"shohi"` \| `"inshi"` \| `"hotei"` | **必須** |  | 税目フォルダ。shotoku=所得税, gensen=源泉所得税, joto=譲渡所得, sozoku=相続税・贈与税, hyoka=財産の評価, hojin=法人税, shohi=消費税, inshi=印紙税, hotei=法定調書 |
+| `category` | string | **必須** |  | カテゴリ番号（章相当）。例: "01", "02"。/law/shitsugi/{topic}/01.htm の TOC で確認できる |
+| `id` | string | **必須** |  | 事例番号。例: "19" |
+| `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
+
+::: details 呼び出し例 — 「法人税の質疑応答事例 04/16 の照会と回答」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: 不要（この例では国税庁サイトから取得）
+
+**引数**
+
+```jsonc
+{ "topic": "hojin", "category": "04", "id": "16", "format": "json" }
+```
+
+**返る JSON（抜粋）**
+
+```jsonc
+{
+  "qa": {
+    "topic": "hojin",
+    "category": "04",
+    "id": "16",
+    "title": "中小企業者等が取得をした働き方改革に資する減価償却資産の中小企業経営強化税制（租税特別措置法第42条の12の4）の適用について",
+    "question": [
+      "中小企業者等に該当する甲社は、中小企業等経営強化法上の認定を受けた経営力向上計画に基づいて働き方改革の推進に資する次のような減価償却資産（※）を取得し、…",
+      "※ 働き方改革の推進に資する減価償却資産として、例えば、次のようなものが挙げられます。",
+      "１ 建物附属設備の例\n\n…\n\n２ 器具及び備品の例\n\n…（テレワーク用電子計算機等）、ソフトウエア（テレビ会議システム、勤怠管理システム等）"
+    ],
+    "answer": [
+      "お尋ねの減価償却資産は、生産等設備を構成する減価償却資産に該当します。",
+      "（理由）"
+    ],
+    "relatedLaws": [
+      "租税特別措置法第42条の12の4\n\n租税特別措置法関係通達42の12の4-2",
+      "注記\n\n 令和7年8月1日現在の法令・通達等に基づいて作成しています。\n\n この質疑事例は、照会に係る事実関係を前提とした一般的な回答であり、…"
+    ],
+    "sourceUrl": "https://www.nta.go.jp/law/shitsugi/hojin/04/16.htm",
+    "fetchedAt": "2026-09-07T20:16:52.748Z"
+  },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": false,
+    "note": "タックスアンサー・質疑応答事例は国税庁の参考解説資料。法的拘束力はなく、実務判断は通達・法令本文に基づく必要がある"
+  }
+}
+```
+
+`relatedLaws` に法令名と通達番号、それに国税庁の注記（何年何月何日現在の法令に基づくか、個別の取引には異なる課税関係が生じうること）が入ります。この注記は回答に残してください。
+:::
+
+## nta_search_tax_answer
+
+タックスアンサー（一般納税者向け解説、約 750 件）を FTS5 でキーワード検索する。事前に `--bulk-download-tax-answer` で DB 投入が必要。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `keyword` | string | **必須** |  | 検索キーワード。例: "ふるさと納税", "医療費控除"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+| `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。様式・別表系の説明など PDF 添付がある重要トピックを抽出したい時に true を指定 |
+
+::: details 呼び出し例 — 「医療費控除のタックスアンサー」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: あり（`staleness: "outdated"` の警告付き）
+
+**引数**
+
+```jsonc
+{ "keyword": "医療費控除", "limit": 2 }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "keyword": "医療費控除",
+  "results": [
+    {
+      "docType": "tax-answer",
+      "docId": "1131",
+      "taxonomy": "shotoku",
+      "title": "セルフメディケーション税制と通常の医療費控除との選択適用",
+      "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1131.htm",
+      "snippet": " … 療費控除の特例であり、通常の<b>医療費控</b> … ",
+      "score": 0.246,
+      "scoreReasons": ["doc_type=tax-answer weight 0.60"]
+    },
+    {
+      "docType": "tax-answer",
+      "docId": "1128",
+      "taxonomy": "shotoku",
+      "title": "医療費控除の対象となる歯の治療費の具体例",
+      "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1128.htm",
+      "score": 0.241 /* … */
+    }
+  ],
+  "freshness": { "staleness": "outdated", "days_since_oldest": 126, "warning": "… `--bulk-download-tax-answer` を実行してください" /* … */ },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": false,
+    "note": "タックスアンサー・質疑応答事例は国税庁の参考解説資料。法的拘束力はなく、実務判断は通達・法令本文に基づく必要がある"
+  }
+}
+```
+
+`docId` がタックスアンサー番号です。そのまま `nta_get_tax_answer` の `no` に渡します。`legal_status.binds_tax_office` も `false` で、通達と違い税務職員も拘束しない参考資料です。
+:::
+
+## nta_get_tax_answer
+
+国税庁のタックスアンサー（よくある税の質問）本文を番号で取得する。番号の先頭桁から税目フォルダを自動判定。例: 6101 → 消費税の基本的なしくみ
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `no` | string | **必須** |  | タックスアンサー番号。先頭桁で税目決定: 1xxx=所得税, 2xxx=源泉, 3xxx=譲渡, 4xxx=相続・贈与, 5xxx=法人税, 6xxx=消費税, 7xxx=印紙税, 9xxx=お知らせ。例: "6101", "1120" |
+| `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
+
+::: tip 引数名は `no` です
+`id` ではありません。番号の先頭の桁で税目（1xxx=所得税、6xxx=消費税 など）を判定します。
+:::
+
+::: details 呼び出し例 — 「No.6101 消費税の基本的なしくみ」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: 不要（この例では国税庁サイトから取得。`fetchedAt` が呼び出し時刻）
+
+**引数**
+
+```jsonc
+{ "no": "6101", "format": "json" }
+```
+
+**返る JSON（抜粋）**
+
+```jsonc
+{
+  "taxAnswer": {
+    "no": "6101",
+    "title": "消費税の基本的なしくみ",
+    "sections": [
+      { "heading": "概要", "paragraphs": ["消費税は、特定の物品やサービスに課税する個別消費税（酒税・たばこ税等）とは異なり、消費一般に広く公平に課税する間接税です。…", "…"] },
+      { "heading": "消費税の負担者", "paragraphs": ["…"] },
+      { "heading": "課税のしくみ", "paragraphs": ["…", "令和５年10月１日から開始した「適格請求書等保存方式（インボイス制度）」では、…"] },
+      { "heading": "申告・納付", "paragraphs": ["…"] },
+      { "heading": "納税事務の負担軽減措置等", "paragraphs": ["1 事業者免税点制度", "…", "3 ２割特例（経過措置）", "…"] },
+      { "heading": "根拠法令等", "paragraphs": ["消費税法など"] },
+      { "heading": "関連リンク", "paragraphs": ["…"] }
+    ],
+    "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6101.htm",
+    "fetchedAt": "2026-09-07T20:16:23.199Z",
+    "effectiveDate": "令和7年4月1日現在法令等",
+    "taxCategory": "消費税"
+  },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": false,
+    "note": "タックスアンサー・質疑応答事例は国税庁の参考解説資料。法的拘束力はなく、実務判断は通達・法令本文に基づく必要がある"
+  }
+}
+```
+
+`effectiveDate` は国税庁がページに書いている「何年何月何日現在の法令等に基づくか」で、取得日ではありません。`sections[].heading` が「根拠法令等」の節に法令名が入るので、そこから houki-egov-mcp の `get_law` につなげられます。
+:::
+
+## nta_search_kaisei_tsutatsu
+
+改正通達（一部改正通達）を FTS5 でキーワード検索する。事前に `--bulk-download-kaisei` で DB 投入が必要。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `keyword` | string | **必須** |  | 検索キーワード。例: "電子帳簿", "インボイス", "軽減税率"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `taxonomy` | string | 任意 |  | 税目フォルダで絞り込み。"shohi" / "shotoku" / "hojin" / "sisan/sozoku" のいずれか |
+| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+| `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。改正通達は新旧対照表 PDF を持つことが多く、改正点だけ知りたい時は true 推奨 |
+
+::: tip 改正点だけ知りたいときは `hasPdf: true`
+改正通達の本文は「別紙のとおり改める」という短い文で、実際の差分は新旧対照表の PDF にあります。`hasPdf: true` で PDF 付きの文書に絞り、`docId` を `nta_inspect_pdf_meta` に渡すと PDF の一覧と読み方の例が返ります。
+:::
+
+::: details 呼び出し例 — 「インボイス関係の改正通達を新旧対照表付きで」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: あり（`staleness: "outdated"` の警告付き）
+
+**引数**
+
+```jsonc
+{ "keyword": "インボイス", "hasPdf": true, "limit": 2 }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "keyword": "インボイス",
+  "results": [
+    {
+      "docType": "kaisei",
+      "docId": "0025004-026",
+      "taxonomy": "shohi",
+      "title": "消費税法基本通達の一部改正について（法令解釈通達）",
+      "issuedAt": "2025-04-01",
+      "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/index.htm",
+      "snippet": " … （官印省略）\n<b>消費税法</b>基本通達（平成 … ",
+      "score": 0.274,
+      "scoreReasons": ["doc_type=kaisei weight 0.95", "abbreviation expanded: インボイス → 消費税法"]
+    },
+    {
+      "docType": "kaisei",
+      "docId": "191001",
+      "taxonomy": "shohi",
+      "title": "消費税法基本通達の一部改正について（法令解釈通達）",
+      "issuedAt": "2019-10-01",
+      "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/191001/index.htm",
+      "score": 0.271 /* … */
+    }
+  ],
+  "freshness": { "staleness": "outdated", "days_since_oldest": 126, "warning": "… `--bulk-download-kaisei` を実行してください" /* … */ },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": true,
+    "note": "通達は行政内部文書。納税者・裁判所には直接的拘束力なし。ただし税務署員は職務として守る義務あり（最高裁 昭和43.12.24）"
+  }
+}
+```
+
+`docId` には新形式（`0025004-026`）と旧形式（`191001`）が混在します。どちらもそのまま `nta_get_kaisei_tsutatsu` に渡せます。
+:::
+
+## nta_get_kaisei_tsutatsu
+
+改正通達の本文を docId で取得する（DB 経由）。本文 + 添付 PDF URL（pdf-reader-mcp で読み取り推奨）を返す。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `docId` | string | **必須** |  | 文書 ID。新形式 "0026003-067" または旧形式 "240401" 等。`nta_search_kaisei_tsutatsu` 結果や DB hint で取得 |
+| `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
+
+::: details 呼び出し例 — 「令和 7 年 4 月 1 日の消基通改正の本文と添付 PDF」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: あり（`source: "db"`）
+
+**引数**
+
+```jsonc
+{ "docId": "0025004-026", "format": "json" }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "document": {
+    "docType": "kaisei",
+    "docId": "0025004-026",
+    "taxonomy": "shohi",
+    "title": "消費税法基本通達の一部改正について（法令解釈通達）",
+    "issuedAt": "2025-04-01",
+    "issuer": "各国税局長 殿 沖縄国税事務所長 殿 各税関長 殿 沖縄地区税関長 殿\n国税庁長官 （官印省略）",
+    "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/index.htm",
+    "fetchedAt": "2026-05-03T23:52:09.124Z",
+    "fullText": "課消2-4 課総11-10 … 令和7年4月1日\n…\n記\n1 消費税法基本通達について、別紙1「消費税法基本通達新旧対照表」の「改正前」欄に掲げる部分を「改正後」欄に掲げる部分のとおり改めることとし、令和7年4月1日から適用する。\n2 … 別紙2 … 令和8年11月1日から適用する。\n…",
+    "attachedPdfs": [
+      { "title": "別紙1（PDF/221KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/01.pdf", "sizeKb": 221 },
+      { "title": "別紙2（PDF/449KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/02.pdf", "sizeKb": 449 },
+      { "title": "【参考】令和８年11月１日から適用される「消費税法基本通達（第８章）」の構成及び新旧対応表（令和７年４月１日）（PDF/399KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/pdf/b0025003-111.pdf", "sizeKb": 399 }
+    ]
+  },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": true,
+    "note": "通達は行政内部文書。納税者・裁判所には直接的拘束力なし。ただし税務署員は職務として守る義務あり（最高裁 昭和43.12.24）"
+  },
+  "source": "db"
+}
+```
+
+本文は「別紙のとおり改める」までで、改正の中身は `attachedPdfs` の新旧対照表にあります。PDF の読み方は `nta_inspect_pdf_meta` が返す `reader_hints` を参照してください。この例では別紙 1 が令和 7 年 4 月 1 日から、別紙 2 が令和 8 年 11 月 1 日から適用と、適用日が 2 つに分かれています。
+:::
+
+## nta_search_jimu_unei
+
+事務運営指針（jimu-unei）を FTS5 でキーワード検索する。事前に `--bulk-download-jimu-unei` で DB 投入が必要。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `keyword` | string | **必須** |  | 検索キーワード。例: "書面添付", "重加算税"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `taxonomy` | string | 任意 |  | 税目で絞り込み。"shotoku" / "hojin" / "sozoku" / "shohi" 等 |
+| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+| `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。別紙・別表 PDF を伴う指針だけを抽出したい時に true を指定 |
+
+::: details 呼び出し例 — 「書面添付制度の事務運営指針」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: あり（`staleness: "outdated"` の警告付き）
+
+**引数**
+
+```jsonc
+{ "keyword": "書面添付", "limit": 2 }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "keyword": "書面添付",
+  "results": [
+    {
+      "docType": "jimu-unei",
+      "docId": "hojin/090401-2",
+      "taxonomy": "hojin",
+      "title": "調査課における書面添付制度の運用に当たっての基本的な考え方及び事務手続等について（事務運営指針）",
+      "issuedAt": "2009-04-01",
+      "sourceUrl": "https://www.nta.go.jp/law/jimu-unei/hojin/090401-2/01.htm",
+      "snippet": " … <b>書面添付</b>制度適用法人について「<b>書面添</b> … ",
+      "score": 0.449,
+      "scoreReasons": ["doc_type=jimu-unei weight 0.85"]
+    },
+    {
+      "docType": "jimu-unei",
+      "docId": "shozei/090401",
+      "taxonomy": "shozei",
+      "title": "酒税に関する書面添付制度の運用に当たっての基本的な考え方及び事務手続等について（事務運営指針）",
+      "issuedAt": "2009-04-01",
+      "sourceUrl": "https://www.nta.go.jp/law/jimu-unei/shozei/090401/01.htm",
+      "score": 0.429 /* … */
+    }
+  ],
+  "freshness": { "staleness": "outdated", "days_since_oldest": 127, "warning": "… `--bulk-download-jimu-unei` を実行してください" /* … */ },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": true,
+    "note": "通達は行政内部文書。納税者・裁判所には直接的拘束力なし。ただし税務署員は職務として守る義務あり（最高裁 昭和43.12.24）"
+  }
+}
+```
+
+`docId` は `税目/日付` の形（`hojin/090401-2`）で、そのまま `nta_get_jimu_unei` に渡します。事務運営指針は通達と同じく税務職員を拘束し、国民は拘束しません（`binds_tax_office: true`）。
+:::
+
+## nta_get_jimu_unei
+
+事務運営指針の本文を docId で取得する（DB 経由）。本文 + 添付 PDF URL（pdf-reader-mcp で読み取り推奨）を返す。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `docId` | string | **必須** |  | 文書 ID。例: "shotoku/shinkoku/170331" / "sozoku/170111_1"。`nta_search_jimu_unei` 結果や DB hint で取得 |
+| `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
+
+::: details 呼び出し例 — 「書面添付制度の事務運営指針（法人税）の本文と別紙」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: あり（`source: "db"`）
+
+**引数**
+
+```jsonc
+{ "docId": "hojin/090401-2", "format": "json" }
+```
+
+**返る JSON（抜粋）**
+
+```jsonc
+{
+  "document": {
+    "docType": "jimu-unei",
+    "docId": "hojin/090401-2",
+    "taxonomy": "hojin",
+    "title": "調査課における書面添付制度の運用に当たっての基本的な考え方及び事務手続等について（事務運営指針）",
+    "issuedAt": "2009-04-01",
+    "issuer": "各国税局長 殿 沖縄国税事務所長 殿\n国税庁長官",
+    "sourceUrl": "https://www.nta.go.jp/law/jimu-unei/hojin/090401-2/01.htm",
+    "fetchedAt": "2026-05-03T01:59:35.872Z",
+    "fullText": "査調2-24 官総6-36 課法4-9 平成21年4月1日 改正 平成22年6月11日 改正 平成24年12月19日 改正 令和6年3月26日\n…\n（趣旨） 書面添付制度（税理士法（昭和26年法律第237号。…）の平成13年度改正により、…\n記\n…\n【第1章 書面添付制度の運用に当たっての基本的な考え方】\n…",
+    "attachedPdfs": [
+      { "title": "別紙1(PDF/67KB)", "url": "https://www.nta.go.jp/law/jimu-unei/hojin/090401-2/pdf/01.pdf", "sizeKb": 67 },
+      { "title": "別紙2（PDF/126KB）", "url": "https://www.nta.go.jp/law/jimu-unei/hojin/090401-2/pdf/02.pdf", "sizeKb": 126 },
+      { "title": "別紙3(PDF/140KB)", "url": "https://www.nta.go.jp/law/jimu-unei/hojin/090401-2/pdf/03.pdf", "sizeKb": 140 }
+    ]
+  },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": true,
+    "note": "通達は行政内部文書。納税者・裁判所には直接的拘束力なし。ただし税務署員は職務として守る義務あり（最高裁 昭和43.12.24）"
+  },
+  "source": "db"
+}
+```
+
+`fullText` の先頭行に文書番号と改正日（この例では平成 21 年制定、令和 6 年 3 月 26 日まで 3 回改正）が入ります。別紙の様式は `attachedPdfs` にあり、`nta_inspect_pdf_meta` で `docType: "jimu-unei"` を指定すると読み方の例が返ります。
+:::
+
+## nta_search_bunshokaitou
+
+文書回答事例（bunshokaitou）を FTS5 でキーワード検索する。事前に `--bulk-download-bunshokaitou` で DB 投入が必要。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `keyword` | string | **必須** |  | 検索キーワード。例: "電子帳簿", "適格請求書", "災害損失"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `taxonomy` | string | 任意 |  | 税目で絞り込み。"shotoku" / "hojin" / "sozoku" / "gensen" / "joto-sanrin" / "shohi" 等 |
+| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+| `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。回答書本文 PDF を持つ事例だけを抽出したい時に true を指定 |
+
+::: warning 本文の大半は PDF なので、キーワードは題名に含まれる語で
+文書回答事例は、国税庁のページに「照会」「回答」の見出しだけがあり、中身は PDF で提供されることが多いため、取り込んだ本文が題名と見出しだけになる文書があります。「適格請求書」「電子帳簿」では 0 件でしたが、題名にある「産科医療」では引けました（下の例）。本文の語で探したいときは、`hasPdf: true` で PDF 付きに絞り、`nta_inspect_pdf_meta` から pdf-reader-mcp で読んでください。
+:::
+
+::: details 呼び出し例 — 「産科医療の給付金の文書回答事例」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: あり（`staleness: "outdated"` の警告付き）
+
+**引数**
+
+```jsonc
+{ "keyword": "産科医療", "limit": 2 }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "keyword": "産科医療",
+  "results": [
+    {
+      "docType": "bunshokaitou",
+      "docId": "shotoku/081102",
+      "taxonomy": "shotoku",
+      "title": "産科医療補償制度に基づき支払われる補償金の所得税法上の取扱いについて",
+      "issuedAt": null,
+      "sourceUrl": "https://www.nta.go.jp/law/bunshokaito/shotoku/081102/index.htm",
+      "snippet": "取引等に係る税務上の取扱い等に関する … ",
+      "score": 0.480,
+      "scoreReasons": ["doc_type=bunshokaitou weight 0.90"]
+    },
+    {
+      "docType": "bunshokaitou",
+      "docId": "shotoku/250416",
+      "taxonomy": "shotoku",
+      "title": "産科医療特別給付事業に基づき支払われる給付金の所得税法上の取扱いについて",
+      "issuedAt": null,
+      "sourceUrl": "https://www.nta.go.jp/law/bunshokaito/shotoku/250416/index.htm",
+      "score": 0.479 /* … */
+    }
+  ],
+  "freshness": { "staleness": "outdated", "days_since_oldest": 127, "warning": "… `--bulk-download-bunshokaitou` を実行してください" /* … */ },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": false,
+    "note": "文書回答事例は照会者・国税庁双方の合意に基づく個別事案回答であり、一般的な法的拘束力はない。同じ事案で同様の判断を期待することは可能だが、実務判断は通達・法令本文に基づく必要がある"
+  }
+}
+```
+
+0 件のときは `results: []` と `hint`（「該当なし。`--bulk-download-bunshokaitou` で DB 投入済みか確認してください」）が返ります。DB が空なのか、語が本文に無いのかは、この応答だけでは区別できません。
+:::
+
+## nta_get_bunshokaitou
+
+文書回答事例の本文を docId で取得する（DB 経由）。本庁系は "shotoku/250416"、国税局系は "tokyo/shotoku/260218" のような形式。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `docId` | string | **必須** |  | 文書 ID。例: "shotoku/250416" (本庁) / "tokyo/shotoku/260218" (東京国税局) |
+| `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
+
+::: details 呼び出し例 — 「文書回答事例 shotoku/250416」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: あり（`source: "db"`）
+
+**引数**
+
+```jsonc
+{ "docId": "shotoku/250416", "format": "json" }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "document": {
+    "docType": "bunshokaitou",
+    "docId": "shotoku/250416",
+    "taxonomy": "shotoku",
+    "title": "産科医療特別給付事業に基づき支払われる給付金の所得税法上の取扱いについて",
+    "issuer": "国税庁",
+    "sourceUrl": "https://www.nta.go.jp/law/bunshokaito/shotoku/250416/index.htm",
+    "fetchedAt": "2026-05-03T03:03:16.454Z",
+    "fullText": "取引等に係る税務上の取扱い等に関する照会（同業者団体等用）\n〔照会〕\n〔回答〕",
+    "attachedPdfs": []
+  },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": false,
+    "note": "文書回答事例は照会者・国税庁双方の合意に基づく個別事案回答であり、一般的な法的拘束力はない。…"
+  },
+  "source": "db"
+}
+```
+
+この文書では `fullText` が見出しだけで、`attachedPdfs` も空でした。照会と回答の本文が国税庁ページ上でこの形（別ページの PDF へのリンク）になっている文書があり、その場合はここからは本文を読めません。`sourceUrl` を開いて確かめてください。国税局系の文書は `docId` が `tokyo/shotoku/260218` のように局名から始まります。
+:::
+
+## nta_inspect_pdf_meta
+
+指定した文書の添付 PDF メタ一覧（kind / size / URL）と pdf-reader-mcp 呼び出し例だけを返す軽量 API。本文は含まない。`nta_get_*` で全文を取得すると重い場合や、PDF だけを確認したい時に使う。Phase 4-2 (v0.7.1) で追加。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `docType` | `"kaisei"` \| `"jimu-unei"` \| `"bunshokaitou"` \| `"tax-answer"` | **必須** |  | 文書種別。改正通達 (kaisei) / 事務運営指針 (jimu-unei) / 文書回答事例 (bunshokaitou) / タックスアンサー (tax-answer)。質疑応答事例 (qa-jirei) は PDF を持たないため対象外 |
+| `docId` | string | **必須** |  | 文書 ID。各 docType の `nta_search_*` 結果や `nta_get_*` のレスポンスから得られる |
+
+::: details 呼び出し例 — 「改正通達 0025004-026 の PDF を pdf-reader-mcp でどう読むか」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: あり
+
+**引数**
+
+```jsonc
+{ "docType": "kaisei", "docId": "0025004-026" }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "docType": "kaisei",
+  "docId": "0025004-026",
+  "title": "消費税法基本通達の一部改正について（法令解釈通達）",
+  "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/index.htm",
+  "attachedPdfs": [
+    { "title": "【参考】… 新旧対応表 …（PDF/399KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/pdf/b0025003-111.pdf", "sizeKb": 399, "kind": "comparison" },
+    { "title": "別紙1（PDF/221KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/01.pdf", "sizeKb": 221, "kind": "attachment" },
+    { "title": "別紙2（PDF/449KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/02.pdf", "sizeKb": 449, "kind": "attachment" }
+  ],
+  "reader_hints": {
+    "tool": "@shuji-bonji/pdf-reader-mcp",
+    "primary_action": "extract_tables",
+    "min_pdf_reader_version": "0.3.0",
+    "note": "本文取得は pdf-reader-mcp に委譲（責務分離）。comparison / attachment は extract_tables (v0.3.0+) で表構造を保持したまま抽出するのが最優先。それ以外は read_text。…",
+    "examples": [
+      { "kind": "comparison", "tool": "extract_tables", "args": { "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/pdf/b0025003-111.pdf" }, "note": "extract_tables で改正後/改正前の差分を表として抽出するのが最優先。失敗時は read_text に fallback。" },
+      { "kind": "attachment", "tool": "extract_tables", "args": { "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/01.pdf" }, "note": "extract_tables で表組みの別紙・別表・様式を構造化抽出。…" }
+    ]
+  },
+  "legal_status": {
+    "binds_citizens": false,
+    "binds_courts": false,
+    "binds_tax_office": true,
+    "note": "通達は行政内部文書。納税者・裁判所には直接的拘束力なし。ただし税務署員は職務として守る義務あり（最高裁 昭和43.12.24）"
+  }
+}
+```
+
+`attachedPdfs[].kind` は PDF のタイトルから分類したもので、`comparison`（新旧対照表）と `attachment`（別紙・別表）は表として読むのが向いています。`reader_hints.examples[].args` をそのまま pdf-reader-mcp の `extract_tables` に渡せます。本文は含まないので、全文が要るときは `nta_get_kaisei_tsutatsu` を使います。
+:::
+
+## resolve_abbreviation
+
+略称・通称から houki-abbreviations 経由でエントリを解決する。houki-nta-mcp 管轄外（法令系等）の場合は「他 MCP に誘導」のヒントを返す。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `abbr` | string | **必須** |  | 略称。例: "消基通", "所基通", "電帳法" |
+
+::: details 呼び出し例 — 「電帳法 は houki-nta-mcp で引けるか」
+- 実測: v0.10.2（2026-09-08）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "abbr": "電帳法" }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "abbr": "電帳法",
+  "resolved": {
+    "abbr": "電帳法",
+    "formal": "電子計算機を使用して作成する国税関係帳簿書類の保存方法等の特例に関する法律",
+    "law_id": null,
+    "law_type": "Act",
+    "domain": "tax",
+    "category": "law",
+    "source_mcp_hint": "houki-egov",
+    "aliases": ["電子帳簿保存法", "電子帳簿保存", "電帳", "電子帳簿等保存制度"],
+    "note": "通称: 電子帳簿保存法 (電帳法)"
+  },
+  "in_scope": false,
+  "hint": "このエントリは houki-egov の管轄です。houki-egov-mcp で取得してください。"
+}
+```
+
+`in_scope: false` は、この略称が houki-nta-mcp の管轄外（法律なので houki-egov-mcp）であることを示します。houki-egov-mcp 側の同名ツールとの違いはこの `in_scope` と `hint` で、辞書は同じ houki-abbreviations です。「消基通」「所基通」のような通達の略称なら `in_scope: true` になります。
+:::

@@ -34,8 +34,8 @@ docs/
     └── houki-research.md
 ```
 
-ツールごとのリファレンス（`tools/list` からの自動生成）は未着手です。pdf-agent-stack の
-`scripts/generate-reference.mjs` を移植して `reference/mcp/*.md` に出す予定です。
+`docs/reference/mcp/*.md` は `scripts/generate-reference.mjs` が MCP サーバーを起動して `tools/list` から生成します（`npm run build` の先頭で走ります）。
+`mcp/` の clone が無い環境（CI）では生成を飛ばし、コミット済みのページを使います。呼び出し例は `scripts/reference-examples/<server>/ja/<tool>.md` に手で書き、生成時に各ツールの末尾へ付きます。
 
 ## 書き方
 

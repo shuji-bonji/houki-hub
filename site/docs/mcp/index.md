@@ -27,8 +27,10 @@ description: houki-hub family の MCP サーバーと、それぞれが束ねる
 
 ## ツールリファレンス
 
-ツールごとの引数の正本は、各サーバーが `tools/list` で返す `inputSchema` と、各リポジトリの README のツール表です。
-このサイトでは各サーバーのページに用途の一覧を置き、引数の詳細は README に送っています。
+ツールごとの引数（名前・型・必須・既定値）は、各サーバーを起動して `tools/list` から自動生成したページにあります。実測した呼び出し例と応答も、各ツールの下に付けています。
+
+- [houki-egov-mcp のツールリファレンス](/reference/mcp/houki-egov)
+- [houki-nta-mcp のツールリファレンス](/reference/mcp/houki-nta)
 
 ## 免責事項
 

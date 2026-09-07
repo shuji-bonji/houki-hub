@@ -6,7 +6,7 @@
   "description": "Documentation site for the houki-hub family (Japanese law MCP servers, library and skill)",
   "scripts": {
     "dev": "vitepress dev docs",
-    "build": "vitepress build docs",
+    "build": "node ../scripts/generate-reference.mjs && vitepress build docs",
     "preview": "vitepress preview docs"
   },
   "devDependencies": {

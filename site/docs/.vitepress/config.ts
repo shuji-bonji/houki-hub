@@ -17,6 +17,7 @@ const nav = [
   { text: 'MCP', link: '/mcp/' },
   { text: 'ライブラリ', link: '/lib/houki-abbreviations' },
   { text: 'Skill', link: '/skills/houki-research' },
+  { text: 'リファレンス', link: '/reference/mcp/houki-egov' },
   { text: 'ロードマップ', link: '/guide/roadmap' }
 ];
 
@@ -53,6 +54,15 @@ const sidebar = {
     {
       text: 'Skill',
       items: [{ text: 'houki-research', link: '/skills/houki-research' }]
+    }
+  ],
+  '/reference/': [
+    {
+      text: 'ツールリファレンス',
+      items: [
+        { text: 'houki-egov-mcp', link: '/reference/mcp/houki-egov' },
+        { text: 'houki-nta-mcp', link: '/reference/mcp/houki-nta' }
+      ]
     }
   ]
 };
