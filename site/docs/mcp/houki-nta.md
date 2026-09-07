@@ -62,5 +62,7 @@ DB は `~/.cache/houki-nta-mcp/cache.db` にできます。DB がないときも
 改正通達の新旧対照表は PDF で提供されます。`nta_inspect_pdf_meta` は、その PDF を
 [pdf-reader-mcp](https://shuji-bonji.github.io/pdf-agent-stack/ja/mcp/pdf-reader) の `extract_tables` で表構造を保ったまま読むための呼び出し例を返します。
 
+利用範囲と通達の法的な位置づけは[免責事項と利用範囲](/guide/disclaimer)と、リポジトリの [DISCLAIMER.md](https://github.com/shuji-bonji/houki-nta-mcp/blob/main/DISCLAIMER.md) を参照してください。
+
 houki-nta-mcp は family の中で最も長く開発しており、他の MCP サーバーの参照実装になっています
 （正規化を取り込み時と検索時の両方で通す、`freshness` と `legal_status` を必ず付ける、取得先の変更を検知する、など）。

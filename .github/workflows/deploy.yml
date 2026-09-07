@@ -4,18 +4,17 @@ name: Deploy site to GitHub Pages
 # site/ 配下に置くと GitHub はそれを見ない（pdf-agent-stack で 2026-07-29 に踏んだ）。
 # ビルド対象だけ site/ に向ける。
 #
-# 公開前の運用（2026-09-07〜）:
-#   push では走らせない。手動起動（workflow_dispatch）だけにしてある。
-#   公開に切り替えるときは、下の on.push のコメントを外し、
-#   GitHub の Settings → Pages → Source を "GitHub Actions" にする。
+# 2026-09-08 に公開。main への push（site/ scripts/ 本ファイル）で再デプロイする。
+# hub 側（stack.json / README / docs）の更新では再デプロイしない。
+# 初回は GitHub の Settings → Pages → Source を "GitHub Actions" にしておく必要がある。
 
 on:
-  # push:
-  #   branches: [main]
-  #   paths:
-  #     - 'site/**'
-  #     - 'scripts/**'
-  #     - '.github/workflows/deploy.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'scripts/**'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 permissions:

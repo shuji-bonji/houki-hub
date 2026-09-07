@@ -47,4 +47,10 @@ DB の場所は `~/.cache/houki-egov-mcp/laws.db`（`HOUKI_EGOV_DB_PATH` で変�
 - `get_toc` は附則の条を編・章の外に平坦に並べます（既知の課題）
 - 民法・消費税法のような大きな法令は応答が長くなります。`get_toc` で位置を確かめてから `get_law` で条を指定してください
 
-詳しい設計と Phase ごとの進捗は、リポジトリの `docs/` にあります。
+## デジタル庁公式の MCP との関係
+
+本サーバーは e-Gov 法令 API v2 のクライアントで、デジタル庁公式の MCP ではありません。
+デジタル庁は 2025 年 12 月〜2026 年 3 月の「法令 × デジタル」ハッカソンで法令 API と MCP の試作を参加者向けに試行提供しました。
+法令本文を返す公式 MCP が一般提供された場合は、本サーバーのコアをそちらに委譲する方針です。
+
+詳しい設計と Phase ごとの進捗は、リポジトリの `docs/` にあります。利用範囲は[免責事項と利用範囲](/guide/disclaimer)と、リポジトリの [DISCLAIMER.md](https://github.com/shuji-bonji/houki-egov-mcp/blob/main/DISCLAIMER.md) を参照してください。

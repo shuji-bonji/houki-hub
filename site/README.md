@@ -3,8 +3,7 @@
 法規シリーズ（houki-hub family）のドキュメントサイト。VitePress で作り、GitHub Pages に公開する予定です。
 構成は [pdf-agent-stack/site](https://github.com/shuji-bonji/pdf-agent-stack/tree/main/site) と揃えています。
 
-> 🚧 現在は未公開です。`.github/workflows/deploy.yml` の push トリガーはコメントアウトしてあり、
-> 手動起動（workflow_dispatch）でしか走りません。公開の条件は `../docs/DECISIONS.md` の「未決」を参照。
+公開先: <https://shuji-bonji.github.io/houki-hub/>（`main` への push で `.github/workflows/deploy.yml` が走ります）
 
 ## 開発
 

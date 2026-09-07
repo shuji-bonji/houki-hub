@@ -11,8 +11,7 @@
 現時点の対象はシステム開発・運用・管理を行うエンジニアで、
 弁護士法 72 条・税理士法 52 条・社労士法 27 条が定める独占業務（他人の個別事案への当てはめを業として行うこと）は想定していない。
 
-> 🚧 ドキュメントサイト（`site/`）は構築中で、まだ公開していない。
-> 公開先は GitHub Pages `https://shuji-bonji.github.io/houki-hub/` を予定。
+ドキュメントサイト: <https://shuji-bonji.github.io/houki-hub/>（2026-09-08 公開）
 
 ## 全体像
 
@@ -143,7 +142,7 @@ marketplace（`claude-plugins`）側の版は、そのリポジトリの `script
 
 ## ドキュメント
 
-- サイト（構築中）: `site/` — `cd site && npm install && npm run dev`
+- サイト: <https://shuji-bonji.github.io/houki-hub/>（`site/`。手元では `cd site && npm install && npm run dev`）
 - 現状と予定: [docs/ROADMAP.md](docs/ROADMAP.md)
 - 決定事項: [docs/DECISIONS.md](docs/DECISIONS.md)
 - 紹介記事: Zenn（family 全体の紹介）/ Qiita（houki-egov-mcp 深堀り）

@@ -28,7 +28,8 @@ const sidebar = {
         { text: 'houki-hub とは', link: '/guide/overview' },
         { text: '全体構成と責務', link: '/guide/architecture' },
         { text: '導入手順', link: '/guide/getting-started' },
-        { text: '現状と予定', link: '/guide/roadmap' }
+        { text: '現状と予定', link: '/guide/roadmap' },
+        { text: '免責事項と利用範囲', link: '/guide/disclaimer' }
       ]
     }
   ],
@@ -120,7 +121,7 @@ export default withMermaid(
       lastUpdated: { text: '最終更新' },
       footer: {
         message:
-          '本サイトの内容は調査の出発点であり、法的助言ではありません。個別の事案は資格を持つ専門家に相談してください。',
+          '本サイトの内容は調査の出発点であり、法的助言ではありません。個別の事案は資格を持つ専門家に相談してください。<a href="/houki-hub/guide/disclaimer">免責事項と利用範囲</a>',
         copyright: 'MIT Licensed | © shuji-bonji'
       }
     }
