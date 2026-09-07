@@ -5,7 +5,7 @@ description: 日本の法令・通達・行政解釈を、出典付きで LLM �
 hero:
   name: houki-hub
   text: 法規を正確に引く AI エージェントの土台
-  tagline: 法律・政令・省令は e-Gov から、通達・Q&A は国税庁から。略称を解決し、鮮度と法的な位置づけを添えて返す MCP サーバー群と、それらを横断する Skill。
+  tagline: 法律・政令・省令は e-Gov 法令 API から全分野を、通達・Q&A は現時点では国税庁分を。略称を解決し、鮮度と法的な位置づけを添えて返す MCP サーバー群と、それらを横断する Skill。
   actions:
     - theme: brand
       text: はじめる
@@ -13,6 +13,9 @@ hero:
     - theme: alt
       text: houki-hub とは
       link: /guide/overview
+    - theme: alt
+      text: 現状と予定（対応範囲）
+      link: /guide/roadmap
 
 features:
   - title: houki-egov-mcp（法令）
@@ -28,6 +31,19 @@ features:
     details: 複数の MCP をどの順に呼び、出典をどう書き、業法の独占業務にどこで注意するかを定めた Skill。family 共通のエラー契約の正典でもあります。
     link: /skills/houki-research
 ---
+
+## いま扱える範囲
+
+| 資料の種類 | 対応範囲（2026-09-07 時点） | 担当 |
+| --- | --- | --- |
+| 法律・政令・省令・規則 | **全分野**（e-Gov 法令 API v2 に載っているもの） | houki-egov-mcp |
+| 通達・Q&A・行政解釈 | **国税庁のみ**（基本通達 4 種・改正通達・事務運営指針・文書回答事例・タックスアンサー・質疑応答事例） | houki-nta-mcp |
+| 厚生労働省の通達・通知 | 未対応（houki-mhlw-mcp を予定） | — |
+| 法令メタデータ（公布→施行の時系列） | 未対応（houki-metadata-mcp を予定） | — |
+| 裁決・判例 | 未対応（構想段階） | — |
+
+通達・Q&A が国税庁だけなのは、最初に税務から着手したためです。他省庁の通達は同じ型の MCP サーバーを 1 つずつ足していきます。
+→ [現状と予定](/guide/roadmap)
 
 ## クイックスタート
 
