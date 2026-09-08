@@ -3,8 +3,8 @@
 :::
 
 ::: details 呼び出し例 — 「インボイス関係の改正通達を新旧対照表付きで」
-- 実測: v0.10.2（2026-09-08）
-- ローカル DB: あり（`staleness: "outdated"` の警告付き）
+- 実測: v0.10.4（2026-09-08）
+- ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
 
@@ -26,7 +26,7 @@
       "issuedAt": "2025-04-01",
       "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/index.htm",
       "snippet": " … （官印省略）\n<b>消費税法</b>基本通達（平成 … ",
-      "score": 0.274,
+      "score": 0.252,
       "scoreReasons": ["doc_type=kaisei weight 0.95", "abbreviation expanded: インボイス → 消費税法"]
     },
     {
@@ -36,10 +36,15 @@
       "title": "消費税法基本通達の一部改正について（法令解釈通達）",
       "issuedAt": "2019-10-01",
       "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/191001/index.htm",
-      "score": 0.271 /* … */
+      "score": 0.250 /* … */
     }
   ],
-  "freshness": { "staleness": "outdated", "days_since_oldest": 126, "warning": "… `--bulk-download-kaisei` を実行してください" /* … */ },
+  "freshness": {
+    "oldest_fetched_at": "2026-09-07T20:49:01.018Z",
+    "newest_fetched_at": "2026-09-07T20:51:23.491Z",
+    "staleness": "fresh",
+    "days_since_oldest": 0
+  },
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,

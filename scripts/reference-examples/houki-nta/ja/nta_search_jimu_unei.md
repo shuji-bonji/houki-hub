@@ -1,6 +1,6 @@
 ::: details 呼び出し例 — 「書面添付制度の事務運営指針」
-- 実測: v0.10.2（2026-09-08）
-- ローカル DB: あり（`staleness: "outdated"` の警告付き）
+- 実測: v0.10.4（2026-09-08）
+- ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
 
@@ -22,7 +22,7 @@
       "issuedAt": "2009-04-01",
       "sourceUrl": "https://www.nta.go.jp/law/jimu-unei/hojin/090401-2/01.htm",
       "snippet": " … <b>書面添付</b>制度適用法人について「<b>書面添</b> … ",
-      "score": 0.449,
+      "score": 0.465,
       "scoreReasons": ["doc_type=jimu-unei weight 0.85"]
     },
     {
@@ -32,10 +32,15 @@
       "title": "酒税に関する書面添付制度の運用に当たっての基本的な考え方及び事務手続等について（事務運営指針）",
       "issuedAt": "2009-04-01",
       "sourceUrl": "https://www.nta.go.jp/law/jimu-unei/shozei/090401/01.htm",
-      "score": 0.429 /* … */
+      "score": 0.450 /* … */
     }
   ],
-  "freshness": { "staleness": "outdated", "days_since_oldest": 127, "warning": "… `--bulk-download-jimu-unei` を実行してください" /* … */ },
+  "freshness": {
+    "oldest_fetched_at": "2026-09-07T20:51:23.604Z",
+    "newest_fetched_at": "2026-09-07T20:51:58.985Z",
+    "staleness": "fresh",
+    "days_since_oldest": 0
+  },
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,

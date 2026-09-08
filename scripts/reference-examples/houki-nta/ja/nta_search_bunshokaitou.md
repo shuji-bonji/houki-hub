@@ -1,10 +1,10 @@
-::: warning 本文の大半は PDF なので、キーワードは題名に含まれる語で
-文書回答事例は、国税庁のページに「照会」「回答」の見出しだけがあり、中身は PDF で提供されることが多いため、取り込んだ本文が題名と見出しだけになる文書があります。「適格請求書」「電子帳簿」では 0 件でしたが、題名にある「産科医療」では引けました（下の例）。本文の語で探したいときは、`hasPdf: true` で PDF 付きに絞り、`nta_inspect_pdf_meta` から pdf-reader-mcp で読んでください。
+::: tip 本文で検索できます（v0.10.3 以降）
+v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の語でしか当たりませんでした。いまは回答内容・関係する法令条項等・別紙の照会文まで検索の対象です。v0.10.2 以前に作った DB を使っている場合は `houki-nta-mcp --bulk-download-bunshokaitou --refresh` で再投入してください。
 :::
 
-::: details 呼び出し例 — 「産科医療の給付金の文書回答事例」
-- 実測: v0.10.2（2026-09-08）
-- ローカル DB: あり（`staleness: "outdated"` の警告付き）
+::: details 呼び出し例 — 「産科医療の給付金に関する文書回答事例」
+- 実測: v0.10.4（2026-09-08）
+- ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
 
@@ -23,10 +23,10 @@
       "docId": "shotoku/081102",
       "taxonomy": "shotoku",
       "title": "産科医療補償制度に基づき支払われる補償金の所得税法上の取扱いについて",
-      "issuedAt": null,
+      "issuedAt": "2008-11-06",
       "sourceUrl": "https://www.nta.go.jp/law/bunshokaito/shotoku/081102/index.htm",
-      "snippet": "取引等に係る税務上の取扱い等に関する … ",
-      "score": 0.480,
+      "snippet": " … ・ <b>産科医療</b>補償制度標準補償約款 ・ … ",
+      "score": 0.519,
       "scoreReasons": ["doc_type=bunshokaitou weight 0.90"]
     },
     {
@@ -34,12 +34,19 @@
       "docId": "shotoku/250416",
       "taxonomy": "shotoku",
       "title": "産科医療特別給付事業に基づき支払われる給付金の所得税法上の取扱いについて",
-      "issuedAt": null,
+      "issuedAt": "2025-04-07",
       "sourceUrl": "https://www.nta.go.jp/law/bunshokaito/shotoku/250416/index.htm",
-      "score": 0.479 /* … */
+      "snippet": " … ・<b>産科医療</b>特別給付事業 実施要綱\n〔 … ",
+      "score": 0.492,
+      "scoreReasons": ["doc_type=bunshokaitou weight 0.90"]
     }
   ],
-  "freshness": { "staleness": "outdated", "days_since_oldest": 127, "warning": "… `--bulk-download-bunshokaitou` を実行してください" /* … */ },
+  "freshness": {
+    "oldest_fetched_at": "2026-09-08T07:27:19.397Z",
+    "newest_fetched_at": "2026-09-08T07:46:15.519Z",
+    "staleness": "fresh",
+    "days_since_oldest": 0
+  },
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,
@@ -49,5 +56,41 @@
 }
 ```
 
-0 件のときは `results: []` と `hint`（「該当なし。`--bulk-download-bunshokaitou` で DB 投入済みか確認してください」）が返ります。DB が空なのか、語が本文に無いのかは、この応答だけでは区別できません。
+`snippet` が添付書類の行から取れていることから、題名ではなく表の中身に当たっているのが分かります。`docId` をそのまま `nta_get_bunshokaitou` に渡せます。
+:::
+
+::: details 呼び出し例 — 別紙の本文にしかない語で引く
+- 実測: v0.10.4（2026-09-08）
+
+「宇宙空間」は題名にも回答内容にもなく、別紙の照会文にだけ出てくる語です。
+
+**引数**
+
+```jsonc
+{ "keyword": "宇宙空間", "limit": 3 }
+```
+
+**返る JSON（抜粋）**
+
+```jsonc
+{
+  "keyword": "宇宙空間",
+  "results": [
+    {
+      "docType": "bunshokaitou",
+      "docId": "tokyo/shohi/251017",
+      "taxonomy": "shohi",
+      "title": "人工衛星打上げ輸送サービスに係る消費税の取扱いについて",
+      "issuedAt": "2025-10-17",
+      "sourceUrl": "https://www.nta.go.jp/about/organization/tokyo/bunshokaito/shohi/251017/index.htm",
+      "snippet": " … する施設）より<b>宇宙空間</b>における所定の … ",
+      "score": 0.537,
+      "scoreReasons": ["doc_type=bunshokaitou weight 0.90"]
+    }
+  ]
+  // freshness / legal_status は上の例と同じ
+}
+```
+
+0 件のときは `results: []` と `hint`（「該当なし。`--bulk-download-bunshokaitou` で DB 投入済みか確認してください」）が返ります。この応答だけでは「DB が空」なのか「本当に該当がない」のかを区別できないので、他の語でも 0 件なら DB の投入状況を確かめてください。
 :::

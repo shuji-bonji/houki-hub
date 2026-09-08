@@ -1,6 +1,6 @@
 ::: details 呼び出し例 — 「医療費控除のタックスアンサー」
-- 実測: v0.10.2（2026-09-08）
-- ローカル DB: あり（`staleness: "outdated"` の警告付き）
+- 実測: v0.10.4（2026-09-08）
+- ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
 
@@ -21,19 +21,24 @@
       "title": "セルフメディケーション税制と通常の医療費控除との選択適用",
       "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1131.htm",
       "snippet": " … 療費控除の特例であり、通常の<b>医療費控</b> … ",
-      "score": 0.246,
+      "score": 0.253,
       "scoreReasons": ["doc_type=tax-answer weight 0.60"]
     },
     {
       "docType": "tax-answer",
-      "docId": "1128",
+      "docId": "1127",
       "taxonomy": "shotoku",
-      "title": "医療費控除の対象となる歯の治療費の具体例",
-      "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1128.htm",
-      "score": 0.241 /* … */
+      "title": "医療費控除の対象となる介護保険制度下での居宅サービス等の対価",
+      "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1127.htm",
+      "score": 0.250 /* … */
     }
   ],
-  "freshness": { "staleness": "outdated", "days_since_oldest": 126, "warning": "… `--bulk-download-tax-answer` を実行してください" /* … */ },
+  "freshness": {
+    "oldest_fetched_at": "2026-09-07T21:01:50.511Z",
+    "newest_fetched_at": "2026-09-07T21:15:57.646Z",
+    "staleness": "fresh",
+    "days_since_oldest": 0
+  },
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,

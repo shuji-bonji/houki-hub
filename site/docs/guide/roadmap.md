@@ -13,7 +13,7 @@ description: houki-hub family の各部品の版と、次に取り組む順序�
 | 部品 | 版 | いまできること |
 | --- | --- | --- |
 | [houki-egov-mcp](/mcp/houki-egov) | 0.5.3 | 法律・政令・省令の検索・本文取得・目次・改正履歴。ローカル DB を作れば条文本文の全文検索 |
-| [houki-nta-mcp](/mcp/houki-nta) | 0.10.2 | 国税庁の基本通達 4 種（消基通・所基通・法基通・相基通）・改正通達・事務運営指針・文書回答事例・タックスアンサー・質疑応答事例の検索と取得 |
+| [houki-nta-mcp](/mcp/houki-nta) | 0.10.4 | 国税庁の基本通達 4 種（消基通・所基通・法基通・相基通）・改正通達・事務運営指針・文書回答事例・タックスアンサー・質疑応答事例の検索と取得 |
 | [houki-abbreviations](/lib/houki-abbreviations) | 0.5.0 | 略称 174 エントリの解決、正規化、鮮度判定、法令 ID からの逆引き |
 | [houki-research](/skills/houki-research) | 0.1.0 | 税務調査の手順（tax-research）、citation 書式、エラー契約、業法の注意喚起 |
 

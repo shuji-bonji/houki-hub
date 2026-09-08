@@ -3,8 +3,8 @@
 :::
 
 ::: details 呼び出し例 — 「軽減税率に関係する通達の節は」
-- 実測: v0.10.2（2026-09-08）
-- ローカル DB: あり（一部が 126 日前のデータで `staleness: "outdated"`。その警告もそのまま載せています）
+- 実測: v0.10.4（2026-09-08）
+- ローカル DB: あり（`--bulk-download-everything` の直後で `staleness: "fresh"`）
 
 **引数**
 
@@ -41,11 +41,10 @@
     }
   ],
   "freshness": {
-    "oldest_fetched_at": "2026-05-04T00:34:38.918Z",
-    "newest_fetched_at": "2026-09-07T11:53:51.084Z",
-    "staleness": "outdated",
-    "days_since_oldest": 126,
-    "warning": "一部ドキュメントが 126 日前のデータです。最新化するには `--bulk-download-all` を実行してください"
+    "oldest_fetched_at": "2026-09-07T20:39:32.057Z",
+    "newest_fetched_at": "2026-09-07T20:49:00.912Z",
+    "staleness": "fresh",
+    "days_since_oldest": 0
   },
   "legal_status": {
     "binds_citizens": false,
@@ -57,4 +56,28 @@
 ```
 
 `hits[].clauseNumber` と `hits[].abbr` をそのまま `nta_get_tsutatsu` の `clause` / `name` に渡すと本文が取れます。
+:::
+
+::: details 呼び出し例 — DB が古いとき（`staleness: "outdated"`）
+- 実測: v0.10.2（2026-09-07）。同じ呼び出しを、最後の取り込みから 126 日たった DB に対して行ったときの応答です
+
+引数は上の例と同じです。違うのは `freshness` だけで、`hits` の中身は変わりません。
+
+```jsonc
+{
+  "keyword": "軽減税率",
+  "count": 2,
+  "hits": [ /* 上の例と同じ */ ],
+  "freshness": {
+    "oldest_fetched_at": "2026-05-04T00:34:38.918Z",
+    "newest_fetched_at": "2026-09-07T11:53:51.084Z",
+    "staleness": "outdated",
+    "days_since_oldest": 126,
+    "warning": "一部ドキュメントが 126 日前のデータです。最新化するには `--bulk-download-all` を実行してください"
+  }
+  // legal_status は同じ
+}
+```
+
+`staleness` が `fresh` 以外のときは、返ってきた本文が国税庁サイトの現在の内容と違う可能性があります。回答にその旨を書き、`warning` にあるコマンドの実行を利用者に案内してください。`days_since_oldest` は範囲内で最も古い文書の経過日数なので、一部だけが古い場合もこの値になります。
 :::

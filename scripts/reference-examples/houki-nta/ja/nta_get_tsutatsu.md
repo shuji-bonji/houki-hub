@@ -1,5 +1,5 @@
 ::: details 呼び出し例 — 「消基通 1-7-2（登録番号の構成）の本文」
-- 実測: v0.10.2（2026-09-08）
+- 実測: v0.10.4（2026-09-08）
 - ローカル DB: あり（`source: "db"`。無ければ国税庁サイトから取得し `source` が `"live"` になります）
 
 **引数**
@@ -24,7 +24,7 @@
     "fullText": "登録番号の構成\n適格請求書発行事業者登録簿（…"
   },
   "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/01/07.htm",
-  "fetchedAt": "2026-09-07T11:47:23.588Z",
+  "fetchedAt": "2026-09-07T20:39:38.910Z",
   "source": "db",
   "legal_status": {
     "binds_citizens": false,

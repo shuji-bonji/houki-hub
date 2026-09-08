@@ -12,7 +12,7 @@ graph TB
     end
     subgraph MCP層["MCP 層（SDK v2 / Node 22 / Biome に統一済み）"]
         EGOV["houki-egov-mcp v0.5.3<br/>e-Gov 法令 API v2 / 7 tools<br/>bulk DL → SQLite FTS5 全文検索まで完了"]
-        NTA["houki-nta-mcp v0.10.2<br/>国税庁 / 14 tools<br/>Phase 1〜6 完了。v1.0 判定待ち"]
+        NTA["houki-nta-mcp v0.10.4<br/>国税庁 / 14 tools<br/>Phase 1〜6 完了。v1.0 判定待ち"]
     end
     subgraph 共有層["共有ライブラリ層"]
         ABBR["houki-abbreviations v0.5.0<br/>174 エントリ / 6 分野<br/>normalize + freshness + 逆引き + 検証"]
@@ -37,7 +37,7 @@ graph TB
 | リポジトリ | 版 | 状態の要点 |
 |---|---|---|
 | houki-egov-mcp | 0.5.3 | Phase 2-7（`search_fulltext` を FTS5 に接続）完了。編（Part）を持つ法令の取り込み漏れを v0.5.1 で修正。tools/call の引数を `inputSchema` で検証し `INVALID_ARGUMENT` を返す（v0.5.3） |
-| houki-nta-mcp | 0.10.2 | SDK v2 移行（v0.10.0）でエラー応答を family contract に統一。Issue #17（算式画像プレースホルダ）/ #18（2 文字語の LIKE 補完、`--refresh` 修正）対応済み。family の参照実装 |
+| houki-nta-mcp | 0.10.4 | SDK v2 移行（v0.10.0）でエラー応答を family contract に統一。Issue #17 / #18 対応（v0.10.1 / v0.10.2）。文書回答事例の本文（表と別紙）を取り込むように修正し、`--refresh` を全 6 種別に効かせた（v0.10.3 / v0.10.4）。family の参照実装 |
 | houki-abbreviations | 0.5.0（MCP が取り込んでいるのは 0.4.1） | 逆引き（`lookupByLawId` / `lookupByLawNum`）+ 検証（`validateAllEntries` / `extractLawNames`）。両 MCP の依存は `^0.4.1` で、0.x の `^` は minor を跨がないため 0.5.0 は入っていない（辞書は同一・MCP が呼ぶ 3 関数は両版にあるので動作差なし）。toolchain は ESLint + Prettier のまま（MCP 2 つは Biome） |
 | houki-research-skill | 0.1.0（ローカルは 0.2.0 コミット済み・未 push） | 2026-09-07 に egov 0.5.3 / nta 0.10.2 へ追随（例文の引数名修正、`search_fulltext` を手順に追加）。plugin 化 + Release 自動化済み。`docs/` に ARCHITECTURE / BUSINESS-LAW / CITATION / ERROR-HANDLING / ERROR-CODES。examples は invoice-registration と error-recovery-patterns |
 | houki-hub（本 repo） | — | 2026-09-07 に pdf-agent-stack 同型へ再構成。site/ は VitePress の雛形のみ。未公開 |
@@ -83,6 +83,7 @@ graph TB
 
 | 日付 | できごと |
 |---|---|
+| 2026-09-08 | houki-nta-mcp v0.10.3 / v0.10.4 publish（文書回答事例の本文取り込み、`--refresh` の 5 種別漏れ）。houki-hub のツールリファレンス自動生成と全 21 ツールの実測呼び出し例を追加。サイトを GitHub Pages に公開 |
 | 2026-09-07 | houki-nta-mcp v0.10.0〜v0.10.2 publish（SDK v2 / Issue #17, #18）。houki-egov-mcp v0.5.2 / v0.5.3 publish。family 全 MCP が SDK v2 / Node 22 / Biome に揃う。houki-hub を pdf-agent-stack 同型に再構成 |
 | 2026-07-19 | 現状把握レポート（`docs/reports/2026-07-19-status.md`） |
 | 2026-07-14 | houki-nta-mcp v0.9.5（plugin manifest）、houki-abbreviations v0.5.0 |

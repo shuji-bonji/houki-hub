@@ -1,5 +1,5 @@
 ::: details 呼び出し例 — 「令和 7 年 4 月 1 日の消基通改正の本文と添付 PDF」
-- 実測: v0.10.2（2026-09-08）
+- 実測: v0.10.4（2026-09-08）
 - ローカル DB: あり（`source: "db"`）
 
 **引数**
@@ -20,7 +20,7 @@
     "issuedAt": "2025-04-01",
     "issuer": "各国税局長 殿 沖縄国税事務所長 殿 各税関長 殿 沖縄地区税関長 殿\n国税庁長官 （官印省略）",
     "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/index.htm",
-    "fetchedAt": "2026-05-03T23:52:09.124Z",
+    "fetchedAt": "2026-09-07T20:49:03.281Z",
     "fullText": "課消2-4 課総11-10 … 令和7年4月1日\n…\n記\n1 消費税法基本通達について、別紙1「消費税法基本通達新旧対照表」の「改正前」欄に掲げる部分を「改正後」欄に掲げる部分のとおり改めることとし、令和7年4月1日から適用する。\n2 … 別紙2 … 令和8年11月1日から適用する。\n…",
     "attachedPdfs": [
       { "title": "別紙1（PDF/221KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/01.pdf", "sizeKb": 221 },

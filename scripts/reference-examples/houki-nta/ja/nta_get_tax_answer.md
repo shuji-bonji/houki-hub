@@ -3,7 +3,7 @@
 :::
 
 ::: details 呼び出し例 — 「No.6101 消費税の基本的なしくみ」
-- 実測: v0.10.2（2026-09-08）
+- 実測: v0.10.4（2026-09-08）
 - ローカル DB: 不要（この例では国税庁サイトから取得。`fetchedAt` が呼び出し時刻）
 
 **引数**
@@ -29,7 +29,7 @@
       { "heading": "関連リンク", "paragraphs": ["…"] }
     ],
     "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6101.htm",
-    "fetchedAt": "2026-09-07T20:16:23.199Z",
+    "fetchedAt": "2026-09-08T08:12:18.517Z",
     "effectiveDate": "令和7年4月1日現在法令等",
     "taxCategory": "消費税"
   },
