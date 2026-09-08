@@ -9,7 +9,7 @@ description: houki-hub family の MCP を横断して使うときの手順・引
 LLM が **どの MCP をどの順に呼び、出典をどう書き、どこで注意を促すか** を定めた Skill です。
 MCP サーバーは資料を返すだけで、順序や書式や注意喚起は決めません。それらの正典がこの Skill です。
 
-- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.1.0）
+- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.2.1）
 - 配布: claude-plugins marketplace の plugin `houki-research`、または `skills/houki-research/` をプロジェクトの `.claude/skills/` に置く
 - 対象分野: 税務に限らず日本の全法規。現時点で MCP が揃っているのが税務なので、例は税務が中心です
 
@@ -84,5 +84,6 @@ family の全 MCP は、エラーを `isError: true` と `code` で返します�
 
 - workflow の追加: 改正追跡（`revision-tracking`）。MCP の追加を待たずに書けます
 - examples の追加: 電子帳簿保存法、相続税の改正
-- `ARCHITECTURE.md` の配布形態の記述を plugin 化後の状態に更新
 - 労務・民事・知財の workflow は、houki-mhlw-mcp / houki-court-mcp / houki-saiketsu-mcp が揃ってから
+
+v0.2.0（2026-09-07）では、MCP 側の更新に追随して例文の引数名を `tools/list` の `inputSchema` と一致させ、`search_fulltext` を法律本文の入口に加え、`INVALID_ARGUMENT` の対処に `detail.issues[].path` を明記しました。`ARCHITECTURE.md` の配布形態も plugin 化後の状態に更新済みです。

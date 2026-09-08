@@ -8,7 +8,7 @@
 ```mermaid
 graph TB
     subgraph Skill層["Skill 層（正典）"]
-        SKILL["houki-research-skill v0.1.0<br/>error contract / citation / 業法独占規定<br/>plugin 化済み。workflow は tax-research のみ"]
+        SKILL["houki-research-skill v0.2.1<br/>error contract / citation / 業法独占規定<br/>plugin 化済み。workflow は tax-research のみ"]
     end
     subgraph MCP層["MCP 層（SDK v2 / Node 22 / Biome に統一済み）"]
         EGOV["houki-egov-mcp v0.5.3<br/>e-Gov 法令 API v2 / 7 tools<br/>bulk DL → SQLite FTS5 全文検索まで完了"]
@@ -39,7 +39,7 @@ graph TB
 | houki-egov-mcp | 0.5.3 | Phase 2-7（`search_fulltext` を FTS5 に接続）完了。編（Part）を持つ法令の取り込み漏れを v0.5.1 で修正。tools/call の引数を `inputSchema` で検証し `INVALID_ARGUMENT` を返す（v0.5.3） |
 | houki-nta-mcp | 0.10.4 | SDK v2 移行（v0.10.0）でエラー応答を family contract に統一。Issue #17 / #18 対応（v0.10.1 / v0.10.2）。文書回答事例の本文（表と別紙）を取り込むように修正し、`--refresh` を全 6 種別に効かせた（v0.10.3 / v0.10.4）。family の参照実装 |
 | houki-abbreviations | 0.5.0（MCP が取り込んでいるのは 0.4.1） | 逆引き（`lookupByLawId` / `lookupByLawNum`）+ 検証（`validateAllEntries` / `extractLawNames`）。両 MCP の依存は `^0.4.1` で、0.x の `^` は minor を跨がないため 0.5.0 は入っていない（辞書は同一・MCP が呼ぶ 3 関数は両版にあるので動作差なし）。toolchain は ESLint + Prettier のまま（MCP 2 つは Biome） |
-| houki-research-skill | 0.1.0（ローカルは 0.2.0 コミット済み・未 push） | 2026-09-07 に egov 0.5.3 / nta 0.10.2 へ追随（例文の引数名修正、`search_fulltext` を手順に追加）。plugin 化 + Release 自動化済み。`docs/` に ARCHITECTURE / BUSINESS-LAW / CITATION / ERROR-HANDLING / ERROR-CODES。examples は invoice-registration と error-recovery-patterns |
+| houki-research-skill | 0.2.1 | 2026-09-07 に egov 0.5.3 / nta 0.10.x へ追随（例文の引数名を `inputSchema` と一致させ、`search_fulltext` を手順に追加、`INVALID_ARGUMENT` の `detail.issues` を明記）。plugin 化 + Release 自動化済み。`docs/` に ARCHITECTURE / BUSINESS-LAW / CITATION / ERROR-HANDLING / ERROR-CODES。examples は invoice-registration と error-recovery-patterns |
 | houki-hub（本 repo） | — | 2026-09-07 に pdf-agent-stack 同型へ再構成。site/ は VitePress の雛形のみ。未公開 |
 
 ## 次にやること（優先度順）

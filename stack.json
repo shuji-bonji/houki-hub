@@ -6,7 +6,7 @@
     "layer = 役割 / form = 配布形態（誰が起動するか）/ status = released・planned・concept。",
     "planned / concept は名前と束ねる単位を予約しているだけで、ディレクトリも npm も無い。"
   ],
-  "generatedAt": "2026-09-08T08:13:17.056Z",
+  "generatedAt": "2026-09-08T08:34:42.338Z",
   "generatedBy": "scripts/generate-stack.mjs",
   "npmScope": "@shuji-bonji",
   "repos": [
@@ -84,10 +84,10 @@
       "note": "family 横断の手順。error contract / citation / 業法独占規定（弁護士法 72 条・税理士法 52 条・社労士法 27 条）の正典。workflow は tax-research のみ",
       "published": null,
       "local": {
-        "version": "0.2.0",
+        "version": "0.2.1",
         "tag": "v0.2.0",
         "dirty": false,
-        "unpushedCommits": 0
+        "unpushedCommits": 1
       },
       "consistency": {
         "status": "not_published",
@@ -108,7 +108,7 @@
         "version": null,
         "tag": null,
         "dirty": true,
-        "unpushedCommits": 2
+        "unpushedCommits": 1
       },
       "consistency": {
         "status": "not_published",
