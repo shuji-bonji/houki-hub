@@ -9,7 +9,7 @@ description: 国税庁サイトの基本通達・改正通達・事務運営指�
 ローカル SQLite に取り込み、FTS5 で全文検索する MCP サーバーです。
 法律本文（法・政令・省令）は [houki-egov-mcp](/mcp/houki-egov) が担当します。
 
-- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.10.4）
+- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.11.0）
 - リポジトリ: [shuji-bonji/houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp)
 - 動作環境: Node.js 22 以上
 
@@ -30,7 +30,7 @@ description: 国税庁サイトの基本通達・改正通達・事務運営指�
 ## 基本通達と、解釈の対象になる法律
 
 通達は国民と裁判所を拘束しないので、根拠は法律の条文で確かめる必要があります。
-基本通達 4 種が解釈している法律と、その政令・省令は次のとおりです。いずれも [houki-egov-mcp](/mcp/houki-egov) の `get_law` に `law_name` として渡すと本文を引けます（2026-09-10 に `search_law` で 12 件とも見つかることを確認）。
+基本通達 4 種が解釈している法律と、その政令・省令は次のとおりです。いずれも [houki-egov-mcp](/mcp/houki-egov) の `get_law` に `law_name` として渡すと本文を引けます（2026-09-11 に `search_law` で 12 件とも見つかることを確認）。
 
 | 基本通達 | 法律 | 政令 | 省令 |
 | --- | --- | --- | --- |
@@ -39,8 +39,15 @@ description: 国税庁サイトの基本通達・改正通達・事務運営指�
 | 法人税基本通達 | 法人税法 | 法人税法施行令 | 法人税法施行規則 |
 | 相続税法基本通達 | 相続税法 | 相続税法施行令 | 相続税法施行規則 |
 
-v0.10.4 の応答には、この対応はまだ入っていません。通達の応答に対応する法律（`base_laws`）と houki-egov-mcp の `get_law` を案内する `next_actions` を付ける作業は [houki-nta-mcp#20](https://github.com/shuji-bonji/houki-nta-mcp/issues/20) で扱っています。
-通達の項と法律の条の対応は一律ではないため、この表は条番号まで示しません。
+v0.11.0 から、この対応が応答に入ります（[houki-nta-mcp#20](https://github.com/shuji-bonji/houki-nta-mcp/issues/20)）。
+
+| ツール | 付くフィールド | 中身 |
+| --- | --- | --- |
+| `nta_get_tsutatsu` | `base_laws` | その通達の法律・政令・省令の配列。Markdown 応答では出典の後に「解釈の対象になる法律: …」の行が入ります |
+| `nta_search_tsutatsu` | `base_laws_by_tsutatsu` | 検索結果に現れた通達ごとの対応表。対応は通達単位なので、hit ごとではなく応答に 1 回だけ置きます |
+
+どちらの応答にも `next_actions` が付き、`example` に houki-egov-mcp の `get_law` に渡す法律名が入っています。検索では通達ごとに 1 件です。
+通達の項と法律の条の対応は一律ではないため、応答にもこの表にも条番号は入りません。通達の本文にある「法第57条の2第4項」のような参照を読んで、`get_law` の `article` を指定してください。
 
 ## ツール
 

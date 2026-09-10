@@ -1,5 +1,5 @@
 ::: details 呼び出し例 — 「消基通 1-7-2（登録番号の構成）の本文」
-- 実測: v0.10.4（2026-09-08）
+- 実測: v0.11.0（2026-09-11）
 - ローカル DB: あり（`source: "db"`。無ければ国税庁サイトから取得し `source` が `"live"` になります）
 
 **引数**
@@ -31,9 +31,19 @@
     "binds_courts": false,
     "binds_tax_office": true,
     "note": "通達は行政内部文書。納税者・裁判所には直接的拘束力なし。ただし税務署員は職務として守る義務あり（最高裁 昭和43.12.24）"
-  }
+  },
+  "base_laws": ["消費税法", "消費税法施行令", "消費税法施行規則"],
+  "next_actions": [
+    {
+      "action": "delegate_to_mcp",
+      "reason": "通達は国民・裁判所を拘束しない。根拠は法律本文で確認する",
+      "example": { "mcp": "houki-egov", "tool": "get_law", "law_name": "消費税法" }
+    }
+  ]
 }
 ```
 
 引用するときは「消費税法基本通達 1-7-2」と `sourceUrl` を添え、`legal_status.binds_citizens: false`（通達は国民を拘束しない）を回答に残してください。`name` に法令名（「消費税法」）を渡すと、`OUT_OF_SCOPE` で houki-egov-mcp への案内が返ります。
+
+`base_laws` は、この通達が解釈している法律・政令・省令です（v0.11.0 から）。`next_actions` の `example` をそのまま houki-egov-mcp の `get_law` に渡すと、根拠になる法律の本文を引けます。条番号は付きません。本文中の「法第57条の2第4項」のような参照を読んで、`article` を足してください。
 :::

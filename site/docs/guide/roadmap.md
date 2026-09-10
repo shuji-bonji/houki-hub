@@ -1,11 +1,11 @@
 ---
 title: 現状と予定
-description: houki-hub family の各部品の版と、次に取り組む順序（2026-09-08 時点）
+description: houki-hub family の各部品の版と、次に取り組む順序（2026-09-11 時点）
 ---
 
 # 現状と予定
 
-2026-09-08（JST）時点の状態です。版は npm の公開版です。
+2026-09-11（JST）時点の状態です。版は npm の公開版です。
 判断の経緯を含む詳しい記録はリポジトリの [docs/ROADMAP.md](https://github.com/shuji-bonji/houki-hub/blob/main/docs/ROADMAP.md) にあります。
 
 ## 公開済みの部品
@@ -13,9 +13,9 @@ description: houki-hub family の各部品の版と、次に取り組む順序�
 | 部品 | 版 | いまできること |
 | --- | --- | --- |
 | [houki-egov-mcp](/mcp/houki-egov) | 0.5.3 | 法律・政令・省令の検索・本文取得・目次・改正履歴。ローカル DB を作れば条文本文の全文検索 |
-| [houki-nta-mcp](/mcp/houki-nta) | 0.10.4 | 国税庁の基本通達 4 種（消基通・所基通・法基通・相基通）・改正通達・事務運営指針・文書回答事例・タックスアンサー・質疑応答事例の検索と取得 |
+| [houki-nta-mcp](/mcp/houki-nta) | 0.11.0 | 国税庁の基本通達 4 種（消基通・所基通・法基通・相基通）・改正通達・事務運営指針・文書回答事例・タックスアンサー・質疑応答事例の検索と取得。基本通達の応答から、解釈の対象になる法律を houki-egov-mcp で引くよう案内します |
 | [houki-abbreviations](/lib/houki-abbreviations) | 0.5.0 | 略称 174 エントリの解決、正規化、鮮度判定、法令 ID からの逆引き |
-| [houki-research](/skills/houki-research) | 0.2.1 | 税務調査の手順（tax-research）、citation 書式、エラー契約、業法の注意喚起 |
+| [houki-research](/skills/houki-research) | 0.3.0 | 税務調査の手順（tax-research）、citation 書式、エラー契約、業法の注意喚起。個別の事案への当てはめを求められたときに返すもの・返さないものを表で定めています |
 
 ## 予定している部品
 

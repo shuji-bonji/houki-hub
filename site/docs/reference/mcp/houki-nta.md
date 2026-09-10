@@ -1,6 +1,6 @@
 ---
 title: "houki-nta-mcp — ツールリファレンス"
-description: "houki-nta-mcp v0.10.4 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-nta-mcp v0.11.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-nta-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-nta-mcp v0.10.4 の全 14 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.10.4** の `tools/list` から自動生成しました（14 ツール・2026-09-08）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.11.0** の `tools/list` から自動生成しました（14 ツール・2026-09-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-nta)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -36,7 +36,7 @@ description: "houki-nta-mcp v0.10.4 の全 14 ツールの引数・型・既定�
 
 ## nta_search_tsutatsu
 
-国税庁の基本通達（消基通・所基通・法基通・相基通の 4 通達）を FTS5 でキーワード検索する。事前に `--bulk-download-all` で DB 投入が必要。
+国税庁の基本通達（消基通・所基通・法基通・相基通の 4 通達）を FTS5 でキーワード検索する。事前に `--bulk-download-all` で DB 投入が必要。結果に現れた通達ごとに、解釈の対象になる法律の対応表（base_laws_by_tsutatsu）と、houki-egov-mcp の get_law を案内する next_actions を付ける。
 
 ### 引数
 
@@ -52,8 +52,8 @@ description: "houki-nta-mcp v0.10.4 の全 14 ツールの引数・型・既定�
 :::
 
 ::: details 呼び出し例 — 「軽減税率に関係する通達の節は」
-- 実測: v0.10.4（2026-09-08）
-- ローカル DB: あり（`--bulk-download-everything` の直後で `staleness: "fresh"`）
+- 実測: v0.11.0（2026-09-11）
+- ローカル DB: あり（`--bulk-download-everything` から 3 日で `staleness: "fresh"`）
 
 **引数**
 
@@ -75,7 +75,7 @@ description: "houki-nta-mcp v0.10.4 の全 14 ツールの引数・型・既定�
       "title": "持ち帰りのための飲食料品の譲渡か否かの判定",
       "snippet": " … の譲渡に該当し<b>軽減税率</b>の適用対象とな … ",
       "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/05/09.htm",
-      "score": 0.441,
+      "score": 0.4413,
       "scoreReasons": ["doc_type=tsutatsu weight 1.00", "abbreviation expanded: 軽減税率 → 消費税法"]
     },
     {
@@ -85,7 +85,7 @@ description: "houki-nta-mcp v0.10.4 の全 14 ツールの引数・型・既定�
       "title": "自動販売機による譲渡",
       "snippet": " … のであるから、<b>軽減税率</b>の適用対象とな … ",
       "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/05/09.htm",
-      "score": 0.438,
+      "score": 0.4383,
       "scoreReasons": ["doc_type=tsutatsu weight 1.00", "abbreviation expanded: 軽減税率 → 消費税法"]
     }
   ],
@@ -93,18 +93,32 @@ description: "houki-nta-mcp v0.10.4 の全 14 ツールの引数・型・既定�
     "oldest_fetched_at": "2026-09-07T20:39:32.057Z",
     "newest_fetched_at": "2026-09-07T20:49:00.912Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 3
   },
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,
     "binds_tax_office": true,
     "note": "通達は行政内部文書。納税者・裁判所には直接的拘束力なし。ただし税務署員は職務として守る義務あり（最高裁 昭和43.12.24）"
-  }
+  },
+  "base_laws_by_tsutatsu": {
+    "消費税法基本通達": ["消費税法", "消費税法施行令", "消費税法施行規則"]
+  },
+  "next_actions": [
+    {
+      "action": "delegate_to_mcp",
+      "reason": "通達は国民・裁判所を拘束しない。根拠は法律本文で確認する",
+      "example": { "mcp": "houki-egov", "tool": "get_law", "law_name": "消費税法" }
+    }
+  ]
 }
 ```
 
 `hits[].clauseNumber` と `hits[].abbr` をそのまま `nta_get_tsutatsu` の `clause` / `name` に渡すと本文が取れます。
+
+`base_laws_by_tsutatsu` は、結果に現れた通達ごとの、解釈の対象になる法律・政令・省令の対応表です（v0.11.0 から）。対応は通達単位の事実なので、hit ごとではなく応答に 1 回だけ置いています。`hits[].tsutatsu` をキーにして引いてください。`next_actions` は通達ごとに 1 件で、houki-egov-mcp の `get_law` に渡す法律名が入っています。
+
+`scoreReasons` の `abbreviation expanded: 軽減税率 → 消費税法` は、「軽減税率」が略称辞書で消費税法の通称として登録されているため、「消費税法」でも検索したことを示します。本文に「軽減税率」を含まない条項が混ざることがあり、[houki-nta-mcp#21](https://github.com/shuji-bonji/houki-nta-mcp/issues/21) で扱っています。
 :::
 
 ::: details 呼び出し例 — DB が古いとき（`staleness: "outdated"`）
@@ -133,7 +147,7 @@ description: "houki-nta-mcp v0.10.4 の全 14 ツールの引数・型・既定�
 
 ## nta_get_tsutatsu
 
-基本通達の本文を取得する。略称（消基通・所基通・法基通・相基通）対応、条項指定可能。DB 投入済（`--bulk-download-all`）の場合は DB から、未投入の場合はライブ fetch（結果は DB に書き戻し）。
+基本通達の本文を取得する。略称（消基通・所基通・法基通・相基通）対応、条項指定可能。DB 投入済（`--bulk-download-all`）の場合は DB から、未投入の場合はライブ fetch（結果は DB に書き戻し）。応答に解釈の対象になる法律（base_laws）を付け、next_actions で houki-egov-mcp の get_law を案内する。
 
 ### 引数
 
@@ -144,7 +158,7 @@ description: "houki-nta-mcp v0.10.4 の全 14 ツールの引数・型・既定�
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: details 呼び出し例 — 「消基通 1-7-2（登録番号の構成）の本文」
-- 実測: v0.10.4（2026-09-08）
+- 実測: v0.11.0（2026-09-11）
 - ローカル DB: あり（`source: "db"`。無ければ国税庁サイトから取得し `source` が `"live"` になります）
 
 **引数**
@@ -176,11 +190,21 @@ description: "houki-nta-mcp v0.10.4 の全 14 ツールの引数・型・既定�
     "binds_courts": false,
     "binds_tax_office": true,
     "note": "通達は行政内部文書。納税者・裁判所には直接的拘束力なし。ただし税務署員は職務として守る義務あり（最高裁 昭和43.12.24）"
-  }
+  },
+  "base_laws": ["消費税法", "消費税法施行令", "消費税法施行規則"],
+  "next_actions": [
+    {
+      "action": "delegate_to_mcp",
+      "reason": "通達は国民・裁判所を拘束しない。根拠は法律本文で確認する",
+      "example": { "mcp": "houki-egov", "tool": "get_law", "law_name": "消費税法" }
+    }
+  ]
 }
 ```
 
 引用するときは「消費税法基本通達 1-7-2」と `sourceUrl` を添え、`legal_status.binds_citizens: false`（通達は国民を拘束しない）を回答に残してください。`name` に法令名（「消費税法」）を渡すと、`OUT_OF_SCOPE` で houki-egov-mcp への案内が返ります。
+
+`base_laws` は、この通達が解釈している法律・政令・省令です（v0.11.0 から）。`next_actions` の `example` をそのまま houki-egov-mcp の `get_law` に渡すと、根拠になる法律の本文を引けます。条番号は付きません。本文中の「法第57条の2第4項」のような参照を読んで、`article` を足してください。
 :::
 
 ## nta_search_qa

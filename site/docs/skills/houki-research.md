@@ -9,7 +9,7 @@ description: houki-hub family の MCP を横断して使うときの手順・引
 LLM が **どの MCP をどの順に呼び、出典をどう書き、どこで注意を促すか** を定めた Skill です。
 MCP サーバーは資料を返すだけで、順序や書式や注意喚起は決めません。それらの正典がこの Skill です。
 
-- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.2.1）
+- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.3.0）
 - 配布: claude-plugins marketplace の plugin `houki-research`、または `skills/houki-research/` をプロジェクトの `.claude/skills/` に置く
 - 対象分野: 税務に限らず日本の全法規。現時点で MCP が揃っているのが税務なので、例は税務が中心です
 
@@ -29,6 +29,15 @@ graph TB
 問いが「私の確定申告で」「うちの会社の決算で」「この契約書の条項は」のように **個別の事案への当てはめ** を求めていると見えたら、
 回答の冒頭で「条文・通達の引用と一般的な説明は行うが、事案への適用判断は資格者に相談してほしい」と伝えます。
 文献調査・制度の概観・条文の引用・改正履歴の説明は、その後で通常どおり行います。
+
+v0.3.0 から、このときに返すものと返さないものを表で定めています。
+
+| | 内容 |
+| --- | --- |
+| 返すもの | 条文・通達・裁決の提示（出典付き）、制度の概観と改正履歴、論点の列挙、何が事実認定に依存するかの明示、`legal_status` の階層 |
+| 返さないもの | 結論（該当する・しない）、可否の判定、金額・税額の確定、書類の起案・文案、推測 |
+
+返さないものは、注意喚起を添えても返しません。理由は精度ではなく業法の独占規定です（[免責事項と利用範囲](/guide/disclaimer)）。
 
 ### ② 横断の手順
 
