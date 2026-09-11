@@ -198,3 +198,36 @@ houki-hub/docs/notes/2026-09-11-handoff-followups.md を読んで、3 件のう�
 - 2026-09-12 04:50 JST 頃、ユーザーが直した: タグ `v0.4.0` → `d0d0b34`、`v0.5.0` → `9edab88`。Release ワークフローが両方成功し、リリース v0.4.0（「houki-research-skill v0.4.0」、添付 3 件）と v0.5.0（添付 3 件）ができた。claude-plugins は `marketplace-version-check.mjs --write` で houki-research を 0.5.0 に書き換え済み（commit・push はユーザー）
 - 教訓: リリースは GitHub の画面で作らず、タグの push だけにする（ワークフローが plugin.json とタグの版を照合する）。WebFetch の結果は 15 分キャッシュされるので、直した直後の確認は URL にクエリを付けて取り直す
 - 2026-09-12 05:00 JST 頃: egov v0.6.0 / nta v0.14.0 / houki-research v0.5.0 は publish・リリース済み（ユーザー）。ユーザーが `npm run build`（リファレンスを egov v0.6.0 / nta v0.14.0 で再生成）と `generate-stack --readme` を実行。houki-hub の追随をブランチ `docs/followups-2026-09-12` に 1 コミット（Claude）。残り: ユーザーが署名・main 取り込み・push、claude-plugins の marketplace.json（houki-research 0.5.0）の commit・push と plugin の更新
+
+---
+
+## 2026-09-12 追加: v0.5.0 の点検で見つかった 6 件
+
+引き継ぎ 3（houki-research-skill v0.5.0）は前のチャットで publish・リリースまで終わっていた。公開中の MCP（egov v0.6.0 / nta v0.14.0）と skill v0.5.0 の記述を突き合わせ、6 件を直した。取り込み方はユーザーの指定で **main へ直接**（PR を作らない）。
+
+### 見つかったもの
+
+| # | 対象 | 内容 |
+| --- | --- | --- |
+| 1 | skill | `next_actions[].example` を「そのまま `get_law` に渡す」と書いていた。`example` の `mcp` と `tool` は引数ではないので、egov v0.6.0 では `INVALID_ARGUMENT`（`mcp, tool: inputSchema に無い引数です`）になる。plugin で再現を確認 |
+| 2 | skill | `examples/error-recovery-patterns.md` シナリオ 2 が実際の応答と違う（`error` の文、`hint`、`available_doc_ids` の形、`next_actions` の有無）。説明文の `nta_search_tsutatsu` と JSON の `nta_search_kaisei_tsutatsu` も食い違い |
+| 3 | skill | `docs/ERROR-CODES.md` の `INVALID_ARGUMENT` に「未知の引数」が無い |
+| 4 | skill | `release.yml` の前提 MCP の注記が README とそろっていない |
+| 5 | skill | 「鉄則 4 つ」の記述が古い（鉄則は 5 つ） |
+| 6 | nta | `nta_get_kaisei_tsutatsu` / `nta_get_jimu_unei` / `nta_get_bunshokaitou` が、docId の誤りでも「DB に未投入です」と返して bulk download を案内していた（その種別の文書が DB にあっても） |
+
+### houki-nta-mcp v0.14.1（ブランチ `fix/get-doc-not-found`、未 push）
+
+- `6e10b6e` `explainDocIdNotFound()` を追加。その種別の文書が DB に 1 件も無いときだけ投入を案内（`next_actions` は `cli_bulk_download`、`hint` に DB のパスと `HOUKI_NTA_DB_PATH` / `XDG_CACHE_HOME`）。文書はあるが docId が無いときは「見つかりません」+ `available_doc_ids`（新しい順に 30 件）+ 検索ツールへの `next_actions`。`code` は変えない。エラー応答に `tool` が入る。README のエラー応答の例も実際の応答に差し替え、「docId が見つからないとき」の節を追加
+- 確認: VM（`$HOME/tmp/nta`）で `npm ci` ができた（今日は VM から npm registry に届いた。shim は不要だった）。`vitest` 616 件通過（4 skipped。新しいテスト 12 件）、`tsc --noEmit` エラーなし、`biome check src` 指摘なし。`npm test` 全体・`npm run build`・dev での試用はユーザーが Mac で行う
+
+### houki-research-skill v0.5.1（ブランチ `fix/next-actions-args`、未 push）
+
+- `2e7074e` 上の 1〜5。`SKILL.md` 鉄則 3 に `example` から `mcp` と `tool` を除く説明と例、鉄則 5 の表に「`available_doc_ids` が付くときは docId の誤り」の行、`tax-research.md` のステップ ④' / ④'' とアンチパターン、`examples/error-recovery-patterns.md` シナリオ 2 を nta v0.14.1 の応答に差し替え、`docs/ERROR-HANDLING.md` の節を取得ツールまで広げ、`docs/ERROR-CODES.md`、README と `release.yml` の注記、`plugin.json` 0.5.1、CHANGELOG
+
+### 残り
+
+1. ユーザーが Mac で nta の `npm test`・`npm run build`・`npm run check` → dev で試用（docId の誤り 3 ツール、`HOUKI_NTA_DB_PATH` を空の DB に向けたときの投入案内）
+2. ユーザーが署名して main へ直接取り込み → push → publish（nta v0.14.1）→ plugin 更新
+3. skill v0.5.1 は main 取り込み後、タグ `v0.5.1` の push だけでリリース（Release ワークフローが `plugin.json` と照合）→ claude-plugins の marketplace.json → plugin 更新
+4. houki-hub の追随: `site/docs/mcp/houki-nta.md`（docId が見つからないとき）、`site/docs/skills/houki-research.md`（0.5.1）、`site/docs/guide/roadmap.md`、`docs/ROADMAP.md`。ツールの `description` と inputSchema は変わらないので、リファレンスの再生成は不要
