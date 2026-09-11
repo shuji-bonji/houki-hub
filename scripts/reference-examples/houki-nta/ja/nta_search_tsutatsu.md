@@ -3,7 +3,7 @@
 :::
 
 ::: details 呼び出し例 — 「軽減税率に関係する通達の節は」
-- 実測: v0.11.0（2026-09-11）
+- 実測: v0.11.1（2026-09-11）
 - ローカル DB: あり（`--bulk-download-everything` から 3 日で `staleness: "fresh"`）
 
 **引数**
@@ -27,7 +27,7 @@
       "snippet": " … の譲渡に該当し<b>軽減税率</b>の適用対象とな … ",
       "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/05/09.htm",
       "score": 0.4413,
-      "scoreReasons": ["doc_type=tsutatsu weight 1.00", "abbreviation expanded: 軽減税率 → 消費税法"]
+      "scoreReasons": ["doc_type=tsutatsu weight 1.00"]
     },
     {
       "tsutatsu": "消費税法基本通達",
@@ -37,7 +37,7 @@
       "snippet": " … のであるから、<b>軽減税率</b>の適用対象とな … ",
       "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/05/09.htm",
       "score": 0.4383,
-      "scoreReasons": ["doc_type=tsutatsu weight 1.00", "abbreviation expanded: 軽減税率 → 消費税法"]
+      "scoreReasons": ["doc_type=tsutatsu weight 1.00"]
     }
   ],
   "freshness": {
@@ -69,7 +69,7 @@
 
 `base_laws_by_tsutatsu` は、結果に現れた通達ごとの、解釈の対象になる法律・政令・省令の対応表です（v0.11.0 から）。対応は通達単位の事実なので、hit ごとではなく応答に 1 回だけ置いています。`hits[].tsutatsu` をキーにして引いてください。`next_actions` は通達ごとに 1 件で、houki-egov-mcp の `get_law` に渡す法律名が入っています。
 
-`scoreReasons` の `abbreviation expanded: 軽減税率 → 消費税法` は、「軽減税率」が略称辞書で消費税法の通称として登録されているため、「消費税法」でも検索したことを示します。本文に「軽減税率」を含まない条項が混ざることがあり、[houki-nta-mcp#21](https://github.com/shuji-bonji/houki-nta-mcp/issues/21) で扱っています。
+「軽減税率」は略称辞書で消費税法の通称として登録されていますが、本文に「軽減税率」を含む条項があるので、「消費税法」には広げずに検索しています（v0.11.1 から）。本文に出てこない通称（「インボイス」など）で 0 件になったときだけ「消費税法」に広げ、その旨を `search_notes` に書き、`scoreReasons` に `abbreviation expanded: インボイス → 消費税法` が付きます。v0.11.0 までは通称でも常に広げていたため、「消費税法」が出てくるだけの条項が混ざることがありました（[houki-nta-mcp#21](https://github.com/shuji-bonji/houki-nta-mcp/issues/21)）。
 :::
 
 ::: details 呼び出し例 — DB が古いとき（`staleness: "outdated"`）

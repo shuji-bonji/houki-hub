@@ -11,7 +11,7 @@ description: houki-hub family の MCP サーバーと、それぞれが束ねる
 | サーバー | 束ねる単位 | 取得元 | 版 | 状態 |
 | --- | --- | --- | --- | --- |
 | [houki-egov-mcp](/mcp/houki-egov) | e-Gov（法律・政令・省令） | e-Gov 法令 API v2 | 0.5.3 | 公開済み |
-| [houki-nta-mcp](/mcp/houki-nta) | 国税庁（通達・Q&A・タックスアンサー） | www.nta.go.jp | 0.11.0 | 公開済み |
+| [houki-nta-mcp](/mcp/houki-nta) | 国税庁（通達・Q&A・タックスアンサー） | www.nta.go.jp | 0.11.1 | 公開済み |
 | houki-metadata-mcp | 法令メタデータ（公布日・施行日・改正予定） | e-Gov 法令 API v2 ほか | — | 予定 |
 | houki-mhlw-mcp | 厚生労働省（労働・社会保険の通達・通知） | www.mhlw.go.jp | — | 予定 |
 | houki-saiketsu-mcp | 裁決全般（初版は国税不服審判所） | kfs.go.jp | — | 構想 |

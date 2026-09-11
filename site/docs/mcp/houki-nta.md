@@ -9,7 +9,7 @@ description: 国税庁サイトの基本通達・改正通達・事務運営指�
 ローカル SQLite に取り込み、FTS5 で全文検索する MCP サーバーです。
 法律本文（法・政令・省令）は [houki-egov-mcp](/mcp/houki-egov) が担当します。
 
-- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.11.0）
+- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.11.1）
 - リポジトリ: [shuji-bonji/houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp)
 - 動作環境: Node.js 22 以上
 
@@ -65,6 +65,15 @@ v0.11.0 から、この対応が応答に入ります（[houki-nta-mcp#20](https
 | `resolve_abbreviation` | 略称の解決を診断します |
 
 検索ツールは `hasPdf` で PDF 付きの文書だけに絞れ、応答に `freshness`（取り込みからの経過）が付きます。
+
+キーワードが略称辞書に載っている場合の扱いは次のとおりです（v0.11.1 から）。
+
+| キーワード | 例 | 検索のしかた |
+| --- | --- | --- |
+| 略称そのもの | 「消基通」「消法」 | 元の語と正式名（消費税法基本通達・消費税法）の両方で検索します |
+| 通称 | 「インボイス」「軽減税率」「適格請求書発行事業者」 | 元の語で検索し、0 件のときだけ正式名（消費税法）で検索し直します。そのときは `search_notes` にその旨が入ります |
+
+通称で常に正式名まで広げると、「消費税法」という語が出てくるだけの文書が混ざり、キーワードを含む文書が `limit` から押し出されるためです（[houki-nta-mcp#21](https://github.com/shuji-bonji/houki-nta-mcp/issues/21)）。
 
 ## ローカル DB の作り方
 

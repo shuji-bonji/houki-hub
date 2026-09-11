@@ -9,7 +9,7 @@ description: houki-hub family の MCP を横断して使うときの手順・引
 LLM が **どの MCP をどの順に呼び、出典をどう書き、どこで注意を促すか** を定めた Skill です。
 MCP サーバーは資料を返すだけで、順序や書式や注意喚起は決めません。それらの正典がこの Skill です。
 
-- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.3.0）
+- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.4.0）
 - 配布: claude-plugins marketplace の plugin `houki-research`、または `skills/houki-research/` をプロジェクトの `.claude/skills/` に置く
 - 対象分野: 税務に限らず日本の全法規。現時点で MCP が揃っているのが税務なので、例は税務が中心です
 
@@ -44,6 +44,7 @@ v0.3.0 から、このときに返すものと返さないものを表で定め�
 1. 略称（「消基通」「インボイス」「労基法」）が含まれていれば、まず `resolve_abbreviation` で正式名と担当 MCP（`source_mcp_hint`）を確かめます
 2. 法律本文を houki-egov-mcp で引きます。政令・省令があれば続けて引きます
 3. 通達・Q&A を houki-nta-mcp で引きます。応答の `legal_status` を見て、通達が国民を拘束しないことを回答に残します
+   - 通達から先に引いた場合は、応答の `next_actions` に従って houki-egov-mcp の `get_law` で法律本文へ戻ります。条番号は通達の本文の「法第N条」「令第N条」から補います（v0.4.0 から。houki-nta-mcp 0.11.0 以上が前提）
 4. 改正の経緯が要るときは `get_law_revisions` と改正通達を引き、新旧対照表の PDF は pdf-reader-mcp の `extract_tables` で読みます
 5. 応答の `freshness` が古ければ、DB の再取得を促してから答えます
 

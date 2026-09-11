@@ -8,7 +8,7 @@ description: 法令・通達の略称を正式名と法令 ID に解決し、全
 法令・通達の略称辞書と、それを取り巻く小さな関数群です。houki-hub family の MCP サーバーはすべてこのパッケージを依存に持ちます。
 MCP サーバーではなく、開発者のコードが import するライブラリです。
 
-- npm: [`@shuji-bonji/houki-abbreviations`](https://www.npmjs.com/package/@shuji-bonji/houki-abbreviations)（最新 0.5.0。houki-egov-mcp 0.5.3 と houki-nta-mcp 0.11.0 が取り込んでいるのは 0.4.1）
+- npm: [`@shuji-bonji/houki-abbreviations`](https://www.npmjs.com/package/@shuji-bonji/houki-abbreviations)（最新 0.5.0。houki-egov-mcp 0.5.3 と houki-nta-mcp 0.11.1 が取り込んでいるのは 0.4.1）
 - リポジトリ: [shuji-bonji/houki-abbreviations](https://github.com/shuji-bonji/houki-abbreviations)
 - 動作環境: Node.js 20 以上。依存パッケージなし
 
