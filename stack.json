@@ -6,7 +6,7 @@
     "layer = 役割 / form = 配布形態（誰が起動するか）/ status = released・planned・concept。",
     "planned / concept は名前と束ねる単位を予約しているだけで、ディレクトリも npm も無い。"
   ],
-  "generatedAt": "2026-09-11T19:49:32.197Z",
+  "generatedAt": "2026-09-11T23:10:21.271Z",
   "generatedBy": "scripts/generate-stack.mjs",
   "npmScope": "@shuji-bonji",
   "repos": [
@@ -40,16 +40,16 @@
       "status": "released",
       "public": true,
       "note": "国税庁。法令解釈通達・質疑応答事例・タックスアンサー・文書回答・事務運営指針・改正通達。14 tools。family の参照実装",
-      "published": "0.14.0",
+      "published": "0.14.1",
       "local": {
-        "version": "0.14.0",
-        "tag": "v0.14.0",
+        "version": "0.14.1",
+        "tag": "v0.14.1",
         "dirty": false,
         "unpushedCommits": 0
       },
       "consistency": {
         "status": "match",
-        "detail": "0.14.0"
+        "detail": "0.14.1"
       }
     },
     {
@@ -84,8 +84,8 @@
       "note": "family 横断の手順。error contract / citation / 業法独占規定（弁護士法 72 条・税理士法 52 条・社労士法 27 条）の正典。workflow は tax-research のみ",
       "published": null,
       "local": {
-        "version": "0.5.0",
-        "tag": "v0.5.0",
+        "version": "0.5.1",
+        "tag": "v0.5.1",
         "dirty": false,
         "unpushedCommits": 0
       },
@@ -108,7 +108,7 @@
         "version": null,
         "tag": null,
         "dirty": true,
-        "unpushedCommits": null
+        "unpushedCommits": 1
       },
       "consistency": {
         "status": "not_published",

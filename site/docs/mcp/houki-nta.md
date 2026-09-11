@@ -9,7 +9,7 @@ description: 国税庁サイトの基本通達・改正通達・事務運営指�
 ローカル SQLite に取り込み、FTS5 で全文検索する MCP サーバーです。
 法律本文（法・政令・省令）は [houki-egov-mcp](/mcp/houki-egov) が担当します。
 
-- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.14.0）
+- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.14.1）
 - リポジトリ: [shuji-bonji/houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp)
 - 動作環境: Node.js 22 以上
 
@@ -122,6 +122,19 @@ LLM が `results: []` を受け取ったときは「国税庁の資料にこの�
 
 v0.12.0 までは、どの場合も「DB 投入済みか確認してください」という同じ `hint` だったため、文書が入っている DB でも投入をやり直すよう案内していました。
 また、v0.12.0 までの `nta_search_qa` は `domain` を指定すると必ず 0 件でした。v0.13.0 からは `domain: "tax"` は絞り込まずに検索し、税目で絞るときは `topic` を使います。
+
+## docId が見つからないとき
+
+取得系の 3 ツール（`nta_get_kaisei_tsutatsu`・`nta_get_jimu_unei`・`nta_get_bunshokaitou`）は DB だけを見ます。指定された docId が DB に無いとき、理由を 2 つに分けて返します（v0.14.1 から）。
+
+| DB の状態 | 応答 |
+| --- | --- |
+| その種別の文書が DB に 1 件も無い | 「ローカル DB に◯◯が 1 件も無いため、docId=… を取得できません」。`hint` に DB ファイルのパスと環境変数、`next_actions` に投入コマンド（`action` は `cli_bulk_download`） |
+| 文書はあるが、その docId が無い | 「◯◯ docId=… は見つかりません」。`available_doc_ids`（新しい順に 30 件。`docId`・`title`・`issuedAt`）と、検索ツールへの `next_actions` |
+
+v0.14.0 までは、どちらの場合も「DB に未投入です」と返して投入コマンドを案内していたため、docId を打ち間違えただけの利用者にも投入をやり直すよう勧めていました。検索が 0 件のときの分け方（上の節）と同じ考え方です。
+
+LLM は `next_actions[0].action` を見て、`cli_bulk_download` なら投入を案内し、検索ツール（`nta_search_*`）なら `available_doc_ids` から選ぶか検索して docId を探し直します。
 
 ## ローカル DB の作り方
 
