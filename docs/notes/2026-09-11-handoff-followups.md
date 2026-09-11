@@ -231,3 +231,11 @@ houki-hub/docs/notes/2026-09-11-handoff-followups.md を読んで、3 件のう�
 2. ユーザーが署名して main へ直接取り込み → push → publish（nta v0.14.1）→ plugin 更新
 3. skill v0.5.1 は main 取り込み後、タグ `v0.5.1` の push だけでリリース（Release ワークフローが `plugin.json` と照合）→ claude-plugins の marketplace.json → plugin 更新
 4. houki-hub の追随: `site/docs/mcp/houki-nta.md`（docId が見つからないとき）、`site/docs/skills/houki-research.md`（0.5.1）、`site/docs/guide/roadmap.md`、`docs/ROADMAP.md`。ツールの `description` と inputSchema は変わらないので、リファレンスの再生成は不要
+
+### 完了（2026-09-12 08:20 JST 時点）
+
+- houki-nta-mcp v0.14.1・houki-research-skill v0.5.1 は publish・リリース・plugin 更新まで完了（ユーザー）
+- dev（v0.14.1）で 3 ツールの docId 誤りを確認: 改正通達 118 件 / 事務運営指針 32 件 / 文書回答事例 487 件の `hint`、`available_doc_ids` 30 件、検索ツールへの `next_actions`、`tool`。既存 docId（`0025004-026`）はこれまでどおり取得できる。投入の案内（`cli_bulk_download`）は DB に 6 種別すべて入っているため dev では出せず、ユニットテストで確認
+- 実測に合わせて件数を直した追加コミット: nta `f7b5d05`（README）、skill `ae73960`（シナリオ 2）
+- houki-hub の追随はユーザーが実施（`80eb52b`。`site/docs/mcp/houki-nta.md` に「docId が見つからないとき」の節、skill ページ、roadmap 2 つ、`stack.json` と README を `generate-stack --readme` で更新、リファレンス再生成）
+- 残る候補（未着手）: `scripts/reference-examples/houki-nta/ja/nta_get_kaisei_tsutatsu.md` に docId 誤りの呼び出し例を足す（足す場合はユーザーが `npm run build` でリファレンスを再生成）、CLI の `--bunsho-taxonomy=<値>` が綴り間違いを検証しない件
