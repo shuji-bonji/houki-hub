@@ -11,7 +11,7 @@ graph TB
         SKILL["houki-research-skill v0.4.0<br/>error contract / citation / 業法独占規定<br/>plugin 化済み。workflow は tax-research のみ"]
     end
     subgraph MCP層["MCP 層（SDK v2 / Node 22 / Biome に統一済み）"]
-        EGOV["houki-egov-mcp v0.5.3<br/>e-Gov 法令 API v2 / 7 tools<br/>bulk DL → SQLite FTS5 全文検索まで完了"]
+        EGOV["houki-egov-mcp v0.5.4<br/>e-Gov 法令 API v2 / 7 tools<br/>bulk DL → SQLite FTS5 全文検索まで完了"]
         NTA["houki-nta-mcp v0.12.0<br/>国税庁 / 14 tools<br/>Phase 1〜6 完了。v1.0 判定待ち"]
     end
     subgraph 共有層["共有ライブラリ層"]
@@ -36,7 +36,7 @@ graph TB
 
 | リポジトリ | 版 | 状態の要点 |
 |---|---|---|
-| houki-egov-mcp | 0.5.3 | Phase 2-7（`search_fulltext` を FTS5 に接続）完了。編（Part）を持つ法令の取り込み漏れを v0.5.1 で修正。tools/call の引数を `inputSchema` で検証し `INVALID_ARGUMENT` を返す（v0.5.3） |
+| houki-egov-mcp | 0.5.4 | Phase 2-7（`search_fulltext` を FTS5 に接続）完了。編（Part）を持つ法令の取り込み漏れを v0.5.1 で修正。tools/call の引数を `inputSchema` で検証し `INVALID_ARGUMENT` を返す（v0.5.3）。`get_law` の Markdown で、枝番号の条の見出しを「第70条の6」に、号を「八 資産の譲渡等　…」に、号の下のイ・ロ・ハを箇条書きにし、項の直下の表（所得税法 89 条 1 項の税率表など）を Markdown の表で出すように修正（v0.5.4 / #16）。枝番号の号（`item: "8の2"`）の指定は未対応で、起票待ち |
 | houki-nta-mcp | 0.12.0 | SDK v2 移行（v0.10.0）でエラー応答を family contract に統一。Issue #17 / #18 対応（v0.10.1 / v0.10.2）。文書回答事例の本文（表と別紙）を取り込むように修正し、`--refresh` を全 6 種別に効かせた（v0.10.3 / v0.10.4）。基本通達の応答に `base_laws`（検索は `base_laws_by_tsutatsu`）と houki-egov の `get_law` への成功時 `next_actions` を追加（v0.11.0 / #20）。通称（aliases）の OR 展開は元の語で 0 件のときだけに変更、略称そのものは常時展開のまま（v0.11.1 / #21）。#20 の提案 3 を #22 に切り出し、質疑応答事例の【関係法令通達】を `related_laws` / `related_tsutatsu` に構造化して `get_law` と `nta_get_tsutatsu` への成功時 `next_actions` を追加、ページ下部の注記を `notice` / `basisDate` に分離（v0.12.0 / #22。参照 5,059 個の 94.2% を構造化）。family の参照実装 |
 | houki-abbreviations | 0.5.0（MCP が取り込んでいるのは 0.4.1） | 逆引き（`lookupByLawId` / `lookupByLawNum`）+ 検証（`validateAllEntries` / `extractLawNames`）。両 MCP の依存は `^0.4.1` で、0.x の `^` は minor を跨がないため 0.5.0 は入っていない（辞書は同一・MCP が呼ぶ 3 関数は両版にあるので動作差なし）。toolchain は ESLint + Prettier のまま（MCP 2 つは Biome） |
 | houki-research-skill | 0.4.0 | 2026-09-11 に nta 0.11.0 へ追随（鉄則 3 に「通達を先に引いたら、next_actions に従って法律本文へ戻る」、tax-research にステップ ④'、前提 nta を 0.11.0 以上に。v0.4.0）。2026-09-10 に当てはめの応答型（返すもの / 返さないもの）を固定（v0.3.0）。2026-09-07 に egov 0.5.3 / nta 0.10.x へ追随（例文の引数名を `inputSchema` と一致させ、`search_fulltext` を手順に追加、`INVALID_ARGUMENT` の `detail.issues` を明記）。plugin 化 + Release 自動化済み。`docs/` に ARCHITECTURE / BUSINESS-LAW / CITATION / ERROR-HANDLING / ERROR-CODES。examples は invoice-registration と error-recovery-patterns |
@@ -84,6 +84,7 @@ graph TB
 
 | 日付 | できごと |
 |---|---|
+| 2026-09-11 〜 09-12 | houki-egov-mcp #16 起票・v0.5.4 publish（`get_law` の Markdown の条見出し・号・イロハ・表）。houki-hub の egov の版表記を 0.5.4 に更新し、ツールリファレンスを再生成 |
 | 2026-09-11 | houki-hub に「文書の種類と拘束力」ページ（hub#10）。houki-nta-mcp v0.11.0 publish（#20: `base_laws` / `base_laws_by_tsutatsu` / 成功時 `next_actions`、#20 close）と v0.11.1 publish（#21: 通称の展開は 0 件のときだけ）。#22 起票。houki-research-skill v0.4.0（nta 0.11.0 への追随）。houki-nta-mcp v0.12.0 publish（#22: 質疑応答事例の関係法令通達の構造化と注記の分離。`--bulk-download-qa --refresh` で 1,841 件を取り込み直し）。houki-hub のツールリファレンスを 0.12.0 で再生成し、nta の呼び出し例を取り直し |
 | 2026-09-10 | houki-research-skill v0.3.0（当てはめの応答型） |
 | 2026-09-08 | houki-nta-mcp v0.10.3 / v0.10.4 publish（文書回答事例の本文取り込み、`--refresh` の 5 種別漏れ）。houki-hub のツールリファレンス自動生成と全 21 ツールの実測呼び出し例を追加。サイトを GitHub Pages に公開 |

@@ -6,7 +6,7 @@
     "layer = 役割 / form = 配布形態（誰が起動するか）/ status = released・planned・concept。",
     "planned / concept は名前と束ねる単位を予約しているだけで、ディレクトリも npm も無い。"
   ],
-  "generatedAt": "2026-09-11T11:51:44.665Z",
+  "generatedAt": "2026-09-11T15:16:15.982Z",
   "generatedBy": "scripts/generate-stack.mjs",
   "npmScope": "@shuji-bonji",
   "repos": [
@@ -19,16 +19,16 @@
       "status": "released",
       "public": true,
       "note": "e-Gov 法令 API v2。法律・政令・省令の本文・目次・改正履歴 + ローカル SQLite FTS5 全文検索。7 tools",
-      "published": "0.5.3",
+      "published": "0.5.4",
       "local": {
-        "version": "0.5.3",
-        "tag": "v0.5.3",
+        "version": "0.5.4",
+        "tag": "v0.5.4",
         "dirty": false,
         "unpushedCommits": 0
       },
       "consistency": {
         "status": "match",
-        "detail": "0.5.3"
+        "detail": "0.5.4"
       }
     },
     {

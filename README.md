@@ -79,7 +79,7 @@ graph LR
 
 | リポジトリ | 役割 | 配布形態 | 状態 | 版 | npm |
 | --- | --- | --- | --- | --- | --- |
-| [houki-egov-mcp](https://github.com/shuji-bonji/houki-egov-mcp) | source | mcp-server | 公開済み | 0.5.3 | `@shuji-bonji/houki-egov-mcp` |
+| [houki-egov-mcp](https://github.com/shuji-bonji/houki-egov-mcp) | source | mcp-server | 公開済み | 0.5.4 | `@shuji-bonji/houki-egov-mcp` |
 | [houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp) | source | mcp-server | 公開済み | 0.12.0 | `@shuji-bonji/houki-nta-mcp` |
 | [houki-abbreviations](https://github.com/shuji-bonji/houki-abbreviations) | dictionary | library | 公開済み | 0.5.0 | `@shuji-bonji/houki-abbreviations` |
 | [houki-research-skill](https://github.com/shuji-bonji/houki-research-skill) | procedure | skill | 公開済み | 0.4.0 | — |
