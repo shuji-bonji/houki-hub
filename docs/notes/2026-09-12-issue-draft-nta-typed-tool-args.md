@@ -1,5 +1,7 @@
 # issue 草案: ツールの引数の型を inputSchema から導き、ハンドラーの受け口を unknown にする
 
+> **2026-09-12 追記**: issue は立てずに実装した（ユーザー指示）。houki-egov-mcp v0.6.0（`0085555`）と houki-nta-mcp v0.14.0（`04ac0bf`）。決めたこと: json-schema-to-ts を使う、`additionalProperties: false` を付ける、`nta_search_tsutatsu` の `type` / `domain` は削除。経緯は [引き継ぎメモ](2026-09-11-handoff-followups.md) の「2026-09-12 残りの一括対応」
+
 対象リポジトリ: houki-nta-mcp（2026-09-12 作成。houki-egov-mcp も同じ構成なので、形が決まったら移す）
 提出先: https://github.com/shuji-bonji/houki-nta-mcp/issues
 タイトル案: ツールの引数の型を inputSchema から導き、toolHandlers の引数を any から unknown にする

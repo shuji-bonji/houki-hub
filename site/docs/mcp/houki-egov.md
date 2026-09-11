@@ -8,7 +8,7 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 日本の法令（憲法・法律・政令・省令・規則）を **e-Gov 法令 API v2** 経由で取得する MCP サーバーです。
 条文をキーワード・略称・分野で検索し、特定の条・項・号を Markdown または JSON で取り出し、改正履歴を引けます。
 
-- npm: [`@shuji-bonji/houki-egov-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-egov-mcp)（0.5.4）
+- npm: [`@shuji-bonji/houki-egov-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-egov-mcp)（0.6.0）
 - リポジトリ: [shuji-bonji/houki-egov-mcp](https://github.com/shuji-bonji/houki-egov-mcp)
 - 動作環境: Node.js 22 以上
 
@@ -19,7 +19,7 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 | ツール | 用途 |
 | --- | --- |
 | `search_law` | 法令名でキーワード検索します。略称（「法人税法」「個情法」）は正式名に解決してから検索します |
-| `get_law` | 条・項・号の単位で本文を取得します。Markdown / JSON / 目次のみ、を選べます |
+| `get_law` | 条・項・号の単位で本文を取得します。Markdown / JSON / 目次のみ、を選べます。枝番号の号は `item: "8の2"` のように文字列で指定します（v0.6.0 から） |
 | `get_toc` | 目次だけを取得します。長い法令で本文を読む前に構造を掴むためのものです |
 | `get_law_revisions` | 改正履歴（公布日・施行日・状態）を取得します |
 | `search_fulltext` | 条文本文を横断して全文検索します。ローカル DB が必要で、無いときは `search_law` の結果を `source: "api-fallback"` として返します |
@@ -44,6 +44,9 @@ DB の場所は `~/.cache/houki-egov-mcp/laws.db`（`HOUKI_EGOV_DB_PATH` で変�
 - 2 文字の語（「株主」「責任」）は索引に乗らないため、ヒットした本文に含まれるかで補完します
 
 ## 知っておくとよいこと
+
+- 引数は `tools/list` の inputSchema どおりに渡してください。v0.6.0 から、inputSchema に無い引数は `INVALID_ARGUMENT` になり、`detail.issues[].path` にその引数名が入ります
+- 項が 1 つだけの条（「消費税法施行令第14条の3第1号」のように第1項を書かない条）は、`paragraph` を省いて `item` だけで号を引けます。項が複数ある条で `paragraph` を省くと `INVALID_ARGUMENT` です（v0.6.0 から。v0.5.4 までは `item` を黙って無視して条全体を返していました）
 
 - v0.5.1 より前に作った DB には、編（Part）を持つ法令（民法・会社法など）の本則が入っていません。`--bulk-download-everything` を再実行してください
 - `get_toc` は附則の条を編・章の外に平坦に並べます（既知の課題）

@@ -9,7 +9,7 @@ description: houki-hub family の MCP を横断して使うときの手順・引
 LLM が **どの MCP をどの順に呼び、出典をどう書き、どこで注意を促すか** を定めた Skill です。
 MCP サーバーは資料を返すだけで、順序や書式や注意喚起は決めません。それらの正典がこの Skill です。
 
-- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.4.0）
+- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.5.0）
 - 配布: claude-plugins marketplace の plugin `houki-research`、または `skills/houki-research/` をプロジェクトの `.claude/skills/` に置く
 - 対象分野: 税務に限らず日本の全法規。現時点で MCP が揃っているのが税務なので、例は税務が中心です
 
@@ -45,6 +45,7 @@ v0.3.0 から、このときに返すものと返さないものを表で定め�
 2. 法律本文を houki-egov-mcp で引きます。政令・省令があれば続けて引きます
 3. 通達・Q&A を houki-nta-mcp で引きます。応答の `legal_status` を見て、通達が国民を拘束しないことを回答に残します
    - 通達から先に引いた場合は、応答の `next_actions` に従って houki-egov-mcp の `get_law` で法律本文へ戻ります。条番号は通達の本文の「法第N条」「令第N条」から補います（v0.4.0 から。houki-nta-mcp 0.11.0 以上が前提）
+   - 質疑応答事例から先に引いた場合は、`nta_get_qa` を `format: "json"` で呼び、`related_laws` / `related_tsutatsu` と `next_actions` に従って法律本文と通達へ戻ります。条・項・号まで入っているので、本文から補う必要はありません。質疑応答事例は「参考情報（拘束力なし）」に置き、作成基準日（`qa.basisDate`）と国税庁の注記（`qa.notice`）を残します（v0.5.0 から。houki-nta-mcp 0.12.0 以上が前提）
 4. 改正の経緯が要るときは `get_law_revisions` と改正通達を引き、新旧対照表の PDF は pdf-reader-mcp の `extract_tables` で読みます
 5. 応答の `freshness` が古ければ、DB の再取得を促してから答えます
 
@@ -74,6 +75,7 @@ family の全 MCP は、エラーを `isError: true` と `code` で返します�
 | --- | --- | --- |
 | 引数の問題 | `INVALID_ARGUMENT` / `INVALID_ARTICLE_NUM` / `OUT_OF_SCOPE` | 引数を直して呼び直す。`OUT_OF_SCOPE` なら案内された MCP に切り替える |
 | 見つからない | `LAW_NOT_FOUND` / `ARTICLE_NOT_FOUND` / `TSUTATSU_NOT_FOUND` / `ABBREVIATION_NOT_FOUND` | 別の名前・条番号で探す。見つからないことを利用者に伝え、推測で本文を作らない |
+| ローカル DB に無い | 検索ツールの `DOC_NOT_FOUND` / 空の DB での `TSUTATSU_NOT_FOUND`（`next_actions` が `cli_bulk_download`） | 「該当なし」と答えない。探し直さず、投入コマンドと DB のパスを利用者に伝える（v0.5.0 から） |
 | 取得元の問題 | `SOURCE_TIMEOUT` / `SOURCE_RATE_LIMITED` / `SOURCE_UNAVAILABLE` / `SOURCE_API_ERROR` | 間を置いて再試行する。続くなら取得できなかったことを明示する |
 | PDF の問題 | `INVALID_PDF` / `ENCRYPTED_PDF` / `UNSUPPORTED_PDF_FEATURE` | その PDF は読めなかったと申告し、本文だけで答える |
 | 内部 | `UNKNOWN_TOOL` / `INTERNAL_ERROR` | 再試行せず、利用者に報告する |

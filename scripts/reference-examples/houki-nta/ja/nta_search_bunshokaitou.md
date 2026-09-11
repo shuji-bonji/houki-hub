@@ -94,3 +94,34 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 
 キーワードに合う文書が無いときは、`results: []` と、検索した件数を書いた `hint`（例: 「該当なし。DB の文書回答事例（taxonomy="inshi"）6 件に「配当」に合う文書はありません」）が返ります（v0.13.0 から）。`taxonomy` に DB に無い税目を指定したときは、`available_taxonomies` に DB にある税目の一覧が入ります。文書回答事例が DB に 1 件も無いときは、エラー `DOC_NOT_FOUND` が返ります。
 :::
+
+::: details 呼び出し例 — 税目の別表記をまとめて検索する（`taxonomy: "sozoku"`）
+- 実測: v0.14.0（2026-09-12）
+- ローカル DB: あり（`staleness: "fresh"`）
+
+**引数**
+
+```jsonc
+{ "keyword": "小規模宅地等", "taxonomy": "sozoku", "limit": 5 }
+```
+
+**返る JSON**（抜粋）
+
+```jsonc
+{
+  "keyword": "小規模宅地等",
+  "results": [
+    { "docId": "tokyo/souzoku/181207", "taxonomy": "souzoku", "title": "老人ホームに入居中に自宅を相続した場合の小規模宅地等についての相続税の課税価格の計算の特例（租税特別措置法第69条の4）の適用について", "issuedAt": "2018-12-07" },
+    { "docId": "tokyo/souzoku/211224", "taxonomy": "souzoku", "title": "市街地再開発事業により中断した貸付事業を相続開始前3年以内に再開した場合の小規模宅地等についての相続税の課税価格の計算の特例（租税特別措置法第69条の4）の適用について", "issuedAt": "2021-11-26" },
+    { "docId": "kantoshinetsu/sozoku/160822", "taxonomy": "sozoku", "title": "庭先部分を相続した場合の小規模宅地等についての相続税の課税価格の計算の特例（租税特別措置法第69条の4）の適用について", "issuedAt": "2016-08-22" }
+    // docType / sourceUrl / snippet / score / scoreReasons は省略
+  ],
+  "search_notes": [
+    "taxonomy=\"sozoku\" は、同じ税目の別表記 \"souzoku\" の文書もまとめて検索しました（国税局のページは本庁と違う税目フォルダ名を使うことがあるため）"
+  ]
+  // freshness / legal_status は上の例と同じ
+}
+```
+
+国税局のページは本庁と違う税目フォルダ名を使うことがあり（東京局の `souzoku` など）、v0.13.0 までは `taxonomy: "sozoku"` で東京局の文書が出ませんでした。v0.14.0 からは、`sozoku` と `souzoku`、`gensen` と `gensenshotoku`、`joto-sanrin` と `joto_sanrin` をまとめて検索します。
+:::

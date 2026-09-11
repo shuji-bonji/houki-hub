@@ -1,6 +1,6 @@
 ---
 title: "houki-nta-mcp — ツールリファレンス"
-description: "houki-nta-mcp v0.13.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-nta-mcp v0.14.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-nta-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-nta-mcp v0.13.0 の全 14 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.13.0** の `tools/list` から自動生成しました（14 ツール・2026-09-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.14.0** の `tools/list` から自動生成しました（14 ツール・2026-09-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-nta)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -43,8 +43,6 @@ description: "houki-nta-mcp v0.13.0 の全 14 ツールの引数・型・既定�
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
 | `keyword` | string | **必須** |  | 検索キーワード。例: "軽減税率", "電子帳簿", "棚卸資産"。略称も可（例: "電帳法"）。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
-| `type` | `"kihon-tsutatsu"` \| `"kobetsu-tsutatsu"` | 任意 |  | 通達種別で絞り込み。kihon-tsutatsu=法令解釈通達, kobetsu-tsutatsu=個別通達 |
-| `domain` | `"tax"` \| `"labor"` \| `"accounting"` \| `"commercial"` \| `"civil"` \| `"administrative"` | 任意 |  | 分野タグで絞り込み（略称辞書ベース） |
 | `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
 
 ::: warning ローカル DB が必要です
@@ -414,6 +412,39 @@ description: "houki-nta-mcp v0.13.0 の全 14 ツールの引数・型・既定�
 【関係法令通達】の原文は `relatedLaws` にそのまま残り、法令は `related_laws`、通達は `related_tsutatsu` に分けて入ります。`next_actions` の `example` は、そのまま houki-egov-mcp の `get_law` と `nta_get_tsutatsu` の引数として使えます。
 
 ページ下部の国税庁の注記（何年何月何日現在の法令に基づくか、個別の取引には異なる課税関係が生じうること）は `notice` に入り、基準日は `basisDate` に入ります。この注記は回答に残してください。
+:::
+
+::: details 呼び出し例 — 枝番号の号を挙げている事例（法人税 33/02）
+- 実測: v0.14.0（2026-09-12）
+
+**引数**
+
+```jsonc
+{ "topic": "hojin", "category": "33", "id": "02", "format": "json" }
+```
+
+**返る JSON**（`related_laws` と `next_actions` の抜粋）
+
+```jsonc
+{
+  "related_laws": [
+    { "law_name": "法人税法", "article": "2", "item": "12の8", "raw": "法人税法第2条第12号の8" },
+    { "law_name": "法人税法施行令", "article": "4の3", "paragraph": 4, "item": 1, "raw": "法人税法施行令第4条の3第4項第1号" },
+    { "law_name": "法人税法施行規則", "article": "3", "raw": "法人税法施行規則第3条" }
+  ],
+  "next_actions": [
+    {
+      "action": "delegate_to_mcp",
+      "reason": "質疑応答事例は参考資料で法的拘束力がない。根拠は法律本文で確認する",
+      "example": { "mcp": "houki-egov", "tool": "get_law", "law_name": "法人税法", "article": "2", "item": "12の8" }
+    }
+    // 施行令・施行規則への案内が続く
+  ]
+  // qa / legal_status は上の例と同じ形
+}
+```
+
+「第2条第12号の8」のような枝番号の号は、v0.14.0 から `item` に文字列（`"12の8"`）で入ります（v0.13.0 までは `item` を入れていませんでした）。この `example` を houki-egov-mcp の `get_law` にそのまま渡せるのは v0.6.0 以上です。法人税法 2 条は項が 1 つだけなので、`paragraph` が無くても号を引けます。
 :::
 
 ## nta_search_tax_answer
@@ -797,7 +828,7 @@ description: "houki-nta-mcp v0.13.0 の全 14 ツールの引数・型・既定�
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
 | `keyword` | string | **必須** |  | 検索キーワード。例: "電子帳簿", "適格請求書", "災害損失"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
-| `taxonomy` | string | 任意 |  | 税目で絞り込み。"shotoku" / "hojin" / "sozoku" / "gensen" / "joto-sanrin" / "shohi" 等 |
+| `taxonomy` | string | 任意 |  | 税目で絞り込み。"shotoku" / "hojin" / "sozoku" / "gensen" / "joto-sanrin" / "shohi" 等（URL の税目フォルダ名）。国税局のページの別表記（"souzoku" / "gensenshotoku" / "joto_sanrin"）は、同じ税目としてまとめて検索する。DB にある値は、該当が無いときの応答の available_taxonomies で分かる |
 | `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。回答書本文 PDF を持つ事例だけを抽出したい時に true を指定 |
 
@@ -896,6 +927,37 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 ```
 
 キーワードに合う文書が無いときは、`results: []` と、検索した件数を書いた `hint`（例: 「該当なし。DB の文書回答事例（taxonomy="inshi"）6 件に「配当」に合う文書はありません」）が返ります（v0.13.0 から）。`taxonomy` に DB に無い税目を指定したときは、`available_taxonomies` に DB にある税目の一覧が入ります。文書回答事例が DB に 1 件も無いときは、エラー `DOC_NOT_FOUND` が返ります。
+:::
+
+::: details 呼び出し例 — 税目の別表記をまとめて検索する（`taxonomy: "sozoku"`）
+- 実測: v0.14.0（2026-09-12）
+- ローカル DB: あり（`staleness: "fresh"`）
+
+**引数**
+
+```jsonc
+{ "keyword": "小規模宅地等", "taxonomy": "sozoku", "limit": 5 }
+```
+
+**返る JSON**（抜粋）
+
+```jsonc
+{
+  "keyword": "小規模宅地等",
+  "results": [
+    { "docId": "tokyo/souzoku/181207", "taxonomy": "souzoku", "title": "老人ホームに入居中に自宅を相続した場合の小規模宅地等についての相続税の課税価格の計算の特例（租税特別措置法第69条の4）の適用について", "issuedAt": "2018-12-07" },
+    { "docId": "tokyo/souzoku/211224", "taxonomy": "souzoku", "title": "市街地再開発事業により中断した貸付事業を相続開始前3年以内に再開した場合の小規模宅地等についての相続税の課税価格の計算の特例（租税特別措置法第69条の4）の適用について", "issuedAt": "2021-11-26" },
+    { "docId": "kantoshinetsu/sozoku/160822", "taxonomy": "sozoku", "title": "庭先部分を相続した場合の小規模宅地等についての相続税の課税価格の計算の特例（租税特別措置法第69条の4）の適用について", "issuedAt": "2016-08-22" }
+    // docType / sourceUrl / snippet / score / scoreReasons は省略
+  ],
+  "search_notes": [
+    "taxonomy=\"sozoku\" は、同じ税目の別表記 \"souzoku\" の文書もまとめて検索しました（国税局のページは本庁と違う税目フォルダ名を使うことがあるため）"
+  ]
+  // freshness / legal_status は上の例と同じ
+}
+```
+
+国税局のページは本庁と違う税目フォルダ名を使うことがあり（東京局の `souzoku` など）、v0.13.0 までは `taxonomy: "sozoku"` で東京局の文書が出ませんでした。v0.14.0 からは、`sozoku` と `souzoku`、`gensen` と `gensenshotoku`、`joto-sanrin` と `joto_sanrin` をまとめて検索します。
 :::
 
 ## nta_get_bunshokaitou

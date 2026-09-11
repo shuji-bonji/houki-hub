@@ -9,7 +9,7 @@ description: 国税庁サイトの基本通達・改正通達・事務運営指�
 ローカル SQLite に取り込み、FTS5 で全文検索する MCP サーバーです。
 法律本文（法・政令・省令）は [houki-egov-mcp](/mcp/houki-egov) が担当します。
 
-- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.13.0）
+- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.14.0）
 - リポジトリ: [shuji-bonji/houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp)
 - 動作環境: Node.js 22 以上
 
@@ -66,6 +66,10 @@ v0.11.0 から、この対応が応答に入ります（[houki-nta-mcp#20](https
 
 検索ツールは `hasPdf` で PDF 付きの文書だけに絞れ、応答に `freshness`（取り込みからの経過）が付きます。`nta_search_qa` は `topic`（`shotoku`・`shohi` などの税目）で絞り込めます（v0.13.0 から）。
 
+引数は `tools/list` の inputSchema どおりに渡してください。v0.14.0 から、inputSchema に無い引数は `INVALID_ARGUMENT` になります。`nta_search_tsutatsu` の `type` と `domain` は、絞り込みに使われていなかったので v0.14.0 で削除しました。
+
+文書回答事例の `taxonomy` は URL の税目フォルダ名です。国税局のページは本庁と違う名前を使うことがある（相続税は `sozoku` と `souzoku`、源泉所得税は `gensen` と `gensenshotoku`、譲渡所得・山林所得は `joto-sanrin` と `joto_sanrin`）ため、v0.14.0 からはどちらを指定しても両方を検索します。
+
 キーワードが略称辞書に載っている場合の扱いは次のとおりです（v0.11.1 から）。
 
 | キーワード | 例 | 検索のしかた |
@@ -87,7 +91,7 @@ v0.12.0 から、`nta_get_qa` を `format: "json"` で呼ぶと、この欄を�
 | `next_actions` | houki-egov-mcp の `get_law` と `nta_get_tsutatsu` に渡す引数の例 |
 | `notice` / `basisDate` | ページ下部の国税庁の注記と、その基準日（例: `2025-08-01`） |
 
-「所得税法第27条、第34条、第37条」のように法令名を省いて続く条番号は、直前の法令名を補って読みます。【関係法令通達】の原文は、これまでどおり `relatedLaws` に残ります。
+「所得税法第27条、第34条、第37条」のように法令名を省いて続く条番号は、直前の法令名を補って読みます。枝番号の号（「法人税法第2条第12号の8」）は、v0.14.0 から `item: "12の8"` の文字列で入り、`next_actions` の `get_law` にも渡ります（houki-egov-mcp v0.6.0 以上が必要です）。【関係法令通達】の原文は、これまでどおり `relatedLaws` に残ります。
 
 次の参照は `related_laws` や `related_tsutatsu` には入りますが、`next_actions` は付きません。
 

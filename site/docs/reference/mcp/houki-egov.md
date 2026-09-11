@@ -1,6 +1,6 @@
 ---
 title: "houki-egov-mcp — ツールリファレンス"
-description: "houki-egov-mcp v0.5.4 の全 7 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-egov-mcp v0.6.0 の全 7 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-egov-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-egov-mcp v0.5.4 の全 7 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.5.4** の `tools/list` から自動生成しました（7 ツール・2026-09-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.6.0** の `tools/list` から自動生成しました（7 ツール・2026-09-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-egov)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -96,7 +96,7 @@ description: "houki-egov-mcp v0.5.4 の全 7 ツールの引数・型・既定�
 | `law_name` | string | **必須** |  | 法令名または略称。例: "消費税法", "消法", "労基法", "民法" |
 | `article` | string | 任意 |  | 条番号。例: "30", "30の2"。format="toc" の場合は省略可 |
 | `paragraph` | number | 任意 |  | 項番号。省略時は条文全体 |
-| `item` | number | 任意 |  | 号番号。省略時は項全体 |
+| `item` | number \| string | 任意 |  | 号番号。数値（8）か文字列（"8"・"8の2"・"第8号の2"）。枝番号の号（第8号の2）は文字列で指定する。項が複数ある条では paragraph も指定する（項が 1 つの条では省略可）。省略時は項全体 |
 | `format` | `"markdown"` \| `"json"` \| `"toc"` | 任意 | `"markdown"` | 出力形式。"markdown"=条文全文（デフォルト）, "toc"=目次のみ（トークン節約）, "json"=構造化 |
 | `at` | string | 任意 |  | 時点指定。YYYY-MM-DD 形式。例: "2024-04-01" でその時点の条文を取得（e-Gov v2 対応） |
 
@@ -239,6 +239,35 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 ```
 
 条文中の表は Markdown の表で返ります。法令の表の多くは見出し行を持たないため、1 行目（見出し行）は空欄です。`meta` は上の例と同じ形です（`law_num` は「昭和四十年法律第三十三号」）。
+:::
+
+::: details 呼び出し例 — 枝番号の号（消費税法 2 条 1 項 8 号の 2）
+- 実測: v0.6.0（2026-09-12）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "消費税法", "article": "2", "paragraph": 1, "item": "8の2" }
+```
+
+**返る JSON（抜粋）**
+
+```jsonc
+{
+  "format": "markdown",
+  "markdown": "# 消費税法 第2条第1項第8号の2\n（定義）\n\n八の二 特定資産の譲渡等　事業者向け電気通信利用役務の提供及び特定役務の提供をいう。\n\n---\n出典：e-Gov法令検索（デジタル庁）\n…",
+  "meta": {
+    "law_id": "363AC0000000108",
+    "title": "消費税法",
+    "law_num": "昭和六十三年法律第百八号",
+    "url": "https://laws.e-gov.go.jp/law/363AC0000000108"
+    // retrieved_at は省略
+  }
+}
+```
+
+枝番号の号は `item` に文字列で渡します（`"8の2"`・`"第8号の2"`。v0.6.0 から）。項が 1 つだけの条（法人税法 2 条など）は `paragraph` を省けます。項が複数ある条で `paragraph` を省くと、`INVALID_ARGUMENT`（「第30条は項が 13 個あるため、item（号番号）を指定するときは paragraph（項番号）も指定してください」）になります。
 :::
 
 ::: details 呼び出し例 — 存在しない条を指定したとき（`ARTICLE_NOT_FOUND`）

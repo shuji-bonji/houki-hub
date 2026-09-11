@@ -62,3 +62,36 @@
 
 ページ下部の国税庁の注記（何年何月何日現在の法令に基づくか、個別の取引には異なる課税関係が生じうること）は `notice` に入り、基準日は `basisDate` に入ります。この注記は回答に残してください。
 :::
+
+::: details 呼び出し例 — 枝番号の号を挙げている事例（法人税 33/02）
+- 実測: v0.14.0（2026-09-12）
+
+**引数**
+
+```jsonc
+{ "topic": "hojin", "category": "33", "id": "02", "format": "json" }
+```
+
+**返る JSON**（`related_laws` と `next_actions` の抜粋）
+
+```jsonc
+{
+  "related_laws": [
+    { "law_name": "法人税法", "article": "2", "item": "12の8", "raw": "法人税法第2条第12号の8" },
+    { "law_name": "法人税法施行令", "article": "4の3", "paragraph": 4, "item": 1, "raw": "法人税法施行令第4条の3第4項第1号" },
+    { "law_name": "法人税法施行規則", "article": "3", "raw": "法人税法施行規則第3条" }
+  ],
+  "next_actions": [
+    {
+      "action": "delegate_to_mcp",
+      "reason": "質疑応答事例は参考資料で法的拘束力がない。根拠は法律本文で確認する",
+      "example": { "mcp": "houki-egov", "tool": "get_law", "law_name": "法人税法", "article": "2", "item": "12の8" }
+    }
+    // 施行令・施行規則への案内が続く
+  ]
+  // qa / legal_status は上の例と同じ形
+}
+```
+
+「第2条第12号の8」のような枝番号の号は、v0.14.0 から `item` に文字列（`"12の8"`）で入ります（v0.13.0 までは `item` を入れていませんでした）。この `example` を houki-egov-mcp の `get_law` にそのまま渡せるのは v0.6.0 以上です。法人税法 2 条は項が 1 つだけなので、`paragraph` が無くても号を引けます。
+:::
