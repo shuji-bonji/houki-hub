@@ -191,7 +191,7 @@ houki-nta-mcp は、通達を返すたびに次の `legal_status` を付けま�
 | 公布されるか | されません |
 | どこで読めるか | 国税庁のサイト |
 | 担当 MCP | [houki-nta-mcp](/mcp/houki-nta) |
-| 応答での印 | `legal_status`（`binds_citizens` / `binds_courts` / `binds_tax_office` がすべて `false`） |
+| 応答での印 | `legal_status`（`binds_citizens` / `binds_courts` / `binds_tax_office` がすべて `false`）。質疑応答事例では、【関係法令通達】を `related_laws` と `related_tsutatsu` に分けて示します（houki-nta-mcp v0.12.0 から） |
 
 ### 裁決
 

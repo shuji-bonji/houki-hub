@@ -9,7 +9,7 @@ description: 国税庁サイトの基本通達・改正通達・事務運営指�
 ローカル SQLite に取り込み、FTS5 で全文検索する MCP サーバーです。
 法律本文（法・政令・省令）は [houki-egov-mcp](/mcp/houki-egov) が担当します。
 
-- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.11.1）
+- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.12.0）
 - リポジトリ: [shuji-bonji/houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp)
 - 動作環境: Node.js 22 以上
 
@@ -74,6 +74,33 @@ v0.11.0 から、この対応が応答に入ります（[houki-nta-mcp#20](https
 | 通称 | 「インボイス」「軽減税率」「適格請求書発行事業者」 | 元の語で検索し、0 件のときだけ正式名（消費税法）で検索し直します。そのときは `search_notes` にその旨が入ります |
 
 通称で常に正式名まで広げると、「消費税法」という語が出てくるだけの文書が混ざり、キーワードを含む文書が `limit` から押し出されるためです（[houki-nta-mcp#21](https://github.com/shuji-bonji/houki-nta-mcp/issues/21)）。
+
+## 質疑応答事例の関係法令通達
+
+質疑応答事例は国税庁の参考資料で、誰も拘束しません。回答の根拠は、各ページの【関係法令通達】に挙がっている法律と通達で確かめます。
+v0.12.0 から、`nta_get_qa` を `format: "json"` で呼ぶと、この欄を法令と通達に分けて返します（[houki-nta-mcp#22](https://github.com/shuji-bonji/houki-nta-mcp/issues/22)）。
+
+| フィールド | 中身 |
+| --- | --- |
+| `related_laws` | 法令の参照。`law_name`・`article`・`paragraph`・`item`（別表の場合は `appendix`）と、原文の `raw` |
+| `related_tsutatsu` | 通達の参照。`name`・`clause` と、原文の `raw` |
+| `next_actions` | houki-egov-mcp の `get_law` と `nta_get_tsutatsu` に渡す引数の例 |
+| `notice` / `basisDate` | ページ下部の国税庁の注記と、その基準日（例: `2025-08-01`） |
+
+「所得税法第27条、第34条、第37条」のように法令名を省いて続く条番号は、直前の法令名を補って読みます。【関係法令通達】の原文は、これまでどおり `relatedLaws` に残ります。
+
+次の参照は `related_laws` や `related_tsutatsu` には入りますが、`next_actions` は付きません。
+
+| 参照 | 理由 |
+| --- | --- |
+| 租税条約 | e-Gov の法令 API では引けないため |
+| 「旧」「改正前」の付いた条文 | どの時点の条文かが応答から決まらず、`get_law` の `at` に渡す日付を示せないため |
+| 条番号の無い法令 | `get_law` に渡す条を決められないため |
+| 基本通達 4 種以外の通達（租税特別措置法関係通達など） | `nta_get_tsutatsu` が扱わないため |
+
+v0.12.0 で取り込んだ 1,834 件の【関係法令通達】を区切ると 5,059 個の参照になり、そのうち 94.2% を法令か通達として読み取れました。読み取れなかった参照は、`relatedLaws` の原文にだけ残ります。
+
+ページ下部の注記は、v0.11.1 までは【関係法令通達】（その欄が無いページでは【回答要旨】）に混ざっていました。v0.11.1 までに作ったローカル DB では、「異なる課税関係が生ずる」のような注記の文言で、ほぼ全件の質疑応答事例がヒットします。`houki-nta-mcp --bulk-download-qa --refresh` で取り込み直してください。取り込み直すとほぼ全件の本文が変わるため、最後に「構造変質の疑い」の警告が出ますが、解析方法を変えたためで、国税庁のページが変わったわけではありません。
 
 ## ローカル DB の作り方
 

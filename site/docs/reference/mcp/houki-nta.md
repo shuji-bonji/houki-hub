@@ -1,6 +1,6 @@
 ---
 title: "houki-nta-mcp — ツールリファレンス"
-description: "houki-nta-mcp v0.11.1 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-nta-mcp v0.12.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-nta-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-nta-mcp v0.11.1 の全 14 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.11.1** の `tools/list` から自動生成しました（14 ツール・2026-09-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.12.0** の `tools/list` から自動生成しました（14 ツール・2026-09-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-nta)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -267,7 +267,7 @@ description: "houki-nta-mcp v0.11.1 の全 14 ツールの引数・型・既定�
 
 ## nta_get_qa
 
-国税庁の質疑応答事例 1 件を取得する。URL 形式: /law/shitsugi/{topic}/{category}/{id}.htm
+国税庁の質疑応答事例 1 件を取得する。URL 形式: /law/shitsugi/{topic}/{category}/{id}.htm。format=json では【関係法令通達】を法令（related_laws）と通達（related_tsutatsu）に分け、next_actions で houki-egov-mcp の get_law と nta_get_tsutatsu を案内する。
 
 ### 引数
 
@@ -278,14 +278,14 @@ description: "houki-nta-mcp v0.11.1 の全 14 ツールの引数・型・既定�
 | `id` | string | **必須** |  | 事例番号。例: "19" |
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
-::: details 呼び出し例 — 「法人税の質疑応答事例 04/16 の照会と回答」
-- 実測: v0.10.4（2026-09-08）
+::: details 呼び出し例 — 「消費税の質疑応答事例 02/19 の照会と回答、関係法令通達」
+- 実測: v0.12.0（2026-09-11）
 - ローカル DB: 不要（この例では国税庁サイトから取得）
 
 **引数**
 
 ```jsonc
-{ "topic": "hojin", "category": "04", "id": "16", "format": "json" }
+{ "topic": "shohi", "category": "02", "id": "19", "format": "json" }
 ```
 
 **返る JSON（抜粋）**
@@ -293,36 +293,54 @@ description: "houki-nta-mcp v0.11.1 の全 14 ツールの引数・型・既定�
 ```jsonc
 {
   "qa": {
-    "topic": "hojin",
-    "category": "04",
-    "id": "16",
-    "title": "中小企業者等が取得をした働き方改革に資する減価償却資産の中小企業経営強化税制（租税特別措置法第42条の12の4）の適用について",
+    "topic": "shohi",
+    "category": "02",
+    "id": "19",
+    "title": "個人事業者が所有するゴルフ会員権の譲渡",
     "question": [
-      "中小企業者等に該当する甲社は、中小企業等経営強化法上の認定を受けた経営力向上計画に基づいて働き方改革の推進に資する次のような減価償却資産（※）を取得し、…",
-      "※ 働き方改革の推進に資する減価償却資産として、例えば、次のようなものが挙げられます。",
-      "１ 建物附属設備の例\n\n…\n\n２ 器具及び備品の例\n\n…（テレワーク用電子計算機等）、ソフトウエア（テレビ会議システム、勤怠管理システム等）"
+      "個人事業者がゴルフ会員権を譲渡した場合、課税の対象となるのでしょうか。"
     ],
     "answer": [
-      "お尋ねの減価償却資産は、生産等設備を構成する減価償却資産に該当します。",
-      "（理由）"
+      "個人事業者が所有するゴルフ会員権は、会員権販売業者が所有している場合には棚卸資産に当たり、その譲渡は課税の対象となりますが、その他の個人事業者が所有している場合には生活用資産に当たり、その譲渡は課税の対象となりません（基通5－1－1（注）1）。"
     ],
     "relatedLaws": [
-      "租税特別措置法第42条の12の4\n\n租税特別措置法関係通達42の12の4-2",
-      "注記\n\n 令和7年8月1日現在の法令・通達等に基づいて作成しています。\n\n この質疑事例は、照会に係る事実関係を前提とした一般的な回答であり、…"
+      "消費税法第2条第1項第8号、消費税法基本通達5-1-1"
     ],
-    "sourceUrl": "https://www.nta.go.jp/law/shitsugi/hojin/04/16.htm",
-    "fetchedAt": "2026-09-08T08:12:06.181Z"
+    "notice": "令和7年8月1日現在の法令・通達等に基づいて作成しています。\n\nこの質疑事例は、照会に係る事実関係を前提とした一般的な回答であり、…この回答内容と異なる課税関係が生ずることがあることにご注意ください。",
+    "basisDate": "2025-08-01",
+    "sourceUrl": "https://www.nta.go.jp/law/shitsugi/shohi/02/19.htm",
+    "fetchedAt": "2026-09-11T11:50:13.932Z"
   },
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,
     "binds_tax_office": false,
     "note": "タックスアンサー・質疑応答事例は国税庁の参考解説資料。法的拘束力はなく、実務判断は通達・法令本文に基づく必要がある"
-  }
+  },
+  "related_laws": [
+    { "law_name": "消費税法", "article": "2", "paragraph": 1, "item": 8, "raw": "消費税法第2条第1項第8号" }
+  ],
+  "related_tsutatsu": [
+    { "name": "消費税法基本通達", "clause": "5-1-1", "raw": "消費税法基本通達5-1-1" }
+  ],
+  "next_actions": [
+    {
+      "action": "delegate_to_mcp",
+      "reason": "質疑応答事例は参考資料で法的拘束力がない。根拠は法律本文で確認する",
+      "example": { "mcp": "houki-egov", "tool": "get_law", "law_name": "消費税法", "article": "2", "paragraph": 1, "item": 8 }
+    },
+    {
+      "action": "nta_get_tsutatsu",
+      "reason": "質疑応答事例が挙げている通達の本文を確認する",
+      "example": { "name": "消費税法基本通達", "clause": "5-1-1" }
+    }
+  ]
 }
 ```
 
-`relatedLaws` に法令名と通達番号、それに国税庁の注記（何年何月何日現在の法令に基づくか、個別の取引には異なる課税関係が生じうること）が入ります。この注記は回答に残してください。
+【関係法令通達】の原文は `relatedLaws` にそのまま残り、法令は `related_laws`、通達は `related_tsutatsu` に分けて入ります。`next_actions` の `example` は、そのまま houki-egov-mcp の `get_law` と `nta_get_tsutatsu` の引数として使えます。
+
+ページ下部の国税庁の注記（何年何月何日現在の法令に基づくか、個別の取引には異なる課税関係が生じうること）は `notice` に入り、基準日は `basisDate` に入ります。この注記は回答に残してください。
 :::
 
 ## nta_search_tax_answer
