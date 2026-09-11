@@ -46,18 +46,28 @@
 
 #### 取り込みの手順（2026-09-12 にユーザーが決定）
 
-**既定は PR 運用。**
+リポジトリと変更する場所で分ける。
+
+| 対象 | 取り込み方 |
+| --- | --- |
+| houki-hub の `docs/` など（`site/` 以外） | main へ直接取り込んで push してよい |
+| houki-hub の `site/` | PR が望ましい。ただしツールリファレンスの再生成など自動で書き換わる更新が多いので、取り込み方はその都度ユーザーに確認する |
+| MCP（houki-egov-mcp・houki-nta-mcp）と skill（houki-research-skill） | PR 運用。CI があるリポジトリは、CI を通してから取り込む |
+
+houki-hub には PR で動く CI が無い（`deploy.yml` は main への `site/**` の push で動くサイトの公開、`stack-check.yml` は定期実行）。MCP には `ci.yml`（PR と main への push で動く）がある。skill にあるのはタグの push で動く `release.yml` だけで、PR で動く CI は無い。
+
+**MCP と skill は PR 運用。**
 
 1. Claude がブランチを切ってコミットする（未署名）
 2. ユーザーが Mac で `npm test`・`npm run build`・`npm run check` を行い、dev で試す。直すところがあれば Claude がコミットを足す
 3. ユーザーが署名してから branch を push し、PR を作る。署名は `git rebase --exec 'git commit --amend --no-edit -S' main`。PR の本文に `Closes #N` を書く（コミットメッセージに書くより確実に閉じる）
-4. CI（lint・format:check・Node 22 / 24 のテスト）が通ったら取り込む。手元で `git merge --ff-only <branch>` して push すれば、同じハッシュのまま main に入り、PR は Merged になる
-5. publish・plugin 更新・houki-hub の追随
+4. CI（MCP では lint・format:check・Node 22 / 24 のテスト）が通ったら取り込む。手元で `git merge --ff-only <branch>` して push すれば、同じハッシュのまま main に入り、PR は Merged になる
+5. main に取り込んでから、publish のためのタグを付けて push する。MCP の `publish.yml` と skill の `release.yml` はタグ（`v*`）の push で動く。続けて plugin 更新・houki-hub の追随
 
-**例外: ユーザーが指定したときだけ、PR を作らずに main へ直接取り込んで push する。** 修正を急いでいるとき、タスクが複数あるときなど。
+**MCP と skill の例外: ユーザーが指定したときだけ、PR を作らずに main へ直接取り込んで push する。** 修正を急いでいるとき、タスクが複数あるときなど。
 
 - 例外のときは、署名前の branch を push しない。push した後で署名し直して main に入れると、ハッシュが変わって PR や branch が浮く（2026-09-12 の houki-nta-mcp PR #24）
-- Claude からは、どちらで進めるかを勝手に決めない。指定が無ければ PR 運用として手順を案内する
+- Claude からは、どちらで進めるかを勝手に決めない。指定が無ければ、上の表のとおりに手順を案内する
 
 #### リリースとタグ
 
