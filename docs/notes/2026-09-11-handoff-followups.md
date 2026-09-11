@@ -41,6 +41,29 @@
 - 読むだけのときは `git --no-optional-locks`
 - ブランチを切ってからコミットし、`-c user.name='shuji-bonji' -c user.email='bonji@mikuro.jp'` を付ける。末尾の Co-Authored-By と Claude-Session はそのチャットで指示されたものを使う
 - 署名・main への取り込み・push・publish・plugin 更新はユーザーが行う。`Closes #N` を書いても自動で閉じないことがあった（#21）
+- 接続が切れると削除の許可が外れ、コミットの途中で `.git/HEAD.lock` や `tmp_obj_*` が残る。許可をもらい直して消し、`git fsck --no-dangling` で確かめる（2026-09-12 に 2 回）
+- 修正前の状態を確かめるのに `git stash` を使わない（ユーザーの未コミットの変更を巻き込む）。`git show <rev>:<path>` を作業用ディレクトリに書き出す
+
+#### 取り込みの手順（2026-09-12 にユーザーが決定）
+
+**既定は PR 運用。**
+
+1. Claude がブランチを切ってコミットする（未署名）
+2. ユーザーが Mac で `npm test`・`npm run build`・`npm run check` を行い、dev で試す。直すところがあれば Claude がコミットを足す
+3. ユーザーが署名してから branch を push し、PR を作る。署名は `git rebase --exec 'git commit --amend --no-edit -S' main`。PR の本文に `Closes #N` を書く（コミットメッセージに書くより確実に閉じる）
+4. CI（lint・format:check・Node 22 / 24 のテスト）が通ったら取り込む。手元で `git merge --ff-only <branch>` して push すれば、同じハッシュのまま main に入り、PR は Merged になる
+5. publish・plugin 更新・houki-hub の追随
+
+**例外: ユーザーが指定したときだけ、PR を作らずに main へ直接取り込んで push する。** 修正を急いでいるとき、タスクが複数あるときなど。
+
+- 例外のときは、署名前の branch を push しない。push した後で署名し直して main に入れると、ハッシュが変わって PR や branch が浮く（2026-09-12 の houki-nta-mcp PR #24）
+- Claude からは、どちらで進めるかを勝手に決めない。指定が無ければ PR 運用として手順を案内する
+
+#### リリースとタグ
+
+- houki-research-skill のリリースは、タグの push だけで作る（`git tag vX.Y.Z <commit> && git push origin vX.Y.Z`）。Release ワークフローが plugin.json とタグの版を照合し、`.plugin` を添付する。GitHub の画面や `gh release create` でタグごと作ると、タグが意図しないコミットに付くことがある（2026-09-12 の v0.4.0）
+- 版を上げるときは `package.json`・`package-lock.json`・`.claude-plugin/plugin.json` の 3 つ（MCP）、skill は `plugin.json` と README・release.yml の前提 MCP の版
+- 公開済みの npm の版は削除しない。利用者を誘導したいときは `npm deprecate`
 
 ### 試用の順序
 
