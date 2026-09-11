@@ -40,3 +40,40 @@
 
 本文は「別紙のとおり改める」までで、改正の中身は `attachedPdfs` の新旧対照表にあります。PDF の読み方は `nta_inspect_pdf_meta` が返す `reader_hints` を参照してください。この例では別紙 1 が令和 7 年 4 月 1 日から、別紙 2 が令和 8 年 11 月 1 日から適用と、適用日が 2 つに分かれています。
 :::
+
+::: details 呼び出し例 — 「docId を打ち間違えたとき」
+- 実測: v0.14.1（2026-09-12）
+- ローカル DB: あり（改正通達 118 件）
+
+**引数**
+
+```jsonc
+{ "docId": "0025004-999" }
+```
+
+**返る JSON**（`isError: true`）
+
+```jsonc
+{
+  "error": "改正通達 docId=\"0025004-999\" は見つかりません",
+  "code": "TSUTATSU_NOT_FOUND",
+  "hint": "DB の改正通達 118 件に、この docId はありません。available_doc_ids（新しい順に 30 件）から選ぶか、nta_search_kaisei_tsutatsu で検索して docId を確かめてください。DB を投入した後に国税庁が公開した文書は、`houki-nta-mcp --bulk-download-kaisei` をもう一度実行すると取り込めます",
+  "next_actions": [
+    { "action": "nta_search_kaisei_tsutatsu", "reason": "キーワード検索で正しい docId を探せます" }
+  ],
+  "available_doc_ids": [
+    { "docId": "260807", "title": "法人税基本通達等の一部改正について（法令解釈通達）", "issuedAt": "2026-08-07" },
+    { "docId": "0026003-067", "title": "消費税法基本通達の一部改正について（法令解釈通達）", "issuedAt": "2026-04-01" },
+    { "docId": "0025004-026", "title": "消費税法基本通達の一部改正について（法令解釈通達）", "issuedAt": "2025-04-01" }
+    // … 新しい順に 30 件
+  ],
+  "tool": "nta_get_kaisei_tsutatsu"
+}
+```
+
+`available_doc_ids` には題名と発出日が入るので、探していた改正（この例では令和 7 年 4 月 1 日の消基通改正）を選び直せます。
+
+改正通達が DB に 1 件も入っていないときは、同じ `code` でも中身が変わります。`error` が「ローカル DB に改正通達が 1 件も無いため、docId=… を取得できません」になり、`next_actions[0].action` が `cli_bulk_download`（`example.command` は `houki-nta-mcp --bulk-download-kaisei`）、`hint` に MCP サーバーが開いている DB ファイルのパスが入り、`available_doc_ids` は付きません。`next_actions[0].action` を見れば、投入が必要なのか docId が誤っているのかを区別できます（v0.14.1 から）。
+
+`nta_get_jimu_unei` と `nta_get_bunshokaitou` も同じ形で返します。
+:::
