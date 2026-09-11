@@ -9,7 +9,7 @@ description: 国税庁サイトの基本通達・改正通達・事務運営指�
 ローカル SQLite に取り込み、FTS5 で全文検索する MCP サーバーです。
 法律本文（法・政令・省令）は [houki-egov-mcp](/mcp/houki-egov) が担当します。
 
-- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.12.0）
+- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.13.0）
 - リポジトリ: [shuji-bonji/houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp)
 - 動作環境: Node.js 22 以上
 
@@ -64,7 +64,7 @@ v0.11.0 から、この対応が応答に入ります（[houki-nta-mcp#20](https
 | `nta_inspect_pdf_meta` | 文書に添付された PDF のメタ情報と、pdf-reader-mcp での読み方の例だけを返します |
 | `resolve_abbreviation` | 略称の解決を診断します |
 
-検索ツールは `hasPdf` で PDF 付きの文書だけに絞れ、応答に `freshness`（取り込みからの経過）が付きます。
+検索ツールは `hasPdf` で PDF 付きの文書だけに絞れ、応答に `freshness`（取り込みからの経過）が付きます。`nta_search_qa` は `topic`（`shotoku`・`shohi` などの税目）で絞り込めます（v0.13.0 から）。
 
 キーワードが略称辞書に載っている場合の扱いは次のとおりです（v0.11.1 から）。
 
@@ -102,13 +102,30 @@ v0.12.0 で取り込んだ 1,834 件の【関係法令通達】を区切ると 5
 
 ページ下部の注記は、v0.11.1 までは【関係法令通達】（その欄が無いページでは【回答要旨】）に混ざっていました。v0.11.1 までに作ったローカル DB では、「異なる課税関係が生ずる」のような注記の文言で、ほぼ全件の質疑応答事例がヒットします。`houki-nta-mcp --bulk-download-qa --refresh` で取り込み直してください。取り込み直すとほぼ全件の本文が変わるため、最後に「構造変質の疑い」の警告が出ますが、解析方法を変えたためで、国税庁のページが変わったわけではありません。
 
+## 検索が 0 件のとき
+
+文書系の検索 5 ツール（`nta_search_qa`・`nta_search_tax_answer`・`nta_search_kaisei_tsutatsu`・`nta_search_jimu_unei`・`nta_search_bunshokaitou`）は、0 件になった理由を分けて返します（v0.13.0 から。[houki-nta-mcp#23](https://github.com/shuji-bonji/houki-nta-mcp/issues/23)）。
+
+| DB の状態 | 応答 |
+| --- | --- |
+| その種別の文書が DB に 1 件も無い | エラー `DOC_NOT_FOUND`。「該当なし」という検索結果ではないことを示します。`hint` に MCP サーバーが開いている DB ファイルのパスと投入コマンドが入ります |
+| 税目の絞り込みの範囲に文書が無い | `results: []`。`available_taxonomies` に、DB にある税目の一覧が入ります |
+| `hasPdf` の条件に合う文書が無い | `results: []`。`hasPdf` を外すよう案内します |
+| 文書はあるが、キーワードに合わない | `results: []`。`hint` に「該当なし」と検索した件数（例: 「DB の質疑応答事例 1,841 件に」）が入ります |
+
+LLM が `results: []` を受け取ったときは「国税庁の資料にこの語を含む文書は無い」と読めますが、`DOC_NOT_FOUND` のときは検索そのものができていないので、そう答えてはいけません。
+その種別を投入していない、`--bulk-download-everything` の途中でその種別だけ失敗した、bulk download を実行したシェルと MCP サーバーとで環境変数 `HOUKI_NTA_DB_PATH` / `XDG_CACHE_HOME` が違う、のいずれかです。
+
+v0.12.0 までは、どの場合も「DB 投入済みか確認してください」という同じ `hint` だったため、文書が入っている DB でも投入をやり直すよう案内していました。
+また、v0.12.0 までの `nta_search_qa` は `domain` を指定すると必ず 0 件でした。v0.13.0 からは `domain: "tax"` は絞り込まずに検索し、税目で絞るときは `topic` を使います。
+
 ## ローカル DB の作り方
 
 ```sh
 npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything
 ```
 
-DB は `~/.cache/houki-nta-mcp/cache.db` にできます。DB がないときも、各ツールは国税庁サイトから直接取得して応答します（1 件あたり 1 秒弱）。
+DB は `~/.cache/houki-nta-mcp/cache.db` にできます。DB がないときも、基本通達・タックスアンサー・質疑応答事例の取得（`nta_get_tsutatsu`・`nta_get_tax_answer`・`nta_get_qa`）は国税庁サイトから直接取得して応答します（1 件あたり 1 秒弱）。改正通達・事務運営指針・文書回答事例の取得と、すべての検索には DB が必要です。
 2 回目以降は国税庁サイトが `304 Not Modified` を返す節を飛ばすので短時間で終わります。
 節の本文を解析し直したいとき（v0.10.0 以前の DB に算式画像のプレースホルダを入れる場合など）は `--refresh` を付けます。
 

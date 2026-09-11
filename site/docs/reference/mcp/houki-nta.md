@@ -1,6 +1,6 @@
 ---
 title: "houki-nta-mcp — ツールリファレンス"
-description: "houki-nta-mcp v0.12.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-nta-mcp v0.13.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-nta-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-nta-mcp v0.12.0 の全 14 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.12.0** の `tools/list` から自動生成しました（14 ツール・2026-09-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.13.0** の `tools/list` から自動生成しました（14 ツール・2026-09-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-nta)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -209,14 +209,15 @@ description: "houki-nta-mcp v0.12.0 の全 14 ツールの引数・型・既定�
 
 ## nta_search_qa
 
-国税庁の質疑応答事例（9 税目: 所得税/源泉所得税/譲渡所得/相続税・贈与税/財産の評価/法人税/消費税/印紙税/法定調書）を FTS5 でキーワード検索する。事前に `--bulk-download-qa` で DB 投入が必要。
+国税庁の質疑応答事例（9 税目: 所得税/源泉所得税/譲渡所得/相続税・贈与税/財産の評価/法人税/消費税/印紙税/法定調書）を FTS5 でキーワード検索する。事前に `--bulk-download-qa` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
 
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
 | `keyword` | string | **必須** |  | 検索キーワード。例: "社内会議 軽減税率", "テレワーク 必要経費"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
-| `domain` | `"tax"` \| `"labor"` \| `"accounting"` \| `"commercial"` \| `"civil"` \| `"administrative"` | 任意 |  | 税目で絞り込み |
+| `domain` | `"tax"` \| `"labor"` \| `"accounting"` \| `"commercial"` \| `"civil"` \| `"administrative"` | 任意 |  | 分野で絞り込み。質疑応答事例はすべて税務なので、"tax" は絞り込まず、それ以外は 0 件になる。税目で絞り込むときは topic を使う |
+| `topic` | `"shotoku"` \| `"gensen"` \| `"joto"` \| `"sozoku"` \| `"hyoka"` \| `"hojin"` \| `"shohi"` \| `"inshi"` \| `"hotei"` | 任意 |  | 税目で絞り込み。shotoku=所得税 / gensen=源泉所得税 / joto=譲渡所得 / sozoku=相続税・贈与税 / hyoka=財産の評価 / hojin=法人税 / shohi=消費税 / inshi=印紙税 / hotei=法定調書 |
 | `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。質疑応答事例は現状すべて HTML のみで PDF を持たないため true 指定時は空配列になる |
 
@@ -262,7 +263,79 @@ description: "houki-nta-mcp v0.12.0 の全 14 ツールの引数・型・既定�
 }
 ```
 
-`docId` の `hojin/04/16` は、`nta_get_qa` の `topic` / `category` / `id` にそのまま分かれます。質疑応答事例は PDF を持たないので `hasPdf: true` を付けると空になります。
+`docId` の `hojin/04/16` は、`nta_get_qa` の `topic` / `category` / `id` にそのまま分かれます。質疑応答事例は PDF を持たないので、`hasPdf: true` を付けると `results: []` と「PDF 付きの文書はありません」という `hint` が返ります。
+:::
+
+::: details 呼び出し例 — 税目（topic）で絞る
+- 実測: v0.13.0（2026-09-12）
+- ローカル DB: あり（`staleness: "fresh"`）
+
+**引数**
+
+```jsonc
+{ "keyword": "軽減税率", "topic": "shohi", "limit": 3 }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "keyword": "軽減税率",
+  "results": [
+    {
+      "docType": "qa-jirei",
+      "docId": "shohi/21/10",
+      "taxonomy": "shohi",
+      "title": "令和元年10月1日前の借入金の返済に充てる補助金の交付を受けた場合",
+      "sourceUrl": "https://www.nta.go.jp/law/shitsugi/shohi/21/10.htm",
+      "snippet": " … 税率7.8％（<b>軽減税率</b>が適用される課 … ",
+      "score": 0.198,
+      "scoreReasons": ["doc_type=qa weight 0.70"]
+    }
+  ],
+  "freshness": {
+    "oldest_fetched_at": "2026-09-11T11:01:16.620Z",
+    "newest_fetched_at": "2026-09-11T11:06:24.096Z",
+    "staleness": "fresh",
+    "days_since_oldest": 0
+  }
+  // legal_status は上の例と同じ
+}
+```
+
+`topic` は `--qa-topic` と同じ値（`shotoku` / `gensen` / `joto` / `sozoku` / `hyoka` / `hojin` / `shohi` / `inshi` / `hotei`）です。`freshness` は、絞り込んだ税目の文書の取得時点を示します。
+`domain` は分野（`tax` など）の引数で、質疑応答事例はすべて税務なので `"tax"` では絞り込まれません。v0.12.0 までは `domain` を付けると必ず 0 件でした。
+:::
+
+::: details 呼び出し例 — キーワードに合う文書が無いとき
+- 実測: v0.13.0（2026-09-12）
+- ローカル DB: あり（質疑応答事例 1,841 件）
+
+**引数**
+
+```jsonc
+{ "keyword": "異なる課税関係が生ずる" }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "results": [],
+  "keyword": "異なる課税関係が生ずる",
+  "hint": "該当なし。DB の質疑応答事例 1,841 件に「異なる課税関係が生ずる」に合う文書はありません。別のキーワードで試してください",
+  "freshness": {
+    "oldest_fetched_at": "2026-09-11T10:37:09.480Z",
+    "newest_fetched_at": "2026-09-11T11:11:55.474Z",
+    "staleness": "fresh",
+    "days_since_oldest": 0
+  }
+  // legal_status は上の例と同じ
+}
+```
+
+この語はページ下部の注記の文言で、v0.12.0 から注記は本文から外しているので 0 件になります。`hint` の件数で、DB に質疑応答事例が入っていることが分かります。
+質疑応答事例が DB に 1 件も無いときは、`results: []` ではなくエラー `DOC_NOT_FOUND` が返ります。`hint` に MCP サーバーが開いている DB ファイルのパスが、`next_actions` に `houki-nta-mcp --bulk-download-qa` が入ります。
 :::
 
 ## nta_get_qa
@@ -345,7 +418,7 @@ description: "houki-nta-mcp v0.12.0 の全 14 ツールの引数・型・既定�
 
 ## nta_search_tax_answer
 
-タックスアンサー（一般納税者向け解説、約 750 件）を FTS5 でキーワード検索する。事前に `--bulk-download-tax-answer` で DB 投入が必要。
+タックスアンサー（一般納税者向け解説、約 750 件）を FTS5 でキーワード検索する。事前に `--bulk-download-tax-answer` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
 
 ### 引数
 
@@ -468,7 +541,7 @@ description: "houki-nta-mcp v0.12.0 の全 14 ツールの引数・型・既定�
 
 ## nta_search_kaisei_tsutatsu
 
-改正通達（一部改正通達）を FTS5 でキーワード検索する。事前に `--bulk-download-kaisei` で DB 投入が必要。
+改正通達（一部改正通達）を FTS5 でキーワード検索する。事前に `--bulk-download-kaisei` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
 
 ### 引数
 
@@ -594,7 +667,7 @@ description: "houki-nta-mcp v0.12.0 の全 14 ツールの引数・型・既定�
 
 ## nta_search_jimu_unei
 
-事務運営指針（jimu-unei）を FTS5 でキーワード検索する。事前に `--bulk-download-jimu-unei` で DB 投入が必要。
+事務運営指針（jimu-unei）を FTS5 でキーワード検索する。事前に `--bulk-download-jimu-unei` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
 
 ### 引数
 
@@ -717,7 +790,7 @@ description: "houki-nta-mcp v0.12.0 の全 14 ツールの引数・型・既定�
 
 ## nta_search_bunshokaitou
 
-文書回答事例（bunshokaitou）を FTS5 でキーワード検索する。事前に `--bulk-download-bunshokaitou` で DB 投入が必要。
+文書回答事例（bunshokaitou）を FTS5 でキーワード検索する。事前に `--bulk-download-bunshokaitou` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
 
 ### 引数
 
@@ -822,7 +895,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 }
 ```
 
-0 件のときは `results: []` と `hint`（「該当なし。`--bulk-download-bunshokaitou` で DB 投入済みか確認してください」）が返ります。この応答だけでは「DB が空」なのか「本当に該当がない」のかを区別できないので、他の語でも 0 件なら DB の投入状況を確かめてください。
+キーワードに合う文書が無いときは、`results: []` と、検索した件数を書いた `hint`（例: 「該当なし。DB の文書回答事例（taxonomy="inshi"）6 件に「配当」に合う文書はありません」）が返ります（v0.13.0 から）。`taxonomy` に DB に無い税目を指定したときは、`available_taxonomies` に DB にある税目の一覧が入ります。文書回答事例が DB に 1 件も無いときは、エラー `DOC_NOT_FOUND` が返ります。
 :::
 
 ## nta_get_bunshokaitou

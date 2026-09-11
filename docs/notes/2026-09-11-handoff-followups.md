@@ -75,3 +75,27 @@ houki-hub/docs/notes/2026-09-11-handoff-followups.md を読んで、3 件のう�
 - 2026-09-12 00:00 JST: v0.5.4 publish・plugin 更新済み（main `d4c4cee`）。plugin で 所法 89条1項（税率表）、消法 30条2項（イ・ロ）、租税特別措置法 70条の6第9項、消費税法 2条1項8号、号が見つからないときのエラー文を確認し、dev と同じ出力
 - houki-hub の既存の呼び出し例（`scripts/reference-examples/houki-egov/ja/get_law.md` は JSON と `第3000条` のエラー、`get_toc.md` は民法の目次）は今回の変更で出力が変わらない。追随は版表記（`stack.json`・README は `generate-stack`、`docs/ROADMAP.md`）が中心
 - houki-hub の追随: 版表記（site の roadmap / houki-abbreviations ページ、`docs/ROADMAP.md`）を 0.5.4 に更新。`scripts/reference-examples/houki-egov/ja/get_law.md` に Markdown の呼び出し例 2 つ（消法 30条2項・所法 89条1項、plugin v0.5.4 の実測）を追加。`docs/notes/` の 5 ファイルも同じコミットに含める（ユーザー了承）
+
+### 2. houki-nta-mcp #23（2026-09-12 01:15 JST 時点）
+
+- 決めたこと（ユーザー判断）: 案 B（その種別の文書が DB に 1 件も無いときはエラー `DOC_NOT_FOUND`、v0.13.0）。キーワードに合わないだけの 0 件は従来どおり `results: []`。絞り込みの範囲に無い・`hasPdf` に合わない場合も成功のまま `hint` で案内。`DOC_NOT_FOUND` の `hint` に DB ファイルのパスを入れる。`--help` の文言は同じ版の別コミット
+- 着手後に見つけて v0.13.0 に含めたもの（ユーザー判断）: `nta_search_qa` の `domain`（`tax` / `labor` …）を `taxonomy`（`shotoku` / `shohi` …）と比べていたため、指定すると必ず 0 件だった（dev で「軽減税率」: `domain` なし 3 件、`domain: "tax"` 0 件）。`topic`（`QA_TOPICS`）を追加し、`domain: "tax"` は絞り込まない、それ以外は `topic` を案内する 0 件にした
+- ブランチ `fix/doc-search-zero-hit` にコミット済み（未 push）: `ef12616`（`--help`）、`d5123ac`（本体・CHANGELOG・README・版 0.13.0）
+- 確認: VM は npm registry 403 のため、`vitest` shim と `better-sqlite3` → `node:sqlite` の shim（`$HOME/tmp/nta/shim`）で `doc-search-zero-hit.test.ts` 19 件・`handlers.test.ts` 48 件・`db-search.test.ts` 43 件・`constants.test.ts` 10 件が通過。新しいテストは v0.12.0 の `handlers.ts` では 18 件落ちることも確認。biome はクラウドに置いた linux 版（2.5.12）で `check --write` 済み。`tsc` と `npm test` 全体（594 件の見込み）はユーザーが Mac で行う
+- dev で試すこと: 5 ツールでキーワードに合わない 0 件（`nta_search_qa` に「異なる課税関係が生ずる」）、`nta_search_qa` の `topic: "shohi"` と `domain: "tax"` / `"labor"`、`hasPdf: true`、`nta_search_bunshokaitou` の `taxonomy` に DB に無い税目。`DOC_NOT_FOUND` は `HOUKI_NTA_DB_PATH` を空のファイルに向けた dev で確かめられる
+- 残り: ユーザーが Mac で `npm test`・`npm run build`・`npm run check` → dev 再起動・試用 → 署名・main 取り込み・push・publish（v0.13.0）・plugin 更新 → plugin で試用 → houki-hub の追随
+- houki-hub の追随で直すもの: `scripts/reference-examples/houki-nta/ja/nta_search_bunshokaitou.md` の 95 行目（0 件の `hint` の説明が v0.12.0 のまま）、ツールリファレンスの再生成（`nta_search_qa` に `topic`、5 ツールの `description` に `DOC_NOT_FOUND`）、版表記、`docs/ROADMAP.md`
+- 別件として残したもの:
+  - houki-research-skill の `docs/ERROR-HANDLING.md` は `DOC_NOT_FOUND` を「docId の誤り → 略称解決・検索でフォールバック」としか書いていない。検索ツールが返す `DOC_NOT_FOUND`（`next_actions` が `cli_bulk_download`）は、フォールバックせずにユーザーへ投入を案内する、と足す必要がある（空の DB での `TSUTATSU_NOT_FOUND` も同じ）。3 の v0.5.0 に含めるか判断する
+  - `nta_search_tsutatsu` は inputSchema に `type` と `domain` があるが、`searchTsutatsu()` はどちらも使っていない（指定しても絞り込まれない）
+- 2026-09-12 01:35 JST: ユーザーの Mac で `npm test` 594 件通過（4 skipped）、`npm run check` はエラーなし。ユーザーの指示で文字列の連結をテンプレートリテラルにそろえた（`df2a897`。biome `useTemplate` の 17 件と、行をまたぐ `'…' +` の連結。出力される文字列は変わらない）。`biome.json` の変更（`ignoreUnknown: true` など）はユーザーの作業コピーの変更なのでコミットに含めていない
+- 2026-09-12 02:05 JST: ユーザーの指示で logger を変更（`c268791`。`meta` を `JsonObject` に、`toMeta(err: unknown)` を追加、`logger.error` は `unknown` を受ける、bulk download の catch 10 か所を `toMeta(err)` に。CHANGELOG にも追記）。VM に TypeScript 5.9.3（GitHub Releases の tgz）を置き、`tsc --noEmit` がブランチ全体で通ることを確認（`Error` / `bigint` / `Map` / `interface` を `meta` に渡すと型エラーになることも確認）。`toolHandlers` の `any` は別 issue にする（[草案](2026-09-12-issue-draft-nta-typed-tool-args.md)、ユーザーが起票）
+- 2026-09-12 03:00 JST: dev（`c268791` 相当をビルド）で試用。`nta_search_qa`「異なる課税関係が生ずる」→「該当なし。DB の質疑応答事例 1841 件に…」+ freshness、`domain: "tax"` → 3 件、`domain: "labor"` → topic の案内、`hasPdf: true` → PDF 付き無しの案内、`topic: "shohi"` → 1 件、`topic: "inshi"` のキーワード不一致 → 243 件の案内、`nta_search_kaisei_tsutatsu` の `taxonomy: "sozoku"` → `available_taxonomies`（hojin / shohi / shotoku / sisan/sozoku）、タックスアンサー・改正通達のキーワード不一致も期待どおり。`DOC_NOT_FOUND` は dev では未確認（DB に 6 種別すべて入っているため。ユニットテストのみ）
+- 試用で見つけて直したもの: 件数に 3 桁区切りが無い（1841）、「（taxonomy="inshi"） 6 件」の括弧の後ろの空白 → `6e3325c`。`.claude-plugin/plugin.json` の version が 0.12.0 のまま（ユーザー指摘）→ `5950f96`
+- ユーザーが `fix/doc-search-zero-hit` を main に fast-forward で取り込み済み（logger のコミットに biome.json の整形を fixup、`018d23e`）。上の 2 コミットは、それに気づかず main に直接コミットした（main は origin より 6 つ先、未 push）
+- 2026-09-12 03:15 JST: v0.13.0 publish・plugin 更新済み（ユーザー）。plugin で dev と同じ呼び出しを試し、すべて期待どおり（件数は「1,841 件」、括弧の後ろの空白なし）。plugin の tools/list にも `topic` と 5 ツールの新しい description が出ている
+- plugin の試用で気づいたこと（未対応）:
+  - `nta_search_bunshokaitou` の `available_taxonomies` に、同じ税目の別表記が混ざっている（`gensen` / `gensenshotoku`、`joto-sanrin` / `joto_sanrin`、`sozoku` / `souzoku`、ほかに `shozei` / `zoyo` / `sonota`）。国税庁の URL のフォルダ名の違いがそのまま taxonomy に入っているため。`taxonomy: "sozoku"` では `souzoku` の文書が出ない。別 issue 候補
+  - 税目の絞り込みの範囲に文書が無いときの `--bunsho-taxonomy=<値>` の案内は、綴り間違いの値（例: `zzz`）でも出る。CLI は値を検証していない（国税庁の索引に無い税目は 0 件で終わるだけ）
+- 残り: houki-hub の追随（reference-examples の nta_search_bunshokaitou.md 95 行目、ツールリファレンスの再生成、版表記、ROADMAP、issue 草案と引き継ぎメモのコミット）
+- 2026-09-12 03:30 JST: houki-hub の追随。ユーザーが Mac で `npm run build`（リファレンス再生成、nta 14/14）と `generate-stack --readme` を実行済み。Claude が次を編集: `site/docs/mcp/houki-nta.md`（「検索が 0 件のとき」の節、`topic`、DB が無いときに直接取得できるのは基本通達・タックスアンサー・質疑応答事例だけという記述の訂正）、`site/docs/guide/roadmap.md`（nta 0.11.1 → 0.13.0）、`site/docs/lib/houki-abbreviations.md`、`docs/ROADMAP.md`、呼び出し例 `nta_search_qa.md`（topic とキーワード不一致の 2 例を追加、plugin v0.13.0 の実測）と `nta_search_bunshokaitou.md`（0 件の説明）。呼び出し例を変えたので、リファレンスをもう一度生成してからコミットする
