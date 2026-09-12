@@ -350,8 +350,8 @@ description: "houki-nta-mcp v0.17.0 の全 14 ツールの引数・型・既定�
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: details 呼び出し例 — 「消費税の質疑応答事例 02/19 の照会と回答、関係法令通達」
-- 実測: v0.12.0（2026-09-11）
-- ローカル DB: 不要（この例では国税庁サイトから取得）
+- 実測: v0.17.0（2026-09-13）
+- ローカル DB: 不要。ただし DB に構造があればそこから返る（この例は 2 回目の呼び出しで `source: "db"`）
 
 **引数**
 
@@ -380,8 +380,9 @@ description: "houki-nta-mcp v0.17.0 の全 14 ツールの引数・型・既定�
     "notice": "令和7年8月1日現在の法令・通達等に基づいて作成しています。\n\nこの質疑事例は、照会に係る事実関係を前提とした一般的な回答であり、…この回答内容と異なる課税関係が生ずることがあることにご注意ください。",
     "basisDate": "2025-08-01",
     "sourceUrl": "https://www.nta.go.jp/law/shitsugi/shohi/02/19.htm",
-    "fetchedAt": "2026-09-11T11:50:13.932Z"
+    "fetchedAt": "2026-09-12T18:37:44.863Z"
   },
+  "source": "db",
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,
@@ -412,6 +413,10 @@ description: "houki-nta-mcp v0.17.0 の全 14 ツールの引数・型・既定�
 【関係法令通達】の原文は `relatedLaws` にそのまま残り、法令は `related_laws`、通達は `related_tsutatsu` に分けて入ります。`next_actions` の `example` は、そのまま houki-egov-mcp の `get_law` と `nta_get_tsutatsu` の引数として使えます。
 
 ページ下部の国税庁の注記（何年何月何日現在の法令に基づくか、個別の取引には異なる課税関係が生じうること）は `notice` に入り、基準日は `basisDate` に入ります。この注記は回答に残してください。
+
+`source` はローカル DB（`"db"`）と国税庁サイト（`"live"`）のどちらから返したかです（v0.16.0 から）。1 回目は `"live"` で、その結果が DB に書き戻されるので 2 回目からは `"db"` になります。`"db"` の `fetchedAt` は呼び出した時刻ではなく DB に取り込んだ日時なので、引用するときはその値をそのまま書きます。v0.15.0 までは毎回国税庁サイトから取得していました（[houki-nta-mcp #29](https://github.com/shuji-bonji/houki-nta-mcp/issues/29)）。
+
+国税庁の索引から外れた文書には `index_status: "removed_from_index"` と `orphaned_at` が付きます（v0.17.0 から）。この事例は索引にあるので付いていません。
 :::
 
 ::: details 呼び出し例 — 枝番号の号を挙げている事例（法人税 33/02）
@@ -528,8 +533,8 @@ description: "houki-nta-mcp v0.17.0 の全 14 ツールの引数・型・既定�
 :::
 
 ::: details 呼び出し例 — 「No.6101 消費税の基本的なしくみ」
-- 実測: v0.10.4（2026-09-08）
-- ローカル DB: 不要（この例では国税庁サイトから取得。`fetchedAt` が呼び出し時刻）
+- 実測: v0.17.0（2026-09-13）
+- ローカル DB: 不要。ただし DB に構造があればそこから返る（この例は 2 回目の呼び出しで `source: "db"`）
 
 **引数**
 
@@ -553,11 +558,12 @@ description: "houki-nta-mcp v0.17.0 の全 14 ツールの引数・型・既定�
       { "heading": "根拠法令等", "paragraphs": ["消費税法など"] },
       { "heading": "関連リンク", "paragraphs": ["…"] }
     ],
-    "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6101.htm",
-    "fetchedAt": "2026-09-08T08:12:18.517Z",
     "effectiveDate": "令和7年4月1日現在法令等",
-    "taxCategory": "消費税"
+    "taxCategory": "消費税",
+    "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6101.htm",
+    "fetchedAt": "2026-09-12T20:05:55.721Z"
   },
+  "source": "db",
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,
@@ -568,6 +574,10 @@ description: "houki-nta-mcp v0.17.0 の全 14 ツールの引数・型・既定�
 ```
 
 `effectiveDate` は国税庁がページに書いている「何年何月何日現在の法令等に基づくか」で、取得日ではありません。`sections[].heading` が「根拠法令等」の節に法令名が入るので、そこから houki-egov-mcp の `get_law` につなげられます。
+
+`source` はローカル DB（`"db"`）と国税庁サイト（`"live"`）のどちらから返したかです（v0.16.0 から）。上と同じ呼び出しの 1 回目は `"live"` で、`fetchedAt` は取得した時刻（`2026-09-12T20:05:55.721Z`）でした。その結果が DB に書き戻されるので、2 回目は `"db"` になり `fetchedAt` は 1 回目の値のまま変わりません。**`"db"` の `fetchedAt` は呼び出した時刻ではなく、DB に取り込んだ日時です。** 引用するときはその値をそのまま書きます。
+
+v0.15.0 までは DB を引かずに毎回国税庁サイトから取得していたため、`fetchedAt` は常に呼び出し時刻でした（[houki-nta-mcp #29](https://github.com/shuji-bonji/houki-nta-mcp/issues/29)）。
 :::
 
 ## nta_search_kaisei_tsutatsu

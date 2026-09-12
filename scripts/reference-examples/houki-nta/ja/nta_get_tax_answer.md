@@ -3,8 +3,8 @@
 :::
 
 ::: details 呼び出し例 — 「No.6101 消費税の基本的なしくみ」
-- 実測: v0.10.4（2026-09-08）
-- ローカル DB: 不要（この例では国税庁サイトから取得。`fetchedAt` が呼び出し時刻）
+- 実測: v0.17.0（2026-09-13）
+- ローカル DB: 不要。ただし DB に構造があればそこから返る（この例は 2 回目の呼び出しで `source: "db"`）
 
 **引数**
 
@@ -28,11 +28,12 @@
       { "heading": "根拠法令等", "paragraphs": ["消費税法など"] },
       { "heading": "関連リンク", "paragraphs": ["…"] }
     ],
-    "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6101.htm",
-    "fetchedAt": "2026-09-08T08:12:18.517Z",
     "effectiveDate": "令和7年4月1日現在法令等",
-    "taxCategory": "消費税"
+    "taxCategory": "消費税",
+    "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6101.htm",
+    "fetchedAt": "2026-09-12T20:05:55.721Z"
   },
+  "source": "db",
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,
@@ -43,4 +44,8 @@
 ```
 
 `effectiveDate` は国税庁がページに書いている「何年何月何日現在の法令等に基づくか」で、取得日ではありません。`sections[].heading` が「根拠法令等」の節に法令名が入るので、そこから houki-egov-mcp の `get_law` につなげられます。
+
+`source` はローカル DB（`"db"`）と国税庁サイト（`"live"`）のどちらから返したかです（v0.16.0 から）。上と同じ呼び出しの 1 回目は `"live"` で、`fetchedAt` は取得した時刻（`2026-09-12T20:05:55.721Z`）でした。その結果が DB に書き戻されるので、2 回目は `"db"` になり `fetchedAt` は 1 回目の値のまま変わりません。**`"db"` の `fetchedAt` は呼び出した時刻ではなく、DB に取り込んだ日時です。** 引用するときはその値をそのまま書きます。
+
+v0.15.0 までは DB を引かずに毎回国税庁サイトから取得していたため、`fetchedAt` は常に呼び出し時刻でした（[houki-nta-mcp #29](https://github.com/shuji-bonji/houki-nta-mcp/issues/29)）。
 :::
