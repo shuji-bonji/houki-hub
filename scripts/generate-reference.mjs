@@ -744,14 +744,46 @@ async function generateLib(name) {
   writeFileSync(outPath, text);
   console.log(`  wrote ${outPath.replace(`${ROOT}/`, '')}（${counts}）`);
 
-  // 解説ページの版が古くなっていたら知らせる（文章は触らない。npm の最新版とは限らないため）
+  for (const edited of syncLibVersion(name, cfg, pkg)) console.log(`  synced version in ${edited}`);
+}
+
+/* ---------------- 解説ページの「最新 X.Y.Z」を npm の実測値に揃える ----------------
+ *
+ * 解説ページの「最新 X.Y.Z」は npm に出ている版を指すので、手元の package.json
+ * では代わりにならない（publish 前なら手元の方が進んでいる）。npm の実測値は
+ * generate-stack.mjs が `npm view` で取って stack.json の published に入れている
+ * ので、そこから写す。stack.json 自体が古いときは数字だけ動かすと嘘になるので、
+ * 手元の版と食い違っていたら知らせる。
+ */
+function syncLibVersion(name, cfg, pkg) {
   const guidePath = join(SITE, 'lib', `${name}.md`);
-  if (existsSync(guidePath)) {
-    const m = readFileSync(guidePath, 'utf8').match(/最新\s*([0-9][0-9.]*)/);
-    if (m && m[1] !== pkg.version) {
-      console.warn(`  ⚠ lib/${name}.md は「最新 ${m[1]}」だが手元は ${pkg.version}。手で直す`);
-    }
+  if (!existsSync(guidePath)) return [];
+
+  const stackPath = join(ROOT, 'stack.json');
+  if (!existsSync(stackPath)) {
+    console.warn(`  ⚠ stack.json が無いので lib/${name}.md の「最新 X.Y.Z」を揃えられない`);
+    return [];
   }
+  const published = JSON.parse(readFileSync(stackPath, 'utf8')).repos?.find((r) => r.npm === cfg.npm)?.published;
+  if (!published) {
+    console.warn(`  ⚠ stack.json に ${cfg.npm} の npm 版が無い（node scripts/generate-stack.mjs を Mac で回す）`);
+    return [];
+  }
+  if (published !== pkg.version) {
+    console.warn(`  ⚠ npm は ${published}、手元は ${pkg.version}（publish 前か、stack.json が古い）`);
+  }
+
+  const before = readFileSync(guidePath, 'utf8');
+  // "（最新 0.5.1。houki-egov-mcp 0.6.0 と …）"
+  const pattern = /(（最新\s*)[0-9][0-9.]*/;
+  if (!pattern.test(before)) {
+    console.warn(`  ⚠ lib/${name}.md に「（最新 X.Y.Z」の形が見つからない。版の同期を飛ばした`);
+    return [];
+  }
+  const after = before.replace(pattern, `$1${published}`);
+  if (after === before) return [];
+  writeFileSync(guidePath, after);
+  return [`lib/${name}.md`];
 }
 
 /* ---------------- main ---------------- */
