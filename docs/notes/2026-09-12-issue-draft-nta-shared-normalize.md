@@ -124,8 +124,8 @@ new(old(x)) === new(x)
 
 | 案 | 中身 | 所要 | 備考 |
 | --- | --- | --- | --- |
-| **A（推奨）** | 一度きりの再正規化を migration として実行する。`clause` / `document` の `title` と `full_text` を新しい正規化で UPDATE し、`content_hash` を計算し直す | ネットワーク不要。DB 内の UPDATE のみ | FTS5 はトリガーで同期しているので、base テーブルを UPDATE すれば索引も更新される |
-| B | `schema_meta` に `normalize_version` を持ち、古ければ検索時に `search_notes` で再取り込みを促す | 利用者が実行するまで不完全 | A ができるなら不要 |
+| **A（推奨）** | 一度きりの再正規化を migration として実行する。`clause` の `clause_number` / `title` / `full_text` / `paragraphs_json`、`section` の `title`、`document` の `title` / `full_text` を新しい正規化で UPDATE し、`content_hash` を計算し直す | ネットワーク不要。DB 内の UPDATE のみ | FTS5 はトリガーで同期しているので、base テーブルを UPDATE すれば索引も更新される |
+| B | `schema_meta` に `normalize_version` を持ち、古ければ検索時に `search_notes` で「まだ揃っていない」と知らせる | 利用者が何かするまで不完全なまま | A ができるなら不要 |
 | C | `SCHEMA_VERSION` を 4 → 5 に上げて `dropAndRecreate` を走らせる | 再取得 100 分 | 断りなくデータが消える。採らない |
 
 A を推します。`SCHEMA_VERSION` を 5 に上げ、`migrateV4ToV5()` で再正規化する形なら、既存の移行の仕組み（`migrateV3ToV4` と同じ並び）に収まります。
