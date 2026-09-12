@@ -31,6 +31,20 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 `search_fulltext` は、e-Gov が配布する全法令の一括データを手元の SQLite（FTS5）に取り込み、そこを検索します。
 この DB は、公式の配布データの写しと、その全文検索の索引です。原本は e-Gov 側にあります。
 
+### 早見表
+
+| 項目 | 内容 |
+| --- | --- |
+| 取得元 | e-Gov が配布する全法令の一括データ（zip 約 290 MB）を 1 本。ほかの 6 ツールは e-Gov 法令 API v2 をその場で呼びます |
+| DB ファイル | `${XDG_CACHE_HOME:-~/.cache}/houki-egov-mcp/laws.db`（`HOUKI_EGOV_DB_PATH` で変えられます。コマンドライン引数での指定はありません） |
+| テーブル | `laws` `articles` `revisions_meta` `sync_state`。全文検索の索引は `laws_fts` `articles_fts`（FTS5 trigram） |
+| 鮮度の持ち方 | DB 全体で 1 つ（`sync_state` は 1 行）。`--status` で確かめられます |
+| 更新の粒度 | 全件のみ。再実行すると版ごとに `content_hash` を比べ、変わった版だけ入れ直します（差分同期は未実装） |
+| DB が要るツール | 7 のうち 1（`search_fulltext`）。DB が無いと法令名の一致で返り、`source: "api-fallback"` が付きます |
+| 版が上がったとき | v0.5.1 より前に作った DB は `--bulk-download-everything` の実行し直しが要ります（編を持つ法令の本則が入っていません） |
+
+各項目の詳細は以下の各節にあります。
+
 ### ローカル DB を作っていないとき
 
 `search_fulltext` は呼べて、応答も返ります。ただし、返ってくるものが条文の全文検索の結果ではなくなります。
