@@ -136,15 +136,49 @@ v0.14.0 までは、どちらの場合も「DB に未投入です」と返して
 
 LLM は `next_actions[0].action` を見て、`cli_bulk_download` なら投入を案内し、検索ツール（`nta_search_*`）なら `available_doc_ids` から選ぶか検索して docId を探し直します。
 
-## ローカル DB の作り方
+## ローカル DB
+
+国税庁は、通達や質疑応答事例を機械可読な形で配布していません。公開されているのは HTML のページだけです。
+houki-nta-mcp のローカル DB は、そのページを 1 件ずつ取得し、章・節・条や文書の単位に構造化して保存したものです。
+この DB が、国税庁の資料を構造化した唯一の形です。[houki-egov-mcp](/mcp/houki-egov) と違い、その場で呼べる API はありません。
+
+### ローカル DB を作っていないとき
+
+検索はできません。取得はツールによって 3 通りに分かれます。
+
+| ツール | ローカル DB を作っていないとき |
+| --- | --- |
+| `nta_search_tsutatsu` `nta_search_qa` `nta_search_tax_answer` `nta_search_bunshokaitou` `nta_search_jimu_unei` `nta_search_kaisei_tsutatsu` | その種別が DB に 1 件も無ければエラー `DOC_NOT_FOUND` を返します。「該当なし」ではありません |
+| `nta_get_tsutatsu` | DB を先に引き、無ければ国税庁サイトから取得して DB に書き戻します。応答の `source` が `"db"` か `"live"` かで、どちらから返したか分かります |
+| `nta_get_qa` `nta_get_tax_answer` | DB を引かず、毎回国税庁サイトから取得します（1 件あたり 1 秒弱） |
+| `nta_get_kaisei_tsutatsu` `nta_get_jimu_unei` `nta_get_bunshokaitou` | DB だけを引きます。無ければ `DOC_NOT_FOUND` を返し、投入するコマンドを案内します |
+| `nta_inspect_pdf_meta` `resolve_abbreviation` | DB を使いません |
+
+::: warning 取得ツールの扱いは今後揃えます
+取得ツールの 3 通りの違いは、設計上そうしたのではなく、実装の順序が残ったものです。`nta_get_qa` と `nta_get_tax_answer` を `nta_get_tsutatsu` と同じ「DB を先に引き、無ければ取得して書き戻す」形に揃えることを検討しています。そのため、DB を作っても `nta_get_tax_answer` は現状 1 件あたり 0.7 秒ほどかかります。
+
+経緯と検討中の案は [houki-nta-mcp #29](https://github.com/shuji-bonji/houki-nta-mcp/issues/29) にあります。
+:::
+
+### 作り方
 
 ```sh
 npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything
 ```
 
-DB は `~/.cache/houki-nta-mcp/cache.db` にできます。DB がないときも、基本通達・タックスアンサー・質疑応答事例の取得（`nta_get_tsutatsu`・`nta_get_tax_answer`・`nta_get_qa`）は国税庁サイトから直接取得して応答します（1 件あたり 1 秒弱）。改正通達・事務運営指針・文書回答事例の取得と、すべての検索には DB が必要です。
-2 回目以降は国税庁サイトが `304 Not Modified` を返す節を飛ばすので短時間で終わります。
-節の本文を解析し直したいとき（v0.10.0 以前の DB に算式画像のプレースホルダを入れる場合など）は `--refresh` を付けます。
+6 種別をまとめて取り込みます。国税庁サイトを 1 ページずつ取りに行くので時間がかかります。
+必要な種別だけを先に入れることもできます。所要時間は `--help` の記載です。
+
+| コマンド | 対象 | 目安 |
+| --- | --- | --- |
+| `--bulk-download-everything` | 6 種別すべて | 約 100 分 |
+| `--bulk-download-all` | 基本通達 4 種（消基通・所基通・法基通・相基通） | — |
+| `--bulk-download` | `--tsutatsu=<正式名>` で指定した 1 つの通達 | — |
+| `--bulk-download-kaisei` | 改正通達（基本通達 4 種分の一覧） | — |
+| `--bulk-download-jimu-unei` | 事務運営指針 | — |
+| `--bulk-download-bunshokaitou` | 文書回答事例 | 全税目で 30 分超 |
+| `--bulk-download-tax-answer` | タックスアンサー 約 850 件 | 約 15 分 |
+| `--bulk-download-qa` | 質疑応答事例 9 税目・2,000 件超 | — |
 
 ### 税目を絞って投入する
 
@@ -156,9 +190,96 @@ DB は `~/.cache/houki-nta-mcp/cache.db` にできます。DB がないときも
 | `--tax-answer-taxonomy`（タックスアンサー） | `shotoku` / `gensen` / `joto` / `sozoku` / `hojin` / `shohi` / `inshi` / `osirase` |
 | `--qa-topic`（質疑応答事例） | `shotoku` / `gensen` / `joto` / `sozoku` / `hyoka` / `hojin` / `shohi` / `inshi` / `hotei` |
 
+```sh
+# 消費税と所得税の文書回答事例だけ
+npx -y @shuji-bonji/houki-nta-mcp --bulk-download-bunshokaitou --bunsho-taxonomy=shohi,shotoku
+
+# 消費税のタックスアンサーだけ
+npx -y @shuji-bonji/houki-nta-mcp --bulk-download-tax-answer --tax-answer-taxonomy=shohi
+```
+
 v0.14.2 から、一覧に無い値を渡すと、何も投入せずに使える値を表示して終了します（終了コード 1）。`--help` にも同じ一覧が出ます。v0.14.1 までは値を見ていなかったため、税目を打ち間違えても 0 件のまま正常終了していました（[houki-nta-mcp#25](https://github.com/shuji-bonji/houki-nta-mcp/issues/25)）。
 
 `--bunsho-taxonomy` の絞り込みは本庁の索引（`/law/bunshokaito/01.htm`）の節に対して行うので、`sozoku` と `souzoku` のどちらを渡しても同じ節の文書が入ります。その節には国税局のページへのリンクも並ぶため、DB には両方の表記が入ります。
+
+### 元データが変わったときに何が起きるか
+
+国税庁サイトのページは、書き換えられることも、索引から外れることもあります。
+bulk download を実行し直すと、取得前の DB と取得後の DB を突き合わせて、種別ごとに 4 つに分けて数えます。
+
+```mermaid
+flowchart TB
+  N["国税庁サイトの索引"]
+  P["ページを 1 件ずつ取得する"]
+  DB[("cache.db<br/>tsutatsu / chapter / section / clause / document")]
+  C{"取得前の DB と突き合わせる"}
+  A["新規: 索引にあって DB に無かった"]
+  B["更新: content_hash が変わった"]
+  D["索引から消えた: DB にあって索引に無い"]
+  E["移動の推定: 消えたものと新規でタイトルが一致する"]
+  R["索引から消えた文書も DB に残す"]
+
+  N --> P
+  P --> DB
+  P --> C
+  C --> A
+  C --> B
+  C --> D
+  C --> E
+  D --> R
+  R --> DB
+```
+
+索引から消えた文書を削除しないのは、国税庁サイトから外れても、過去の課税期間の判断では意味を持つ通達があるためです。
+
+::: warning 索引から消えた文書は、現行の文書と区別が付きません
+消えたことを記録する列が `document` テーブルに無いため、`nta_search_*` の結果に現行の文書と同じ形で並びます。
+`sourceUrl` を開くと 404 になることがあり、`freshness` は「古い」とは言いますが「索引から消えた」とは言いません。
+応答で区別できるようにすることを検討しています。
+:::
+
+「更新」が索引の件数の 50% を超えると、bulk download の最後に「構造変質の疑い」の警告が出ます。
+国税庁がページの作りを一斉に変えたか、houki-nta-mcp の解析方法が変わったか、どちらかが起きたことを示します。
+houki-nta-mcp 側で解析を変えた直後は、国税庁のページが変わっていなくてもこの警告が出ます。
+
+### 取り直す
+
+節ごとに `fetched_at` を持っているので、古いものだけを選んで取り直せます。まず対象を一覧で確かめ、それから実行します。
+
+```sh
+# 30 日以上古い節を一覧する（この時点では何も取得しません）
+npx -y @shuji-bonji/houki-nta-mcp --refresh-stale=30
+
+# 実際に取り直す
+npx -y @shuji-bonji/houki-nta-mcp --refresh-stale=30 --apply
+```
+
+全部を入れ直すときは `--refresh` を付けます。既存のデータを消してから取り直すので、最初の投入と同じだけ時間がかかります。
+
+```sh
+npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything --refresh
+```
+
+`--refresh` を付けずに再実行したときは、国税庁サイトが `304 Not Modified` を返す節を飛ばすので短時間で終わります。
+本文の解析だけをやり直したいとき（v0.10.0 以前の DB に算式画像のプレースホルダを入れる場合など）は `--refresh` を使います。
+
+### 置き場所
+
+既定は `${XDG_CACHE_HOME:-~/.cache}/houki-nta-mcp/cache.db` です。
+`--db-path=<path>` か、環境変数 `HOUKI_NTA_DB_PATH` で変えられます。
+
+bulk download を実行したシェルと MCP サーバーとで `HOUKI_NTA_DB_PATH` や `XDG_CACHE_HOME` が違うと、
+投入したはずの種別が `DOC_NOT_FOUND` になります。検索の応答の `hint` には、MCP サーバーが開いている DB ファイルのパスが入ります。
+
+### パッケージを更新したとき
+
+DB はパッケージの更新で消えません。保存の形が変わったときは、起動時に移行します。
+
+| 版 | 起きること |
+| --- | --- |
+| v0.15.0 | v0.14.2 以前に作った DB は、最初の起動時に一度だけ文字列を入れ直します（全角英字の正規化）。国税庁サイトへの再アクセスはありません |
+
+各版で何が変わったかは、リポジトリの [CHANGELOG](https://github.com/shuji-bonji/houki-nta-mcp/blob/main/CHANGELOG.md) にあります。
 
 ## 国税庁サイトの変更への備え
 

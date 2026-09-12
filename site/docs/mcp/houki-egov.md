@@ -28,27 +28,100 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 
 ## 全文検索のためのローカル DB
 
-`search_fulltext` は、e-Gov の一括ダウンロードから SQLite（FTS5）を作って検索します。
+`search_fulltext` は、e-Gov が配布する全法令の一括データを手元の SQLite（FTS5）に取り込み、そこを検索します。
+この DB は、公式の配布データの写しと、その全文検索の索引です。原本は e-Gov 側にあります。
+
+### ローカル DB を作っていないとき
+
+`search_fulltext` は呼べて、応答も返ります。ただし、返ってくるものが条文の全文検索の結果ではなくなります。
+
+| ローカル DB | `search_fulltext` が返すもの |
+| --- | --- |
+| ある | 条文の本文を横断した全文検索の結果。ヒットごとに条番号・snippet・score・`freshness` が付きます |
+| 無い | `search_law` と同じ**法令名の一致**の結果。`source: "api-fallback"` が付き、`next_actions` に DB の作り方が入ります |
+
+ほかの 6 ツール（`search_law`・`get_law`・`get_toc`・`get_law_revisions`・`resolve_abbreviation`・`explain_law_type`）は
+e-Gov 法令 API をその場で呼ぶので、DB の有無に関係なく同じように動きます。
+
+### 作り方
 
 ```sh
 npx -y @shuji-bonji/houki-egov-mcp --bulk-download-everything
 ```
 
-DB の場所は `~/.cache/houki-egov-mcp/laws.db`（`HOUKI_EGOV_DB_PATH` で変更可）です。
-書き込みは CLI だけが行い、MCP サーバーは読むだけなので、取り込み中に検索しても壊れません。
+全法令の zip（約 290 MB）を 1 本取得して取り込みます。進み具合は標準エラー出力に出ます。
+書き込むのはこの CLI だけで、MCP サーバーは読むだけなので、取り込み中に検索しても壊れません。
 
-検索は次のように動きます。
+差分だけを取り込む手段は、まだ用意していません（`--bulk-download-by-date` はデバッグ用です）。
+最新にするときは、同じコマンドをもう一度実行します。
+
+### 元データが変わったときに何が起きるか
+
+法令が改正されると、e-Gov の配布データにその法令の新しい**版**が入ります。
+`--bulk-download-everything` を実行し直すと、版ごとに `content_hash` を比べて、変わった版だけを入れ直します。
+
+```mermaid
+flowchart TB
+  Z["e-Gov 配布の全法令 zip<br/>約 290 MB"]
+  DB[("laws.db<br/>laws / articles / revisions_meta / sync_state")]
+  S["search_fulltext<br/>現行の版だけを検索する"]
+  H{"版ごとに content_hash を比べる"}
+  U["変わった版を入れ直す"]
+  K["変わっていない版は触らない"]
+  O["前の版の行は DB に残る"]
+
+  Z -->|初回の取り込み| DB
+  DB --> S
+  Z -->|再実行| H
+  H --> U
+  H --> K
+  U --> DB
+  U --> O
+  O -.->|検索には出ない| S
+```
+
+古い版の行は DB に残りますが、検索には出ません。
+`search_fulltext` は `current_revision_status = 'CurrentEnforced' OR remain_in_force = 1` で現行の版に絞るためです。
+過去の版を見たいときは、`get_law_revisions` で改正履歴を引いてください。
+
+### 同期の状態を見る
+
+```sh
+npx -y @shuji-bonji/houki-egov-mcp --status
+```
+
+DB のパス、`laws` と `articles` の件数、最後に同期した日付、経過日数、`fresh` / `stale` / `outdated` の判定を表示します。
+まだ取り込んでいなければ、その旨と実行するコマンドが出ます。
+鮮度は DB 全体で 1 つです（`sync_state` は 1 行しかありません）。しきい値は houki-hub family で共通で、[ローカル DB（全文検索用）](/guide/local-database)にまとめています。
+
+### 置き場所
+
+既定は `${XDG_CACHE_HOME:-~/.cache}/houki-egov-mcp/laws.db` です。
+環境変数 `HOUKI_EGOV_DB_PATH` で変えられます。コマンドライン引数での指定はありません。
+
+MCP サーバーと CLI で `HOUKI_EGOV_DB_PATH` や `XDG_CACHE_HOME` が違うと、別々のファイルを指すことになります。
+取り込んだはずなのに `search_fulltext` の応答に `source: "api-fallback"` が付くときは、まずここを確かめてください。
+
+### パッケージを更新したとき
+
+DB はパッケージの更新で消えません。取り込み方が変わったときだけ、取り直しが要ります。
+
+| 版 | すること |
+| --- | --- |
+| v0.5.0 / v0.5.1 | `--bulk-download-everything` を実行し直します。v0.5.1 より前に作った DB には、編（Part）を持つ法令（民法・会社法など）の本則が入っていません |
+
+各版で何が変わったかは、リポジトリの [CHANGELOG](https://github.com/shuji-bonji/houki-egov-mcp/blob/main/CHANGELOG.md) にあります。
+
+### 検索の書き方
 
 - 「民法 不法行為」のように法令名と語を並べると、法令名で絞り込んでから本文を検索します
 - 「民法 第709条」「消費税法 第57条の2」のように法令名と条番号だけなら、検索せずにその条を直接返します
-- 2 文字の語（「株主」「責任」）は索引に乗らないため、ヒットした本文に含まれるかで補完します
+- 2 文字の語（「株主」「責任」）は trigram の索引に乗らないため、ヒットした本文に含まれるかで補完します
 
 ## 知っておくとよいこと
 
 - 引数は `tools/list` の inputSchema どおりに渡してください。v0.6.0 から、inputSchema に無い引数は `INVALID_ARGUMENT` になり、`detail.issues[].path` にその引数名が入ります
 - 項が 1 つだけの条（「消費税法施行令第14条の3第1号」のように第1項を書かない条）は、`paragraph` を省いて `item` だけで号を引けます。項が複数ある条で `paragraph` を省くと `INVALID_ARGUMENT` です（v0.6.0 から。v0.5.4 までは `item` を黙って無視して条全体を返していました）
-
-- v0.5.1 より前に作った DB には、編（Part）を持つ法令（民法・会社法など）の本則が入っていません。`--bulk-download-everything` を再実行してください
 - `get_toc` は附則の条を編・章の外に平坦に並べます（既知の課題）
 - 民法・消費税法のような大きな法令は応答が長くなります。`get_toc` で位置を確かめてから `get_law` で条を指定してください
 
