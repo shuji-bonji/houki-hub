@@ -60,7 +60,7 @@ const REGISTRY = [
   { name: 'houki-nta-mcp',        dir: 'mcp/houki-nta-mcp',        npm: '@shuji-bonji/houki-nta-mcp',        layer: 'source',        form: 'mcp-server', status: 'released', public: true,
     note: '国税庁。法令解釈通達・質疑応答事例・タックスアンサー・文書回答・事務運営指針・改正通達。14 tools。family の参照実装' },
   { name: 'houki-abbreviations',  dir: 'lib/houki-abbreviations',  npm: '@shuji-bonji/houki-abbreviations',  layer: 'dictionary',    form: 'library',    status: 'released', public: true,
-    note: '略称辞書 174 エントリ（6 分野）+ 全角ゆらぎ正規化 + 鮮度判定 + 逆引き + 検証ヘルパ。全 MCP が依存 (^0.4.1 指定のため MCP に入るのは 0.4.1。0.5.0 の追加分は MCP 未使用)' },
+    note: '略称辞書 174 エントリ（6 分野）+ 全角ゆらぎ正規化 + 鮮度判定 + 逆引き + 検証ヘルパ。全 MCP が依存 (^0.4.1 指定のため MCP に入るのは 0.4.1。0.5 系で足した逆引き・検証は MCP 未使用)' },
   { name: 'houki-research-skill', dir: 'skill/houki-research-skill', npm: null,                              layer: 'procedure',     form: 'skill',      status: 'released', public: true,
     note: 'family 横断の手順。error contract / citation / 業法独占規定（弁護士法 72 条・税理士法 52 条・社労士法 27 条）の正典。workflow は tax-research のみ' },
   { name: 'houki-hub',            dir: '.',                        npm: null,                                layer: 'hub',           form: 'site',       status: 'released', public: true,

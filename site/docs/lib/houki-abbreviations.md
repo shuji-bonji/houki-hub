@@ -8,14 +8,14 @@ description: 法令・通達の略称を正式名と法令 ID に解決し、全
 法令・通達の略称辞書と、それを取り巻く小さな関数群です。houki-hub family の MCP サーバーはすべてこのパッケージを依存に持ちます。
 MCP サーバーではなく、開発者のコードが import するライブラリです。
 
-- npm: [`@shuji-bonji/houki-abbreviations`](https://www.npmjs.com/package/@shuji-bonji/houki-abbreviations)（最新 0.5.0。houki-egov-mcp 0.6.0 と houki-nta-mcp 0.14.2 が取り込んでいるのは 0.4.1）
+- npm: [`@shuji-bonji/houki-abbreviations`](https://www.npmjs.com/package/@shuji-bonji/houki-abbreviations)（最新 0.5.1。houki-egov-mcp 0.6.0 と houki-nta-mcp 0.14.2 が取り込んでいるのは 0.4.1）
 - リポジトリ: [shuji-bonji/houki-abbreviations](https://github.com/shuji-bonji/houki-abbreviations)
 - 動作環境: Node.js 20 以上。依存パッケージなし
 - 関数と型の一覧: [API リファレンス](/reference/lib/houki-abbreviations)（型定義から自動生成）
 
-## 辞書の中身（0.5.0）
+## 辞書の中身
 
-174 エントリを 6 分野に分けて持ちます。
+174 エントリを 6 分野に分けて持ちます。中身は v0.2.0 以降変わっていません。
 
 | 分野 | 件数 | 例 |
 | --- | --- | --- |
@@ -33,8 +33,8 @@ MCP サーバーではなく、開発者のコードが import するライブ�
 ## MCP が使っている版と最新版の関係
 
 houki-egov-mcp と houki-nta-mcp の `package.json` は `^0.4.1` を指定しています。0.x 系の `^` は minor を跨がないので、
-両 MCP に入るのは 0.4.x で、0.5.0 は入りません。0.5.0 で足した逆引きと検証は MCP からは呼ばれておらず、辞書の中身は 0.4.1 と 0.5.0 で同じなので、
-動作上の差はありません。
+両 MCP に入るのは 0.4.x で、0.5 系は入りません。0.5.0 で足した逆引きと検証は MCP からは呼ばれておらず、
+辞書の中身も 0.4.1 から変わっていないので、動作上の差はありません。
 
 両 MCP が実際に読み込んでいるのは、公開している 42 記号のうち 16 記号（関数 5・定数 5・型 6）です。
 どれを使っているかは、[API リファレンス](/reference/lib/houki-abbreviations)の一覧にある「family での使用」列で確かめられます。
