@@ -48,7 +48,10 @@ const sidebar = {
   '/lib/': [
     {
       text: 'ライブラリ',
-      items: [{ text: 'houki-abbreviations', link: '/lib/houki-abbreviations' }]
+      items: [
+        { text: 'houki-abbreviations', link: '/lib/houki-abbreviations' },
+        { text: 'API リファレンス', link: '/reference/lib/houki-abbreviations' }
+      ]
     }
   ],
   '/skills/': [
@@ -59,11 +62,15 @@ const sidebar = {
   ],
   '/reference/': [
     {
-      text: 'ツールリファレンス',
+      text: 'MCP ツール',
       items: [
         { text: 'houki-egov-mcp', link: '/reference/mcp/houki-egov' },
         { text: 'houki-nta-mcp', link: '/reference/mcp/houki-nta' }
       ]
+    },
+    {
+      text: 'ライブラリ API',
+      items: [{ text: 'houki-abbreviations', link: '/reference/lib/houki-abbreviations' }]
     }
   ]
 };

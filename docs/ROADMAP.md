@@ -84,6 +84,7 @@ graph TB
 
 | 日付 | できごと |
 |---|---|
+| 2026-09-12 | houki-abbreviations の API リファレンスを追加（hub）。`generate-reference.mjs` に `dist/index.d.ts` を読む経路を足し、`/reference/lib/houki-abbreviations` を生成。版と節は JSDoc の `@since` / `@group`、「family での使用」列は `mcp/*/src` の import 走査から取る。あわせて houki-abbreviations の README の `searchByName` ほか 3 関数の第 1 引数の誤りと、JSDoc の例の古い実数を修正 |
 | 2026-09-12 | houki-nta-mcp #25 起票・v0.14.2 publish（bulk download の税目フラグの値を検証し、打ち間違いは何も投入せず使える値を表示して exit 1。`--bunsho-taxonomy` は国税局の表記も受け付け本庁の表記に直す。`--help` と README に値の一覧）。houki-hub の版表記と bulk download の節を更新 |
 | 2026-09-12 | houki-research-skill v0.5.0 の点検で 6 件を修正（issue は立てずに進めた）。houki-nta-mcp v0.14.1（取得系 3 ツールで、docId の誤りと DB にその種別が無いことを分けて返す）、houki-research-skill v0.5.1（`next_actions[].example` から `mcp` と `tool` を除いて渡す、エラー回復例を実測に差し替え、`INVALID_ARGUMENT` の未知の引数、鉄則の数）。houki-hub の版表記と説明を更新 |
 | 2026-09-12 | 残りの一括対応（issue は立てずに進めた）。houki-egov-mcp v0.6.0（`get_law` の `item` の枝番号、引数の型を inputSchema から導く、未知の引数を拒否）、houki-nta-mcp v0.14.0（同じ仕組み、`nta_search_tsutatsu` の `type` / `domain` 削除、文書回答事例の税目の別表記、枝番号の号の `next_actions`）、houki-research-skill v0.5.0（質疑応答事例の手順、検索の `DOC_NOT_FOUND`）。houki-hub の版表記と説明を更新 |
