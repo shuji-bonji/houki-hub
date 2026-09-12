@@ -15,7 +15,7 @@ description: houki-hub family の各部品の版と、次に取り組む順序�
 | [houki-egov-mcp](/mcp/houki-egov) | 0.6.0 | 法律・政令・省令の検索・本文取得・目次・改正履歴。ローカル DB を作れば条文本文の全文検索 |
 | [houki-nta-mcp](/mcp/houki-nta) | 0.17.0 | 国税庁の基本通達 4 種（消基通・所基通・法基通・相基通）・改正通達・事務運営指針・文書回答事例・タックスアンサー・質疑応答事例の検索と取得。基本通達と質疑応答事例の応答から、根拠になる法律を houki-egov-mcp で引くよう案内します。検索が 0 件のときと、取得で docId が見つからないときは、DB に無いのか該当が無いのかを分けて返します。取得ツールはどれもローカル DB を先に引き、応答の `source` でどちらから返したかが分かります。国税庁の索引から消えた文書は消さずに残し、検索結果で現行の文書と区別できます |
 | [houki-abbreviations](/lib/houki-abbreviations) | 0.5.1 | 略称 174 エントリの解決、正規化、鮮度判定、法令 ID からの逆引き |
-| [houki-research](/skills/houki-research) | 0.5.1 | 税務調査の手順（tax-research）、citation 書式、エラー契約、業法の注意喚起。個別の事案への当てはめを求められたときに返すもの・返さないものを表で定めています。通達や質疑応答事例を引いたら、houki-nta-mcp の案内に従って法律本文へ戻る手順があります |
+| [houki-research](/skills/houki-research) | 0.6.0 | 税務調査の手順（tax-research）、citation 書式、エラー契約、業法の注意喚起。個別の事案への当てはめを求められたときに返すもの・返さないものを表で定めています。通達や質疑応答事例を引いたら、houki-nta-mcp の案内に従って法律本文へ戻る手順があります。国税庁の索引から外れた文書を、現在の取扱いの根拠にしない手順もあります |
 
 ## 予定している部品
 
@@ -23,7 +23,7 @@ description: houki-hub family の各部品の版と、次に取り組む順序�
 timeline
     title 着手の順序（時期は未定）
     公開済み : houki-egov-mcp : houki-nta-mcp : houki-abbreviations : houki-research
-    次 : houki-hub サイト公開 : houki-nta-mcp v1.0 : houki-research v0.2 (revision-tracking)
+    次 : houki-nta-mcp v1.0 : houki-research の workflow 追加 (revision-tracking)
     その後 : houki-metadata-mcp (公布→施行ラグ) : houki-abbreviations v0.6 (synonym 展開)
     構想 : houki-mhlw-mcp : houki-saiketsu-mcp : houki-court-mcp : houki-specialist-plugin
 ```
