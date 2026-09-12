@@ -9,7 +9,7 @@ description: 国税庁サイトの基本通達・改正通達・事務運営指�
 ローカル SQLite に取り込み、FTS5 で全文検索する MCP サーバーです。
 法律本文（法・政令・省令）は [houki-egov-mcp](/mcp/houki-egov) が担当します。
 
-- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.14.1）
+- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.14.2）
 - リポジトリ: [shuji-bonji/houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp)
 - 動作環境: Node.js 22 以上
 
@@ -145,6 +145,20 @@ npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything
 DB は `~/.cache/houki-nta-mcp/cache.db` にできます。DB がないときも、基本通達・タックスアンサー・質疑応答事例の取得（`nta_get_tsutatsu`・`nta_get_tax_answer`・`nta_get_qa`）は国税庁サイトから直接取得して応答します（1 件あたり 1 秒弱）。改正通達・事務運営指針・文書回答事例の取得と、すべての検索には DB が必要です。
 2 回目以降は国税庁サイトが `304 Not Modified` を返す節を飛ばすので短時間で終わります。
 節の本文を解析し直したいとき（v0.10.0 以前の DB に算式画像のプレースホルダを入れる場合など）は `--refresh` を付けます。
+
+### 税目を絞って投入する
+
+文書回答事例・タックスアンサー・質疑応答事例は件数が多いので、税目で絞ると短時間で終わります。渡せる値は次のとおりです。
+
+| フラグ | 使える値 |
+| --- | --- |
+| `--bunsho-taxonomy`（文書回答事例） | `shotoku` / `gensen` / `joto-sanrin` / `sozoku` / `zoyo` / `hyoka` / `hojin` / `shohi` / `shozei` / `sonota`（国税局の表記 `souzoku` / `gensenshotoku` / `joto_sanrin` も可） |
+| `--tax-answer-taxonomy`（タックスアンサー） | `shotoku` / `gensen` / `joto` / `sozoku` / `hojin` / `shohi` / `inshi` / `osirase` |
+| `--qa-topic`（質疑応答事例） | `shotoku` / `gensen` / `joto` / `sozoku` / `hyoka` / `hojin` / `shohi` / `inshi` / `hotei` |
+
+v0.14.2 から、一覧に無い値を渡すと、何も投入せずに使える値を表示して終了します（終了コード 1）。`--help` にも同じ一覧が出ます。v0.14.1 までは値を見ていなかったため、税目を打ち間違えても 0 件のまま正常終了していました（[houki-nta-mcp#25](https://github.com/shuji-bonji/houki-nta-mcp/issues/25)）。
+
+`--bunsho-taxonomy` の絞り込みは本庁の索引（`/law/bunshokaito/01.htm`）の節に対して行うので、`sozoku` と `souzoku` のどちらを渡しても同じ節の文書が入ります。その節には国税局のページへのリンクも並ぶため、DB には両方の表記が入ります。
 
 ## 国税庁サイトの変更への備え
 
