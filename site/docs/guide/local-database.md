@@ -59,6 +59,8 @@ DB を作っていない状態で、どのツールがどう振る舞うかの�
 
 ::: warning 取得ツールの扱いは今後揃えます
 取得ツールの 3 通りの違いは、設計上そうしたのではなく、実装の順序が残ったものです。`nta_get_qa` と `nta_get_tax_answer` を `nta_get_tsutatsu` と同じ「DB を先に引き、無ければ取得して書き戻す」形に揃えることを検討しています。そのため、DB を作っても `nta_get_tax_answer` は現状 1 件あたり 0.7 秒ほどかかります。
+
+経緯と検討中の案は [houki-nta-mcp #29](https://github.com/shuji-bonji/houki-nta-mcp/issues/29) にあります。
 :::
 
 ## 作り方

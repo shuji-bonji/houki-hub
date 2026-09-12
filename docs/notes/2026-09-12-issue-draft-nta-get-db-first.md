@@ -2,6 +2,7 @@
 
 対象リポジトリ: houki-nta-mcp（2026-09-12 作成）
 提出先: https://github.com/shuji-bonji/houki-nta-mcp/issues
+**起票済み: [#29](https://github.com/shuji-bonji/houki-nta-mcp/issues/29)**
 タイトル案: 取得ツールの DB の使い方を揃える（`nta_get_tax_answer` / `nta_get_qa` は DB を引いていない）
 
 ---

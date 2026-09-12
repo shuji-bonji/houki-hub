@@ -2,6 +2,7 @@
 
 対象リポジトリ: houki-nta-mcp（2026-09-12 作成）
 提出先: https://github.com/shuji-bonji/houki-nta-mcp/issues
+**起票済み: [#27](https://github.com/shuji-bonji/houki-nta-mcp/issues/27)**（v0.15.0 で対応・close 済み）
 タイトル案: `normalizeJpText` を houki-abbreviations の共通実装に置き換える（全角英字が半角にならない）
 
 ---
