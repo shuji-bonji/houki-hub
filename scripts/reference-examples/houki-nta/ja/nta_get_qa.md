@@ -1,6 +1,6 @@
 ::: details 呼び出し例 — 「消費税の質疑応答事例 02/19 の照会と回答、関係法令通達」
-- 実測: v0.12.0（2026-09-11）
-- ローカル DB: 不要（この例では国税庁サイトから取得）
+- 実測: v0.17.0（2026-09-13）
+- ローカル DB: 不要。ただし DB に構造があればそこから返る（この例は 2 回目の呼び出しで `source: "db"`）
 
 **引数**
 
@@ -29,8 +29,9 @@
     "notice": "令和7年8月1日現在の法令・通達等に基づいて作成しています。\n\nこの質疑事例は、照会に係る事実関係を前提とした一般的な回答であり、…この回答内容と異なる課税関係が生ずることがあることにご注意ください。",
     "basisDate": "2025-08-01",
     "sourceUrl": "https://www.nta.go.jp/law/shitsugi/shohi/02/19.htm",
-    "fetchedAt": "2026-09-11T11:50:13.932Z"
+    "fetchedAt": "2026-09-12T18:37:44.863Z"
   },
+  "source": "db",
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,
@@ -61,6 +62,10 @@
 【関係法令通達】の原文は `relatedLaws` にそのまま残り、法令は `related_laws`、通達は `related_tsutatsu` に分けて入ります。`next_actions` の `example` は、そのまま houki-egov-mcp の `get_law` と `nta_get_tsutatsu` の引数として使えます。
 
 ページ下部の国税庁の注記（何年何月何日現在の法令に基づくか、個別の取引には異なる課税関係が生じうること）は `notice` に入り、基準日は `basisDate` に入ります。この注記は回答に残してください。
+
+`source` はローカル DB（`"db"`）と国税庁サイト（`"live"`）のどちらから返したかです（v0.16.0 から）。1 回目は `"live"` で、その結果が DB に書き戻されるので 2 回目からは `"db"` になります。`"db"` の `fetchedAt` は呼び出した時刻ではなく DB に取り込んだ日時なので、引用するときはその値をそのまま書きます。v0.15.0 までは毎回国税庁サイトから取得していました（[houki-nta-mcp #29](https://github.com/shuji-bonji/houki-nta-mcp/issues/29)）。
+
+国税庁の索引から外れた文書には `index_status: "removed_from_index"` と `orphaned_at` が付きます（v0.17.0 から）。この事例は索引にあるので付いていません。
 :::
 
 ::: details 呼び出し例 — 枝番号の号を挙げている事例（法人税 33/02）
