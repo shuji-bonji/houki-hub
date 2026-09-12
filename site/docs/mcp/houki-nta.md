@@ -142,6 +142,20 @@ LLM は `next_actions[0].action` を見て、`cli_bulk_download` なら投入を
 houki-nta-mcp のローカル DB は、そのページを 1 件ずつ取得し、章・節・条や文書の単位に構造化して保存したものです。
 この DB が、国税庁の資料を構造化した唯一の形です。[houki-egov-mcp](/mcp/houki-egov) と違い、その場で呼べる API はありません。
 
+### 早見表
+
+| 項目 | 内容 |
+| --- | --- |
+| 取得元 | 国税庁サイトの HTML ページを 1 ページずつ。機械可読な配布データはありません |
+| DB ファイル | `${XDG_CACHE_HOME:-~/.cache}/houki-nta-mcp/cache.db`（`--db-path=<path>` か `HOUKI_NTA_DB_PATH` で変えられます） |
+| テーブル | 基本通達は `tsutatsu` `chapter` `section` `clause`、ほかの 5 種別は `document`。全文検索の索引は `clause_fts` `document_fts`（FTS5 trigram） |
+| 鮮度の持ち方 | 行ごとの `fetched_at`。応答の `freshness` は、その検索が見た範囲の最古・最新と経過日数です |
+| 更新の粒度 | 節（基本通達）と文書（ほかの 5 種別）ごと。再実行では条件付き GET を使い、変わっていないページは取得しません |
+| DB が要るツール | 14 のうち 9（検索 6 つと、改正通達・事務運営指針・文書回答事例の取得 3 つ）。`nta_get_tsutatsu` `nta_get_qa` `nta_get_tax_answer` は DB が無くても動きます |
+| 版が上がったとき | 起動時に自動で移行します。国税庁サイトへの再アクセスはありません（v0.15.0・v0.16.0・v0.17.0 の 3 回） |
+
+各項目の詳細は以下の各節にあります。
+
 ### ローカル DB を作っていないとき
 
 検索はできません。取得は 6 つとも DB を先に引きますが、DB に無かったときの動きが 2 通りに分かれます。

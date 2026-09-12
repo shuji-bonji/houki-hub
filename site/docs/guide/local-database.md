@@ -31,12 +31,14 @@ houki-egov-mcp は、書き込むのが CLI だけなので、取り込み中に
 | **役割** | 公式の一括配布データの写しと、全文検索の索引 | 国税庁サイトを構造化した唯一の形 |
 | **作っていないとき** | 全文検索だけが使えません（ほかは API で動きます） | 検索と、一部の取得ができません |
 | 取得元 | e-Gov 配布の全件 zip（約 290 MB）1 本 | 国税庁の HTML を 1 ページずつ |
+| DB ファイル | `${XDG_CACHE_HOME:-~/.cache}/houki-egov-mcp/laws.db` | `${XDG_CACHE_HOME:-~/.cache}/houki-nta-mcp/cache.db` |
 | DB が要るツール | 7 つ中 1 つ（`search_fulltext`） | 14 つ中 9 つ |
 | 単位 | `law_revision_id`（法令の**版**） | 通達は 章 → 節 → 条、文書は `doc_type` と `doc_id` |
 | テーブル | `laws` `articles` `revisions_meta` `sync_state` | `tsutatsu` `chapter` `section` `clause` `document` |
 | 鮮度の持ち方 | `sync_state`（DB 全体で 1 行） | 行ごとの `fetched_at` |
 | 更新の粒度 | 全件のみ（差分同期は未実装） | 節・文書ごと |
-| 元データが変わると | `content_hash` が変わった版だけ入れ直します。古い版は残りますが、検索は現行の版に絞ります | 新規・更新・索引から消えた・移動の推定、の 4 つに分けて数えます。索引から消えた文書も残り、印が付かないので検索に出ます |
+| 元データが変わると | `content_hash` が変わった版だけ入れ直します。古い版は残りますが、検索は現行の版に絞ります | 新規・更新・索引から消えた・移動の推定、の 4 つに分けて数えます。索引から消えた文書も残り、印が付くので検索結果で現行の文書と区別できます |
+| 版が上がったとき | v0.5.1 より前に作った DB は取り込み直しが要ります | 起動時に自動で移行します（取り込み直しは不要） |
 | 詳しくは | [houki-egov-mcp](/mcp/houki-egov#全文検索のためのローカル-db) | [houki-nta-mcp](/mcp/houki-nta#ローカル-db) |
 
 ## 共通していること
