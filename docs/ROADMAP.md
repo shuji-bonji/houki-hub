@@ -8,7 +8,7 @@
 ```mermaid
 graph TB
     subgraph Skill層["Skill 層（正典）"]
-        SKILL["houki-research-skill v0.5.1<br/>error contract / citation / 業法独占規定<br/>plugin 化済み。workflow は tax-research のみ"]
+        SKILL["houki-research-skill v0.6.0<br/>error contract / citation / 業法独占規定<br/>plugin 化済み。workflow は tax-research のみ"]
     end
     subgraph MCP層["MCP 層（SDK v2 / Node 22 / Biome に統一済み）"]
         EGOV["houki-egov-mcp v0.6.0<br/>e-Gov 法令 API v2 / 7 tools<br/>bulk DL → SQLite FTS5 全文検索まで完了"]
@@ -39,7 +39,7 @@ graph TB
 | houki-egov-mcp | 0.6.0 | Phase 2-7（`search_fulltext` を FTS5 に接続）完了。編（Part）を持つ法令の取り込み漏れを v0.5.1 で修正。tools/call の引数を `inputSchema` で検証し `INVALID_ARGUMENT` を返す（v0.5.3）。`get_law` の Markdown で、枝番号の条の見出しを「第70条の6」に、号を「八 資産の譲渡等　…」に、号の下のイ・ロ・ハを箇条書きにし、項の直下の表（所得税法 89 条 1 項の税率表など）を Markdown の表で出すように修正（v0.5.4 / #16）。`get_law` の `item` で枝番号の号（`"8の2"`）を指定でき、項が 1 つの条は `paragraph` なしで号を引ける。引数の型を inputSchema から導き（json-schema-to-ts）、inputSchema に無い引数は `INVALID_ARGUMENT`（v0.6.0） |
 | houki-nta-mcp | 0.17.0 | SDK v2 移行（v0.10.0）でエラー応答を family contract に統一。Issue #17 / #18 対応（v0.10.1 / v0.10.2）。文書回答事例の本文（表と別紙）を取り込むように修正し、`--refresh` を全 6 種別に効かせた（v0.10.3 / v0.10.4）。基本通達の応答に `base_laws`（検索は `base_laws_by_tsutatsu`）と houki-egov の `get_law` への成功時 `next_actions` を追加（v0.11.0 / #20）。通称（aliases）の OR 展開は元の語で 0 件のときだけに変更、略称そのものは常時展開のまま（v0.11.1 / #21）。#20 の提案 3 を #22 に切り出し、質疑応答事例の【関係法令通達】を `related_laws` / `related_tsutatsu` に構造化して `get_law` と `nta_get_tsutatsu` への成功時 `next_actions` を追加、ページ下部の注記を `notice` / `basisDate` に分離（v0.12.0 / #22。参照 5,059 個の 94.2% を構造化）。文書系の検索 5 ツールで、その種別の文書が DB に無いときはエラー `DOC_NOT_FOUND`、キーワードに合わないだけの 0 件は件数付きの `hint` に分け、`nta_search_qa` の `domain` が必ず 0 件になる不具合を直して `topic` を追加（v0.13.0 / #23）。引数の型を inputSchema から導き未知の引数を拒否、`nta_search_tsutatsu` の使われていない `type` / `domain` を削除、文書回答事例の税目の別表記（`sozoku` / `souzoku` など）をまとめて検索、枝番号の号を `related_laws[].item` に文字列で入れて `get_law` に渡す（v0.14.0）。取得系 3 ツールで、docId の誤りと DB にその種別が無いことを分けて返すようにした（v0.14.1）。bulk download の税目フラグ（`--bunsho-taxonomy` / `--tax-answer-taxonomy` / `--qa-topic`）の値を検証し、一覧に無い値は何も投入せず exit 1（v0.14.2 / #25）。全角英字が半角にならず `ＮＩＳＡ` と `NISA` で検索結果が分断されていた問題を直し、既存 DB を起動時に一度だけ入れ直す（v0.15.0 / #27）。`nta_get_qa` と `nta_get_tax_answer` がローカル DB を見ずに毎回国税庁サイトを取りに行っていたのを `nta_get_tsutatsu` と同じ形に揃え、応答に `source` を付けた。DB から live と同じ構造を返すため `document` に `structured_json` を足した（v0.16.0 / #29）。国税庁の索引から消えた文書に `orphaned_at` で印を付け、検索・取得の応答で現行の文書と区別できるようにした。あわせて、消えた件数が構造的に常に 0 だった集計を索引との突き合わせに変えた（v0.17.0 / #30）。family の参照実装 |
 | houki-abbreviations | 0.5.1（MCP が取り込んでいるのは 0.4.1） | 逆引き（`lookupByLawId` / `lookupByLawNum`）+ 検証（`validateAllEntries` / `extractLawNames`）。両 MCP の依存は `^0.4.1` で、0.x の `^` は minor を跨がないため 0.5.0 は入っていない（辞書は同一・MCP が呼ぶ 3 関数は両版にあるので動作差なし）。toolchain は ESLint + Prettier のまま（MCP 2 つは Biome） |
-| houki-research-skill | 0.5.1 | 2026-09-12 に `next_actions[].example` の渡し方を修正（`mcp` と `tool` は引数ではないので除いてから渡す。egov 0.6.0 以上では INVALID_ARGUMENT になっていた）、nta 0.14.1 の取得系のエラーに追随（v0.5.1）。同日 nta 0.12.0〜0.14.0 へ追随（質疑応答事例から `next_actions` で法律本文と通達へ戻る手順、検索の `DOC_NOT_FOUND` は該当なしと答えず投入を案内、前提 nta を 0.12.0 以上に。v0.5.0）。2026-09-11 に nta 0.11.0 へ追随（鉄則 3 に「通達を先に引いたら、next_actions に従って法律本文へ戻る」、tax-research にステップ ④'、前提 nta を 0.11.0 以上に。v0.4.0）。2026-09-10 に当てはめの応答型（返すもの / 返さないもの）を固定（v0.3.0）。2026-09-07 に egov 0.5.3 / nta 0.10.x へ追随（例文の引数名を `inputSchema` と一致させ、`search_fulltext` を手順に追加、`INVALID_ARGUMENT` の `detail.issues` を明記）。plugin 化 + Release 自動化済み。`docs/` に ARCHITECTURE / BUSINESS-LAW / CITATION / ERROR-HANDLING / ERROR-CODES。examples は invoice-registration と error-recovery-patterns |
+| houki-research-skill | 0.6.0 | 2026-09-13 に nta 0.16.0 / 0.17.0 へ追随（鉄則 3 に「索引から消えた文書は現行の取扱いとして引用しない」と「取得ツールの `source` は取得時刻の意味を変える」、`docs/CITATION.md` の基本原則に印の注記、`docs/ARCHITECTURE.md` の応答契約に `source` と `index_status`。前提の最小版は v0.12.0 のまま据え置き。v0.6.0）。2026-09-12 に `next_actions[].example` の渡し方を修正（`mcp` と `tool` は引数ではないので除いてから渡す。egov 0.6.0 以上では INVALID_ARGUMENT になっていた）、nta 0.14.1 の取得系のエラーに追随（v0.5.1）。同日 nta 0.12.0〜0.14.0 へ追随（質疑応答事例から `next_actions` で法律本文と通達へ戻る手順、検索の `DOC_NOT_FOUND` は該当なしと答えず投入を案内、前提 nta を 0.12.0 以上に。v0.5.0）。2026-09-11 に nta 0.11.0 へ追随（鉄則 3 に「通達を先に引いたら、next_actions に従って法律本文へ戻る」、tax-research にステップ ④'、前提 nta を 0.11.0 以上に。v0.4.0）。2026-09-10 に当てはめの応答型（返すもの / 返さないもの）を固定（v0.3.0）。2026-09-07 に egov 0.5.3 / nta 0.10.x へ追随（例文の引数名を `inputSchema` と一致させ、`search_fulltext` を手順に追加、`INVALID_ARGUMENT` の `detail.issues` を明記）。plugin 化 + Release 自動化済み。`docs/` に ARCHITECTURE / BUSINESS-LAW / CITATION / ERROR-HANDLING / ERROR-CODES。examples は invoice-registration と error-recovery-patterns |
 | houki-hub（本 repo） | — | 2026-09-07 に pdf-agent-stack 同型へ再構成。site/ は VitePress の雛形のみ。未公開 |
 
 ## 次にやること（優先度順）
@@ -63,11 +63,10 @@ graph TB
    - `verify-law-ids.mjs` の月次 GitHub Actions 化（雛形のみの状態）
    - `lookupByLawNum` の漢数字↔算用数字正規化、`isValidLawId` の DF 系・M 省令系パターン
    - 任意: toolchain を Biome / TS 7 に揃える
-5. **houki-research-skill v0.2.0 の公開 → v0.3.0**
-   - v0.2.0 を push し、tag を打って Release。claude-plugins の version 表と marketplace.json を 0.2.0 に
+5. **houki-research-skill の次の版**
    - workflow 追加: `revision-tracking.md`（MCP の完成を待たずに書ける）
    - examples 追加: 電帳法、相続税改正
-   - `ARCHITECTURE.md` の配布形態セクションを plugin 化後の記述に更新
+   - 印が付いた文書の実例が出たら、`docs/CITATION.md` の書き方の例を実測に差し替える（v0.6.0 では `<題名>` `<docId>` の形で書いている）
 6. **新 MCP は houki-metadata-mcp を先に**
    - 主用途は J-SOX 型の「公布→施行ラグ」期。施行前フォロー期に時系列の横串クエリが多発する
    - 3 つ目の MCP なので、abbreviations Track 5（ルーティング）の再評価トリガーになる
@@ -84,6 +83,7 @@ graph TB
 
 | 日付 | できごと |
 |---|---|
+| 2026-09-13 | houki-research-skill v0.6.0 公開（nta 0.16.0 / 0.17.0 への追随。索引から消えた文書を現在の取扱いの根拠にしない手順と、`source: "db"` のときの取得時刻の扱い）。plugin 更新済み |
 | 2026-09-13 | houki-nta-mcp #30 起票・v0.17.0 publish（索引から消えた文書に `orphaned_at` で印を付け、検索 5 ツールの各件に `index_status` と `orphaned_at`、取得 5 ツールに `notice` を付ける。索引から消えた件数が構造的に常に 0 だったのを、索引から集めた URL 集合と DB の突き合わせに変えた）。公開版を plugin から試用し、`--bulk-download-jimu-unei` の 32 件で `marked: 0` / `totalOrphaned: 0` を確認 |
 | 2026-09-13 | houki-nta-mcp #29 起票・v0.16.0 publish（`nta_get_qa` / `nta_get_tax_answer` がローカル DB を先に引き、無ければ取得して書き戻す。応答に `source`。`document` に `structured_json` を足し SCHEMA_VERSION 5 → 6）。公開版で 1535 と shohi/02/19 を 2 回ずつ引き、1 回目 `live` → 2 回目 `db` で `fetchedAt` が変わらないことを確認 |
 | 2026-09-12 | houki-abbreviations の API リファレンスを追加（hub）。`generate-reference.mjs` に `dist/index.d.ts` を読む経路を足し、`/reference/lib/houki-abbreviations` を生成。版と節は JSDoc の `@since` / `@group`、「family での使用」列は `mcp/*/src` の import 走査から取る。あわせて houki-abbreviations の README の `searchByName` ほか 3 関数の第 1 引数の誤りと、JSDoc の例の古い実数を修正 |
