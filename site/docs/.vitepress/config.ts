@@ -30,6 +30,7 @@ const sidebar = {
         { text: '文書の種類と拘束力', link: '/guide/document-types' },
         { text: '全体構成と責務', link: '/guide/architecture' },
         { text: '導入手順', link: '/guide/getting-started' },
+        { text: 'ローカル DB（全文検索用）', link: '/guide/local-database' },
         { text: '現状と予定', link: '/guide/roadmap' },
         { text: '免責事項と利用範囲', link: '/guide/disclaimer' }
       ]

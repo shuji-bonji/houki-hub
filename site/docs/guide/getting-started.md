@@ -50,7 +50,11 @@ houki-nta-mcp も同じ形で、通達本体・改正通達・タックスアン
 npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything
 ```
 
-国税庁サイトからの取得なので、初回は数分かかります。2 回目以降は変更があった節だけを取り直します。
+国税庁サイトを 1 ページずつ取りに行くので、6 種別すべてでは**約 100 分**かかります。
+税目を絞って必要な分だけ先に入れることもできます。2 回目以降も取得自体は行いますが、内容が変わっていない節は投入を省きます。
+
+どのツールが DB を必要とするか、置き場所の変え方、古くなったときの直し方は
+[ローカル DB（全文検索用）](/guide/local-database)にまとめています。
 
 ## 3. houki-research Skill を入れる
 
@@ -88,6 +92,7 @@ Claude Desktop など plugin の仕組みがない環境では、
 
 ## 次に読むもの
 
+- [ローカル DB（全文検索用）](/guide/local-database) — 何に要るか、作り方、古くなったときの直し方
 - [全体構成と責務](/guide/architecture) — 3 層がそれぞれ何を決めるか
 - [houki-egov-mcp](/mcp/houki-egov) / [houki-nta-mcp](/mcp/houki-nta) — ツールごとの説明
 - [houki-research Skill](/skills/houki-research) — 手順と注意喚起の中身
