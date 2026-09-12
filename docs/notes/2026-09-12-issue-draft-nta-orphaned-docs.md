@@ -2,6 +2,7 @@
 
 対象リポジトリ: houki-nta-mcp（2026-09-12 作成）
 提出先: https://github.com/shuji-bonji/houki-nta-mcp/issues
+**起票済み: [#30](https://github.com/shuji-bonji/houki-nta-mcp/issues/30)**
 タイトル案: 索引から消えた文書に印を付け、応答で区別できるようにする
 
 ---
