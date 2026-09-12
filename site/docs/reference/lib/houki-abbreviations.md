@@ -42,8 +42,8 @@ import { resolveAbbreviation } from '@shuji-bonji/houki-abbreviations';
 | [`listBySourceMcpHint`](#listbysourcemcphint) | v0.1.0 | 未使用 | 指定 MCP が管轄するエントリ一覧を返す。 |
 | [`lookupByLawId`](#lookupbylawid) | v0.5.0 | 未使用 | e-Gov `law_id` から辞書エントリを引く。 |
 | [`lookupByLawNum`](#lookupbylawnum) | v0.5.0 | 未使用 | 法令番号（漢数字表記）から辞書エントリを引く。 |
-| [`normalizeJpText`](#normalizejptext) | v0.3.0 | `houki-egov-mcp` | 日本語テキストの全角ゆらぎを保守的に半角化する。 |
-| [`normalizeSearchQuery`](#normalizesearchquery) | v0.3.0 | `houki-egov-mcp` | 検索クエリ向けの積極的な正規化。 |
+| [`normalizeJpText`](#normalizejptext) | v0.3.0 | `houki-egov-mcp`<br>`houki-nta-mcp` | 日本語テキストの全角ゆらぎを保守的に半角化する。 |
+| [`normalizeSearchQuery`](#normalizesearchquery) | v0.3.0 | `houki-egov-mcp`<br>`houki-nta-mcp` | 検索クエリ向けの積極的な正規化。 |
 | [`resolveAbbreviation`](#resolveabbreviation) | v0.1.0 | `houki-egov-mcp`<br>`houki-nta-mcp` | 略称・通称・正式名称のいずれかから辞書エントリを引く。 |
 | [`searchByName`](#searchbyname) | v0.4.0 | 未使用 | 名前で検索 (部分一致)。 |
 | [`suggestCorrection`](#suggestcorrection) | v0.4.0 | 未使用 | 「もしかして」サジェスト。 |
@@ -250,7 +250,7 @@ interface ResolveAbbreviationOptions {
 
 ### normalizeJpText
 
-*関数 ・ v0.3.0 で追加 ・ houki-egov-mcp が使用*
+*関数 ・ v0.3.0 で追加 ・ houki-egov-mcp / houki-nta-mcp が使用*
 
 ```ts
 function normalizeJpText(input: string): string;
@@ -284,7 +284,7 @@ normalizeJpText('消　法');         // '消 法'（全角スペース → 半�
 
 ### normalizeSearchQuery
 
-*関数 ・ v0.3.0 で追加 ・ houki-egov-mcp が使用*
+*関数 ・ v0.3.0 で追加 ・ houki-egov-mcp / houki-nta-mcp が使用*
 
 ```ts
 function normalizeSearchQuery(input: string): string;
