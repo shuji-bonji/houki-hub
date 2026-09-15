@@ -1,6 +1,6 @@
 # ROADMAP — 法規シリーズの現状と予定
 
-最終更新: 2026-09-13（JST）。版はすべて `npm view` と各リポジトリの `package.json` の実測。
+最終更新: 2026-09-14（JST）。版はすべて `npm view` と各リポジトリの `package.json` の実測。
 詳細な定点観測は `docs/reports/` に日付ごとに置く。本ファイルは「いま何が動いていて、次に何をするか」だけを持つ。
 
 ## 現状（2026-09-07）
@@ -42,37 +42,124 @@ graph TB
 | houki-research-skill | 0.6.0 | 2026-09-13 に nta 0.16.0 / 0.17.0 へ追随（鉄則 3 に「索引から消えた文書は現行の取扱いとして引用しない」と「取得ツールの `source` は取得時刻の意味を変える」、`docs/CITATION.md` の基本原則に印の注記、`docs/ARCHITECTURE.md` の応答契約に `source` と `index_status`。前提の最小版は v0.12.0 のまま据え置き。v0.6.0）。2026-09-12 に `next_actions[].example` の渡し方を修正（`mcp` と `tool` は引数ではないので除いてから渡す。egov 0.6.0 以上では INVALID_ARGUMENT になっていた）、nta 0.14.1 の取得系のエラーに追随（v0.5.1）。同日 nta 0.12.0〜0.14.0 へ追随（質疑応答事例から `next_actions` で法律本文と通達へ戻る手順、検索の `DOC_NOT_FOUND` は該当なしと答えず投入を案内、前提 nta を 0.12.0 以上に。v0.5.0）。2026-09-11 に nta 0.11.0 へ追随（鉄則 3 に「通達を先に引いたら、next_actions に従って法律本文へ戻る」、tax-research にステップ ④'、前提 nta を 0.11.0 以上に。v0.4.0）。2026-09-10 に当てはめの応答型（返すもの / 返さないもの）を固定（v0.3.0）。2026-09-07 に egov 0.5.3 / nta 0.10.x へ追随（例文の引数名を `inputSchema` と一致させ、`search_fulltext` を手順に追加、`INVALID_ARGUMENT` の `detail.issues` を明記）。plugin 化 + Release 自動化済み。`docs/` に ARCHITECTURE / BUSINESS-LAW / CITATION / ERROR-HANDLING / ERROR-CODES。examples は invoice-registration と error-recovery-patterns |
 | houki-hub（本 repo） | — | 2026-09-07 に pdf-agent-stack 同型へ再構成。site/ は VitePress の雛形のみ。未公開 |
 
+## Discussion #20 / #24 の指摘の割り付け
+
+### Discussion #20（houki-egov-mcp）の割り付け（14 項目）
+
+2026-09-14 の [Discussion #20](https://github.com/shuji-bonji/houki-hub/discussions/20) で挙げた「劣っている点」14 項目を、実装先ごとに割り付けた。起票文と実測による訂正は `docs/notes/2026-09-14-issue-21-22-breakdown.md` に置く（起票は `scripts/create-issues-2026-09-14.sh`）。hub#21（機能 9 項目）と hub#22（配布と制約 5 項目）は、評価の転記から進捗を束ねる親 Issue に書き換える。
+
+| # | 内容 | 実装先 | 既存計画との関係 |
+|---|---|---|---|
+| 機能 1 | 添付ファイル・法令ファイル形式 | egov#19 | 新規 |
+| 機能 2 | 条文の参照を辿る | egov#20 | hub#8（法令グラフ）と対象が重なるが、重なったまま MCP のツールとして実装する（2026-09-14 決定。下記） |
+| 機能 3 | 引用の実在確認 | egov#18 | 新規。既存の `get_law` / `search_fulltext` で組める |
+| 機能 4 | 漢数字の条番号 | egov#17 | 新規。`src/utils/article-num.ts` の 1 ファイル。14 項目で最も費用が小さい |
+| 機能 5 | 差分同期 | egov#21 | 下記 4 の Phase 2-8。**部品は実装済み**（下記の訂正） |
+| 機能 6 | 章・節単位の分割取得 | egov#22 | 下記 4 の「民法・消費税法の応答が長い」と同じ |
+| 機能 7 | 2 文字語の本文索引 | egov#23 | 新規 |
+| 機能 8 | 附則の目次配置 | egov#24 | 下記 4 の「既知の未対応」と同じ |
+| 機能 9 | 裁決・判例・厚労通達 | — | 下記 7 の新 MCP が回答。欠落ではなく責務を分けた結果なので Issue にしない |
+| 配布 1 | better-sqlite3 | hub#23（調査） | 下記 9。下記 1 の「CI で起動できるか」と同じ依存 |
+| 配布 2 | Node.js 22 以上 | hub#23 | 配布 1 と同じ Issue |
+| 配布 3 | ライセンス文言 | `docs/DECISIONS.md` | 「本筋外」の士業向けの線引きと接する |
+| 配布 4 | 公式 MCP 後の位置 | `docs/DECISIONS.md` | 新規 |
+| 配布 5 | 発見性 | hub#22 | 下記 2 |
+
+あわせて houki-abbreviations に 1 本（abbr#6 `lookupByLawNum` の漢数字↔算用数字正規化）。これは下記 5 に既出で、機能 4 とは対象が違う（条番号 / 法令番号）。
+
+### Discussion #24（houki-nta-mcp）の割り付け
+
+[Discussion #24](https://github.com/shuji-bonji/houki-hub/discussions/24) の「劣っている点」7 項目のうち、新しく起票したのは 2 件だけ。残りは #20 の割り付けがすでに持っている。#20 と #24 は別々の対象から出発して同じ結論に収束した。**残っている壁は機能ではなく導入**である。
+
+| # | 内容 | 行き先 |
+|---|---|---|
+| 劣 1 | 基本通達の本数が少ない（評基通・措通 6 種ほか） | 立場が決まってから。「他者の作業に入れる」を取る場合のみ |
+| 劣 2 | 裁決が無い | 下記 7 の houki-saiketsu-mcp。#20 の機能 9 と同じ構造で Issue にしない |
+| 劣 3 | 法令と通達が同じ導入にならない | hub#22 |
+| 劣 4 | 初回約 100 分 | nta に新規起票。下記 2 の (b) と不可分 |
+| 劣 5 | PDF 本文を読まない | nta に新規起票 |
+| 劣 6 | 名前と発見 | hub#22 |
+| 劣 7 | 業としての利用を想定外 | `docs/DECISIONS.md`（配布 3 と同じ） |
+
+Discussion #24 は「自分用の公開ツールとして保つ」か「他者の作業に入れる」かの二択を置いている。当面どちらも選ばず、**どちらでも効く劣 4 と劣 5 だけ**を進める。劣 4 は Discussion #24 自身が「自分用でも重い」と書いている。
+
+### 条文の参照関係をどこに持つか（2026-09-14 決定）
+
+機能 2（egov#20）と hub#8（GraphRAG・KAG による法令グラフ）は対象が重なるが、**重なったまま MCP のツールとして実装する**。RAG は Claude のサービス側にあり、GraphRAG のエンティティ・関係抽出も Claude API に頼ることになるため、MCP が出すべきなのは LLM の判断を挟まずに引ける参照関係だ、という判断。
+
+| 層 | 返すもの | 作り方 |
+|---|---|---|
+| egov#20 | 法令 XML と法令名の規則から決定論的に引ける参照。同じ入力に同じ出力 | egov のコード |
+| hub#8 | 意味的な近さ、趣旨の関連、条をまたぐ要約 | Claude API による抽出 |
+
+egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
+
+> Issue 番号は 3 つのリポジトリで独立に振られ、しかも重なっている（`egov#21` と `hub#21` は別物）。本ファイルでは `egov#` = houki-egov-mcp、`hub#` = houki-hub、`abbr#` = houki-abbreviations として書く。
+
+### 実測による訂正
+
+起票前に egov v0.6.0 のソースを確認したところ、Discussion の記述と実態が食い違う箇所があった。
+
+| Discussion の記述 | 実測（egov v0.6.0） |
+|---|---|
+| 機能 5「DB 更新は全件再取り込みだけ」 | `--bulk-download-by-date <YYYYMMDD>` が `downloadIncrementalZip`（`file_section=3`）で単日差分を取り込む。`sync_state` もある。欠けているのは、前回同期日から今日までの未取得日を自動で回す入口 |
+| 機能 8「附則を平坦に並べる」 | `isSupplementaryArticle` と `附則(3) 1` の表示はある。欠けているのは `get_toc` の階層配置 |
+
 ## 次にやること（優先度順）
 
 1. **houki-hub site の中身を埋める**（本 repo）
    - ガイド 4 ページ（overview / architecture / getting-started / roadmap）の文章を仕上げる
    - `generate-reference.mjs` を pdf-agent-stack から移植し、`tools/list` からツールリファレンスを生成する。houki-nta-mcp は better-sqlite3 を使うので、CI で起動できるかを先に確かめる
    - 公開の条件（DECISIONS.md の未決）を満たしたら deploy.yml の push トリガーを有効化する
-2. **houki-nta-mcp v1.0.0 判定**
+2. **発見性 — 1 種類の仕事を 1 回の導入で終わらせる**（hub#22 / 配布 5）
+   - 対象は claude-plugins の `marketplace.json`、egov と nta の npm `description`、houki-hub site、MCP ディレクトリ。egov 単体の話ではない
+   - **2 段構え**。(a) 手数: `dependencies` 宣言で plugin を 1 回に。(b) 時間: 入れた直後に egov は約 290 MB、nta は約 100 分の取り込みが始まる。(b) を下げないと (a) は効かない
+   - (a) は 2026-09-14 に実装済み（公開待ち）。houki-research-skill v0.7.0 の `plugin.json` と claude-plugins の `marketplace.json` の両方に `"dependencies": ["houki-egov-mcp", "houki-nta-mcp"]`。**公開の順序は houki-research-skill を先に push・タグ付け → そのあと claude-plugins**（`marketplace-version-check` が GitHub 上の `plugin.json` を正として突き合わせるため）
+   - (b) は nta#35（初回の取り込みを数分で試せるようにする）。egov 側も README の先頭に試用の経路を書く
+   - (c) 名前と掲載はこれから
+   - `shuji-bonji/claude-plugins` の `marketplace.json` で、`houki-research` に `"dependencies": ["houki-egov-mcp", "houki-nta-mcp"]` を宣言する。いまは houki の plugin が 3 つ並んでいて、1 つの仕事に 3 回の導入が要る。`pdf-publish` が `pdf-writer-mcp` で同じ形を取っている
+   - 仕事の名前を 1 つ決める。`tax-law-mcp` と同じ「税務の裏取り」は、README / DISCLAIMER が業としての利用を想定外としているため名乗れない（配布 3）。houki だけが答えられる問い（索引から消えたか / 拘束力 / 根拠条文 / 取得日時）を名前にする
+   - README の 1 行目、npm の `description`、`marketplace.json` の `description` を、決めた名前に揃える
+   - MCP ディレクトリ（mcp.so / PulseMCP / Smithery / awesome-mcp-servers）に出す。site が空のまま出すと着地点が無いので 1 の後
+   - 測り方は npm の週次ダウンロードではなく、plugin の導入数と記事から site への流入で見る
+3. **houki-nta-mcp v1.0.0 判定**
    - ローカル DB が古い（126 日以上）→ `--bulk-download-all` / `--bulk-download-tax-answer` を再実行して現行データで最終確認
    - Issue #3（synonym 展開）は abbreviations v0.6.0 の `expandToFormalNames` と連動。v1.0 に含めるかを決める
    - 完了後 1 か月の soft 期間を置いてから v1.0.0
-   - #22（質疑応答事例の relatedLaws を法令名・条番号と通達番号に分ける。ページ下部の注記が混ざる不具合も）を v1.0 に含めるかを決める
-3. **houki-egov-mcp Phase 2-8 / 2-13**
-   - 2-8: 差分同期（`file_section=3&update_date` 方式）
+   - Discussion #24 から新規 2 件（劣 4 初回 100 分の試用経路 / 劣 5 改正通達の PDF の読み方）。v1.0 に含めるかを決める。劣 4 は上記 2 の (b) と不可分
+4. **houki-egov-mcp — Phase 2-8 / 2-13 と Discussion #20 機能 1〜8**
+   - 漢数字の条番号・号番号（egov#17 / 機能 4）: `src/utils/article-num.ts` の throw を、漢数字→算用数字の変換を試みてから判定する形に変える。`toEgovArticleNum` と `toEgovItemNum` の 2 箇所
+   - 2-8 差分同期（egov#21 / 機能 5）: 部品（`--bulk-download-by-date` / `downloadIncrementalZip` / `sync_state`）はあるので、最終同期日から今日までを自動で回す `--sync` を足す
+   - 引用の実在確認（egov#18 / 機能 3）: `verify_citations` 相当。既存の `get_law` / `search_fulltext` で組める。新しいデータ源は要らない
+   - 添付ファイルと法令ファイル形式（egov#19 / 機能 1）: 応答でバイナリをどう返すか（保存先パス / base64 / URL のみ）を先に決めて `docs/DESIGN.md` に書く
+   - 施行令・施行規則の関連付け（egov#20 / 機能 2）: hub#8 と重なったまま MCP のツールとして実装する。決定論で引ける参照だけを返し、網羅性は主張しない
+   - 章・節単位の分割取得（egov#22 / 機能 6）: 既知の未対応「民法・消費税法の応答が長い」と同じ
+   - `get_toc` の附則の階層配置（egov#24 / 機能 8）: 既知の未対応。本則と附則を別の枝にし、附則は改正法ごとにまとめる
+   - 2 文字語の本文検索（egov#23 / 機能 7）: `articles_fts` / `laws_fts` は `tokenize = 'trigram'` で 3 文字以上。まず挙動を応答で明示するところから
    - 2-13: API enrichment で `category` を投入し、domain 絞り込みを実効化
-   - 既知の未対応: `get_toc` が附則の条を編・章の外に平坦に並べる / 民法・消費税法の応答が長い
-4. **houki-abbreviations v0.5.1 → v0.6.0**（計画は abbreviations の `docs/v0.5.1-v0.6.0-plan.md`）
+5. **houki-abbreviations v0.5.1 → v0.6.0**（計画は abbreviations の `docs/v0.5.1-v0.6.0-plan.md`）
    - v0.5.1: `verify-law-ids.mjs` の本実装と月次 workflow 化
    - v0.6.0: `expandToFormalNames`（nta #3 と連動）。**minor を上げたら egov / nta の `package.json` を `^0.6.0` に上げて publish し直す**（0.x の `^` は minor を跨がない）
    - `verify-law-ids.mjs` の月次 GitHub Actions 化（雛形のみの状態）
-   - `lookupByLawNum` の漢数字↔算用数字正規化、`isValidLawId` の DF 系・M 省令系パターン
+   - `lookupByLawNum` の漢数字↔算用数字正規化（abbr#6）、`isValidLawId` の DF 系・M 省令系パターン（Discussion #20 機能 4 と対。対象は法令番号で、egov の条番号とは別）
    - 任意: toolchain を Biome / TS 7 に揃える
-5. **houki-research-skill の次の版**
+6. **houki-research-skill の次の版**
    - workflow 追加: `revision-tracking.md`（MCP の完成を待たずに書ける）
    - examples 追加: 電帳法、相続税改正
    - 印が付いた文書の実例が出たら、`docs/CITATION.md` の書き方の例を実測に差し替える（v0.6.0 では `<題名>` `<docId>` の形で書いている）
-6. **新 MCP は houki-metadata-mcp を先に**
+   - egov に `verify_citations` が入ったら、citation 手順から呼ぶ
+7. **新 MCP は houki-metadata-mcp を先に**
    - 主用途は J-SOX 型の「公布→施行ラグ」期。施行前フォロー期に時系列の横串クエリが多発する
    - 3 つ目の MCP なので、abbreviations Track 5（ルーティング）の再評価トリガーになる
-7. **検査の移植**（本 repo）
+   - Discussion #20 の機能 9（裁決・判例・厚労通達）への回答はここ。houki-saiketsu / houki-court / houki-mhlw の着手順は metadata の後に決める
+8. **検査の移植**（本 repo）
    - `skill-contract-probe.mjs`: houki-research が分岐に使うフィールド（`isError` / `code` / `legal_status` / `freshness`）が公開版の応答に実在するかを起動して確かめる
    - `version-mentions.mjs`: 文中の版が未来の版になっていないかを見る
+9. **better-sqlite3 と Node 22 以上の見直し（調査）**（hub#23 / 配布 1・2）
+   - 標準の `node:sqlite` で FTS5・トリガ・WAL・プリペアドステートメントが満たせるか
+   - 満たせる場合、安定版として使える Node の最小版。`engines` の `>=22.0.0` を上げる必要があるか。上げると Claude Desktop の同梱ランタイムで動くか
+   - 移行しない場合の代替（ビルド失敗時に読み取り専用へ落とす、など）
+   - egov と nta の両方が対象。結論は `docs/DECISIONS.md` へ
 
 ## 本筋外（優先度は上記の後）
 
@@ -83,6 +170,9 @@ graph TB
 
 | 日付 | できごと |
 |---|---|
+| 2026-09-14 | hub#22 の (a) 導入の手数を実装。houki-research v0.7.0 の `plugin.json` と claude-plugins の `marketplace.json` に `"dependencies": ["houki-egov-mcp", "houki-nta-mcp"]` を宣言し、`houki-research` を入れれば条文と通達の両方が揃うようにした。版の範囲は付けず名前だけ（各 MCP の git tag が `v0.6.0` 形式で、範囲解決に要る `houki-egov-mcp--v0.6.0` 形式ではないため）。`pdf-reader-mcp` は nta#36 の結論待ちで入れていない。未公開 |
+| 2026-09-14 | Discussion #24（nta の価値を整理）を割り付け。7 項目のうち新規は 2 件（劣 4 の試用経路、劣 5 の PDF）で、劣 3・6・7 は hub#22 と DECISIONS.md がすでに持っていた。#20 と #24 が同じ結論（壁は機能ではなく導入）に収束したため、hub#22 を (a) 手数 / (b) 時間 / (c) 名前と掲載 に分割。あわせて、条文の参照関係は hub#8 と重なったまま MCP のツールとして実装すると決定（egov#20） |
+| 2026-09-14 | Discussion #20 で houki-egov-mcp の価値を整理し、「劣っている点」14 項目を hub#21（機能 9 件）と hub#22（配布と制約 5 件）に起票。本 ROADMAP に割り付け表を追加し、起票文を `docs/notes/2026-09-14-issue-21-22-breakdown.md` に置いた。起票前の実測で 2 件を訂正（機能 5 の差分同期は `--bulk-download-by-date` で部品が実装済み、機能 8 の附則は表示はあり `get_toc` の階層配置だけが不足） |
 | 2026-09-13 | houki-research-skill v0.6.0 公開（nta 0.16.0 / 0.17.0 への追随。索引から消えた文書を現在の取扱いの根拠にしない手順と、`source: "db"` のときの取得時刻の扱い）。plugin 更新済み |
 | 2026-09-13 | houki-nta-mcp #30 起票・v0.17.0 publish（索引から消えた文書に `orphaned_at` で印を付け、検索 5 ツールの各件に `index_status` と `orphaned_at`、取得 5 ツールに `notice` を付ける。索引から消えた件数が構造的に常に 0 だったのを、索引から集めた URL 集合と DB の突き合わせに変えた）。公開版を plugin から試用し、`--bulk-download-jimu-unei` の 32 件で `marked: 0` / `totalOrphaned: 0` を確認 |
 | 2026-09-13 | houki-nta-mcp #29 起票・v0.16.0 publish（`nta_get_qa` / `nta_get_tax_answer` がローカル DB を先に引き、無ければ取得して書き戻す。応答に `source`。`document` に `structured_json` を足し SCHEMA_VERSION 5 → 6）。公開版で 1535 と shohi/02/19 を 2 回ずつ引き、1 回目 `live` → 2 回目 `db` で `fetchedAt` が変わらないことを確認 |
