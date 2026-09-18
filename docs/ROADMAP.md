@@ -117,7 +117,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
    - (a) は 2026-09-14 に実装済み（公開待ち）。houki-research-skill v0.7.0 の `plugin.json` と claude-plugins の `marketplace.json` の両方に `"dependencies": ["houki-egov-mcp", "houki-nta-mcp"]`。**公開の順序は houki-research-skill を先に push・タグ付け → そのあと claude-plugins**（`marketplace-version-check` が GitHub 上の `plugin.json` を正として突き合わせるため）
    - (b) nta 側は 2026-09-18 に公開済み（nta v0.18.0、PR #37、nta#35 close）。`--quickstart`（通達 1 本、約 3〜5 分）、`--help` の並び替え、全部入りの開始時に目安表。PR 本文は `docs/notes/issues-2026-09-14/pr-nta-35.md`
    - (b) egov 側は 2026-09-19 に README を書き換え（ブランチ `docs/22b-readme-try-first`、PR 待ち）。冒頭に「まず試す（ローカル DB なし）」— 7 ツールのうち 6 つは DB 無しで動き、要るのは `search_fulltext` だけ — を置き、DB あり / なしの対応表を添えた。コードは変えていない。PR 本文は `docs/notes/issues-2026-09-14/pr-egov-22b.md`
-   - (c) 名前と掲載はこれから
+   - (c) 名前と掲載: 候補と文言案と掲載先の手順を `docs/notes/2026-09-19-job-name-and-listing.md` に置いた（2026-09-19）。仕事の 1 行（推奨 J1「実装する前に、その仕様が法令のどこに触れるかを条文で確かめる」）と違いの 1 行（推奨 D1「法律で決まっている」と「通達でそうなっている」を混ぜずに返す）の 2 層。掲載先は公式 MCP Registry を先に（family の MCP はどれも未登録。`mcpName` を入れた publish が要る）。**名前の決定はユーザー待ち**
    - `shuji-bonji/claude-plugins` の `marketplace.json` で、`houki-research` に `"dependencies": ["houki-egov-mcp", "houki-nta-mcp"]` を宣言する。いまは houki の plugin が 3 つ並んでいて、1 つの仕事に 3 回の導入が要る。`pdf-publish` が `pdf-writer-mcp` で同じ形を取っている
    - 仕事の名前を 1 つ決める。`tax-law-mcp` と同じ「税務の裏取り」は、README / DISCLAIMER が業としての利用を想定外としているため名乗れない（配布 3）。houki だけが答えられる問い（索引から消えたか / 拘束力 / 根拠条文 / 取得日時）を名前にする
    - README の 1 行目、npm の `description`、`marketplace.json` の `description` を、決めた名前に揃える
