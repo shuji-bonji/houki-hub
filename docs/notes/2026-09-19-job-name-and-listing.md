@@ -166,3 +166,27 @@ J2（MCP を組む開発者）は問いを投げる利用者ではなく、契�
 - `revision-tracking.md` は ROADMAP 6 のまま
 - MCP 側にアクターの引数（`actor` / `profile` など）は足さない
 - site の「使い方」に 3 つの場面を並べる（J1 を先頭に）
+
+---
+
+## 9. 公式 MCP Registry への登録（2026-09-19、完了）
+
+| パッケージ | Registry 名 | 版 | 登録時刻（JST） |
+|---|---|---|---|
+| houki-egov-mcp | `io.github.shuji-bonji/houki-egov-mcp` | 0.6.1 | 08:25 |
+| houki-nta-mcp | `io.github.shuji-bonji/houki-nta-mcp` | 0.18.1 | 08:28 |
+
+登録時点で、Registry に日本の法令を扱う MCP は他に無かった（`japan law` 0 件、`e-gov` はドローン等の別物）。
+
+### 実際に踏んだこと
+
+| 事象 | 内容 | 対処 |
+|---|---|---|
+| `description` の長さ | Registry は **100 文字まで**。npm と同じ長い説明を `server.json` に写していたため 422（`expected length <= 100`） | `server.json` の description は英語 1 文に絞る。npm の `description` と `plugin.json` は長いまま（役割が違う） |
+| トークンの寿命 | `mcp-publisher login github` のトークンは短命。egov の publish のあと nta で 401（`token is expired`） | 複数パッケージを出すときは、各 `publish` の直前に `login` するか、短時間にまとめる |
+| 索引の遅れ | publish 直後の `?search=` は 0 件。1〜2 分で反映 | 直後に 0 件でも失敗ではない |
+| 個別取得の URL | `/v0.1/servers/<name>` は 404 | 確認は `?search=<語>` で行う |
+
+### 次の版から
+
+`server.json` の `version` と `packages[].version` を上げて `mcp-publisher publish` を打ち直す。手で揃えると忘れるので、`package.json` から生成する仕組みを PDF family（4 パッケージ）に出すときに作る。生成の入力は `name` / `version` / `repository` / `mcpName` と、**100 文字以内の説明**（`package.json` に `mcpDescription` を持たせるか、`description` の先頭 1 文を切る）。
