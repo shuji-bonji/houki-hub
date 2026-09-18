@@ -1,11 +1,11 @@
 ---
 layout: home
-description: 日本の法令・通達・行政解釈を、出典付きで LLM から引くための MCP サーバー・ライブラリ・Skill 群
+description: 実装する前に、その仕様が法令のどこに触れるかを条文で確かめるための MCP サーバー・ライブラリ・Skill 群。「法律で決まっている」と「通達でそうなっている」を混ぜずに、出典と鮮度を添えて返す
 
 hero:
   name: houki-hub
-  text: 法規を正確に引く AI エージェントの土台
-  tagline: 法律・政令・省令は e-Gov 法令 API から全分野を、通達・Q&A は現時点では国税庁分を。略称を解決し、鮮度と法的な位置づけを添えて返す MCP サーバー群と、それらを横断する Skill
+  text: 実装する前に、その仕様が法令のどこに触れるかを条文で確かめる
+  tagline: 法律・政令・省令は e-Gov 法令 API から全分野を、通達・Q&A は国税庁分を。「法律で決まっている」と「通達でそうなっている」を混ぜずに、出典と鮮度を添えて返す MCP サーバー群と、それらを横断する Skill
   actions:
     - theme: brand
       text: はじめる
@@ -61,6 +61,16 @@ features:
 
 まずは houki-egov-mcp だけで条文を引いてみて、税務の通達が必要になったら houki-nta-mcp を足してください。
 → [導入手順](/guide/getting-started)
+
+## 3 つの場面
+
+同じ MCP と Skill を、問いの形に応じて使います。どの場面でも、返るのは条文・通達・出典・鮮度で、個別の事案への結論は返しません。
+
+| 問いの形 | 例 | 主に使うもの |
+| --- | --- | --- |
+| **この仕様は法令のどこに触れるか** | 「領収書を PDF で保存する機能を作る。電子帳簿保存法の要件は」 | houki-egov-mcp の `search_fulltext` → `get_law`。houki-research が施行規則まで辿る |
+| この取扱いの根拠と、今も有効か | 「インボイスの端数処理は、法律か通達か。その通達は今も生きているか」 | houki-nta-mcp の `nta_search_tsutatsu` → `next_actions` で houki-egov-mcp の `get_law` へ。`legal_status` と `index_status` |
+| この改正はいつから、何が変わるか | 「消費税法第 30 条は次にいつ変わるか」 | houki-egov-mcp の `get_law_revisions` |
 
 ::: warning 位置づけ
 このサイトと各ツールが返す内容は、法令・通達の**参照と一般的な解釈の出発点**です。
