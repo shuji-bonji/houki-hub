@@ -16,7 +16,7 @@ tick() {
   tmp="$(mktemp)"
   gh issue view "$num" -R "$OWNER/houki-hub" --json body -q .body > "$tmp"
   if ! grep -qF -- "$mark" "$tmp"; then
-    echo "houki-hub#$num に「$mark」を含む行がありません。何もしません。" >&2
+    echo "houki-hub#${num} に「${mark}」を含む行がありません。何もしません。" >&2
     rm -f "$tmp"; return 0
   fi
   python3 - "$tmp" "$mark" <<'PY'
@@ -32,7 +32,7 @@ io.open(p,'w',encoding='utf-8').write('\n'.join(out))
 PY
   gh issue edit "$num" -R "$OWNER/houki-hub" -F "$tmp"
   rm -f "$tmp"
-  echo "  更新 houki-hub#$num（$mark）"
+  echo "  更新 houki-hub#${num}（${mark}）"
 }
 
 tick 22 "houki-nta-mcp#35"
