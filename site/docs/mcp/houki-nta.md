@@ -9,7 +9,7 @@ description: 国税庁サイトの基本通達・改正通達・事務運営指�
 ローカル SQLite に取り込み、FTS5 で全文検索する MCP サーバーです。
 法律本文（法・政令・省令）は [houki-egov-mcp](/mcp/houki-egov) が担当します。
 
-- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.17.0）
+- npm: [`@shuji-bonji/houki-nta-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-nta-mcp)（0.18.0）
 - リポジトリ: [shuji-bonji/houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp)
 - 動作環境: Node.js 22 以上
 
@@ -177,17 +177,27 @@ v0.15.0 までは、`nta_get_qa` と `nta_get_tax_answer` が DB を引かずに
 
 ### 作り方
 
+初めて入れたときは、通達 1 本だけを入れて動くことを確かめてください（v0.18.0）。
+
+```sh
+npx -y @shuji-bonji/houki-nta-mcp --quickstart
+```
+
+消費税法基本通達 1 本を約 3〜5 分で取り込みます。終わると、その通達に対して `nta_search_tsutatsu` と `nta_get_tsutatsu` が使えます。別の通達にしたいときは `--quickstart --tsutatsu=所得税基本通達` のように指定します。
+
+6 種別をまとめて取り込むときは次を実行します。国税庁サイトを 1 ページずつ取りに行くので約 100 分かかります。開始前に、種別ごとの件数と所要時間の目安を表示します。
+
 ```sh
 npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything
 ```
 
-6 種別をまとめて取り込みます。国税庁サイトを 1 ページずつ取りに行くので時間がかかります。
-必要な種別だけを先に入れることもできます。所要時間は `--help` の記載です。
+必要な種別だけを先に入れることもできます。所要時間は `--help` の記載です。`--help` は「まず試す → 種別を足す → 全部入り → 保守」の順に並んでいます。
 
 | コマンド | 対象 | 目安 |
 | --- | --- | --- |
-| `--bulk-download-everything` | 6 種別すべて | 約 100 分 |
-| `--bulk-download-all` | 基本通達 4 種（消基通・所基通・法基通・相基通） | — |
+| `--quickstart` | 通達 1 本（既定: 消基通。`--tsutatsu=<正式名>` で変更） | 約 3〜5 分 |
+| `--bulk-download-everything` | 6 種別すべて。開始前に目安を表示 | 約 100 分 |
+| `--bulk-download-all` | 基本通達 4 種（消基通・所基通・法基通・相基通） | 10〜15 分 |
 | `--bulk-download` | `--tsutatsu=<正式名>` で指定した 1 つの通達 | — |
 | `--bulk-download-kaisei` | 改正通達（基本通達 4 種分の一覧） | — |
 | `--bulk-download-jimu-unei` | 事務運営指針 | — |

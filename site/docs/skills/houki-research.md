@@ -9,8 +9,8 @@ description: houki-hub family の MCP を横断して使うときの手順・引
 LLM が **どの MCP をどの順に呼び、出典をどう書き、どこで注意を促すか** を定めた Skill です。
 MCP サーバーは資料を返すだけで、順序や書式や注意喚起は決めません。それらの正典がこの Skill です。
 
-- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.6.0）
-- 配布: claude-plugins marketplace の plugin `houki-research`、または `skills/houki-research/` をプロジェクトの `.claude/skills/` に置く
+- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.7.0）
+- 配布: claude-plugins marketplace の plugin `houki-research`（v0.7.0 から `houki-egov-mcp` と `houki-nta-mcp` を `dependencies` に宣言しており、この plugin を入れれば 2 つの MCP も入ります）、または `skills/houki-research/` をプロジェクトの `.claude/skills/` に置く
 - 対象分野: 税務に限らず日本の全法規。現時点で MCP が揃っているのが税務なので、例は税務が中心です
 
 ## 4 つの責務

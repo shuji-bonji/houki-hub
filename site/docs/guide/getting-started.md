@@ -44,13 +44,21 @@ npx -y @shuji-bonji/houki-egov-mcp --bulk-download-everything
 DB は `~/.cache/houki-egov-mcp/laws.db` にでき、`HOUKI_EGOV_DB_PATH` で場所を変えられます。
 構築後に MCP サーバーを再起動する必要はありません。
 
-houki-nta-mcp も同じ形で、通達本体・改正通達・タックスアンサーなどを取り込みます。
+houki-nta-mcp も同じ形で、通達本体・改正通達・タックスアンサーなどを取り込みます。初めて入れたときは、通達 1 本だけを入れて動くことを確かめてください。
+
+```sh
+npx -y @shuji-bonji/houki-nta-mcp --quickstart
+```
+
+消費税法基本通達 1 本を約 3〜5 分で取り込みます（v0.18.0）。終わると、その通達に対して検索と取得が使えます。
+DB が無い状態でも、取得ツール（`nta_get_tsutatsu` など）は国税庁サイトから直接取ります。DB が要るのは検索ツールだけです。
+
+6 種別すべてを取り込むときは次を実行します。国税庁サイトを 1 ページずつ取りに行くので**約 100 分**かかります。
 
 ```sh
 npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything
 ```
 
-国税庁サイトを 1 ページずつ取りに行くので、6 種別すべてでは**約 100 分**かかります。
 税目を絞って必要な分だけ先に入れることもできます。2 回目以降も取得自体は行いますが、内容が変わっていない節は投入を省きます。
 
 2 つの DB は役割が違います。違いと、共通している置き場所・鮮度の判定は
@@ -67,7 +75,7 @@ Claude Code では、marketplace の [claude-plugins](https://github.com/shuji-b
 /plugin install houki-research@shuji-bonji
 ```
 
-同じ marketplace に `houki-egov-mcp` / `houki-nta-mcp` の plugin もあり、こちらを使えば手順 1 の設定を手で書かずに済みます。
+houki-research v0.7.0 からは `houki-egov-mcp` と `houki-nta-mcp` を `dependencies` に宣言しているため、この 1 コマンドで 2 つの MCP も入ります。手順 1 の設定を手で書く必要はありません。
 
 ```text
 /plugin install houki-egov-mcp@shuji-bonji
