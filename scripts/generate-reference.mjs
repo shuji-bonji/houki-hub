@@ -23,6 +23,11 @@
  * 依存なし（生の JSON-RPC over stdio。MCP SDK は import しない）。
  * mcp/ は git 追跡外の作業コピーなので、CI や fresh clone では dist が無い。
  * その場合はスキップしてコミット済みのページをそのまま使う。
+ *
+ * ページ冒頭の日付は「内容が最後に変わった日」。生成した日ではない。
+ * 内容（日付以外）が既存ファイルと同じなら書き込まず、日付も動かさない（2026-09-19）。
+ * それまでは `site/` で `npm run build` するたびに全ページの日付が今日になり、
+ * 1 つの MCP の版を上げただけで他のページにも差分が出ていた。
  */
 
 import { spawn } from 'node:child_process';
@@ -61,6 +66,28 @@ const REGISTRY = {
       'すべての応答に `legal_status`（通達は国民を拘束しない旨）と、DB から返した場合は `freshness` が付きます。',
   },
 };
+
+/* ---------------- 生成ページの書き込み ----------------
+ *
+ * 冒頭の「…・YYYY-MM-DD）。手で編集しないでください」の日付は、内容が最後に変わった日として使う。
+ * 新しく作った本文の日付を既存ファイルの日付に差し替えて比べ、同じなら書かない。
+ * 違いがあれば新しい日付のまま書く。
+ */
+const GENERATED_DATE = /(・)(\d{4}-\d{2}-\d{2})(）。手で編集しないでください)/;
+
+function writeGenerated(outPath, text) {
+  if (existsSync(outPath)) {
+    const before = readFileSync(outPath, 'utf8');
+    const prev = before.match(GENERATED_DATE);
+    if (prev) {
+      const sameExceptDate = text.replace(GENERATED_DATE, `$1${prev[2]}$3`);
+      if (sameExceptDate === before) return { written: false, date: prev[2] };
+    }
+  }
+  writeFileSync(outPath, text);
+  const now = text.match(GENERATED_DATE);
+  return { written: true, date: now ? now[2] : null };
+}
 
 const T = {
   title: (name) => `${name} — ツールリファレンス`,
@@ -741,8 +768,12 @@ async function generateLib(name) {
   const outPath = join(SITE, cfg.out);
   mkdirSync(dirname(outPath), { recursive: true });
   const { text, counts } = renderLibPage(cfg, pkg, items, family);
-  writeFileSync(outPath, text);
-  console.log(`  wrote ${outPath.replace(`${ROOT}/`, '')}（${counts}）`);
+  const w = writeGenerated(outPath, text);
+  console.log(
+    w.written
+      ? `  wrote ${outPath.replace(`${ROOT}/`, '')}（${counts}）`
+      : `  unchanged ${outPath.replace(`${ROOT}/`, '')}（${counts}。内容が同じなので日付 ${w.date} のまま）`
+  );
 
   for (const edited of syncLibVersion(name, cfg, pkg)) console.log(`  synced version in ${edited}`);
 }
@@ -812,8 +843,12 @@ for (const name of names.filter((n) => n in REGISTRY)) {
   const outPath = join(SITE, cfg.out);
   mkdirSync(dirname(outPath), { recursive: true });
   const { text, withExample } = renderPage(name, cfg, serverInfo, tools);
-  writeFileSync(outPath, text);
-  console.log(`  wrote ${outPath.replace(`${ROOT}/`, '')}（呼び出し例 ${withExample}/${tools.length}）`);
+  const w = writeGenerated(outPath, text);
+  console.log(
+    w.written
+      ? `  wrote ${outPath.replace(`${ROOT}/`, '')}（呼び出し例 ${withExample}/${tools.length}）`
+      : `  unchanged ${outPath.replace(`${ROOT}/`, '')}（呼び出し例 ${withExample}/${tools.length}。内容が同じなので日付 ${w.date} のまま）`
+  );
   const missing = tools.filter((t) => !loadToolExample(name, t.name)).map((t) => t.name);
   if (missing.length) console.warn(`  ・呼び出し例なし: ${missing.join(', ')}`);
   for (const edited of syncVersions(name, cfg, serverInfo, tools.length)) console.log(`  synced version in ${edited}`);
