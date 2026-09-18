@@ -118,6 +118,8 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
    - (b) nta 側は 2026-09-18 に公開済み（nta v0.18.0、PR #37、nta#35 close）。`--quickstart`（通達 1 本、約 3〜5 分）、`--help` の並び替え、全部入りの開始時に目安表。PR 本文は `docs/notes/issues-2026-09-14/pr-nta-35.md`
    - (b) egov 側は 2026-09-19 に README を書き換え（ブランチ `docs/22b-readme-try-first`、PR 待ち）。冒頭に「まず試す（ローカル DB なし）」— 7 ツールのうち 6 つは DB 無しで動き、要るのは `search_fulltext` だけ — を置き、DB あり / なしの対応表を添えた。コードは変えていない。PR 本文は `docs/notes/issues-2026-09-14/pr-egov-22b.md`
    - (c) 名前と掲載: 候補と文言案と掲載先の手順を `docs/notes/2026-09-19-job-name-and-listing.md` に置いた（2026-09-19）。仕事の 1 行（推奨 J1「実装する前に、その仕様が法令のどこに触れるかを条文で確かめる」）と違いの 1 行（推奨 D1「法律で決まっている」と「通達でそうなっている」を混ぜずに返す）の 2 層。掲載先は公式 MCP Registry を先に（family の MCP はどれも未登録。`mcpName` を入れた publish が要る）。**2026-09-19 に J1 + D1 で決定**。アクターごとの違いは MCP ではなく Skill の workflow に置く（問いの形 1 つに workflow 1 つ。ノートの §8）
+   - 文言の差し替えは 2026-09-19 に実施（PR 待ち）。hub: hero / README / overview / 3 つの場面（main 直接）。egov: README 1 行目・npm description・`mcpName`・`server.json`・0.6.1（ブランチ `docs/22c-name-and-registry`）。nta: 同じく 0.18.1（同名ブランチ）。claude-plugins: 3 件の description（ブランチ `docs/houki-job-name`。egov / nta の publish 後に push）。PR 本文は `docs/notes/issues-2026-09-14/pr-egov-22c.md` / `pr-nta-22c.md`
+   - 公式 MCP Registry への登録は、各 publish 後に `mcp-publisher login github` → `publish`。MCP ディレクトリ（awesome-mcp-servers / Glama / PulseMCP）と記事は Registry の後
    - `shuji-bonji/claude-plugins` の `marketplace.json` で、`houki-research` に `"dependencies": ["houki-egov-mcp", "houki-nta-mcp"]` を宣言する。いまは houki の plugin が 3 つ並んでいて、1 つの仕事に 3 回の導入が要る。`pdf-publish` が `pdf-writer-mcp` で同じ形を取っている
    - 仕事の名前を 1 つ決める。`tax-law-mcp` と同じ「税務の裏取り」は、README / DISCLAIMER が業としての利用を想定外としているため名乗れない（配布 3）。houki だけが答えられる問い（索引から消えたか / 拘束力 / 根拠条文 / 取得日時）を名前にする
    - README の 1 行目、npm の `description`、`marketplace.json` の `description` を、決めた名前に揃える
@@ -172,6 +174,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
 
 | 日付 | できごと |
 |---|---|
+| 2026-09-19 | hub#22 の (c)。仕事の 1 行を J1「実装する前に、その仕様が法令のどこに触れるかを条文で確かめる」、違いの 1 行を D1「『法律で決まっている』と『通達でそうなっている』を混ぜずに返す」に決定。hub の hero / README / overview を差し替え、「3 つの場面」を置いた。egov 0.6.1 / nta 0.18.1 のブランチで README 1 行目・npm description・`mcpName`・`server.json`。claude-plugins の 3 件の description。アクターごとの違いは Skill の workflow に置く方針（`feasibility-check.md` を次の版で） |
 | 2026-09-18 | houki-nta-mcp #35 を実装し PR #37 で取り込み、v0.18.0 を publish。claude-plugins は版のみ追随。`--quickstart` で通達 1 本を約 3〜5 分で入れられるようにし、`--help` を「まず試す → 種別を足す → 全部入り → 保守」の順に。README の「約 50 分」2 箇所を約 100 分に訂正。hub#22 の (b) 導入の時間の nta 側 |
 | 2026-09-14 | hub#22 の (a) 導入の手数を実装。houki-research v0.7.0 の `plugin.json` と claude-plugins の `marketplace.json` に `"dependencies": ["houki-egov-mcp", "houki-nta-mcp"]` を宣言し、`houki-research` を入れれば条文と通達の両方が揃うようにした。版の範囲は付けず名前だけ（各 MCP の git tag が `v0.6.0` 形式で、範囲解決に要る `houki-egov-mcp--v0.6.0` 形式ではないため）。`pdf-reader-mcp` は nta#36 の結論待ちで入れていない。未公開 |
 | 2026-09-14 | Discussion #24（nta の価値を整理）を割り付け。7 項目のうち新規は 2 件（劣 4 の試用経路、劣 5 の PDF）で、劣 3・6・7 は hub#22 と DECISIONS.md がすでに持っていた。#20 と #24 が同じ結論（壁は機能ではなく導入）に収束したため、hub#22 を (a) 手数 / (b) 時間 / (c) 名前と掲載 に分割。あわせて、条文の参照関係は hub#8 と重なったまま MCP のツールとして実装すると決定（egov#20） |
