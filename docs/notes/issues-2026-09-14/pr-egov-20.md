@@ -1,5 +1,7 @@
 ## 何をしたか
 
+> 2026-09-19 追記: この内容は PR #30（`ffd6100`）で一度マージされましたが、その後 main の履歴を fixup で整理した際に main から外れ、0.9.0 / 0.9.1 はコードの変更なしの版として publish されました。同じ内容を今の main（0.9.1）の上に載せ直し、版を **0.10.0** にしています（`src/` に衝突なし。版の記述だけを直した）。
+
 施行令・施行規則の関連付けと、条文本文からの参照抽出のツールを 2 つ足しました（Closes #20）。設計は houki-hub の `docs/notes/2026-09-19-design-egov-20-references.md` です。houki-hub#8（法令グラフ）と対象が重なりますが、MCP は法令名の規則と本文の正規表現から決定論的に引ける参照だけを返します（houki-hub `docs/ROADMAP.md` の 2026-09-14 決定）。
 
 ### `get_related_laws`
@@ -37,9 +39,9 @@ VM では別ディレクトリに `npm ci` して vitest 348 件・`biome check`
 
 ## 取り込み後
 
-1. タグ `v0.9.0` で publish
-2. `mcp-publisher login github && mcp-publisher publish`（`server.json` は 0.9.0 に更新済み）
-3. claude-plugins の `houki-egov-mcp` を 0.9.0 に
+1. タグ `v0.10.0` で publish
+2. `mcp-publisher login github && mcp-publisher publish`（`server.json` と `.claude-plugin/plugin.json` は 0.10.0 に更新済み）
+3. claude-plugins の `houki-egov-mcp` を 0.10.0 に
 4. houki-hub: `docs/ROADMAP.md` の「次の一手 4」の該当行に取り消し線、ツールリファレンス（`site/docs/reference/mcp/houki-egov.md`）の再生成、`stack.json` の更新
 5. houki-research-skill: `workflows/feasibility-check.md` の「委任先」のステップを `get_related_laws` / `get_article_references` で書き直せます（別 PR）
 

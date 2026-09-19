@@ -135,7 +135,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
    - ~~2-8 差分同期（egov#21 / 機能 5）~~: 2026-09-19 に v0.8.0 で publish
    - 引用の実在確認（egov#18 / 機能 3）: `verify_citations` 相当。既存の `get_law` / `search_fulltext` で組める。新しいデータ源は要らない
    - 添付ファイルと法令ファイル形式（egov#19 / 機能 1）: 応答でバイナリをどう返すか（保存先パス / base64 / URL のみ）を先に決めて `docs/DESIGN.md` に書く
-   - 施行令・施行規則の関連付け（egov#20 / 機能 2）: hub#8 と重なったまま MCP のツールとして実装する。決定論で引ける参照だけを返し、網羅性は主張しない。**2026-09-19 に実装（ブランチ `feat/20-references`、0.9.0、PR 待ち）**。`get_related_laws`（法令名の規則 + e-Gov で実在確認）と `get_article_references`（本文の正規表現。法令番号で law_id を解決、「前項」「同法」は解決しない、委任先は法令単位）。設計メモ `docs/notes/2026-09-19-design-egov-20-references.md`、PR 本文 `docs/notes/issues-2026-09-14/pr-egov-20.md`
+   - 施行令・施行規則の関連付け（egov#20 / 機能 2）: hub#8 と重なったまま MCP のツールとして実装する。決定論で引ける参照だけを返し、網羅性は主張しない。**2026-09-19 に実装（ブランチ `feat/20-references`、0.10.0、PR 待ち。PR #30 で一度マージされたが履歴整理で main から外れたため、0.9.1 の上に作り直した）**。`get_related_laws`（法令名の規則 + e-Gov で実在確認）と `get_article_references`（本文の正規表現。法令番号で law_id を解決、「前項」「同法」は解決しない、委任先は法令単位）。設計メモ `docs/notes/2026-09-19-design-egov-20-references.md`、PR 本文 `docs/notes/issues-2026-09-14/pr-egov-20.md`
    - 章・節単位の分割取得（egov#22 / 機能 6）: 既知の未対応「民法・消費税法の応答が長い」と同じ
    - `get_toc` の附則の階層配置（egov#24 / 機能 8）: 既知の未対応。本則と附則を別の枝にし、附則は改正法ごとにまとめる
    - 2 文字語の本文検索（egov#23 / 機能 7）: `articles_fts` / `laws_fts` は `tokenize = 'trigram'` で 3 文字以上。まず挙動を応答で明示するところから
@@ -175,7 +175,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
 
 | 日付 | できごと |
 |---|---|
-| 2026-09-19 | houki-egov-mcp egov#20 の設計メモ（`docs/notes/2026-09-19-design-egov-20-references.md`）と実装（ブランチ `feat/20-references`、0.9.0、PR 待ち）。`get_related_laws` / `get_article_references` を追加。実測: 所得税法 → 所令・所規、所得税法 57 条の 2 第 2 項 → 雇用保険法 10 条 5 項 1 号ほか 4 件の他法令参照 |
+| 2026-09-19 | houki-egov-mcp egov#20 の設計メモ（`docs/notes/2026-09-19-design-egov-20-references.md`）と実装（ブランチ `feat/20-references`、PR #30 → マージ扱いだが履歴整理で main から外れ、npm 0.9.1 にも入っていないことを確認。同日、0.9.1 の上に同じ内容を載せ直し 0.10.0 として PR 待ち）。`get_related_laws` / `get_article_references` を追加。実測: 所得税法 → 所令・所規、所得税法 57 条の 2 第 2 項 → 雇用保険法 10 条 5 項 1 号ほか 4 件の他法令参照 |
 | 2026-09-19 | houki-egov-mcp v0.9.0 / v0.9.1（コードの変更なし）。0.8.0 の取り込み後に main の履歴を fixup で整理した際に版だけが上がって npm に 0.9.0 が出た。`server.json` は 0.8.0 のままで Registry が duplicate を返したため、PR #31 で 0.9.0 に揃えて Registry に登録し、PR #32 で 0.9.1 として package.json / server.json / タグ / npm / Registry / claude-plugins を一致させた。教訓: 版を上げるときは `server.json` も同じコミットで上げる（`npm version` は触らない） |
 | 2026-09-19 | houki-egov-mcp #21（差分同期 `--sync`）を PR #29 で取り込み、v0.8.0 を publish。公式 MCP Registry と claude-plugins も 0.8.0 に。実環境の初回実測: 2026-09-07 に全件取り込みした DB（laws 10,810 件）に対して 13 日分を 2 分 50 秒で確認、10 日に差分あり（341 件 upsert、44 件 unchanged）、3 日（土日と当日）は差分なし。1 日分の zip は 26 KB〜30 MB で、取り込み時間はほぼ zip の大きさに比例（30 MB で約 37 秒）。`last_sync_date` から今日までの日次差分を日付順に取り込み、差分が無い日（e-Gov は HTTP 500 を返す）は飛ばし、途中で失敗しても成功した日までを記録する。合わせて、差分で同じ法令の新しい版が現行として届いたときに前の版を `PreviousEnforced` に落とすようにした（これまでは `search_fulltext` で同じ法令が 2 度ヒットする経路があった）。VM で 7 日分を実測: 1 分 11 秒、234 件 upsert。Discussion #20 の機能 5 |
 | 2026-09-19 | houki-egov-mcp #17（漢数字の条番号・号番号）を PR #28 で取り込み、v0.7.0 を publish。公式 MCP Registry と claude-plugins の追随は同日の手順で実施。`get_law` の `article` / `item` に "第三十条の二" / "八の二" と全角数字を渡せるようにし、`INVALID_ARTICLE_NUM` の文言から「漢数字には未対応です」を外した。`search_fulltext` のキーワード中の漢数字は本文のトークンのままにし、boost に回すかは別に検討（条文本文が他の条を漢数字で参照するため）。Discussion #20 の機能 1〜8 で最初の完了 |

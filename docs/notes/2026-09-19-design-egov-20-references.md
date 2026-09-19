@@ -2,7 +2,7 @@
 
 対象リポジトリ: houki-egov-mcp（`houki-hub/mcp/houki-egov-mcp`、2026-09-19 JST 作成）
 ブランチ: `feat/20-references`
-版の案: **v0.9.0**（ツールを 2 つ足すので minor）
+版の案: **v0.10.0**（ツールを 2 つ足すので minor。当初は v0.9.0 の予定だったが、0.9.0 / 0.9.1 がコードの変更なしの版として使われたため）
 出典: [egov#20](https://github.com/shuji-bonji/houki-egov-mcp/issues/20) / 起票文 `docs/notes/issues-2026-09-14/houki-egov-mcp-D-v2.md` / `docs/ROADMAP.md` の「次の一手 4」と「条文の参照関係をどこに持つか（2026-09-14 決定）」
 
 ---

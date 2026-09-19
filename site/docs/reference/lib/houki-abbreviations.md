@@ -8,14 +8,14 @@ description: "houki-abbreviations v0.5.1 の公開 API（関数 19 個・定数 
 <!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import から。 -->
 
 ::: info
-**v0.5.1** の `dist/index.d.ts` から自動生成しました（関数 19 個・定数 6 個・インターフェース 11 個・型 6 個・2026-09-13）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.5.1** の `dist/index.d.ts` から自動生成しました（関数 19 個・定数 6 個・インターフェース 11 個・型 6 個・2026-09-19）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成の API リファレンスです。** 公開されている記号の名前・シグネチャ・説明・例を、パッケージの型定義（`dist/index.d.ts`）から写しています（正典は型定義です）。辞書の中身や設計上の約束は[解説ページ](/lib/houki-abbreviations)にあります。
 
 houki-hub family の MCP サーバーが共有するために公開しているパッケージです。**0.x の間は minor で破壊的変更が入ることがあります**。安定した互換性が要るときは版を固定してください。
 
-公開しているのは関数 19 個・定数 6 個・インターフェース 11 個・型 6 個です。そのうち houki-egov-mcp と houki-nta-mcp が実際に import しているのは **16 個**で、残りは公開しているだけです（テストコードの import は数えていません）。各記号の説明と例は、一覧の下に用途ごとにまとめてあります。
+公開しているのは関数 19 個・定数 6 個・インターフェース 11 個・型 6 個です。そのうち houki-egov-mcp と houki-nta-mcp が実際に import しているのは **17 個**で、残りは公開しているだけです（テストコードの import は数えていません）。各記号の説明と例は、一覧の下に用途ごとにまとめてあります。
 
 ## 読み込み方
 
@@ -39,7 +39,7 @@ import { resolveAbbreviation } from '@shuji-bonji/houki-abbreviations';
 | [`levenshtein`](#levenshtein) | v0.4.0 | 未使用 | Levenshtein 距離 (動的計画法、O(m*n) 時間 / O(min(m,n)) 空間)。 |
 | [`listByCategory`](#listbycategory) | v0.1.0 | 未使用 | 指定カテゴリのエントリ一覧を返す。 |
 | [`listByDomain`](#listbydomain) | v0.1.0 | 未使用 | 指定ドメインのエントリ一覧を返す。 |
-| [`listBySourceMcpHint`](#listbysourcemcphint) | v0.1.0 | 未使用 | 指定 MCP が管轄するエントリ一覧を返す。 |
+| [`listBySourceMcpHint`](#listbysourcemcphint) | v0.1.0 | `houki-egov-mcp` | 指定 MCP が管轄するエントリ一覧を返す。 |
 | [`lookupByLawId`](#lookupbylawid) | v0.5.0 | 未使用 | e-Gov `law_id` から辞書エントリを引く。 |
 | [`lookupByLawNum`](#lookupbylawnum) | v0.5.0 | 未使用 | 法令番号（漢数字表記）から辞書エントリを引く。 |
 | [`normalizeJpText`](#normalizejptext) | v0.3.0 | `houki-egov-mcp`<br>`houki-nta-mcp` | 日本語テキストの全角ゆらぎを保守的に半角化する。 |
@@ -163,7 +163,7 @@ listByDomain('tax')  // → 35 件の税法系エントリ
 
 ### listBySourceMcpHint
 
-*関数 ・ v0.1.0 で追加 ・ family では未使用*
+*関数 ・ v0.1.0 で追加 ・ houki-egov-mcp が使用*
 
 ```ts
 function listBySourceMcpHint(hint: SourceMcpHint): AbbreviationEntry[];
