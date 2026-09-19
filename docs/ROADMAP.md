@@ -147,7 +147,8 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
    - `lookupByLawNum` の漢数字↔算用数字正規化（abbr#6）、`isValidLawId` の DF 系・M 省令系パターン（Discussion #20 機能 4 と対。対象は法令番号で、egov の条番号とは別）
    - 任意: toolchain を Biome / TS 7 に揃える
 6. **houki-research-skill の次の版**
-   - workflow 追加: `feasibility-check.md`（J1「この仕様は法令のどこに触れるか」の手順。仕様の語 → 該当法令 → 条文 → 施行令・施行規則 → 制約の一覧）。SKILL.md に問いの形 → workflow の対応表
+   - ~~workflow 追加: `feasibility-check.md`~~ → 2026-09-19 に実装（v0.8.0、ブランチ `feat/feasibility-check-workflow`、PR 待ち）。7 ステップ（語の置き換え → 法令 → 条文 → 委任先 → 通達 → 施行日 → 制約の一覧）。SKILL.md に問いの形 → workflow の表。PR 本文は `docs/notes/issues-2026-09-14/pr-skill-0.8.0.md`
+   - examples 追加: `electronic-bookkeeping.md`（feasibility-check の実測。電帳法の電子取引を PDF で保存する仕様）
    - workflow 追加: `revision-tracking.md`（MCP の完成を待たずに書ける）
    - examples 追加: 電帳法、相続税改正
    - 印が付いた文書の実例が出たら、`docs/CITATION.md` の書き方の例を実測に差し替える（v0.6.0 では `<題名>` `<docId>` の形で書いている）
@@ -174,6 +175,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
 
 | 日付 | できごと |
 |---|---|
+| 2026-09-19 | houki-research-skill v0.8.0（ブランチ、PR 待ち）: `workflows/feasibility-check.md` と、SKILL.md に問いの形 → workflow の表。hub#22 の (c) で決めた入口の 1 行に対応する手順書。利用者ごとの違いを Skill の workflow に置く方針の最初の実装 |
 | 2026-09-19 | 公式 MCP Registry に `io.github.shuji-bonji/houki-egov-mcp` 0.6.1 と `houki-nta-mcp` 0.18.1 を登録。日本の法令を扱う MCP は Registry 上で初。`server.json` の description が 100 文字制限で一度 422 になり、英語 1 文に直した（ブランチ `fix/server-json-description`、PR 待ち） |
 | 2026-09-19 | egov 0.6.1（PR #26）/ nta 0.18.1（PR #38）を publish（README 1 行目・npm description・`mcpName`・`server.json`）。claude-plugins の 3 件の description を push。houki-hub の stack / site を追随。公式 MCP Registry は未登録（`mcp-publisher publish` が残り） |
 | 2026-09-19 | hub#22 の (c)。仕事の 1 行を J1「実装する前に、その仕様が法令のどこに触れるかを条文で確かめる」、違いの 1 行を D1「『法律で決まっている』と『通達でそうなっている』を混ぜずに返す」に決定。hub の hero / README / overview を差し替え、「3 つの場面」を置いた。egov 0.6.1 / nta 0.18.1 のブランチで README 1 行目・npm description・`mcpName`・`server.json`。claude-plugins の 3 件の description。アクターごとの違いは Skill の workflow に置く方針（`feasibility-check.md` を次の版で） |
