@@ -72,7 +72,8 @@ npx -y @shuji-bonji/houki-egov-mcp --bulk-download-everything
 npx -y @shuji-bonji/houki-egov-mcp --sync
 ```
 
-`sync_state` の最終同期日から今日までの日次差分 zip（1 日分は数百 KB〜30 MB）を日付順に取り込みます（v0.8.0+）。
+`sync_state` の最終同期日から今日までの日次差分 zip（1 日分は数十 KB〜30 MB）を日付順に取り込みます（v0.8.0+）。
+実測では、12 日ぶんの差分（341 件）を 2 分 50 秒で取り込めました（2026-09-19、全件取り込み後の DB に対して）。
 差分が無い日（土日など）は飛ばし、途中で失敗しても成功した日までを記録するので、再実行すると続きから同期します。
 最終同期から 90 日を超えて空いているときは、e-Gov の日次差分の公開範囲を超えるため、何もせずに `--bulk-download-everything` を促します。
 `--status` の `days_since_sync` が 0 でないときに実行してください。
