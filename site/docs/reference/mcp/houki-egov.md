@@ -1,6 +1,6 @@
 ---
 title: "houki-egov-mcp — ツールリファレンス"
-description: "houki-egov-mcp v0.8.0 の全 7 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-egov-mcp v0.9.1 の全 9 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-egov-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-egov-mcp v0.8.0 の全 7 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.8.0** の `tools/list` から自動生成しました（7 ツール・2026-09-19）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.9.1** の `tools/list` から自動生成しました（9 ツール・2026-09-19）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-egov)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -26,6 +26,8 @@ description: "houki-egov-mcp v0.8.0 の全 7 ツールの引数・型・既定�
 | [`resolve_abbreviation`](#resolve-abbreviation) | 略称・通称から正式な法令名と law_id を解決する。 |
 | [`get_law_revisions`](#get-law-revisions) | 法令の改正履歴を取得する。 |
 | [`explain_law_type`](#explain-law-type) | 法令種別（憲法・法律・政令・省令・規則・条例・告示・通達 等）の制定主体・階層上の位置・国民への拘束力・実務上の注意点を解説する。 |
+| [`get_related_laws`](#get-related-laws) | 法令名の規則で関連する法令を引く。 |
+| [`get_article_references`](#get-article-references) | 条文本文が引用している参照を取り出す。 |
 
 ## search_law
 
@@ -584,3 +586,26 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 
 `binds_citizens: false` が、通達が国民を拘束しないことを表します。「施行令」「施行規則」「Act」のような別名も `name` に渡せます。
 :::
+
+## get_related_laws
+
+法令名の規則で関連する法令を引く。法律なら施行令・施行規則、施行令・施行規則なら親の法律と兄弟を、e-Gov に実在するものだけ返す（law_id 付き）。名前の末尾に「施行令」「施行規則」を付けた（落とした）候補だけを試すので、別の名前の下位法令や告示は返らない。網羅性は主張しない。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `law_name` | string | **必須** |  | 法令名または略称。例: "所得税法", "所法", "所得税法施行令" |
+
+## get_article_references
+
+条文本文が引用している参照を取り出す。他法令の条（法令名と法令番号から law_id を解決）、同一法令内の条・項・号、「政令で定める」「財務省令で定める」の委任（施行令・施行規則を法令単位で付ける）を返し、各参照に get_law の引数を next_actions で付ける。「前項」「同法」は解決しない。正規表現で取れた範囲だけを返し、網羅性は主張しない。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `law_name` | string | **必須** |  | 法令名または略称。例: "所得税法", "所法" |
+| `article` | string | **必須** |  | 条番号。例: "57の2", "第57条の2", "第五十七条の二" |
+| `paragraph` | number | 任意 |  | 項番号。指定するとその項の本文だけを対象にする。省略時は条全体 |
+| `at` | string | 任意 |  | 時点指定。YYYY-MM-DD 形式（get_law と同じ） |
