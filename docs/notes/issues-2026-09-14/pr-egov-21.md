@@ -13,7 +13,7 @@
 
 ## 合わせて直したこと（ingester）
 
-- 差分 zip で同じ法令の新しい版が現行として届いたとき、前の版を `PreviousEnforced` に落とします。これまでは前の版も `CurrentEnforced` のまま残り、`search_fulltext` の revision 重複対策（`CurrentEnforced` に絞る）をすり抜けて同じ法令が 2 度ヒットする経路がありました（`--bulk-download-by-date` でも同じ）。実測の 7 日分で 13 件がこの経路に当たりました
+- 同じ法令の現行の版を、施行日が最も新しい 1 つだけにします。差分 zip で新しい版（別の `law_revision_id`）が現行として届いたら施行日がそれより前の版を `PreviousEnforced` に落とし、逆に施行日がより新しい現行の版がすでにあれば届いた版のほうを落とします（1 つの zip に同じ法令の版が複数並ぶ場合の順序に依りません）。これまでは前の版も `CurrentEnforced` のまま残り、`search_fulltext` の revision 重複対策（`CurrentEnforced` に絞る）をすり抜けて同じ法令が 2 度ヒットする経路がありました（`--bulk-download-by-date` でも同じ）。実測の 7 日分で 13 件がこの経路に当たりました
 - `source: 'incremental'` の ingest で `sync_state.total_laws` に差分 CSV の行数を書いていたのを、DB の法令数に変えました
 - `ingestZip` に `updateSyncState`（既定 true）を足しました
 
@@ -28,7 +28,7 @@
 ## テスト
 
 - `src/services/bulk/sync.test.ts`（18 件）: 日付ヘルパ、計画、差分なしの判定、進行（成功・途中失敗・接続不可・進捗コールバック）、SQLite の store
-- `src/services/bulk/ingester.test.ts` に 5 件: `total_laws`、`updateSyncState=false`、前の版の降格、未施行の版は現行に触れない
+- `src/services/bulk/ingester.test.ts` に 6 件: `total_laws`、`updateSyncState=false`、前の版の降格（届く順序の両方）、未施行の版は現行に触れない
 
 VM では TS 7 / biome が動かないので、`biome-linux-arm64` 2.5.12 と TypeScript 5.9.3 で `biome check` と `tsc --noEmit` を通し、テストは vitest の代替（`better-sqlite3` を `node:sqlite` に差し替え）で通しました。Mac で `npm test && npm run build && npm run check` をお願いします。README の「287 tests」は `npm test` の件数に合わせて直してください。
 
