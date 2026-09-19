@@ -1,6 +1,6 @@
 ---
 title: "houki-egov-mcp — ツールリファレンス"
-description: "houki-egov-mcp v0.10.1 の全 9 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-egov-mcp v0.11.0 の全 10 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-egov-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-egov-mcp v0.10.1 の全 9 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.10.1** の `tools/list` から自動生成しました（9 ツール・2026-09-19）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.11.0** の `tools/list` から自動生成しました（10 ツール・2026-09-20）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-egov)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -28,6 +28,7 @@ description: "houki-egov-mcp v0.10.1 の全 9 ツールの引数・型・既定�
 | [`explain_law_type`](#explain-law-type) | 法令種別（憲法・法律・政令・省令・規則・条例・告示・通達 等）の制定主体・階層上の位置・国民への拘束力・実務上の注意点を解説する。 |
 | [`get_related_laws`](#get-related-laws) | 法令名の規則で関連する法令を引く。 |
 | [`get_article_references`](#get-article-references) | 条文本文が引用している参照を取り出す。 |
+| [`verify_citations`](#verify-citations) | LLM が組み立てた法令の引用リストを、1 回の呼び出しでまとめて実在確認する。 |
 
 ## search_law
 
@@ -869,3 +870,20 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 
 `kind` は 3 つです。`external` は他法令への参照で、`law_name`（法令番号）の形なら法令番号で、法令番号が無ければ候補名の完全一致で `law_id` を解決します（職業能力開発促進法がその例）。解決できなければ `resolved: false` のまま `law_name` に候補が入ります。`internal` は同一法令内の参照で、条も項も無い「第N号」にはその文が属する項の番号が付きます。`relative`（「前項」「同法第三十一条の十」「同号」）は解決しません。`delegations[]` の `target_law` は法令単位で、どの条が受けているかは `next_actions` の `search_fulltext`（ローカル DB）か `get_toc` で探します。`next_actions[].example` はそのまま `get_law` の引数になります。
 :::
+
+## verify_citations
+
+LLM が組み立てた法令の引用リストを、1 回の呼び出しでまとめて実在確認する。件ごとに found / not_found / ambiguous を返し、リストの中に存在しない引用が混ざっていてもツール全体はエラーにしない。found の件には正式名称・法令番号・条見出し・law_id・URL を付ける。確かめるのは「その条（指定があれば項・号）が e-Gov の法令にあるか」だけで、引用が主張を支えるかどうかは判定しない。略称は略称辞書で正式名称に直してから照合する。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `citations` | object[] | **必須** |  | 確かめたい引用の配列（最大 50 件） |
+| `citations[].law_name` | string | 任意 |  | 法令名または略称。例: "所得税法", "所法"。law_id を書くなら省略可 |
+| `citations[].law_id` | string | 任意 |  | e-Gov の law_id。例: "340AC0000000033"。law_name より優先する。law_name と両方省略はできない |
+| `citations[].article` | string | **必須** |  | 条番号。例: "30", "30の2", "第三十条の二" |
+| `citations[].paragraph` | number | 任意 |  | 項番号。省略すると条までを確かめる |
+| `citations[].item` | number \| string | 任意 |  | 号番号。数値（8）か文字列（"8"・"8の2"・"八の二"）。項が複数ある条で項を書かずに号だけを指定すると ambiguous になる |
+| `citations[].label` | string | 任意 |  | 引用元の表示文字列。判定には使わず、そのまま results に返す |
+| `at` | string | 任意 |  | 時点指定。YYYY-MM-DD 形式。全件に同じ時点を適用する |

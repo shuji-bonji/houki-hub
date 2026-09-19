@@ -52,7 +52,7 @@ graph TB
 |---|---|---|---|
 | 機能 1 | 添付ファイル・法令ファイル形式 | egov#19 | 新規 |
 | 機能 2 | 条文の参照を辿る | egov#20 | hub#8（法令グラフ）と対象が重なるが、重なったまま MCP のツールとして実装する（2026-09-14 決定。下記） |
-| 機能 3 | 引用の実在確認 | egov#18 | 新規。既存の `get_law` / `search_fulltext` で組める |
+| 機能 3 | 引用の実在確認 | egov#18 | 新規。既存の `get_law` / `search_fulltext` で組める（2026-09-20 に `verify_citations` を実装、PR 待ち） |
 | 機能 4 | 漢数字の条番号 | egov#17 | 新規。`src/utils/article-num.ts` の 1 ファイル。14 項目で最も費用が小さい |
 | 機能 5 | 差分同期 | egov#21 | 下記 4 の Phase 2-8。**部品は実装済み**（下記の訂正） |
 | 機能 6 | 章・節単位の分割取得 | egov#22 | 下記 4 の「民法・消費税法の応答が長い」と同じ |
@@ -133,7 +133,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
 4. **houki-egov-mcp — Phase 2-8 / 2-13 と Discussion #20 機能 1〜8**
    - ~~漢数字の条番号・号番号（egov#17 / 機能 4）~~: 2026-09-19 に v0.7.0 で publish。`search_fulltext` の keyword 中の漢数字を boost に使うかは別件
    - ~~2-8 差分同期（egov#21 / 機能 5）~~: 2026-09-19 に v0.8.0 で publish
-   - 引用の実在確認（egov#18 / 機能 3）: `verify_citations` 相当。既存の `get_law` / `search_fulltext` で組める。新しいデータ源は要らない
+   - ~~引用の実在確認（egov#18 / 機能 3）~~: 2026-09-20 に `verify_citations` を実装（ブランチ `feat/18-verify-citations`、PR 待ち。v0.11.0）。引用の配列を受け取り、件ごとに `found` / `not_found` / `ambiguous` を返す。存在しない引用が混ざってもツール全体は `isError` にしない。`summary.all_found` で「全部実在した」と書いてよいかが 1 つの値で分かる。設計メモ `docs/notes/2026-09-20-design-egov-18-verify-citations.md`、PR 本文 `docs/notes/issues-2026-09-14/pr-egov-18.md`。houki-research-skill v0.10.0（ブランチ `feat/verify-citations`、PR 待ち。`docs/CITATION.md` に citation を書く前の実在確認の手順）を用意
    - 添付ファイルと法令ファイル形式（egov#19 / 機能 1）: 応答でバイナリをどう返すか（保存先パス / base64 / URL のみ）を先に決めて `docs/DESIGN.md` に書く
    - ~~施行令・施行規則の関連付け（egov#20 / 機能 2）~~: 2026-09-19 に v0.10.0 で publish（PR #33、Registry 登録済み）。hub#8 と重なったまま MCP のツールとして実装し、決定論で引ける参照だけを返し、網羅性は主張しない。`get_related_laws`（法令名の規則 + e-Gov で実在確認）と `get_article_references`（本文の正規表現。法令番号で law_id を解決、「前項」「同法」は解決しない、委任先は法令単位）。設計メモ `docs/notes/2026-09-19-design-egov-20-references.md`、PR 本文 `docs/notes/issues-2026-09-14/pr-egov-20.md`。PR #30 で一度マージされたが履歴整理で main から外れたため、0.9.1 の上に作り直した。egov 0.10.1（「第二条第二項第二号及び第六項第五号」の後半が 4 条の項になっていたのを直す）は 2026-09-19 に publish・Registry 登録済み。houki-research-skill v0.9.0（ブランチ `feat/feasibility-references`、PR 待ち。feasibility-check の ⑤ を 3 手に書き直し）を用意
    - 章・節単位の分割取得（egov#22 / 機能 6）: 既知の未対応「民法・消費税法の応答が長い」と同じ
@@ -152,7 +152,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
    - workflow 追加: `revision-tracking.md`（MCP の完成を待たずに書ける）
    - examples 追加: 電帳法、相続税改正
    - 印が付いた文書の実例が出たら、`docs/CITATION.md` の書き方の例を実測に差し替える（v0.6.0 では `<題名>` `<docId>` の形で書いている）
-   - egov に `verify_citations` が入ったら、citation 手順から呼ぶ
+   - ~~egov に `verify_citations` が入ったら、citation 手順から呼ぶ~~ → 2026-09-20 に v0.10.0 として用意（ブランチ `feat/verify-citations`、PR 待ち）。`docs/CITATION.md` の「引用を書き出す前に確かめる」と、鉄則 4 の 1 手。egov v0.11.0 の publish 後に出す
 7. **新 MCP は houki-metadata-mcp を先に**
    - 主用途は J-SOX 型の「公布→施行ラグ」期。施行前フォロー期に時系列の横串クエリが多発する
    - 3 つ目の MCP なので、abbreviations Track 5（ルーティング）の再評価トリガーになる
@@ -175,6 +175,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
 
 | 日付 | できごと |
 |---|---|
+| 2026-09-20 | houki-egov-mcp egov#18（引用の実在確認）の設計メモ（`docs/notes/2026-09-20-design-egov-18-verify-citations.md`）と実装（ブランチ `feat/18-verify-citations`、v0.11.0、PR 待ち）。`verify_citations` は引用の配列を 1 回で受け、件ごとに `found` / `not_found` / `ambiguous` を返す。実測（12 件混在）: `{ total: 12, found: 6, not_found: 4, ambiguous: 2, all_found: false }`。「所得税法施行」は候補 2 件で `ambiguous`、「消基通」は `OUT_OF_SCOPE`、項が複数ある条で号だけの指定も `ambiguous`。e-Gov に接続できないときは件ごとの判定を返さず全体を `SOURCE_*` にする（「聞けなかった」を「存在しない」と書かないため）。houki-research-skill v0.10.0（ブランチ `feat/verify-citations`、PR 待ち）で citation 手順から呼ぶ |
 | 2026-09-19 | houki-egov-mcp 0.10.1 を publish・Registry 登録（22:03 JST ごろ。タグ push 直後の `mcp-publisher publish` は npm に版が無く 404、2 分後に成功）: `get_article_references` で条を書かない項・号が直前の参照の条を引き継ぐ（`article_from`）。電帳法施行規則 4 条 1 項の「第六項第五号」が 2 条 6 項 5 号になる。houki-research-skill v0.9.0 を用意（ブランチ `feat/feasibility-references`、PR 待ち）: feasibility-check の ⑤ を `get_related_laws` → `get_article_references` → `get_law` に書き直し、電帳法の例を 0.10.1 で再実測 |
 | 2026-09-19 | houki-egov-mcp egov#20 の設計メモ（`docs/notes/2026-09-19-design-egov-20-references.md`）と実装（ブランチ `feat/20-references`、PR #30 → マージ扱いだが履歴整理で main から外れ、npm 0.9.1 にも入っていないことを確認。同日、0.9.1 の上に同じ内容を載せ直し PR #33 → v0.10.0 で publish、Registry に 0.10.0 を登録、houki-hub のツールリファレンスを再生成し呼び出し例 2 本を実測で追加）。`get_related_laws` / `get_article_references` を追加。実測: 所得税法 → 所令・所規、所得税法 57 条の 2 第 2 項 → 雇用保険法 10 条 5 項 1 号ほか 4 件の他法令参照 |
 | 2026-09-19 | houki-egov-mcp v0.9.0 / v0.9.1（コードの変更なし）。0.8.0 の取り込み後に main の履歴を fixup で整理した際に版だけが上がって npm に 0.9.0 が出た。`server.json` は 0.8.0 のままで Registry が duplicate を返したため、PR #31 で 0.9.0 に揃えて Registry に登録し、PR #32 で 0.9.1 として package.json / server.json / タグ / npm / Registry / claude-plugins を一致させた。教訓: 版を上げるときは `server.json` も同じコミットで上げる（`npm version` は触らない） |
