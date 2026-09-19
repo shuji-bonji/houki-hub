@@ -8,7 +8,7 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 日本の法令（憲法・法律・政令・省令・規則）を **e-Gov 法令 API v2** 経由で取得する MCP サーバーです。
 条文をキーワード・略称・分野で検索し、特定の条・項・号を Markdown または JSON で取り出し、改正履歴を引けます。
 
-- npm: [`@shuji-bonji/houki-egov-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-egov-mcp)（0.10.0）
+- npm: [`@shuji-bonji/houki-egov-mcp`](https://www.npmjs.com/package/@shuji-bonji/houki-egov-mcp)（0.10.1）
 - リポジトリ: [shuji-bonji/houki-egov-mcp](https://github.com/shuji-bonji/houki-egov-mcp)
 - 動作環境: Node.js 22 以上
 
@@ -25,6 +25,8 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 | `search_fulltext` | 条文本文を横断して全文検索します。ローカル DB が必要で、無いときは `search_law` の結果を `source: "api-fallback"` として返します |
 | `resolve_abbreviation` | 略称が正式名と法令 ID にどう解決されるかを診断します |
 | `explain_law_type` | 法令の種別（憲法・法律・政令・省令・通達など）と、それぞれの拘束力を説明します |
+| `get_related_laws` | 法令名から施行令・施行規則（施行令からは親の法律）を、e-Gov に実在するものだけ `law_id` 付きで返します。名前の末尾に「施行令」「施行規則」を付けた候補だけを試します（v0.10.0 から） |
+| `get_article_references` | 条文本文が引いている他法令の条（`law_id` 付き）、同一法令内の条・項・号、「政令で定める」の委任先を取り出し、`get_law` の引数を `next_actions` に付けます。「前項」「同法」は解決しません（v0.10.0 から） |
 
 ## 全文検索のためのローカル DB
 
@@ -54,7 +56,7 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 | ある | 条文の本文を横断した全文検索の結果。ヒットごとに条番号・snippet・score・`freshness` が付きます |
 | 無い | `search_law` と同じ**法令名の一致**の結果。`source: "api-fallback"` が付き、`next_actions` に DB の作り方が入ります |
 
-ほかの 6 ツール（`search_law`・`get_law`・`get_toc`・`get_law_revisions`・`resolve_abbreviation`・`explain_law_type`）は
+ほかの 8 ツール（`search_law`・`get_law`・`get_toc`・`get_law_revisions`・`resolve_abbreviation`・`explain_law_type`・`get_related_laws`・`get_article_references`）は
 e-Gov 法令 API をその場で呼ぶので、DB の有無に関係なく同じように動きます。
 
 ### 作り方

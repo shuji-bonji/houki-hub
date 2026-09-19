@@ -1,6 +1,6 @@
 ---
 title: "houki-egov-mcp — ツールリファレンス"
-description: "houki-egov-mcp v0.10.0 の全 9 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-egov-mcp v0.10.1 の全 9 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-egov-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-egov-mcp v0.10.0 の全 9 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.10.0** の `tools/list` から自動生成しました（9 ツール・2026-09-19）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.10.1** の `tools/list` から自動生成しました（9 ツール・2026-09-19）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-egov)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -597,6 +597,73 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 |---|---|---|---|---|
 | `law_name` | string | **必須** |  | 法令名または略称。例: "所得税法", "所法", "所得税法施行令" |
 
+::: details 呼び出し例 — 「所得税法の施行令と施行規則」
+- 実測: v0.10.0（2026-09-19）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "所得税法" }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "law": {
+    "law_id": "340AC0000000033",
+    "title": "所得税法",
+    "law_num": "昭和四十年法律第三十三号"
+  },
+  "related": [
+    {
+      "relation": "enforcement_order",
+      "law_id": "340CO0000000096",
+      "title": "所得税法施行令",
+      "law_num": "昭和四十年政令第九十六号",
+      "law_type": "CabinetOrder",
+      "abbr": "所令",
+      "url": "https://laws.e-gov.go.jp/law/340CO0000000096"
+    },
+    {
+      "relation": "enforcement_rule",
+      "law_id": "340M50000040011",
+      "title": "所得税法施行規則",
+      "law_num": "昭和四十年大蔵省令第十一号",
+      "law_type": "MinisterialOrdinance",
+      "abbr": "所規",
+      "url": "https://laws.e-gov.go.jp/law/340M50000040011"
+    }
+  ],
+  "not_found": [],
+  "method": "law_name_rule",
+  "note": "法令名の末尾に「施行令」「施行規則」を付けた（または落とした）名前で e-Gov に実在するものだけを返しています。「…の施行に関する省令」など別の名前の下位法令、複数の省令、告示は対象外です。網羅性は保証しません",
+  "next_actions": [
+    {
+      "action": "get_toc",
+      "reason": "施行令の目次を見て、委任先の条を探せます",
+      "example": {
+        "law_name": "所得税法施行令"
+      }
+    },
+    {
+      "action": "get_toc",
+      "reason": "施行規則の目次を見て、委任先の条を探せます",
+      "example": {
+        "law_name": "所得税法施行規則"
+      }
+    }
+  ],
+  "meta": {
+    "retrieved_at": "2026-09-19T12:28:50.927Z"
+  }
+}
+```
+
+`related[]` は、法令名の末尾に「施行令」「施行規則」を付けた候補を e-Gov に問い合わせ、`law_title` が完全一致した 1 件だけです。無かった候補は `not_found[]` に残ります（民法なら `related` が空で `not_found` に 2 件）。`abbr` は略称辞書にあるときだけ付きます。施行令を渡すと `relation: "parent_act"` で親の法律と、兄弟の施行規則が返ります。「…の施行に関する省令」のような別の名前の下位法令は返らないので、`note` を citation に添えてください。
+:::
+
 ## get_article_references
 
 条文本文が引用している参照を取り出す。他法令の条（法令名と法令番号から law_id を解決）、同一法令内の条・項・号、「政令で定める」「財務省令で定める」の委任（施行令・施行規則を法令単位で付ける）を返し、各参照に get_law の引数を next_actions で付ける。「前項」「同法」は解決しない。正規表現で取れた範囲だけを返し、網羅性は主張しない。
@@ -609,3 +676,196 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 | `article` | string | **必須** |  | 条番号。例: "57の2", "第57条の2", "第五十七条の二" |
 | `paragraph` | number | 任意 |  | 項番号。指定するとその項の本文だけを対象にする。省略時は条全体 |
 | `at` | string | 任意 |  | 時点指定。YYYY-MM-DD 形式（get_law と同じ） |
+
+::: details 呼び出し例 — 「所得税法 57 条の 2 第 2 項が引いている法令」
+- 実測: v0.10.0（2026-09-19）
+- ローカル DB: 不要（`next_actions` の `search_fulltext` を実行するときだけ必要）
+
+**引数**
+
+```jsonc
+{ "law_name": "所得税法", "article": "57の2", "paragraph": 2 }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "meta": {
+    "law_id": "340AC0000000033",
+    "title": "所得税法",
+    "law_num": "昭和四十年法律第三十三号",
+    "retrieved_at": "2026-09-19T12:28:54.305Z",
+    "url": "https://laws.e-gov.go.jp/law/340AC0000000033",
+    "article": "57の2",
+    "paragraph": 2
+  },
+  "references": [
+    {
+      "kind": "relative",
+      "raw": "前項",
+      "resolved": false
+    },
+    {
+      "kind": "internal",
+      "raw": "第二十八条第一項",
+      "article": "28",
+      "paragraph": 1
+    },
+    {
+      "kind": "external",
+      "raw": "雇用保険法（昭和四十九年法律第百十六号）第十条第五項第一号",
+      "law_name": "雇用保険法",
+      "law_num": "昭和四十九年法律第百十六号",
+      "law_id": "349AC0000000116",
+      "article": "10",
+      "paragraph": 5,
+      "item": "1",
+      "resolved": true
+    },
+    {
+      "kind": "external",
+      "raw": "母子及び父子並びに寡婦福祉法（昭和三十九年法律第百二十九号）第三十一条第一号",
+      "law_name": "母子及び父子並びに寡婦福祉法",
+      "law_num": "昭和三十九年法律第百二十九号",
+      "law_id": "339AC0000000129",
+      "article": "31",
+      "item": "1",
+      "resolved": true
+    },
+    {
+      "kind": "relative",
+      "raw": "同法第三十一条の十",
+      "resolved": false
+    },
+    {
+      "kind": "relative",
+      "raw": "同号",
+      "resolved": false
+    },
+    {
+      "kind": "external",
+      "raw": "職業能力開発促進法第三十条の三",
+      "law_name": "職業能力開発促進法",
+      "article": "30の3",
+      "resolved": true,
+      "law_num": "昭和四十四年法律第六十四号",
+      "law_id": "344AC0000000064"
+    },
+    {
+      "kind": "relative",
+      "raw": "次号",
+      "resolved": false
+    },
+    {
+      "kind": "external",
+      "raw": "雇用保険法第六十条の二第一項",
+      "law_name": "雇用保険法",
+      "law_num": "昭和四十九年法律第百十六号",
+      "law_id": "349AC0000000116",
+      "article": "60の2",
+      "paragraph": 1,
+      "resolved": true
+    },
+    {
+      "kind": "relative",
+      "raw": "同号",
+      "resolved": false
+    }
+  ],
+  "delegations": [
+    {
+      "kind": "delegation",
+      "raw": "財務省令で定める",
+      "count": 7,
+      "target": "enforcement_rule",
+      "target_law": {
+        "relation": "enforcement_rule",
+        "law_id": "340M50000040011",
+        "title": "所得税法施行規則",
+        "url": "https://laws.e-gov.go.jp/law/340M50000040011"
+      }
+    },
+    {
+      "kind": "delegation",
+      "raw": "政令で定める",
+      "count": 7,
+      "target": "enforcement_order",
+      "target_law": {
+        "relation": "enforcement_order",
+        "law_id": "340CO0000000096",
+        "title": "所得税法施行令",
+        "url": "https://laws.e-gov.go.jp/law/340CO0000000096"
+      }
+    }
+  ],
+  "coverage": {
+    "method": "regex",
+    "note": "本文の文字列から正規表現で取れた参照だけを返しています。取れなかった参照があっても検出できません。「前項」「同法」「同条」などは解決していません（resolved: false）。法令名の候補が e-Gov に無かった参照も resolved: false のままです。委任先の条は特定していません（target_law は法令単位）。網羅性は保証しません"
+  },
+  "next_actions": [
+    {
+      "action": "get_law",
+      "reason": "同一法令内の参照先を読めます",
+      "example": {
+        "law_name": "所得税法",
+        "article": "28",
+        "paragraph": 1
+      }
+    },
+    {
+      "action": "get_law",
+      "reason": "引用先の条を読めます",
+      "example": {
+        "law_name": "雇用保険法",
+        "article": "10",
+        "paragraph": 5,
+        "item": "1"
+      }
+    },
+    {
+      "action": "get_law",
+      "reason": "引用先の条を読めます",
+      "example": {
+        "law_name": "母子及び父子並びに寡婦福祉法",
+        "article": "31",
+        "item": "1"
+      }
+    },
+    {
+      "action": "get_law",
+      "reason": "引用先の条を読めます",
+      "example": {
+        "law_name": "職業能力開発促進法",
+        "article": "30の3"
+      }
+    },
+    {
+      "action": "get_law",
+      "reason": "引用先の条を読めます",
+      "example": {
+        "law_name": "雇用保険法",
+        "article": "60の2",
+        "paragraph": 1
+      }
+    },
+    {
+      "action": "search_fulltext",
+      "reason": "所得税法施行規則の中で第57条の2を受けている条を探せます（ローカル DB がある場合。無ければ get_toc で目次から探してください）",
+      "example": {
+        "keyword": "所得税法施行規則 法第五十七条の二"
+      }
+    },
+    {
+      "action": "search_fulltext",
+      "reason": "所得税法施行令の中で第57条の2を受けている条を探せます（ローカル DB がある場合。無ければ get_toc で目次から探してください）",
+      "example": {
+        "keyword": "所得税法施行令 法第五十七条の二"
+      }
+    }
+  ]
+}
+```
+
+`kind` は 3 つです。`external` は他法令への参照で、`law_name`（法令番号）の形なら法令番号で、法令番号が無ければ候補名の完全一致で `law_id` を解決します（職業能力開発促進法がその例）。解決できなければ `resolved: false` のまま `law_name` に候補が入ります。`internal` は同一法令内の参照で、条も項も無い「第N号」にはその文が属する項の番号が付きます。`relative`（「前項」「同法第三十一条の十」「同号」）は解決しません。`delegations[]` の `target_law` は法令単位で、どの条が受けているかは `next_actions` の `search_fulltext`（ローカル DB）か `get_toc` で探します。`next_actions[].example` はそのまま `get_law` の引数になります。
+:::
