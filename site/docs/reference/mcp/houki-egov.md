@@ -1,6 +1,6 @@
 ---
 title: "houki-egov-mcp — ツールリファレンス"
-description: "houki-egov-mcp v0.6.1 の全 7 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-egov-mcp v0.7.0 の全 7 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-egov-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-egov-mcp v0.6.1 の全 7 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.6.1** の `tools/list` から自動生成しました（7 ツール・2026-09-19）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.7.0** の `tools/list` から自動生成しました（7 ツール・2026-09-19）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-egov)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -94,9 +94,9 @@ description: "houki-egov-mcp v0.6.1 の全 7 ツールの引数・型・既定�
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
 | `law_name` | string | **必須** |  | 法令名または略称。例: "消費税法", "消法", "労基法", "民法" |
-| `article` | string | 任意 |  | 条番号。例: "30", "30の2"。format="toc" の場合は省略可 |
+| `article` | string | 任意 |  | 条番号。例: "30", "30の2", "第30条の2"。漢数字（"第三十条", "三十の二"）と全角数字も可（v0.7.0）。format="toc" の場合は省略可 |
 | `paragraph` | number | 任意 |  | 項番号。省略時は条文全体 |
-| `item` | number \| string | 任意 |  | 号番号。数値（8）か文字列（"8"・"8の2"・"第8号の2"）。枝番号の号（第8号の2）は文字列で指定する。項が複数ある条では paragraph も指定する（項が 1 つの条では省略可）。省略時は項全体 |
+| `item` | number \| string | 任意 |  | 号番号。数値（8）か文字列（"8"・"8の2"・"第8号の2"・"八の二"）。枝番号の号（第8号の2）は文字列で指定する。漢数字と全角数字も可（v0.7.0）。項が複数ある条では paragraph も指定する（項が 1 つの条では省略可）。省略時は項全体 |
 | `format` | `"markdown"` \| `"json"` \| `"toc"` | 任意 | `"markdown"` | 出力形式。"markdown"=条文全文（デフォルト）, "toc"=目次のみ（トークン節約）, "json"=構造化 |
 | `at` | string | 任意 |  | 時点指定。YYYY-MM-DD 形式。例: "2024-04-01" でその時点の条文を取得（e-Gov v2 対応） |
 

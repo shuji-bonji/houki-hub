@@ -131,7 +131,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
    - 完了後 1 か月の soft 期間を置いてから v1.0.0
    - Discussion #24 から新規 2 件（劣 4 初回 100 分の試用経路 / 劣 5 改正通達の PDF の読み方）。v1.0 に含めるかを決める。劣 4 は上記 2 の (b) と不可分
 4. **houki-egov-mcp — Phase 2-8 / 2-13 と Discussion #20 機能 1〜8**
-   - 漢数字の条番号・号番号（egov#17 / 機能 4）: `src/utils/article-num.ts` の throw を、漢数字→算用数字の変換を試みてから判定する形に変える。`toEgovArticleNum` と `toEgovItemNum` の 2 箇所
+   - ~~漢数字の条番号・号番号（egov#17 / 機能 4）~~: 2026-09-19 に実装（0.7.0、PR 待ち）。`search_fulltext` の keyword 中の漢数字を boost に使うかは別件
    - 2-8 差分同期（egov#21 / 機能 5）: 部品（`--bulk-download-by-date` / `downloadIncrementalZip` / `sync_state`）はあるので、最終同期日から今日までを自動で回す `--sync` を足す
    - 引用の実在確認（egov#18 / 機能 3）: `verify_citations` 相当。既存の `get_law` / `search_fulltext` で組める。新しいデータ源は要らない
    - 添付ファイルと法令ファイル形式（egov#19 / 機能 1）: 応答でバイナリをどう返すか（保存先パス / base64 / URL のみ）を先に決めて `docs/DESIGN.md` に書く
@@ -175,6 +175,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
 
 | 日付 | できごと |
 |---|---|
+| 2026-09-19 | houki-egov-mcp #17（漢数字の条番号・号番号）を実装（ブランチ `feat/17-kanji-article-num`、PR 待ち、0.7.0）。`get_law` の `article` / `item` に "第三十条の二" / "八の二" と全角数字を渡せるようにし、`INVALID_ARTICLE_NUM` の文言から「漢数字には未対応です」を外した。`search_fulltext` のキーワード中の漢数字は本文のトークンのままにし、boost に回すかは別に検討（条文本文が他の条を漢数字で参照するため）。Discussion #20 の機能 1〜8 で最初の完了 |
 | 2026-09-19 | houki-research-skill v0.8.1 を公開: feasibility-check を実際の問い（領収書 PDF の保存機能）で通し、`examples/electronic-bookkeeping.md` に実測を記録。電帳法は 2027-01-01 施行の未施行改正があり（令和七年法律第十三号）、7 条の本文は同一。電帳法 Q&A（一問一答）は nta の対象外で、タックスアンサー 5930 自身が国税庁サイトへ案内している |
 | 2026-09-19 | houki-research-skill v0.8.0 を公開（`workflows/feasibility-check.md`、問いの形 → workflow の表）。SKILL.md の `description` の先頭を「実装する前に…」にしていたのを、全法規の横断調査に戻して問いの形を並べる形に直した（先頭を絞ると「私の場合は」「今も有効か」で発火しないため）。claude-plugins 0.8.0 に追随 |
 | 2026-09-19 | houki-research-skill v0.8.0（ブランチ、PR 待ち）: `workflows/feasibility-check.md` と、SKILL.md に問いの形 → workflow の表。hub#22 の (c) で決めた入口の 1 行に対応する手順書。利用者ごとの違いを Skill の workflow に置く方針の最初の実装 |
