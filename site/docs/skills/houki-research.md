@@ -9,7 +9,7 @@ description: houki-hub family の MCP を横断して使うときの手順・引
 LLM が **どの MCP をどの順に呼び、出典をどう書き、どこで注意を促すか** を定めた Skill です。
 MCP サーバーは資料を返すだけで、順序や書式や注意喚起は決めません。それらの正典がこの Skill です。
 
-- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.7.0）
+- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.8.0）
 - 配布: claude-plugins marketplace の plugin `houki-research`（v0.7.0 から `houki-egov-mcp` と `houki-nta-mcp` を `dependencies` に宣言しており、この plugin を入れれば 2 つの MCP も入ります）、または `skills/houki-research/` をプロジェクトの `.claude/skills/` に置く
 - 対象分野: 税務に限らず日本の全法規。現時点で MCP が揃っているのが税務なので、例は税務が中心です
 
@@ -40,6 +40,19 @@ v0.3.0 から、このときに返すものと返さないものを表で定め�
 返さないものは、注意喚起を添えても返しません。理由は精度ではなく業法の独占規定です（[免責事項と利用範囲](/guide/disclaimer)）。
 
 ### ② 横断の手順
+
+手順は **問いの形** で選びます（v0.8.0 から）。利用者が名乗る立場ではなく、問いの形で選ぶので、同じ人の問いが途中で別の行に移ったら手順も変わります。
+
+| 問いの形 | 手順 |
+| --- | --- |
+| この仕様は法令のどこに触れるか / この機能の法令上の要件は | `workflows/feasibility-check.md` — 仕様の語を法令の語に置き換え、条文 → 施行令・施行規則 → 施行日まで揃えて、仕様の要素ごとの表で返します。「適法か」には答えません |
+| この取扱いの根拠と、今も有効か（通達・Q&A から入る） | `workflows/tax-research.md` — 下の 1〜6 |
+| 私の場合はどうなるか（個別の事案） | 鉄則 1 の応答型 — 条文・通達・論点までを返し、結論・可否・金額は返しません |
+| この改正はいつから、何が変わるか | `revision-tracking.md`（予定）。それまでは `get_law_revisions` と下の 4 |
+
+MCP を組み込む開発者は問いを投げる利用者ではなく契約を読む利用者なので、手順ではなく `docs/ARCHITECTURE.md` / `ERROR-CODES.md` と各 MCP の `tools/list` を参照します。
+
+以下は通達・Q&A から根拠条文へ戻る手順（`tax-research.md`）です。
 
 1. 略称（「消基通」「インボイス」「労基法」）が含まれていれば、まず `resolve_abbreviation` で正式名と担当 MCP（`source_mcp_hint`）を確かめます
 2. 法律本文を houki-egov-mcp で引きます。政令・省令があれば続けて引きます
@@ -94,13 +107,14 @@ family の全 MCP は、エラーを `isError: true` と `code` で返します�
 | `docs/CITATION.md` | 引用書式と、階層ラベルと `legal_status` の対応表 |
 | `docs/ERROR-HANDLING.md` / `docs/ERROR-CODES.md` | error contract の正典。各 MCP はこの語彙に合わせて実装する |
 | `docs/ARCHITECTURE.md` | family の中での Skill の位置づけ |
-| `workflows/tax-research.md` | 税務調査の手順書（現時点で唯一の workflow） |
+| `workflows/feasibility-check.md` | 実装前に、仕様が法令のどこに触れるかを条文で確かめる手順書（v0.8.0 から） |
+| `workflows/tax-research.md` | 通達・Q&A から根拠条文へ戻る税務調査の手順書 |
 | `examples/` | インボイス登録要件の調査例、エラーからの復帰例 |
 
 ## 次の版で予定していること
 
 - workflow の追加: 改正追跡（`revision-tracking`）。MCP の追加を待たずに書けます
-- examples の追加: 電子帳簿保存法、相続税の改正
+- examples の追加: 電子帳簿保存法（`feasibility-check` の実測。電子取引を PDF で保存する仕様を題材に）、相続税の改正
 - 労務・民事・知財の workflow は、houki-mhlw-mcp / houki-court-mcp / houki-saiketsu-mcp が揃ってから
 
 v0.2.0（2026-09-07）では、MCP 側の更新に追随して例文の引数名を `tools/list` の `inputSchema` と一致させ、`search_fulltext` を法律本文の入口に加え、`INVALID_ARGUMENT` の対処に `detail.issues[].path` を明記しました。`ARCHITECTURE.md` の配布形態も plugin 化後の状態に更新済みです。
