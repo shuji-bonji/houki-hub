@@ -148,7 +148,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
    - 任意: toolchain を Biome / TS 7 に揃える
 6. **houki-research-skill の次の版**
    - ~~workflow 追加: `feasibility-check.md`~~ → 2026-09-19 に v0.8.0 として公開（PR #6、description の直し #7）。7 ステップ（語の置き換え → 法令 → 条文 → 委任先 → 通達 → 施行日 → 制約の一覧）。SKILL.md に問いの形 → workflow の表。PR 本文は `docs/notes/issues-2026-09-14/pr-skill-0.8.0.md`
-   - examples 追加: `electronic-bookkeeping.md`（feasibility-check の実測。電帳法の電子取引を PDF で保存する仕様）
+   - ~~examples 追加: `electronic-bookkeeping.md`~~ → 2026-09-19 に実測して作成（v0.8.1、ブランチ `docs/example-electronic-bookkeeping`、PR 待ち）。12 回の呼び出しで電帳法 7 条 → 施行規則 4 条 → 準用先 → 法人税法施行規則 59 条 → 2027-01-01 の未施行改正まで。手順書に 4 点反映（除外した法令の記録 / DB があれば規則も同時に当たる / 二段目の委任 / `at` で未施行版）
    - workflow 追加: `revision-tracking.md`（MCP の完成を待たずに書ける）
    - examples 追加: 電帳法、相続税改正
    - 印が付いた文書の実例が出たら、`docs/CITATION.md` の書き方の例を実測に差し替える（v0.6.0 では `<題名>` `<docId>` の形で書いている）
@@ -175,6 +175,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
 
 | 日付 | できごと |
 |---|---|
+| 2026-09-19 | houki-research-skill v0.8.1（ブランチ、PR 待ち）: feasibility-check を実際の問い（領収書 PDF の保存機能）で通し、`examples/electronic-bookkeeping.md` に実測を記録。電帳法は 2027-01-01 施行の未施行改正があり（令和七年法律第十三号）、7 条の本文は同一。電帳法 Q&A（一問一答）は nta の対象外で、タックスアンサー 5930 自身が国税庁サイトへ案内している |
 | 2026-09-19 | houki-research-skill v0.8.0 を公開（`workflows/feasibility-check.md`、問いの形 → workflow の表）。SKILL.md の `description` の先頭を「実装する前に…」にしていたのを、全法規の横断調査に戻して問いの形を並べる形に直した（先頭を絞ると「私の場合は」「今も有効か」で発火しないため）。claude-plugins 0.8.0 に追随 |
 | 2026-09-19 | houki-research-skill v0.8.0（ブランチ、PR 待ち）: `workflows/feasibility-check.md` と、SKILL.md に問いの形 → workflow の表。hub#22 の (c) で決めた入口の 1 行に対応する手順書。利用者ごとの違いを Skill の workflow に置く方針の最初の実装 |
 | 2026-09-19 | 公式 MCP Registry に `io.github.shuji-bonji/houki-egov-mcp` 0.6.1 と `houki-nta-mcp` 0.18.1 を登録。日本の法令を扱う MCP は Registry 上で初。`server.json` の description が 100 文字制限で一度 422 になり、英語 1 文に直した（ブランチ `fix/server-json-description`、PR 待ち） |
