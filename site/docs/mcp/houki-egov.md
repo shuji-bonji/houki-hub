@@ -39,7 +39,7 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 | DB ファイル | `${XDG_CACHE_HOME:-~/.cache}/houki-egov-mcp/laws.db`（`HOUKI_EGOV_DB_PATH` で変えられます。コマンドライン引数での指定はありません） |
 | テーブル | `laws` `articles` `revisions_meta` `sync_state`。全文検索の索引は `laws_fts` `articles_fts`（FTS5 trigram） |
 | 鮮度の持ち方 | DB 全体で 1 つ（`sync_state` は 1 行）。`--status` で確かめられます |
-| 更新の粒度 | 全件のみ。再実行すると版ごとに `content_hash` を比べ、変わった版だけ入れ直します（差分同期は未実装） |
+| 更新の粒度 | 日ごとの差分（`--sync`、v0.8.0+）。最終同期日から今日までの日次差分 zip を順に取り込みます。全件の再実行でも版ごとに `content_hash` を比べ、変わった版だけ入れ直します |
 | DB が要るツール | 7 のうち 1（`search_fulltext`）。DB が無いと法令名の一致で返り、`source: "api-fallback"` が付きます |
 | 版が上がったとき | v0.5.1 より前に作った DB は `--bulk-download-everything` の実行し直しが要ります（編を持つ法令の本則が入っていません） |
 
@@ -66,17 +66,27 @@ npx -y @shuji-bonji/houki-egov-mcp --bulk-download-everything
 全法令の zip（約 290 MB）を 1 本取得して取り込みます。進み具合は標準エラー出力に出ます。
 書き込むのはこの CLI だけで、MCP サーバーは読むだけなので、取り込み中に検索しても壊れません。
 
-差分だけを取り込む手段は、まだ用意していません（`--bulk-download-by-date` はデバッグ用です）。
-最新にするときは、同じコマンドをもう一度実行します。
+### 最新にする
+
+```sh
+npx -y @shuji-bonji/houki-egov-mcp --sync
+```
+
+`sync_state` の最終同期日から今日までの日次差分 zip（1 日分は数百 KB〜30 MB）を日付順に取り込みます（v0.8.0+）。
+差分が無い日（土日など）は飛ばし、途中で失敗しても成功した日までを記録するので、再実行すると続きから同期します。
+最終同期から 90 日を超えて空いているときは、e-Gov の日次差分の公開範囲を超えるため、何もせずに `--bulk-download-everything` を促します。
+`--status` の `days_since_sync` が 0 でないときに実行してください。
 
 ### 元データが変わったときに何が起きるか
 
 法令が改正されると、e-Gov の配布データにその法令の新しい**版**が入ります。
-`--bulk-download-everything` を実行し直すと、版ごとに `content_hash` を比べて、変わった版だけを入れ直します。
+`--sync` はその日の差分 zip から新しい版を取り込み、同じ法令の施行日が前の版を `PreviousEnforced` にします。
+`--bulk-download-everything` を実行し直す場合も、版ごとに `content_hash` を比べて、変わった版だけを入れ直します。
 
 ```mermaid
 flowchart TB
   Z["e-Gov 配布の全法令 zip<br/>約 290 MB"]
+  D["日次差分 zip<br/>最終同期日〜今日"]
   DB[("laws.db<br/>laws / articles / revisions_meta / sync_state")]
   S["search_fulltext<br/>現行の版だけを検索する"]
   H{"版ごとに content_hash を比べる"}
@@ -86,6 +96,7 @@ flowchart TB
 
   Z -->|初回の取り込み| DB
   DB --> S
+  D -->|--sync| H
   Z -->|再実行| H
   H --> U
   H --> K
@@ -123,6 +134,7 @@ DB はパッケージの更新で消えません。取り込み方が変わっ�
 | 版 | すること |
 | --- | --- |
 | v0.5.0 / v0.5.1 | `--bulk-download-everything` を実行し直します。v0.5.1 より前に作った DB には、編（Part）を持つ法令（民法・会社法など）の本則が入っていません |
+| v0.8.0 | 取り直しは不要です。`--sync` で最終同期日からの差分を取り込めます |
 
 各版で何が変わったかは、リポジトリの [CHANGELOG](https://github.com/shuji-bonji/houki-egov-mcp/blob/main/CHANGELOG.md) にあります。
 
