@@ -9,7 +9,7 @@ description: houki-hub family の MCP を横断して使うときの手順・引
 LLM が **どの MCP をどの順に呼び、出典をどう書き、どこで注意を促すか** を定めた Skill です。
 MCP サーバーは資料を返すだけで、順序や書式や注意喚起は決めません。それらの正典がこの Skill です。
 
-- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.8.0）
+- リポジトリ: [shuji-bonji/houki-research-skill](https://github.com/shuji-bonji/houki-research-skill)（0.8.1）
 - 配布: claude-plugins marketplace の plugin `houki-research`（v0.7.0 から `houki-egov-mcp` と `houki-nta-mcp` を `dependencies` に宣言しており、この plugin を入れれば 2 つの MCP も入ります）、または `skills/houki-research/` をプロジェクトの `.claude/skills/` に置く
 - 対象分野: 税務に限らず日本の全法規。現時点で MCP が揃っているのが税務なので、例は税務が中心です
 
@@ -109,12 +109,12 @@ family の全 MCP は、エラーを `isError: true` と `code` で返します�
 | `docs/ARCHITECTURE.md` | family の中での Skill の位置づけ |
 | `workflows/feasibility-check.md` | 実装前に、仕様が法令のどこに触れるかを条文で確かめる手順書（v0.8.0 から） |
 | `workflows/tax-research.md` | 通達・Q&A から根拠条文へ戻る税務調査の手順書 |
-| `examples/` | インボイス登録要件の調査例、エラーからの復帰例 |
+| `examples/` | インボイス登録要件の調査例、エラーからの復帰例、領収書 PDF の保存機能の実現可能性調査（feasibility-check の実測、v0.8.1） |
 
 ## 次の版で予定していること
 
 - workflow の追加: 改正追跡（`revision-tracking`）。MCP の追加を待たずに書けます
-- examples の追加: 電子帳簿保存法（`feasibility-check` の実測。電子取引を PDF で保存する仕様を題材に）、相続税の改正
+- examples の追加: 相続税の改正（電子帳簿保存法は v0.8.1 で追加済み）
 - 労務・民事・知財の workflow は、houki-mhlw-mcp / houki-court-mcp / houki-saiketsu-mcp が揃ってから
 
 v0.2.0（2026-09-07）では、MCP 側の更新に追随して例文の引数名を `tools/list` の `inputSchema` と一致させ、`search_fulltext` を法律本文の入口に加え、`INVALID_ARGUMENT` の対処に `detail.issues[].path` を明記しました。`ARCHITECTURE.md` の配布形態も plugin 化後の状態に更新済みです。
