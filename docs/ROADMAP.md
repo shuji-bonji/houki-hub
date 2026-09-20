@@ -52,7 +52,7 @@ graph TB
 |---|---|---|---|
 | 機能 1 | 添付ファイル・法令ファイル形式 | egov#19 | 新規 |
 | 機能 2 | 条文の参照を辿る | egov#20 | hub#8（法令グラフ）と対象が重なるが、重なったまま MCP のツールとして実装する（2026-09-14 決定。下記） |
-| 機能 3 | 引用の実在確認 | egov#18 | 新規。既存の `get_law` / `search_fulltext` で組める（2026-09-20 に `verify_citations` を実装、PR 待ち） |
+| 機能 3 | 引用の実在確認 | egov#18 | 新規。既存の `get_law` / `search_fulltext` で組める（2026-09-20 に v0.11.0 で publish） |
 | 機能 4 | 漢数字の条番号 | egov#17 | 新規。`src/utils/article-num.ts` の 1 ファイル。14 項目で最も費用が小さい |
 | 機能 5 | 差分同期 | egov#21 | 下記 4 の Phase 2-8。**部品は実装済み**（下記の訂正） |
 | 機能 6 | 章・節単位の分割取得 | egov#22 | 下記 4 の「民法・消費税法の応答が長い」と同じ |
@@ -116,7 +116,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
    - **2 段構え**。(a) 手数: `dependencies` 宣言で plugin を 1 回に。(b) 時間: 入れた直後に egov は約 290 MB、nta は約 100 分の取り込みが始まる。(b) を下げないと (a) は効かない
    - (a) は 2026-09-14 に実装済み（公開待ち）。houki-research-skill v0.7.0 の `plugin.json` と claude-plugins の `marketplace.json` の両方に `"dependencies": ["houki-egov-mcp", "houki-nta-mcp"]`。**公開の順序は houki-research-skill を先に push・タグ付け → そのあと claude-plugins**（`marketplace-version-check` が GitHub 上の `plugin.json` を正として突き合わせるため）
    - (b) nta 側は 2026-09-18 に公開済み（nta v0.18.0、PR #37、nta#35 close）。`--quickstart`（通達 1 本、約 3〜5 分）、`--help` の並び替え、全部入りの開始時に目安表。PR 本文は `docs/notes/issues-2026-09-14/pr-nta-35.md`
-   - (b) egov 側は 2026-09-19 に README を書き換え（ブランチ `docs/22b-readme-try-first`、PR 待ち）。冒頭に「まず試す（ローカル DB なし）」— 7 ツールのうち 6 つは DB 無しで動き、要るのは `search_fulltext` だけ — を置き、DB あり / なしの対応表を添えた。コードは変えていない。PR 本文は `docs/notes/issues-2026-09-14/pr-egov-22b.md`
+   - (b) egov 側は 2026-09-19 に README を書き換え（main にマージ済み）。冒頭に「まず試す（ローカル DB なし）」— 7 ツールのうち 6 つは DB 無しで動き、要るのは `search_fulltext` だけ — を置き、DB あり / なしの対応表を添えた。コードは変えていない。PR 本文は `docs/notes/issues-2026-09-14/pr-egov-22b.md`
    - (c) 名前と掲載: 候補と文言案と掲載先の手順を `docs/notes/2026-09-19-job-name-and-listing.md` に置いた（2026-09-19）。仕事の 1 行（推奨 J1「実装する前に、その仕様が法令のどこに触れるかを条文で確かめる」）と違いの 1 行（推奨 D1「法律で決まっている」と「通達でそうなっている」を混ぜずに返す）の 2 層。掲載先は公式 MCP Registry を先に（family の MCP はどれも未登録。`mcpName` を入れた publish が要る）。**2026-09-19 に J1 + D1 で決定**。アクターごとの違いは MCP ではなく Skill の workflow に置く（問いの形 1 つに workflow 1 つ。ノートの §8）
    - 文言の差し替えは 2026-09-19 に実施し、egov 0.6.1（PR #26）/ nta 0.18.1（PR #38）を publish、claude-plugins も push 済み。公式 MCP Registry に egov 0.6.1 / nta 0.18.1 を登録済み（2026-09-19 08:25 / 08:28 JST。`server.json` の description は 100 文字制限のため英語 1 文。ノートの §9）。hub: hero / README / overview / 3 つの場面（main 直接）。egov: README 1 行目・npm description・`mcpName`・`server.json`・0.6.1（ブランチ `docs/22c-name-and-registry`）。nta: 同じく 0.18.1（同名ブランチ）。claude-plugins: 3 件の description（ブランチ `docs/houki-job-name`。egov / nta の publish 後に push）。PR 本文は `docs/notes/issues-2026-09-14/pr-egov-22c.md` / `pr-nta-22c.md`
    - 公式 MCP Registry への登録は、各 publish 後に `mcp-publisher login github` → `publish`。**タグを push した直後は npm にまだ無い**（publish.yml が終わるまで数分）。Registry は npm にその版があるかを確かめるので、`npm view @shuji-bonji/houki-egov-mcp version` が新しい版を返してから実行する（2026-09-19 の 0.10.1 で 404 → 2 分後に成功）。MCP ディレクトリ（awesome-mcp-servers / Glama / PulseMCP）と記事は Registry の後
@@ -130,19 +130,21 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
    - Issue #3（synonym 展開）は abbreviations v0.6.0 の `expandToFormalNames` と連動。v1.0 に含めるかを決める
    - 完了後 1 か月の soft 期間を置いてから v1.0.0
    - Discussion #24 から新規 2 件（劣 4 初回 100 分の試用経路 / 劣 5 改正通達の PDF の読み方）。v1.0 に含めるかを決める。劣 4 は上記 2 の (b) と不可分
-4. **houki-egov-mcp — Phase 2-8 / 2-13 と Discussion #20 機能 1〜8**
+4. **houki-egov-mcp — Phase 2-8 / 2-13 と Discussion #20 機能 1〜8**（機能 1〜8 は 2026-09-20 に全件 publish。割り付け元の hub#21 は close できる）
    - ~~漢数字の条番号・号番号（egov#17 / 機能 4）~~: 2026-09-19 に v0.7.0 で publish。`search_fulltext` の keyword 中の漢数字を boost に使うかは別件
    - ~~2-8 差分同期（egov#21 / 機能 5）~~: 2026-09-19 に v0.8.0 で publish
-   - ~~引用の実在確認（egov#18 / 機能 3）~~: 2026-09-20 に `verify_citations` を実装（ブランチ `feat/18-verify-citations`、PR 待ち。v0.11.0）。引用の配列を受け取り、件ごとに `found` / `not_found` / `ambiguous` を返す。存在しない引用が混ざってもツール全体は `isError` にしない。`summary.all_found` で「全部実在した」と書いてよいかが 1 つの値で分かる。設計メモ `docs/notes/2026-09-20-design-egov-18-verify-citations.md`、PR 本文 `docs/notes/issues-2026-09-14/pr-egov-18.md`。houki-research-skill v0.10.0（ブランチ `feat/verify-citations`、PR 待ち。`docs/CITATION.md` に citation を書く前の実在確認の手順）を用意
-   - 添付ファイルと法令ファイル形式（egov#19 / 機能 1）: 応答でバイナリをどう返すか（保存先パス / base64 / URL のみ）を先に決めて `docs/DESIGN.md` に書く
-   - ~~施行令・施行規則の関連付け（egov#20 / 機能 2）~~: 2026-09-19 に v0.10.0 で publish（PR #33、Registry 登録済み）。hub#8 と重なったまま MCP のツールとして実装し、決定論で引ける参照だけを返し、網羅性は主張しない。`get_related_laws`（法令名の規則 + e-Gov で実在確認）と `get_article_references`（本文の正規表現。法令番号で law_id を解決、「前項」「同法」は解決しない、委任先は法令単位）。設計メモ `docs/notes/2026-09-19-design-egov-20-references.md`、PR 本文 `docs/notes/issues-2026-09-14/pr-egov-20.md`。PR #30 で一度マージされたが履歴整理で main から外れたため、0.9.1 の上に作り直した。egov 0.10.1（「第二条第二項第二号及び第六項第五号」の後半が 4 条の項になっていたのを直す）は 2026-09-19 に publish・Registry 登録済み。houki-research-skill v0.9.0（ブランチ `feat/feasibility-references`、PR 待ち。feasibility-check の ⑤ を 3 手に書き直し）を用意
-   - 章・節単位の分割取得（egov#22 / 機能 6）: 既知の未対応「民法・消費税法の応答が長い」と同じ
-   - `get_toc` の附則の階層配置（egov#24 / 機能 8）: 既知の未対応。本則と附則を別の枝にし、附則は改正法ごとにまとめる
-   - 2 文字語の本文検索（egov#23 / 機能 7）: `articles_fts` / `laws_fts` は `tokenize = 'trigram'` で 3 文字以上。まず挙動を応答で明示するところから
+   - ~~引用の実在確認（egov#18 / 機能 3）~~: 2026-09-20 に v0.11.0 で publish。`verify_citations` は引用の配列を受け取り、件ごとに `found` / `not_found` / `ambiguous` を返す。存在しない引用が混ざってもツール全体は `isError` にしない。`summary.all_found` で「全部実在した」と書いてよいかが 1 つの値で分かる。設計メモ `docs/notes/2026-09-20-design-egov-18-verify-citations.md`、PR 本文 `docs/notes/issues-2026-09-14/pr-egov-18.md`。houki-research-skill v0.10.0（PR #10 で main にマージ済み。`docs/CITATION.md` に citation を書く前の実在確認の手順）を用意
+   - ~~添付ファイルと法令ファイル形式（egov#19 / 機能 1）~~: 2026-09-20 に v0.15.0 で publish。`list_attachments` / `get_attachment` / `get_law_file` の 3 ツール（11 本 → 14 本）。既定では e-Gov からファイルを取らず URL とメタ情報だけを返し、`save: true` のときだけサーバー側の保存先（`~/.cache/houki-egov-mcp/files/`、`HOUKI_EGOV_FILES_DIR` で変更）に書いて絶対パスを返す。base64 は返さない。houki-research-skill 0.12.0（PR #15）で追随
+   - ~~施行令・施行規則の関連付け（egov#20 / 機能 2）~~: 2026-09-19 に v0.10.0 で publish（PR #33、Registry 登録済み）。hub#8 と重なったまま MCP のツールとして実装し、決定論で引ける参照だけを返し、網羅性は主張しない。`get_related_laws`（法令名の規則 + e-Gov で実在確認）と `get_article_references`（本文の正規表現。法令番号で law_id を解決、「前項」「同法」は解決しない、委任先は法令単位）。設計メモ `docs/notes/2026-09-19-design-egov-20-references.md`、PR 本文 `docs/notes/issues-2026-09-14/pr-egov-20.md`。PR #30 で一度マージされたが履歴整理で main から外れたため、0.9.1 の上に作り直した。egov 0.10.1（「第二条第二項第二号及び第六項第五号」の後半が 4 条の項になっていたのを直す）は 2026-09-19 に publish・Registry 登録済み。houki-research-skill v0.9.0（PR #9 で main にマージ済み。feasibility-check の ⑤ を 3 手に書き直し）を用意
+   - ~~章・節単位の分割取得（egov#22 / 機能 6）~~: 2026-09-20 に v0.14.0 で publish。`get_law_range`（編・章・節・款・目か附則 1 本を範囲にして条を本文ごと返す。`part` 等の番号、`get_toc` の `path`、附則の 3 通りで指定）。v0.14.1 で削除された条の範囲表記（`534:535`）の表示と続きの取得を修正。houki-research-skill 0.10.2 / 0.11.0（PR #12 / #14）で追随
+   - ~~`get_toc` の附則の階層配置（egov#24 / 機能 8）~~: 2026-09-20 に v0.13.0 で publish。`suppl_provisions` に改正法ごとの附則を 1 件ずつ返し、引数 `suppl`（`list` / `full` / `none`、既定 `list`）で附則の深さを選ぶ
+   - ~~2 文字語の本文検索（egov#23 / 機能 7）~~: 2026-09-20 に v0.12.0 で publish。2 文字語を含むクエリのときだけ `short_tokens` を応答に付けて、条本文をどの経路で引いたか（`fts_then_filter` / `like_in_law_scope` / `like_all_articles` / `not_searched`）を明示し、全法令の本文を走査する `scan_body` を足した。索引（trigram、3 文字以上）自体は変えていない
    - 2-13: API enrichment で `category` を投入し、domain 絞り込みを実効化
-5. **houki-abbreviations v0.5.1 → v0.6.0**（計画は abbreviations の `docs/v0.5.1-v0.6.0-plan.md`）
+5. **houki-abbreviations v0.5.1 → v0.6.0 → v0.7.0**（計画は abbreviations の `docs/v0.5.1-v0.6.0-plan.md`）
    - v0.5.1: `verify-law-ids.mjs` の本実装と月次 workflow 化
-   - ~~v0.6.0: `expandToFormalNames`~~ → v0.7.0 以降へ送る。v0.6.0 は abbreviations#6（法令番号の漢数字↔算用数字の正規化 `normalizeLawNum` / `kanjiToNumber`、`lookupByLawNum` の正規化照合、`isValidLawId` を e-Gov 全 9,569 件の実在する形に合わせる）で出す。2026-09-20 にブランチ `feat/6-normalize-law-num` に用意（PR 待ち。PR 本文 `docs/notes/issues-2026-09-14/pr-abbreviations-6.md`）。**minor を上げたら egov / nta の `package.json` を `^0.6.0` に上げて publish し直す**（0.x の `^` は minor を跨がない）
+   - ~~v0.6.0: `expandToFormalNames`~~ → v0.7.0 以降へ送る。v0.6.0 は abbreviations#6（法令番号の漢数字↔算用数字の正規化 `normalizeLawNum` / `kanjiToNumber`、`lookupByLawNum` の正規化照合、`isValidLawId` を e-Gov 全 9,569 件の実在する形に合わせる）で 2026-09-20 に publish（PR #9、npm latest 0.6.0。PR 本文 `docs/notes/issues-2026-09-14/pr-abbreviations-6.md`）
+   - **残: egov / nta の `package.json` の依存 `^0.4.1` を `^0.6.0` に上げて publish し直す**（0.x の `^` は minor を跨がないため、両 MCP にはまだ 0.5.x / 0.6.0 が入っていない。両 MCP が呼ぶ `resolveAbbreviation` / `normalizeJpText` / `normalizeSearchQuery` / `listBySourceMcpHint` の動作は変わらない）
+   - v0.7.0 以降: `expandToFormalNames`（nta #3 と連動）
    - `verify-law-ids.mjs` の月次 GitHub Actions 化（雛形のみの状態）
    - `lookupByLawNum` の漢数字↔算用数字正規化（abbr#6）、`isValidLawId` の DF 系・M 省令系パターン（Discussion #20 機能 4 と対。対象は法令番号で、egov の条番号とは別）
    - 任意: toolchain を Biome / TS 7 に揃える
@@ -152,7 +154,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
    - workflow 追加: `revision-tracking.md`（MCP の完成を待たずに書ける）
    - examples 追加: 電帳法、相続税改正
    - 印が付いた文書の実例が出たら、`docs/CITATION.md` の書き方の例を実測に差し替える（v0.6.0 では `<題名>` `<docId>` の形で書いている）
-   - ~~egov に `verify_citations` が入ったら、citation 手順から呼ぶ~~ → 2026-09-20 に v0.10.0 として用意（ブランチ `feat/verify-citations`、PR 待ち）。`docs/CITATION.md` の「引用を書き出す前に確かめる」と、鉄則 4 の 1 手。egov v0.11.0 の publish 後に出す
+   - ~~egov に `verify_citations` が入ったら、citation 手順から呼ぶ~~ → 2026-09-20 に v0.10.0 として main にマージ（PR #10）。`docs/CITATION.md` の「引用を書き出す前に確かめる」と、鉄則 4 の 1 手。egov v0.11.0 の publish 後に出す
 7. **新 MCP は houki-metadata-mcp を先に**
    - 主用途は J-SOX 型の「公布→施行ラグ」期。施行前フォロー期に時系列の横串クエリが多発する
    - 3 つ目の MCP なので、abbreviations Track 5（ルーティング）の再評価トリガーになる
@@ -175,15 +177,17 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
 
 | 日付 | できごと |
 |---|---|
-| 2026-09-20 | houki-egov-mcp egov#18（引用の実在確認）の設計メモ（`docs/notes/2026-09-20-design-egov-18-verify-citations.md`）と実装（ブランチ `feat/18-verify-citations`、v0.11.0、PR 待ち）。`verify_citations` は引用の配列を 1 回で受け、件ごとに `found` / `not_found` / `ambiguous` を返す。実測（12 件混在）: `{ total: 12, found: 6, not_found: 4, ambiguous: 2, all_found: false }`。「所得税法施行」は候補 2 件で `ambiguous`、「消基通」は `OUT_OF_SCOPE`、項が複数ある条で号だけの指定も `ambiguous`。e-Gov に接続できないときは件ごとの判定を返さず全体を `SOURCE_*` にする（「聞けなかった」を「存在しない」と書かないため）。houki-research-skill v0.10.0（ブランチ `feat/verify-citations`、PR 待ち）で citation 手順から呼ぶ |
-| 2026-09-19 | houki-egov-mcp 0.10.1 を publish・Registry 登録（22:03 JST ごろ。タグ push 直後の `mcp-publisher publish` は npm に版が無く 404、2 分後に成功）: `get_article_references` で条を書かない項・号が直前の参照の条を引き継ぐ（`article_from`）。電帳法施行規則 4 条 1 項の「第六項第五号」が 2 条 6 項 5 号になる。houki-research-skill v0.9.0 を用意（ブランチ `feat/feasibility-references`、PR 待ち）: feasibility-check の ⑤ を `get_related_laws` → `get_article_references` → `get_law` に書き直し、電帳法の例を 0.10.1 で再実測 |
+| 2026-09-21 | houki-hub#21（Discussion #20 の割り付け）の全 9 件が閉じたことを確認（egov#17〜#24 は 2026-09-19〜20 に v0.7.0〜v0.15.0 で publish、abbreviations#6 は v0.6.0 で publish）。ROADMAP の項目 4・5 を publish 済みの書き方に直し、残作業を egov / nta の abbreviations 依存範囲 `^0.6.0` への更新に絞った |
+| 2026-09-20 | houki-abbreviations v0.6.0 を publish（PR #9、Issue #6）: `normalizeLawNum` / `kanjiToNumber` を追加し、`lookupByLawNum` が算用数字・全角数字・位ごとの漢数字でも引けるようにした。`isValidLawId` は e-Gov 法令 API v2 で取得した全 9,569 件に実在する形（AC/CO/IO/DF/DT、M/R + 16 進 8 文字、RJNJ、RPMD、CONSTITUTION）を受け付け、実データに無い MO/RU を外した。手元で 9,569 件すべての `law_id` と法令番号の年・番号を API の値と突合済み。PR 本文 `docs/notes/issues-2026-09-14/pr-abbreviations-6.md` |
+| 2026-09-20 | houki-egov-mcp egov#18（引用の実在確認）の設計メモ（`docs/notes/2026-09-20-design-egov-18-verify-citations.md`）と実装（v0.11.0 で publish）。`verify_citations` は引用の配列を 1 回で受け、件ごとに `found` / `not_found` / `ambiguous` を返す。実測（12 件混在）: `{ total: 12, found: 6, not_found: 4, ambiguous: 2, all_found: false }`。「所得税法施行」は候補 2 件で `ambiguous`、「消基通」は `OUT_OF_SCOPE`、項が複数ある条で号だけの指定も `ambiguous`。e-Gov に接続できないときは件ごとの判定を返さず全体を `SOURCE_*` にする（「聞けなかった」を「存在しない」と書かないため）。houki-research-skill v0.10.0（PR #10 で main にマージ済み）で citation 手順から呼ぶ |
+| 2026-09-19 | houki-egov-mcp 0.10.1 を publish・Registry 登録（22:03 JST ごろ。タグ push 直後の `mcp-publisher publish` は npm に版が無く 404、2 分後に成功）: `get_article_references` で条を書かない項・号が直前の参照の条を引き継ぐ（`article_from`）。電帳法施行規則 4 条 1 項の「第六項第五号」が 2 条 6 項 5 号になる。houki-research-skill v0.9.0 を用意（PR #9 で main にマージ済み）: feasibility-check の ⑤ を `get_related_laws` → `get_article_references` → `get_law` に書き直し、電帳法の例を 0.10.1 で再実測 |
 | 2026-09-19 | houki-egov-mcp egov#20 の設計メモ（`docs/notes/2026-09-19-design-egov-20-references.md`）と実装（ブランチ `feat/20-references`、PR #30 → マージ扱いだが履歴整理で main から外れ、npm 0.9.1 にも入っていないことを確認。同日、0.9.1 の上に同じ内容を載せ直し PR #33 → v0.10.0 で publish、Registry に 0.10.0 を登録、houki-hub のツールリファレンスを再生成し呼び出し例 2 本を実測で追加）。`get_related_laws` / `get_article_references` を追加。実測: 所得税法 → 所令・所規、所得税法 57 条の 2 第 2 項 → 雇用保険法 10 条 5 項 1 号ほか 4 件の他法令参照 |
 | 2026-09-19 | houki-egov-mcp v0.9.0 / v0.9.1（コードの変更なし）。0.8.0 の取り込み後に main の履歴を fixup で整理した際に版だけが上がって npm に 0.9.0 が出た。`server.json` は 0.8.0 のままで Registry が duplicate を返したため、PR #31 で 0.9.0 に揃えて Registry に登録し、PR #32 で 0.9.1 として package.json / server.json / タグ / npm / Registry / claude-plugins を一致させた。教訓: 版を上げるときは `server.json` も同じコミットで上げる（`npm version` は触らない） |
 | 2026-09-19 | houki-egov-mcp #21（差分同期 `--sync`）を PR #29 で取り込み、v0.8.0 を publish。公式 MCP Registry と claude-plugins も 0.8.0 に。実環境の初回実測: 2026-09-07 に全件取り込みした DB（laws 10,810 件）に対して 13 日分を 2 分 50 秒で確認、10 日に差分あり（341 件 upsert、44 件 unchanged）、3 日（土日と当日）は差分なし。1 日分の zip は 26 KB〜30 MB で、取り込み時間はほぼ zip の大きさに比例（30 MB で約 37 秒）。`last_sync_date` から今日までの日次差分を日付順に取り込み、差分が無い日（e-Gov は HTTP 500 を返す）は飛ばし、途中で失敗しても成功した日までを記録する。合わせて、差分で同じ法令の新しい版が現行として届いたときに前の版を `PreviousEnforced` に落とすようにした（これまでは `search_fulltext` で同じ法令が 2 度ヒットする経路があった）。VM で 7 日分を実測: 1 分 11 秒、234 件 upsert。Discussion #20 の機能 5 |
 | 2026-09-19 | houki-egov-mcp #17（漢数字の条番号・号番号）を PR #28 で取り込み、v0.7.0 を publish。公式 MCP Registry と claude-plugins の追随は同日の手順で実施。`get_law` の `article` / `item` に "第三十条の二" / "八の二" と全角数字を渡せるようにし、`INVALID_ARTICLE_NUM` の文言から「漢数字には未対応です」を外した。`search_fulltext` のキーワード中の漢数字は本文のトークンのままにし、boost に回すかは別に検討（条文本文が他の条を漢数字で参照するため）。Discussion #20 の機能 1〜8 で最初の完了 |
 | 2026-09-19 | houki-research-skill v0.8.1 を公開: feasibility-check を実際の問い（領収書 PDF の保存機能）で通し、`examples/electronic-bookkeeping.md` に実測を記録。電帳法は 2027-01-01 施行の未施行改正があり（令和七年法律第十三号）、7 条の本文は同一。電帳法 Q&A（一問一答）は nta の対象外で、タックスアンサー 5930 自身が国税庁サイトへ案内している |
 | 2026-09-19 | houki-research-skill v0.8.0 を公開（`workflows/feasibility-check.md`、問いの形 → workflow の表）。SKILL.md の `description` の先頭を「実装する前に…」にしていたのを、全法規の横断調査に戻して問いの形を並べる形に直した（先頭を絞ると「私の場合は」「今も有効か」で発火しないため）。claude-plugins 0.8.0 に追随 |
-| 2026-09-19 | houki-research-skill v0.8.0（ブランチ、PR 待ち）: `workflows/feasibility-check.md` と、SKILL.md に問いの形 → workflow の表。hub#22 の (c) で決めた入口の 1 行に対応する手順書。利用者ごとの違いを Skill の workflow に置く方針の最初の実装 |
+| 2026-09-19 | houki-research-skill v0.8.0（main にマージ済み）: `workflows/feasibility-check.md` と、SKILL.md に問いの形 → workflow の表。hub#22 の (c) で決めた入口の 1 行に対応する手順書。利用者ごとの違いを Skill の workflow に置く方針の最初の実装 |
 | 2026-09-19 | 公式 MCP Registry に `io.github.shuji-bonji/houki-egov-mcp` 0.6.1 と `houki-nta-mcp` 0.18.1 を登録。日本の法令を扱う MCP は Registry 上で初。`server.json` の description が 100 文字制限で一度 422 になり、英語 1 文に直した（ブランチ `fix/server-json-description`、PR 待ち） |
 | 2026-09-19 | egov 0.6.1（PR #26）/ nta 0.18.1（PR #38）を publish（README 1 行目・npm description・`mcpName`・`server.json`）。claude-plugins の 3 件の description を push。houki-hub の stack / site を追随。公式 MCP Registry は未登録（`mcp-publisher publish` が残り） |
 | 2026-09-19 | hub#22 の (c)。仕事の 1 行を J1「実装する前に、その仕様が法令のどこに触れるかを条文で確かめる」、違いの 1 行を D1「『法律で決まっている』と『通達でそうなっている』を混ぜずに返す」に決定。hub の hero / README / overview を差し替え、「3 つの場面」を置いた。egov 0.6.1 / nta 0.18.1 のブランチで README 1 行目・npm description・`mcpName`・`server.json`。claude-plugins の 3 件の description。アクターごとの違いは Skill の workflow に置く方針（`feasibility-check.md` を次の版で） |
