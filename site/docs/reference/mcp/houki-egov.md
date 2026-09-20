@@ -1,6 +1,6 @@
 ---
 title: "houki-egov-mcp — ツールリファレンス"
-description: "houki-egov-mcp v0.11.0 の全 10 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-egov-mcp v0.12.0 の全 10 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-egov-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-egov-mcp v0.11.0 の全 10 ツールの引数・型・既定
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.11.0** の `tools/list` から自動生成しました（10 ツール・2026-09-20）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.12.0** の `tools/list` から自動生成しました（10 ツール・2026-09-20）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-egov)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -359,16 +359,17 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 
 ## search_fulltext
 
-法令の条文本文をキーワードで横断全文検索する（ローカル SQLite FTS5）。`houki-egov-mcp --bulk-download-everything` で構築した bulk DB を引き、略称は正式名称に OR 展開（例: "消法" → "消費税法"）。各ヒットに条番号・snippet・score・DB の鮮度 (freshness) を付けて返す。bulk DB 未構築時は search_law（法令名のタイトル一致）にフォールバックし、その旨を note で返す。
+法令の条文本文をキーワードで横断全文検索する（ローカル SQLite FTS5）。`houki-egov-mcp --bulk-download-everything` で構築した bulk DB を引き、略称は正式名称に OR 展開（例: "消法" → "消費税法"）。各ヒットに条番号・snippet・score・DB の鮮度 (freshness) を付けて返す。bulk DB 未構築時は search_law（法令名のタイトル一致）にフォールバックし、その旨を note で返す。2 文字の語（「相殺」「時効」）は本文の索引（trigram）に載らないため既定では本文を引かず、何をして結果を出したかを応答の short_tokens に返す。
 
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `keyword` | string | **必須** |  | 検索キーワード。スペース区切りで AND 検索。法令名・略称を含めると（例: "民法 不法行為", "労基法 時間外"）その法令の条に絞って本文を検索する。「第30条」を含めると該当条番号のヒットを上位に寄せ、法令名 + 条番号だけ（例: "民法 第709条"）ならその条を直接返す（漢数字は未対応） |
+| `keyword` | string | **必須** |  | 検索キーワード。スペース区切りで AND 検索。法令名・略称を含めると（例: "民法 不法行為", "労基法 時間外"）その法令の条に絞って本文を検索する。「第30条」を含めると該当条番号のヒットを上位に寄せ、法令名 + 条番号だけ（例: "民法 第709条"）ならその条を直接返す（漢数字は未対応）。2 文字の語だけのとき（例: "相殺"）は索引を引けないため、既定では条本文を引かず法令名の照合だけを返す。法令名か 3 文字以上の語を添えると索引で本文を引ける |
 | `domain` | `"tax"` \| `"labor"` \| `"accounting"` \| `"commercial"` \| `"civil"` \| `"administrative"` | 任意 |  | 分野タグ。v0.5.0 では受け付けるが絞り込みは行わない（bulk DB の category 列が未投入のため。Phase 2-13 で実効化） |
 | `law_type` | `"Act"` \| `"CabinetOrder"` \| `"ImperialOrdinance"` \| `"MinisterialOrdinance"` \| `"Rule"` | 任意 |  | 法令種別で絞り込み |
 | `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 30） |
+| `scan_body` | boolean | 任意 | `false` | 2 文字の語だけのクエリ（例: "相殺"）で、索引を使わずに全法令の条本文を端から照合する（デフォルト: false）。索引を引けない語の本文を探す最後の手段で、5〜20 秒かかり、並び順も関連度順にならない。法令名を添えられるなら（例: "民法 相殺"）そちらが速く正確。3 文字以上の語を含むクエリでは索引を引くので、この引数は効かない |
 
 ::: warning ローカル DB が必要です
 `houki-egov-mcp --bulk-download-everything` で DB を作っていないと、応答の `source` が `"api-fallback"` になり、`search_law`（法令名のタイトル一致）の結果が `fallback` に入って返ります。そのときは本文検索は行われていません。`note` と `next_actions` に構築コマンドが入っています。
