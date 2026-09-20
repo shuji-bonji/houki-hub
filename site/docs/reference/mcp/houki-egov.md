@@ -317,12 +317,12 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 | `suppl` | `"list"` \| `"full"` \| `"none"` | 任意 | `"list"` | 附則をどこまで返すか。"list"（デフォルト）=改正法ごとの見出しと条数だけ、"full"=附則の中の条まで、"none"=附則を返さない。附則は改正法ごとに積み上がり、所得税法は 352 本・条 983 件あるため、既定では見出しだけを返す |
 | `with_amend_titles` | boolean | 任意 | `false` | 附則に改正法の題名を付ける（デフォルト: false）。附則の属性には法令番号しか無いため、改正履歴（get_law_revisions と同じ e-Gov の応答）を 1 回引いて法令番号で照合する。e-Gov の改正履歴は近年の改正が中心なので、それより古い改正法の題名は付かない（付いた本数と付かなかった本数は応答の suppl.amend_law_titles に入る） |
 
-::: warning 附則の条は編・章の外に平らに並びます（既知の課題）
-`depth` で本則の階層は打ち切れますが、附則（各改正法の経過措置）の条は階層の外に「第1条（施行期日）」の並びとして出ます。民法のように改正の多い法令では、この部分が長くなります。本則の構造だけを見たいときは `toc` 配列の `tag` が `Part` / `Chapter` の要素を読んでください。
+::: tip 本則と附則は別に返ります（v0.13.0）
+本則は `toc`、附則は改正法ごとに `suppl_provisions` へ分かれます。既定（`suppl: "list"`）では附則は見出しと条数だけで、中の条は返りません。`toc` の構造ノードに付く `path`（例 `Part3/Chapter2`）は、`get_law_range` にそのまま渡して章・節の条文を取れます（v0.14.0）。
 :::
 
 ::: details 呼び出し例 — 「民法の大区分だけ見たい」
-- 実測: v0.5.3（2026-09-08）
+- 実測: v0.14.0（2026-09-20）
 - ローカル DB: 不要
 
 **引数**
@@ -335,29 +335,54 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 
 ```jsonc
 {
-  "markdown": "# 民法 — 目次\n\n- 第一編　総則\n- 第二編　物権\n- 第三編　債権\n- 第四編　親族\n- 第五編　相続\n- 第1条\n…",
+  "markdown": "# 民法 — 目次\n\n## 本則\n\n- 第一編　総則\n- 第二編　物権\n- 第三編　債権\n- 第四編　親族\n- 第五編　相続\n\n## 附則（67 本・条 201 件）\n\n- 附則(1) 大正一五年四月二四日法律第六九号 — 項のみ\n…",
   "toc": [
-    { "tag": "Part", "num": "1", "title": "第一編　総則", "children": [] },
-    { "tag": "Part", "num": "2", "title": "第二編　物権", "children": [] },
-    { "tag": "Part", "num": "3", "title": "第三編　債権", "children": [] },
-    { "tag": "Part", "num": "4", "title": "第四編　親族", "children": [] },
-    { "tag": "Part", "num": "5", "title": "第五編　相続", "children": [] },
-    { "tag": "Article", "num": "1", "title": "第一条", "caption": "", "children": [] }
-    // …以下、附則の条が続く
+    { "tag": "Part", "num": "1", "title": "第一編　総則", "path": "Part1", "children": [] },
+    { "tag": "Part", "num": "2", "title": "第二編　物権", "path": "Part2", "children": [] },
+    { "tag": "Part", "num": "3", "title": "第三編　債権", "path": "Part3", "children": [] },
+    { "tag": "Part", "num": "4", "title": "第四編　親族", "path": "Part4", "children": [] },
+    { "tag": "Part", "num": "5", "title": "第五編　相続", "path": "Part5", "children": [] }
   ],
+  "suppl_provisions": [
+    {
+      "index": 1,
+      "label": "附則",
+      "amend_law_num": "大正一五年四月二四日法律第六九号",
+      "extract": false,
+      "article_count": 0,
+      "paragraph_only": true,   // 条を立てず項だけで書かれた附則
+      "children": []
+    },
+    {
+      "index": 3,
+      "label": "附則",
+      "amend_law_num": "昭和二二年四月一六日法律第六一号",
+      "extract": true,          // 抄（改正法の附則の一部だけを載せた形）
+      "article_count": 1,
+      "paragraph_only": false,
+      "children": []
+    }
+    // …計 67 件
+  ],
+  "suppl": {
+    "mode": "list",
+    "count": 67,
+    "article_count": 201,
+    "note": "附則 67 本の見出しと条数だけを返しました（条は合計 201 件）。中の条まで要るときは suppl: \"full\" を指定してください"
+  },
   "meta": {
     "law_id": "129AC0000000089",
     "title": "民法",
     "law_num": "明治二十九年法律第八十九号",
-    "retrieved_at": "2026-09-07T20:13:53.579Z",
+    "retrieved_at": "2026-09-20T10:25:04.777Z",
     "url": "https://laws.e-gov.go.jp/law/129AC0000000089"
   },
-  "node_count": 206,
+  "node_count": 5,
   "truncated": true
 }
 ```
 
-`truncated: true` は応答を切り詰めたことを示します。特定の条を探すだけなら、`get_toc` より `search_fulltext` に「民法 不法行為」のように法令名と語を渡す方が短く済みます。
+`node_count` は本則のノード数、`truncated: true` は `depth` で本則の階層を打ち切ったことを示します（附則の本数は `depth` では変わりません）。`toc[].path` を `get_law_range` に渡すと、その編・章の条文を本文ごと取れます。特定の条を探すだけなら、`get_toc` より `search_fulltext` に「民法 不法行為」のように法令名と語を渡す方が短く済みます。
 :::
 
 ## get_law_range
@@ -379,6 +404,174 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 | `from_article` | string | 任意 |  | 範囲の中のこの条から返す。前の応答が truncated だったときに next_from_article の値を渡して続きを取る。例: "561", "548の4", "第五百六十一条" |
 | `max_chars` | number (2000–120000) | 任意 | `30000` | 返す条本文の文字数の上限（デフォルト: 30000、2000〜120000）。条の途中では切らないため、1 条目だけは上限を超えても返す |
 | `at` | string | 任意 |  | 時点指定。YYYY-MM-DD 形式（get_law と同じ） |
+
+::: tip 範囲の指定は 3 通り、同時には 1 つだけ
+編・章・節・款・目の番号（`part` / `chapter` / `section` / `subsection` / `division`）、範囲のパス（`path`）、附則の番号（`suppl_index`）のいずれか 1 つを指定します。2 通り以上を渡すと `INVALID_ARGUMENT` になります。
+:::
+
+::: details 呼び出し例 — 「民法の契約の章をまとめて読みたい」
+- 実測: v0.14.0（2026-09-20）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "民法", "part": 3, "chapter": 2 }
+```
+
+**返る JSON（抜粋）**
+
+```jsonc
+{
+  "markdown": "# 民法 第三編　債権 第二章　契約\n\n## 第521条\n（契約の締結及び内容の自由）\n\n何人も、法令に特別の定めがある場合を除き、契約をするかどうかを自由に決定することができる。\n\n**第2項**\n契約の当事者は、法令の制限内において、契約の内容を自由に決定することができる。\n…",
+  "range": {
+    "path": "Part3/Chapter2",
+    "titles": ["第三編　債権", "第二章　契約"],
+    "tag": "Chapter",
+    "article_count": 198,      // この章が持つ条の数
+    "returned_count": 186,     // 本文を返した条の数
+    "skipped_count": 0,
+    "truncated": true,
+    "body_chars": 29911,
+    "max_chars": 30000,
+    "first_article": "第521条",
+    "last_article": "第684条",
+    "next_from_article": "685",
+    "note": "範囲の条 198 件のうち 186 件を返しました（第521条〜第684条）。本文 29,911 文字（上限 30,000 文字）。上限で打ち切りました。続きは from_article: \"685\" を付けて同じ範囲を呼び直してください。",
+    "next_actions": [
+      {
+        "action": "get_law_range",
+        "reason": "同じ範囲の続きの条から取れます",
+        "example": { "law_name": "民法", "path": "Part3/Chapter2", "from_article": "685" }
+      }
+    ]
+  },
+  "articles": [
+    { "num": "521", "label": "第521条", "caption": "（契約の締結及び内容の自由）" },
+    { "num": "522", "label": "第522条", "caption": "（契約の成立と方式）" }
+    // …計 186 件
+  ],
+  "meta": {
+    "law_id": "129AC0000000089",
+    "title": "民法",
+    "law_num": "明治二十九年法律第八十九号",
+    "retrieved_at": "2026-09-20T10:25:04.783Z",
+    "url": "https://laws.e-gov.go.jp/law/129AC0000000089"
+  }
+}
+```
+
+上限（既定 30,000 文字）に達したので、198 条のうち 186 条で打ち切っています。条の途中では切りません。続きは `{ "law_name": "民法", "path": "Part3/Chapter2", "from_article": "685" }` で取れます（`range.next_actions` にそのまま入っています）。
+:::
+
+::: details 呼び出し例 — 「遺留分の章だけ読みたい」（`path` で指定）
+- 実測: v0.14.0（2026-09-20）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "民法", "path": "Part5/Chapter9" }
+```
+
+`path` は `get_toc` の応答の `toc[].path` をそのまま渡した値です。
+
+**返る JSON（抜粋）**
+
+```jsonc
+{
+  "range": {
+    "path": "Part5/Chapter9",
+    "titles": ["第五編　相続", "第九章　遺留分"],
+    "tag": "Chapter",
+    "article_count": 8,
+    "returned_count": 8,
+    "skipped_count": 0,
+    "truncated": false,
+    "body_chars": 2284,
+    "max_chars": 30000,
+    "first_article": "第1042条",
+    "last_article": "第1049条",
+    "note": "範囲の条 8 件のうち 8 件を返しました（第1042条〜第1049条）。本文 2,284 文字（上限 30,000 文字）。"
+  },
+  "articles": [
+    { "num": "1042", "label": "第1042条", "caption": "（遺留分の帰属及びその割合）" },
+    { "num": "1043", "label": "第1043条", "caption": "（遺留分を算定するための財産の価額）" },
+    { "num": "1044", "label": "第1044条" },
+    { "num": "1046", "label": "第1046条", "caption": "（遺留分侵害額の請求）" }
+    // …計 8 件
+  ]
+}
+```
+
+条見出し（`caption`）が無い条もあります（第1044条）。`truncated: false` なら、その範囲の条はすべて返っています。
+:::
+
+::: details 呼び出し例 — 「章だけ指定したら候補が返ってきた」
+- 実測: v0.14.0（2026-09-20）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "民法", "chapter": 2 }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "error": "指定された範囲が 5 か所あります。上位の階層も指定してください",
+  "code": "INVALID_ARGUMENT",
+  "hint": "該当するパス: Part1/Chapter2, Part2/Chapter2, Part3/Chapter2, Part4/Chapter2, Part5/Chapter2（Chapter@Num は編ごとに振り直されます）",
+  "next_actions": [
+    { "action": "get_law_range", "reason": "第一編　総則 第二章　人",
+      "example": { "law_name": "民法", "path": "Part1/Chapter2" } },
+    { "action": "get_law_range", "reason": "第三編　債権 第二章　契約",
+      "example": { "law_name": "民法", "path": "Part3/Chapter2" } }
+    // …計 5 件
+  ]
+}
+```
+
+章番号は編ごとに振り直されます。民法には第一章が 5 つ、第一節が 19、会社法には第一節が 22 あります。どれか 1 つを推測で選ばず、候補の見出しとパスを返します。`next_actions` の `example` をそのまま次の呼び出しに使えます。
+:::
+
+::: details 呼び出し例 — 「附則の 7 本目を読む」
+- 実測: v0.14.0（2026-09-20）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "消費税法", "suppl_index": 7 }
+```
+
+`suppl_index` は `get_toc` の `suppl_provisions[].index`（`search_fulltext` が「附則(7) 1」と表示する番号）と同じです。
+
+**返る JSON**
+
+```jsonc
+{
+  "markdown": "# 消費税法 附則(7) 平成二年六月二二日法律第三六号（抄）\n\nこの法律は、平成二年十月一日から施行する。\n…",
+  "range": {
+    "suppl_index": 7,
+    "titles": ["附則(7) 平成二年六月二二日法律第三六号（抄）"],
+    "tag": "SupplProvision",
+    "article_count": 0,
+    "returned_count": 0,
+    "skipped_count": 0,
+    "truncated": false,
+    "body_chars": 21,
+    "max_chars": 30000,
+    "note": "この範囲は条を持たず項だけで書かれているため、範囲の本文をそのまま返しました（21 文字）"
+  },
+  "articles": []
+}
+```
+
+条を立てず項だけで書かれた附則（消費税法に 9 本あります）は `article_count: 0` になり、範囲の本文をそのまま返します。
+:::
 
 ## search_fulltext
 
