@@ -1,0 +1,12 @@
+feat: 法令番号の漢数字↔算用数字を正規化して照合し、isValidLawId を e-Gov 実データに合わせる（v0.6.0、#6）
+
+- normalizeLawNum / kanjiToNumber を src/normalize.ts に追加（位取り・位ごとの漢数字、全角数字、元年、空白、ダッシュ類）
+- lookupByLawNum は入力と辞書の law_num の両方を normalizeLawNum に通してから比較
+- isValidLawId: e-Gov 法令 API v2 の全 9,569 件で実在する形（AC/CO/IO/DF/DT、M/R + 16 進 8 文字、RJNJ、RPMD、CONSTITUTION）を受け付け、実データに無い MO/RU を外す
+- index.test.ts の辞書全件チェックを isValidLawId に一本化
+- README / CHANGELOG / docs/v0.5.1-v0.6.0-plan.md を更新、version 0.6.0
+
+Closes #6
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01FeticJk3Gm1KDoH31EYUDj

@@ -56,7 +56,7 @@ const README_FILE = join(ROOT, 'README.md');
 const REGISTRY = [
   // ── 公開済み ────────────────────────────────────────────────
   { name: 'houki-egov-mcp',       dir: 'mcp/houki-egov-mcp',       npm: '@shuji-bonji/houki-egov-mcp',       layer: 'source',        form: 'mcp-server', status: 'released', public: true,
-    note: 'e-Gov 法令 API v2。法律・政令・省令の本文・目次・改正履歴 + ローカル SQLite FTS5 全文検索 + 章・節単位の範囲取得。11 tools' },
+    note: 'e-Gov 法令 API v2。法律・政令・省令の本文・目次・改正履歴 + ローカル SQLite FTS5 全文検索 + 章・節単位の範囲取得 + 添付ファイル（別表・様式の図）と xml / docx の本文ファイル。14 tools' },
   { name: 'houki-nta-mcp',        dir: 'mcp/houki-nta-mcp',        npm: '@shuji-bonji/houki-nta-mcp',        layer: 'source',        form: 'mcp-server', status: 'released', public: true,
     note: '国税庁。法令解釈通達・質疑応答事例・タックスアンサー・文書回答・事務運営指針・改正通達。14 tools。family の参照実装' },
   { name: 'houki-abbreviations',  dir: 'lib/houki-abbreviations',  npm: '@shuji-bonji/houki-abbreviations',  layer: 'dictionary',    form: 'library',    status: 'released', public: true,

@@ -142,7 +142,7 @@ egov#20 の出力は hub#8 の入力にもなる。重複ではなく段。
    - 2-13: API enrichment で `category` を投入し、domain 絞り込みを実効化
 5. **houki-abbreviations v0.5.1 → v0.6.0**（計画は abbreviations の `docs/v0.5.1-v0.6.0-plan.md`）
    - v0.5.1: `verify-law-ids.mjs` の本実装と月次 workflow 化
-   - v0.6.0: `expandToFormalNames`（nta #3 と連動）。**minor を上げたら egov / nta の `package.json` を `^0.6.0` に上げて publish し直す**（0.x の `^` は minor を跨がない）
+   - ~~v0.6.0: `expandToFormalNames`~~ → v0.7.0 以降へ送る。v0.6.0 は abbreviations#6（法令番号の漢数字↔算用数字の正規化 `normalizeLawNum` / `kanjiToNumber`、`lookupByLawNum` の正規化照合、`isValidLawId` を e-Gov 全 9,569 件の実在する形に合わせる）で出す。2026-09-20 にブランチ `feat/6-normalize-law-num` に用意（PR 待ち。PR 本文 `docs/notes/issues-2026-09-14/pr-abbreviations-6.md`）。**minor を上げたら egov / nta の `package.json` を `^0.6.0` に上げて publish し直す**（0.x の `^` は minor を跨がない）
    - `verify-law-ids.mjs` の月次 GitHub Actions 化（雛形のみの状態）
    - `lookupByLawNum` の漢数字↔算用数字正規化（abbr#6）、`isValidLawId` の DF 系・M 省令系パターン（Discussion #20 機能 4 と対。対象は法令番号で、egov の条番号とは別）
    - 任意: toolchain を Biome / TS 7 に揃える
