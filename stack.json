@@ -6,7 +6,7 @@
     "layer = 役割 / form = 配布形態（誰が起動するか）/ status = released・planned・concept。",
     "planned / concept は名前と束ねる単位を予約しているだけで、ディレクトリも npm も無い。"
   ],
-  "generatedAt": "2026-09-20T12:02:03.465Z",
+  "generatedAt": "2026-09-20T12:33:36.588Z",
   "generatedBy": "scripts/generate-stack.mjs",
   "npmScope": "@shuji-bonji",
   "repos": [
@@ -18,7 +18,7 @@
       "form": "mcp-server",
       "status": "released",
       "public": true,
-      "note": "e-Gov 法令 API v2。法律・政令・省令の本文・目次・改正履歴 + ローカル SQLite FTS5 全文検索。10 tools",
+      "note": "e-Gov 法令 API v2。法律・政令・省令の本文・目次・改正履歴 + ローカル SQLite FTS5 全文検索 + 章・節単位の範囲取得。11 tools",
       "published": "0.14.1",
       "local": {
         "version": "0.14.1",
@@ -61,16 +61,16 @@
       "status": "released",
       "public": true,
       "note": "略称辞書 174 エントリ（6 分野）+ 全角ゆらぎ正規化 + 鮮度判定 + 逆引き + 検証ヘルパ。全 MCP が依存 (^0.4.1 指定のため MCP に入るのは 0.4.1。0.5 系で足した逆引き・検証は MCP 未使用)",
-      "published": "0.5.1",
+      "published": "0.5.2",
       "local": {
-        "version": "0.5.1",
-        "tag": "v0.5.1",
+        "version": "0.5.2",
+        "tag": "v0.5.2",
         "dirty": false,
         "unpushedCommits": 0
       },
       "consistency": {
         "status": "match",
-        "detail": "0.5.1"
+        "detail": "0.5.2"
       }
     },
     {
@@ -108,7 +108,7 @@
         "version": null,
         "tag": null,
         "dirty": true,
-        "unpushedCommits": 2
+        "unpushedCommits": 1
       },
       "consistency": {
         "status": "not_published",
