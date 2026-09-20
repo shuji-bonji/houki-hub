@@ -1,6 +1,6 @@
 ---
 title: "houki-egov-mcp — ツールリファレンス"
-description: "houki-egov-mcp v0.13.0 の全 10 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-egov-mcp v0.14.0 の全 11 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-egov-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-egov-mcp v0.13.0 の全 10 ツールの引数・型・既定
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.13.0** の `tools/list` から自動生成しました（10 ツール・2026-09-20）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.14.0** の `tools/list` から自動生成しました（11 ツール・2026-09-20）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-egov)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -22,6 +22,7 @@ description: "houki-egov-mcp v0.13.0 の全 10 ツールの引数・型・既定
 | [`search_law`](#search-law) | 日本の法令をキーワード・略称・分野で検索する。 |
 | [`get_law`](#get-law) | 日本の法令から条文を取得する。 |
 | [`get_toc`](#get-toc) | 法令の目次（編・章・節・条の構造）のみを取得する。 |
+| [`get_law_range`](#get-law-range) | 法令の編・章・節・款・目のいずれか、または附則 1 本を範囲にして、その中の条を本文ごと取得する。 |
 | [`search_fulltext`](#search-fulltext) | 法令の条文本文をキーワードで横断全文検索する（ローカル SQLite FTS5）。 |
 | [`resolve_abbreviation`](#resolve-abbreviation) | 略称・通称から正式な法令名と law_id を解決する。 |
 | [`get_law_revisions`](#get-law-revisions) | 法令の改正履歴を取得する。 |
@@ -90,7 +91,7 @@ description: "houki-egov-mcp v0.13.0 の全 10 ツールの引数・型・既定
 
 ## get_law
 
-日本の法令から条文を取得する。略称（消法・所法・労基法 等）対応。条/項/号レベル指定可能。
+日本の法令から条文を取得する。略称（消法・所法・労基法 等）対応。条/項/号レベル指定可能。章・節をまとめて取るときは get_law_range を使う。
 
 ### 引数
 
@@ -304,7 +305,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 
 ## get_toc
 
-法令の目次（編・章・節・条の構造）のみを取得する。トークン節約用。本則は `toc`、附則は改正法ごとに `suppl_provisions` へ分けて返す（現行の規定と、改正法ごとの施行日・経過措置を混ぜないため）。既定では附則は見出しと条数だけを返し、`suppl: "full"` で附則の中の条まで返す。depth で階層を浅く打ち切れる（民法・会社法のような大規模法令の概観把握向け）。
+法令の目次（編・章・節・条の構造）のみを取得する。トークン節約用。本則は `toc`、附則は改正法ごとに `suppl_provisions` へ分けて返す（現行の規定と、改正法ごとの施行日・経過措置を混ぜないため）。既定では附則は見出しと条数だけを返し、`suppl: "full"` で附則の中の条まで返す。depth で階層を浅く打ち切れる（民法・会社法のような大規模法令の概観把握向け）。応答の toc[].path（例 "Part3/Chapter2"）は get_law_range にそのまま渡せる。
 
 ### 引数
 
@@ -358,6 +359,26 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 
 `truncated: true` は応答を切り詰めたことを示します。特定の条を探すだけなら、`get_toc` より `search_fulltext` に「民法 不法行為」のように法令名と語を渡す方が短く済みます。
 :::
+
+## get_law_range
+
+法令の編・章・節・款・目のいずれか、または附則 1 本を範囲にして、その中の条を本文ごと取得する。1 条ずつ引く get_law と、目次だけを返す get_toc の間を埋める（民法・会社法・消費税法のように get_law で 1 条ずつ引くと手数がかかり、法令全体では長すぎる場合に使う）。範囲は条の単位で文字数の上限まで返し、入り切らなかったときは truncated と続きの条番号（next_from_article）を返す。返した範囲（パス・見出し・条の数・最初と最後の条）は応答の range に入る。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `law_name` | string | **必須** |  | 法令名または略称。例: "民法", "会社法", "消法" |
+| `part` | string \| number | 任意 |  | 編の番号。"3" / 3 / "三" / "第三編" / 枝番号は "2の2"。上位の階層は無いので単独で指定できる |
+| `chapter` | string \| number | 任意 |  | 章の番号。章番号は編ごとに振り直されるため（民法には第一章が 5 つある）、編を持つ法令では part も指定する。指定が複数の範囲に当たるときは、候補のパスを付けた INVALID_ARGUMENT を返す |
+| `section` | string \| number | 任意 |  | 節の番号。上位の part / chapter も指定すると範囲が一つに決まる |
+| `subsection` | string \| number | 任意 |  | 款の番号 |
+| `division` | string \| number | 任意 |  | 目の番号 |
+| `path` | string | 任意 |  | 範囲のパス。get_toc が返す toc[].path をそのまま渡せる。例: "Part3/Chapter2"（民法第三編第二章）、"Chapter2/Section1/Subsection2"。編・章・節の番号との同時指定はできない |
+| `suppl_index` | number | 任意 |  | 附則の番号（1 始まり）。get_toc が返す suppl_provisions[].index と同じ番号で、search_fulltext が「附則(3) 1」と表示する番号でもある。条を持たず項だけで書かれた附則は、範囲の本文をそのまま返す |
+| `from_article` | string | 任意 |  | 範囲の中のこの条から返す。前の応答が truncated だったときに next_from_article の値を渡して続きを取る。例: "561", "548の4", "第五百六十一条" |
+| `max_chars` | number (2000–120000) | 任意 | `30000` | 返す条本文の文字数の上限（デフォルト: 30000、2000〜120000）。条の途中では切らないため、1 条目だけは上限を超えても返す |
+| `at` | string | 任意 |  | 時点指定。YYYY-MM-DD 形式（get_law と同じ） |
 
 ## search_fulltext
 
