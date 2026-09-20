@@ -1,8 +1,11 @@
 # houki-hub
 
-**実装する前に、その仕様が法令のどこに触れるかを条文で確かめる**ための MCP サーバー・
+**日本の法令・通達・行政解釈を LLM から引く**ための MCP サーバー・
 共有ライブラリ・Skill 群（法規シリーズ）を束ねるリポジトリ。
 「法律で決まっている」と「通達でそうなっている」を混ぜずに、出典と鮮度を添えて返す。
+
+引き受けるのは **士業者に相談するまでの情報整理** で、相談の代わりではない。
+関わる条文と、拘束力の別と、何が事実認定に依存するかまでを揃え、結論・可否・金額は返さない。
 
 対応範囲（2026-09-07 時点）は **法令は全分野**（e-Gov 法令 API v2）、**通達・Q&A は国税庁のみ**。
 最初に税務から着手したためで、他省庁の通達は同じ型の MCP を 1 つずつ足して広げる（`stack.json` の `planned` / `concept`）。
@@ -80,10 +83,10 @@ graph LR
 
 | リポジトリ | 役割 | 配布形態 | 状態 | 版 | npm |
 | --- | --- | --- | --- | --- | --- |
-| [houki-egov-mcp](https://github.com/shuji-bonji/houki-egov-mcp) | source | mcp-server | 公開済み | 0.12.0 | `@shuji-bonji/houki-egov-mcp` |
-| [houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp) | source | mcp-server | 公開済み | 0.18.1 | `@shuji-bonji/houki-nta-mcp` |
+| [houki-egov-mcp](https://github.com/shuji-bonji/houki-egov-mcp) | source | mcp-server | 公開済み | 0.12.1 | `@shuji-bonji/houki-egov-mcp` |
+| [houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp) | source | mcp-server | 公開済み | 0.18.2 | `@shuji-bonji/houki-nta-mcp` |
 | [houki-abbreviations](https://github.com/shuji-bonji/houki-abbreviations) | dictionary | library | 公開済み | 0.5.1 | `@shuji-bonji/houki-abbreviations` |
-| [houki-research-skill](https://github.com/shuji-bonji/houki-research-skill) | procedure | skill | 公開済み | 0.10.0 | — |
+| [houki-research-skill](https://github.com/shuji-bonji/houki-research-skill) | procedure | skill | 公開済み | 0.10.1 | — |
 | houki-metadata-mcp | source | mcp-server | 予定 | — | — |
 | houki-mhlw-mcp | source | mcp-server | 予定 | — | — |
 | houki-saiketsu-mcp | source | mcp-server | 構想 | — | — |

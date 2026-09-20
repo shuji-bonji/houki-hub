@@ -6,7 +6,7 @@
     "layer = 役割 / form = 配布形態（誰が起動するか）/ status = released・planned・concept。",
     "planned / concept は名前と束ねる単位を予約しているだけで、ディレクトリも npm も無い。"
   ],
-  "generatedAt": "2026-09-20T04:04:50.825Z",
+  "generatedAt": "2026-09-20T06:52:56.458Z",
   "generatedBy": "scripts/generate-stack.mjs",
   "npmScope": "@shuji-bonji",
   "repos": [
@@ -18,17 +18,17 @@
       "form": "mcp-server",
       "status": "released",
       "public": true,
-      "note": "e-Gov 法令 API v2。法律・政令・省令の本文・目次・改正履歴 + ローカル SQLite FTS5 全文検索。7 tools",
-      "published": "0.12.0",
+      "note": "e-Gov 法令 API v2。法律・政令・省令の本文・目次・改正履歴 + ローカル SQLite FTS5 全文検索。10 tools",
+      "published": "0.12.1",
       "local": {
-        "version": "0.12.0",
-        "tag": "v0.12.0",
+        "version": "0.12.1",
+        "tag": "v0.12.1",
         "dirty": false,
         "unpushedCommits": 0
       },
       "consistency": {
         "status": "match",
-        "detail": "0.12.0"
+        "detail": "0.12.1"
       }
     },
     {
@@ -40,16 +40,16 @@
       "status": "released",
       "public": true,
       "note": "国税庁。法令解釈通達・質疑応答事例・タックスアンサー・文書回答・事務運営指針・改正通達。14 tools。family の参照実装",
-      "published": "0.18.1",
+      "published": "0.18.2",
       "local": {
-        "version": "0.18.1",
-        "tag": "v0.18.1",
+        "version": "0.18.2",
+        "tag": "v0.18.2",
         "dirty": false,
         "unpushedCommits": 0
       },
       "consistency": {
         "status": "match",
-        "detail": "0.18.1"
+        "detail": "0.18.2"
       }
     },
     {
@@ -81,11 +81,11 @@
       "form": "skill",
       "status": "released",
       "public": true,
-      "note": "family 横断の手順。error contract / citation / 業法独占規定（弁護士法 72 条・税理士法 52 条・社労士法 27 条）の正典。workflow は tax-research のみ",
+      "note": "family 横断の手順。error contract / citation / 業法独占規定（弁護士法 72 条・税理士法 52 条・社労士法 27 条）の正典。workflow は tax-research と feasibility-check の 2 つ",
       "published": null,
       "local": {
-        "version": "0.10.0",
-        "tag": "v0.10.0",
+        "version": "0.10.1",
+        "tag": "v0.10.1",
         "dirty": false,
         "unpushedCommits": 0
       },
@@ -102,13 +102,13 @@
       "form": "site",
       "status": "released",
       "public": true,
-      "note": "本リポジトリ。site/ に VitePress（GitHub Pages。公開は準備中）",
+      "note": "本リポジトリ。site/ に VitePress（GitHub Pages で公開済み: https://shuji-bonji.github.io/houki-hub/）",
       "published": null,
       "local": {
         "version": null,
         "tag": null,
         "dirty": true,
-        "unpushedCommits": 1
+        "unpushedCommits": null
       },
       "consistency": {
         "status": "not_published",
