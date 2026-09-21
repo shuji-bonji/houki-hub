@@ -14,9 +14,9 @@ houki-nta-mcp `spec/nta-get-tsutatsu` ブランチの 3 本。
 
 | ファイル | 役割 |
 |---|---|
-| `scripts/spec-id-format.mjs` | ID の形式（`SPEC-<領域>-<3 桁>`）、見出し `### SPEC-…` の形、テスト名の取り方、`specs/` とテストの走査 |
+| `scripts/spec-id-format.mjs` | ID の形式（`SPEC-<領域>-<6 文字>`、Crockford Base32 の乱数）、見出し `### SPEC-…` の形、テスト名の取り方、`specs/` とテストの走査、乱数の生成 |
 | `scripts/check-spec-ids.mjs` | 見出しの重複、仕様にあってテストに無い ID、テストにあって仕様に無い ID のどれかがあれば exit 1 |
-| `scripts/next-spec-id.mjs` | `specs/current` と `specs/changes` の見出しの最大番号 +1 を表示（`--domain` / `--count`） |
+| `scripts/next-spec-id.mjs` | 乱数の ID を表示（`--domain` / `--count`）。既存の見出しと重ならないことだけ確認する |
 
 ## パッケージの形（案）
 
@@ -42,7 +42,7 @@ houki-nta-mcp `spec/nta-get-tsutatsu` ブランチの 3 本。
 | テストの場所と拡張子 | `src/`・`tests/` の `*.test.ts`（vitest） | Angular / Jasmine なら `*.spec.ts` |
 | テスト名の取り方 | `describe(` / `it(` / `test(` の文字列リテラル | Jasmine も同じ。他言語は当面対象外 |
 
-変わらないもの: `specs/` の 3 ディレクトリ、見出しの形、判定 3 つ、採番の考え方（番号は予約しない。並行ブランチの衝突はマージ時の重複検知で止める）、ID の形式を 1 箇所に置く方針（連番から乱数の短い ID へ替えるときはそこだけ直す）。
+変わらないもの: `specs/` の 3 ディレクトリ、見出しの形、判定 3 つ、採番の考え方（乱数なので中央の採番も予約も無い。万一の重複はマージ時の重複検知で止める）、ID の形式を 1 箇所に置く方針。
 
 ## 手順
 
