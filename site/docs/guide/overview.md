@@ -72,4 +72,4 @@ houki-research Skill は、質問がその領域に入りそうなときに注�
 ## 関連するプロジェクト
 
 houki-hub のリポジトリ構成と設計方針は、同じ作者の [PDF Agent Stack](https://shuji-bonji.github.io/pdf-agent-stack/) と揃えています。
-houki-nta-mcp が国税庁の PDF を扱うときは、PDF Agent Stack の pdf-reader-mcp と組み合わせます。
+houki-nta-mcp は国税庁の PDF の本文を読まず、PDF ごとの読み方と保存したファイルのパスを返します。表として取るときは PDF Agent Stack の pdf-reader-mcp と組み合わせますが、手元の別の PDF 読み取りツールでも読めます。

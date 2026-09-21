@@ -703,7 +703,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 }
 ```
 
-本文は「別紙のとおり改める」までで、改正の中身は `attachedPdfs` の新旧対照表にあります。PDF の読み方は `nta_inspect_pdf_meta` が返す `reader_hints` を参照してください。この例では別紙 1 が令和 7 年 4 月 1 日から、別紙 2 が令和 8 年 11 月 1 日から適用と、適用日が 2 つに分かれています。
+本文は「別紙のとおり改める」までで、改正の中身は `attachedPdfs` の新旧対照表にあります。PDF の読み方は `nta_inspect_pdf_meta` が返す `attachedPdfs[].read_strategy` / `layout_note` と `next_actions` を参照してください（`save: true` で保存すれば pdf-reader-mcp の `extract_tables` で表として取れます）。この例では別紙 1 が令和 7 年 4 月 1 日から、別紙 2 が令和 8 年 11 月 1 日から適用と、適用日が 2 つに分かれています。
 :::
 
 ::: details 呼び出し例 — 「docId を打ち間違えたとき」
@@ -863,7 +863,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 
 `fullText` の 1 行目に文書番号と改正日が並びます。この例では平成 21 年に定め、令和 6 年 3 月 27 日まで 3 回改正されています。`issuedAt` は制定日で、最終改正日ではありません。最終改正がいつかは 1 行目から読んでください。
 
-末尾の `【…】` は章・節の見出しです。様式（応接簿など）は `attachedPdfs` にあり、`nta_inspect_pdf_meta` に `docType: "jimu-unei"` を指定すると pdf-reader-mcp での読み方の例が返ります。
+末尾の `【…】` は章・節の見出しです。様式（応接簿など）は `attachedPdfs` にあり、`nta_inspect_pdf_meta` に `docType: "jimu-unei"` を指定すると、PDF ごとの読み方（`read_strategy` / `layout_note`）と pdf-reader-mcp の呼び出し例（`next_actions`）が返ります。
 :::
 
 ## nta_search_bunshokaitou
@@ -1111,8 +1111,8 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 | `kind` | `"comparison"` \| `"attachment"` \| `"qa-pdf"` \| `"related"` \| `"notice"` \| `"unknown"` | 任意 |  | この種別の PDF だけを返す。改正点だけ見たいときは comparison。省略すると全件 |
 | `save` | boolean | 任意 |  | true のとき、返す PDF をサーバー側の保存先に取得し、saved[] に絶対パスを返す。pdf-reader-mcp の extract_tables / read_text はローカルファイルしか読まないので、表として取るときに使う。既に保存済みなら再取得しない（saved[].cached が true）。既定 false |
 
-::: details 呼び出し例 — 「改正通達 0025004-026 の PDF を pdf-reader-mcp でどう読むか」
-- 実測: v0.10.4（2026-09-08）
+::: details 呼び出し例 — 「改正通達 0025004-026 の PDF は、どれをどう読めばよいか」
+- 実測: v0.19.0（2026-09-21）
 - ローカル DB: あり
 
 **引数**
@@ -1121,7 +1121,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 { "docType": "kaisei", "docId": "0025004-026" }
 ```
 
-**返る JSON**
+**返る JSON**（`layout_note` は新旧対照表の 1 件だけ載せ、他は `…` で省略）
 
 ```jsonc
 {
@@ -1130,20 +1130,34 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
   "title": "消費税法基本通達の一部改正について（法令解釈通達）",
   "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/index.htm",
   "attachedPdfs": [
-    { "title": "【参考】… 新旧対応表 …（PDF/399KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/pdf/b0025003-111.pdf", "sizeKb": 399, "kind": "comparison" },
-    { "title": "別紙1（PDF/221KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/01.pdf", "sizeKb": 221, "kind": "attachment" },
-    { "title": "別紙2（PDF/449KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/02.pdf", "sizeKb": 449, "kind": "attachment" }
+    {
+      "title": "【参考】… 新旧対応表 …（PDF/399KB）",
+      "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/pdf/b0025003-111.pdf",
+      "sizeKb": 399,
+      "kind": "comparison",
+      "read_strategy": "tables",
+      "layout_note": "改正後と改正前を左右 2 列に並べた表。国税庁の新旧対照表は左が改正後、右が改正前のことが多いが、見出し行で確かめる。変更箇所には下線が引かれ、改正前の側に「（同左）」、両側に「（省略）」「（新設）」「（削除）」の欄がある。表として取れるなら表で、取れないなら左右 2 列に分けて読む（1 列として読むと改正後と改正前の文が混ざる）"
+    },
+    { "title": "別紙1（PDF/221KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/01.pdf", "sizeKb": 221, "kind": "attachment", "read_strategy": "tables", "layout_note": "…" },
+    { "title": "別紙2（PDF/449KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/02.pdf", "sizeKb": 449, "kind": "attachment", "read_strategy": "tables", "layout_note": "…" }
   ],
-  "reader_hints": {
-    "tool": "@shuji-bonji/pdf-reader-mcp",
-    "primary_action": "extract_tables",
-    "min_pdf_reader_version": "0.3.0",
-    "note": "本文取得は pdf-reader-mcp に委譲（責務分離）。comparison / attachment は extract_tables (v0.3.0+) で表構造を保持したまま抽出するのが最優先。それ以外は read_text。…",
-    "examples": [
-      { "kind": "comparison", "tool": "extract_tables", "args": { "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/pdf/b0025003-111.pdf" }, "note": "extract_tables で改正後/改正前の差分を表として抽出するのが最優先。失敗時は read_text に fallback。" },
-      { "kind": "attachment", "tool": "extract_tables", "args": { "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/01.pdf" }, "note": "extract_tables で表組みの別紙・別表・様式を構造化抽出。…" }
-    ]
-  },
+  "next_actions": [
+    {
+      "action": "pdf-reader-mcp:read_url",
+      "reason": "新旧対照表を URL のまま本文として読む。左右の列が混ざらないよう split_columns: 2 を付ける。表として取るには、この tool を save: true で呼び直して saved[].path を extract_tables に渡す",
+      "example": { "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/pdf/b0025003-111.pdf", "split_columns": 2 }
+    },
+    {
+      "action": "pdf-reader-mcp:read_url",
+      "reason": "別紙・別表を URL のまま本文として読む。表として取るには、この tool を save: true で呼び直して saved[].path を extract_tables に渡す",
+      "example": { "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/01.pdf" }
+    },
+    {
+      "action": "read_pdf",
+      "reason": "pdf-reader-mcp が無いときは、使っている PDF 読み取りツールに url（save: true で保存したときは path）を渡す。読み方は attachedPdfs[].read_strategy と layout_note のとおり",
+      "example": { "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/pdf/b0025003-111.pdf" }
+    }
+  ],
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,
@@ -1153,7 +1167,57 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 }
 ```
 
-`attachedPdfs[].kind` は PDF のタイトルから分類したもので、`comparison`（新旧対照表）と `attachment`（別紙・別表）は表として読むのが向いています。`reader_hints.examples[].args` をそのまま pdf-reader-mcp の `extract_tables` に渡せます。本文は含まないので、全文が要るときは `nta_get_kaisei_tsutatsu` を使います。
+`attachedPdfs[].kind` は PDF のタイトルから分類したもので、`read_strategy` と `layout_note` はその kind に応じた読み方です。道具の名前を含まないので、pdf-reader-mcp 以外の PDF 読み取りツールでもそのまま使えます。`next_actions` は kind ごとに 1 件（同じ kind が複数あれば先頭の PDF）と、最後に pdf-reader-mcp が無い環境向けの `read_pdf` が付きます。`save` を付けていないので、pdf-reader-mcp 向けの例は URL のまま読む `read_url` です。本文は含まないので、全文が要るときは `nta_get_kaisei_tsutatsu` を使います。
+
+v0.18.3 までは `next_actions` の代わりに `reader_hints` が付いていました。その `examples[].args` は `{ "url": … }` で `extract_tables` を指していましたが、pdf-reader-mcp の `extract_tables` は `file_path` しか受け取らないため、そのままでは呼べませんでした。
+:::
+
+::: details 呼び出し例 — 「新旧対照表だけを保存して、表として取る」
+- 実測: v0.19.0（2026-09-21）
+- ローカル DB: あり
+
+**引数**
+
+```jsonc
+{ "docType": "kaisei", "docId": "0025004-026", "kind": "comparison", "save": true }
+```
+
+**返る JSON**（`attachedPdfs` と `legal_status` は上と同じなので省略。保存先は既定の `~/.cache` の形で書いた）
+
+```jsonc
+{
+  "docType": "kaisei",
+  "docId": "0025004-026",
+  "attachedPdfs": [ { "kind": "comparison", "read_strategy": "tables", "…": "…" } ],
+  "saved": [
+    {
+      "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/pdf/b0025003-111.pdf",
+      "path": "~/.cache/houki-nta-mcp/files/kaisei/0025004-026/b0025003-111.pdf",
+      "bytes": 408826,
+      "cached": false
+    }
+  ],
+  "next_actions": [
+    {
+      "action": "pdf-reader-mcp:extract_tables",
+      "reason": "新旧対照表を表として取る。タグ付き PDF なら行と列がそのまま返る。表が 0 件（タグ無し）なら read_text に split_columns: 2 を付けて同じ file_path を読む",
+      "example": { "file_path": "~/.cache/houki-nta-mcp/files/kaisei/0025004-026/b0025003-111.pdf" }
+    },
+    {
+      "action": "read_pdf",
+      "reason": "pdf-reader-mcp が無いときは、使っている PDF 読み取りツールに url（save: true で保存したときは path）を渡す。読み方は attachedPdfs[].read_strategy と layout_note のとおり",
+      "example": {
+        "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/pdf/b0025003-111.pdf",
+        "path": "~/.cache/houki-nta-mcp/files/kaisei/0025004-026/b0025003-111.pdf"
+      }
+    }
+  ]
+}
+```
+
+`kind: "comparison"` で新旧対照表 1 件に絞り、`save: true` でサーバー側の保存先（`HOUKI_NTA_FILES_DIR`、無ければ `${XDG_CACHE_HOME:-~/.cache}/houki-nta-mcp/files/<docType>/<docId>/`）に置きます。`saved[].path` は絶対パスで返るので、`next_actions[0].example` をそのまま pdf-reader-mcp の `extract_tables` に渡せます。同じ引数でもう一度呼ぶと再取得はせず、`saved[].cached` が `true` になります。取得に失敗した PDF は `saved[].path` が `null` になり、`error`（`HTTP 404`、`PDF ではありません（Content-Type: text/html）` など）と、`note` に件数が入ります。その PDF は URL のまま読みます。
+
+新旧対照表から改正点を取り出す手順（左右どちらが改正後かを見出し行で確かめる、「（同左）」「（省略）」「（新設）」「（削除）」の扱い）は houki-research-skill の鉄則 3 にあります。
 :::
 
 ## resolve_abbreviation

@@ -61,7 +61,7 @@ v0.11.0 から、この対応が応答に入ります（[houki-nta-mcp#20](https
 | `nta_get_bunshokaitou` / `nta_search_bunshokaitou` | 文書回答事例の取得と検索 |
 | `nta_get_tax_answer` / `nta_search_tax_answer` | タックスアンサーの取得と検索 |
 | `nta_get_qa` / `nta_search_qa` | 質疑応答事例の取得と検索 |
-| `nta_inspect_pdf_meta` | 文書に添付された PDF のメタ情報と、pdf-reader-mcp での読み方の例だけを返します |
+| `nta_inspect_pdf_meta` | 文書に添付された PDF の一覧に、種別と読み方（表として取る / 本文として読む / 先頭を見て決める、紙面の組み方）を付けて返します。`save: true` で PDF を保存して絶対パスを返し、`next_actions` に pdf-reader-mcp の呼び出し例と、他の PDF 読み取りツール向けの 1 件を置きます。本文は読みません（v0.19.0） |
 | `resolve_abbreviation` | 略称の解決を診断します |
 
 検索ツールは `hasPdf` で PDF 付きの文書だけに絞れ、応答に `freshness`（取り込みからの経過）が付きます。`nta_search_qa` は `topic`（`shotoku`・`shohi` などの税目）で絞り込めます（v0.13.0 から）。
@@ -164,8 +164,8 @@ houki-nta-mcp のローカル DB は、そのページを 1 件ずつ取得し�
 | --- | --- |
 | `nta_search_tsutatsu` `nta_search_qa` `nta_search_tax_answer` `nta_search_bunshokaitou` `nta_search_jimu_unei` `nta_search_kaisei_tsutatsu` | その種別が DB に 1 件も無ければエラー `DOC_NOT_FOUND` を返します。「該当なし」ではありません |
 | `nta_get_tsutatsu` `nta_get_qa` `nta_get_tax_answer` | 国税庁サイトから取得して DB に書き戻します。応答の `source` が `"db"` か `"live"` かで、どちらから返したか分かります |
-| `nta_get_kaisei_tsutatsu` `nta_get_jimu_unei` `nta_get_bunshokaitou` | `DOC_NOT_FOUND` を返し、投入するコマンドを案内します |
-| `nta_inspect_pdf_meta` `resolve_abbreviation` | DB を使いません |
+| `nta_get_kaisei_tsutatsu` `nta_get_jimu_unei` `nta_get_bunshokaitou` `nta_inspect_pdf_meta` | `DOC_NOT_FOUND` を返し、投入するコマンドを案内します（`nta_inspect_pdf_meta` は添付 PDF の一覧を DB の文書から読むため） |
+| `resolve_abbreviation` | DB を使いません |
 
 改正通達・事務運営指針・文書回答事例の 3 つが国税庁サイトへ取りに行かないのは、docId から個別ページの URL を組み立てるのに税目フォルダの世代差（`sozoku` と `sozoku2` など）を解く必要があるためです。
 
@@ -327,8 +327,9 @@ DB はパッケージの更新で消えません。保存の形が変わった�
 
 ## PDF Agent Stack との組み合わせ
 
-改正通達の新旧対照表は PDF で提供されます。`nta_inspect_pdf_meta` は、その PDF を
-[pdf-reader-mcp](https://shuji-bonji.github.io/pdf-agent-stack/ja/mcp/pdf-reader) の `extract_tables` で表構造を保ったまま読むための呼び出し例を返します。
+改正通達の新旧対照表は PDF で提供されます。houki-nta-mcp は PDF の本文を読みません。`nta_inspect_pdf_meta` が、PDF ごとの読み方（`read_strategy`: 表として取る / 本文として読む / 先頭を見て決める、`layout_note`: 紙面の組み方）と、`save: true` で保存したファイルの絶対パス（`saved[].path`）を返します。
+
+読み手は決めていません。[pdf-reader-mcp](https://shuji-bonji.github.io/pdf-agent-stack/ja/mcp/pdf-reader) があれば、`next_actions` の呼び出し例（保存済みなら `extract_tables` に `file_path`、未保存なら `read_url` に `url`）をそのまま渡せます。無ければ、`saved[].path` か `url` を使っている PDF 読み取りツールに渡し、`layout_note` のとおりに読みます（v0.19.0。経緯は [houki-nta-mcp #36](https://github.com/shuji-bonji/houki-nta-mcp/issues/36) と `docs/DECISIONS.md` の 2026-09-21）。
 
 利用範囲と通達の法的な位置づけは[免責事項と利用範囲](/guide/disclaimer)と、リポジトリの [DISCLAIMER.md](https://github.com/shuji-bonji/houki-nta-mcp/blob/main/DISCLAIMER.md) を参照してください。
 
