@@ -6,7 +6,7 @@
     "layer = 役割 / form = 配布形態（誰が起動するか）/ status = released・planned・concept。",
     "planned / concept は名前と束ねる単位を予約しているだけで、ディレクトリも npm も無い。"
   ],
-  "generatedAt": "2026-09-21T08:46:21.783Z",
+  "generatedAt": "2026-09-21T09:35:28.206Z",
   "generatedBy": "scripts/generate-stack.mjs",
   "npmScope": "@shuji-bonji",
   "repos": [
@@ -40,16 +40,16 @@
       "status": "released",
       "public": true,
       "note": "国税庁。法令解釈通達・質疑応答事例・タックスアンサー・文書回答・事務運営指針・改正通達。14 tools。family の参照実装",
-      "published": "0.20.0",
+      "published": "0.20.2",
       "local": {
-        "version": "0.20.1",
-        "tag": "v0.20.1",
+        "version": "0.20.2",
+        "tag": "v0.20.2",
         "dirty": false,
         "unpushedCommits": 0
       },
       "consistency": {
-        "status": "drift",
-        "detail": "npm 0.20.0 ≠ local 0.20.1"
+        "status": "match",
+        "detail": "0.20.2"
       }
     },
     {
