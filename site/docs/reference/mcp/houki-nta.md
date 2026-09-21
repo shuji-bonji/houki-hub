@@ -1,6 +1,6 @@
 ---
 title: "houki-nta-mcp — ツールリファレンス"
-description: "houki-nta-mcp v0.19.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-nta-mcp v0.20.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-nta-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-nta-mcp v0.19.0 の全 14 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.19.0** の `tools/list` から自動生成しました（14 ツール・2026-09-21）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.20.0** の `tools/list` から自動生成しました（14 ツール・2026-09-21）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-nta)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -1108,7 +1108,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 |---|---|---|---|---|
 | `docType` | `"kaisei"` \| `"jimu-unei"` \| `"bunshokaitou"` \| `"tax-answer"` | **必須** |  | 文書種別。改正通達 (kaisei) / 事務運営指針 (jimu-unei) / 文書回答事例 (bunshokaitou) / タックスアンサー (tax-answer)。質疑応答事例 (qa-jirei) は PDF を持たないため対象外 |
 | `docId` | string | **必須** |  | 文書 ID。各 docType の `nta_search_*` 結果や `nta_get_*` のレスポンスから得られる |
-| `kind` | `"comparison"` \| `"attachment"` \| `"qa-pdf"` \| `"related"` \| `"notice"` \| `"unknown"` | 任意 |  | この種別の PDF だけを返す。改正点だけ見たいときは comparison。省略すると全件 |
+| `kind` | `"comparison"` \| `"attachment"` \| `"qa-pdf"` \| `"related"` \| `"notice"` \| `"unknown"` | 任意 |  | この種別の PDF だけを返す。改正点だけ見たいときは comparison。改正通達（kaisei）でタイトルが「別紙 N」だけの PDF は新旧対照表本体のことが多いので comparison として返す。省略すると全件 |
 | `save` | boolean | 任意 |  | true のとき、返す PDF をサーバー側の保存先に取得し、saved[] に絶対パスを返す。pdf-reader-mcp の extract_tables / read_text はローカルファイルしか読まないので、表として取るときに使う。既に保存済みなら再取得しない（saved[].cached が true）。既定 false |
 
 ::: details 呼び出し例 — 「改正通達 0025004-026 の PDF は、どれをどう読めばよいか」
