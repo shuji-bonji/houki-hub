@@ -4,7 +4,7 @@ description: 日本の法令・通達・行政解釈を LLM から引くため�
 
 hero:
   name: houki-hub
-  text: 日本の法令・通達を、出典と鮮度を添えて条文の単位で引く
+  text: LLM が日本の法令・通達を、出典と鮮度を添えて条文の単位で引く
   tagline: 法律・政令・省令は e-Gov 法令 API から全分野を、通達・Q&A は国税庁分を。「法律で決まっている」と「通達でそうなっている」を混ぜずに、出典と鮮度を添えて返す MCP サーバー群と、それらを横断する Skill
   actions:
     - theme: brand
