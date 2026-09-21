@@ -60,7 +60,7 @@ MCP を組み込む開発者は問いを投げる利用者ではなく契約を�
    - 通達から先に引いた場合は、応答の `next_actions` に従って houki-egov-mcp の `get_law` で法律本文へ戻ります。条番号は通達の本文の「法第N条」「令第N条」から補います（v0.4.0 から。houki-nta-mcp 0.11.0 以上が前提）
    - `next_actions[].example` に入っている `mcp` と `tool` は、どの MCP のどの tool を呼ぶかを示すもので引数ではありません。この 2 つを除いた残りを引数として渡します。そのまま渡すと、houki-egov-mcp 0.6.0 以上・houki-nta-mcp 0.14.0 以上では `INVALID_ARGUMENT` になります（v0.5.1 から）
    - 質疑応答事例から先に引いた場合は、`nta_get_qa` を `format: "json"` で呼び、`related_laws` / `related_tsutatsu` と `next_actions` に従って法律本文と通達へ戻ります。条・項・号まで入っているので、本文から補う必要はありません。質疑応答事例は「参考情報（拘束力なし）」に置き、作成基準日（`qa.basisDate`）と国税庁の注記（`qa.notice`）を残します（v0.5.0 から。houki-nta-mcp 0.12.0 以上が前提）
-4. 改正の経緯が要るときは `get_law_revisions` と改正通達を引き、新旧対照表の PDF は pdf-reader-mcp の `extract_tables` で読みます
+4. 改正の経緯が要るときは `get_law_revisions` と改正通達を引きます。新旧対照表の PDF は `nta_inspect_pdf_meta` を `kind: "comparison", save: true` で呼び、pdf-reader-mcp があれば `next_actions` の例をそのまま `extract_tables` に渡し、無ければ `saved[].path` を手元の PDF 読み取りツールに渡して `layout_note` のとおり左右 2 列の表として読みます。左右どちらが改正後かは見出し行で確かめます（v0.13.0 から。houki-nta-mcp 0.19.0 以上が前提）
 5. 応答の `freshness` が古ければ、DB の再取得を促してから答えます
 6. 検索結果や取得した文書に `index_status: "removed_from_index"` が付いていたら、それは国税庁の索引から外れた文書です。過去の課税期間の判断では引けますが、**現在の取扱いの根拠にはしません**。同じ論点の現行の文書を探し直し、見つからなければ断定しません（v0.6.0 から。houki-nta-mcp 0.17.0 以上が前提）
    - `freshness` とは別のことを指します。`freshness` は「最後に取得してから日が経った」、`index_status` は「国税庁の索引から外れた」です。ローカル DB が新しくても印は付きます

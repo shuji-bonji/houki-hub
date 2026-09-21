@@ -39,5 +39,5 @@
 
 `fullText` の 1 行目に文書番号と改正日が並びます。この例では平成 21 年に定め、令和 6 年 3 月 27 日まで 3 回改正されています。`issuedAt` は制定日で、最終改正日ではありません。最終改正がいつかは 1 行目から読んでください。
 
-末尾の `【…】` は章・節の見出しです。様式（応接簿など）は `attachedPdfs` にあり、`nta_inspect_pdf_meta` に `docType: "jimu-unei"` を指定すると pdf-reader-mcp での読み方の例が返ります。
+末尾の `【…】` は章・節の見出しです。様式（応接簿など）は `attachedPdfs` にあり、`nta_inspect_pdf_meta` に `docType: "jimu-unei"` を指定すると、PDF ごとの読み方（`read_strategy` / `layout_note`）と pdf-reader-mcp の呼び出し例（`next_actions`）が返ります。
 :::

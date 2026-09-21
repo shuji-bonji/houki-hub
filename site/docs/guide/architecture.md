@@ -30,7 +30,8 @@ graph TB
 
     EGOVAPI[("e-Gov 法令 API v2")] --> EGOV
     NTASITE[("国税庁サイト")] --> NTA
-    PDFR[("pdf-reader-mcp")] -.->|PDF の本文抽出| NTA
+    PDFR[("pdf-reader-mcp<br>または任意の PDF 読み取りツール")] -.->|添付 PDF の本文| AGENT
+    NTA -.->|PDF の URL・読み方・保存したパス| PDFR
 ```
 
 ## 3 層の分担
