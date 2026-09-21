@@ -1,6 +1,6 @@
 ---
 title: "houki-nta-mcp — ツールリファレンス"
-description: "houki-nta-mcp v0.18.3 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-nta-mcp v0.19.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-nta-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-nta-mcp v0.18.3 の全 14 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.18.3** の `tools/list` から自動生成しました（14 ツール・2026-09-21）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.19.0** の `tools/list` から自動生成しました（14 ツール・2026-09-21）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-nta)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -31,7 +31,7 @@ description: "houki-nta-mcp v0.18.3 の全 14 ツールの引数・型・既定�
 | [`nta_get_jimu_unei`](#nta-get-jimu-unei) | 事務運営指針の本文を docId で取得する（DB 経由）。 |
 | [`nta_search_bunshokaitou`](#nta-search-bunshokaitou) | 文書回答事例（bunshokaitou）を FTS5 でキーワード検索する。 |
 | [`nta_get_bunshokaitou`](#nta-get-bunshokaitou) | 文書回答事例の本文を docId で取得する（DB 経由）。 |
-| [`nta_inspect_pdf_meta`](#nta-inspect-pdf-meta) | 指定した文書の添付 PDF メタ一覧（kind / size / URL）と pdf-reader-mcp 呼び出し例だけを返す軽量 API。 |
+| [`nta_inspect_pdf_meta`](#nta-inspect-pdf-meta) | 指定した文書の添付 PDF の一覧を返す。 |
 | [`resolve_abbreviation`](#resolve-abbreviation) | 略称・通称から houki-abbreviations 経由でエントリを解決する。 |
 
 ## nta_search_tsutatsu
@@ -1100,7 +1100,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 
 ## nta_inspect_pdf_meta
 
-指定した文書の添付 PDF メタ一覧（kind / size / URL）と pdf-reader-mcp 呼び出し例だけを返す軽量 API。本文は含まない。`nta_get_*` で全文を取得すると重い場合や、PDF だけを確認したい時に使う。Phase 4-2 (v0.7.1) で追加。
+指定した文書の添付 PDF の一覧を返す。本文は読まない。各 PDF に kind（comparison=新旧対照表 / attachment=別紙・別表 / qa-pdf / related / notice / unknown）と、読み方（read_strategy: tables=表として取る / text=本文として読む / sample=先頭を見て決める、layout_note: 紙面の組み方）を付ける。save: true のときだけ PDF をサーバー側の保存先（既定は XDG_CACHE_HOME か ~/.cache の下の houki-nta-mcp/files/。環境変数 HOUKI_NTA_FILES_DIR で変更）に取得し、saved[] に絶対パスを返す。next_actions に pdf-reader-mcp の呼び出し例（保存済みなら extract_tables / read_text に file_path、未保存なら read_url に url）と、他の PDF 読み取りツール向けの汎用の 1 件を置く。読み手は固定しない。`nta_get_*` で全文を取得すると重い場合や、PDF だけを確認したい時に使う。
 
 ### 引数
 
@@ -1108,6 +1108,8 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 |---|---|---|---|---|
 | `docType` | `"kaisei"` \| `"jimu-unei"` \| `"bunshokaitou"` \| `"tax-answer"` | **必須** |  | 文書種別。改正通達 (kaisei) / 事務運営指針 (jimu-unei) / 文書回答事例 (bunshokaitou) / タックスアンサー (tax-answer)。質疑応答事例 (qa-jirei) は PDF を持たないため対象外 |
 | `docId` | string | **必須** |  | 文書 ID。各 docType の `nta_search_*` 結果や `nta_get_*` のレスポンスから得られる |
+| `kind` | `"comparison"` \| `"attachment"` \| `"qa-pdf"` \| `"related"` \| `"notice"` \| `"unknown"` | 任意 |  | この種別の PDF だけを返す。改正点だけ見たいときは comparison。省略すると全件 |
+| `save` | boolean | 任意 |  | true のとき、返す PDF をサーバー側の保存先に取得し、saved[] に絶対パスを返す。pdf-reader-mcp の extract_tables / read_text はローカルファイルしか読まないので、表として取るときに使う。既に保存済みなら再取得しない（saved[].cached が true）。既定 false |
 
 ::: details 呼び出し例 — 「改正通達 0025004-026 の PDF を pdf-reader-mcp でどう読むか」
 - 実測: v0.10.4（2026-09-08）
