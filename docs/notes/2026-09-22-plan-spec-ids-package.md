@@ -34,8 +34,15 @@ houki-nta-mcp `spec/nta-get-tsutatsu` ブランチの 3 本。
 
 `dirPrefix` は、`specs/current/<dir>` のディレクトリ名から機能を導くときに除く接頭辞（無ければ空）。
 
-- `init` が作るもの: `specs/current` / `specs/changes` / `specs/releases`、`specs/spec-ids.json`、`AGENTS.md` の「仕様の正本」「仕様 ID」「役割」の節（既存の `AGENTS.md` があれば追記せず差分を表示する）、`spec.md` / `proposal.md` の雛形
-- 再利用ワークフロー `spec-gate.yml` を同じリポジトリに置き、各リポジトリの `ci.yml` から `uses:` で呼べるようにする（`npx spec-ids check` 1 行でも可）
+設定に出さないもの（2026-09-22 の PR #49 レビューで確定）:
+
+- `ID_RE` / `HEADING_RE` / `TEST_NAME_RE`。形式を変えるときはパッケージの版を上げる。リポジトリごとに正規表現を変えると `parseId` と機能の照合が壊れる
+- `specs/current` / `specs/changes` / `specs/releases` の置き場。機能はディレクトリ名から導くので、構造そのものが契約。glob で自由にすると `featureOfSpecPath` が成り立たない
+- 基点ディレクトリ `ROOT` は `import.meta.url` から取らない。`npx` で配ると `node_modules` の中を指す。`specs/spec-ids.json` を上へ辿って見つけたディレクトリを基点にする
+
+- `init` が作るもの: `specs/current` / `specs/changes` / `specs/releases`、`specs/spec-ids.json`、`.github/workflows/spec-gate.yml`（中身は `npx spec-ids check`）、`AGENTS.md` に貼る「仕様 ID」の段落 1 つ（既存の `AGENTS.md` があれば追記せず表示するだけ）
+- `init` に入れないもの: 役割表（Steward / Auditor / Publisher）、承認フロー、`spec.md` / `proposal.md` の雛形、承認日や `REMOVED` の意味検査、`releases/` へのコピー。これらは各リポジトリの `AGENTS.md` と運用の側に残す
+- CI からの呼び方は `devDependencies` に入れて `npm ci` 後に `npx spec-ids check`。`npm ci` の前に `npx -y @shuji-bonji/spec-ids@<major> check` でも動くが、版を固定するために major は必ず書く
 
 ## リポジトリごとに変わる前提（設定に出すもの）
 
@@ -49,8 +56,8 @@ houki-nta-mcp `spec/nta-get-tsutatsu` ブランチの 3 本。
 
 ## 手順
 
-1. houki-nta-mcp の PR（`spec/nta-get-tsutatsu`）を `scripts/` のままマージする
+1. houki-nta-mcp の PR #49（`spec/nta-get-tsutatsu`）を `scripts/` のままマージする。nta とパッケージを同時に直すと形式の差分が両側に残るので、先にマージして形式を一度固定する
 2. 新リポジトリを作り、3 本を CLI に組み替えて `init` を足す。README は利用者向けの文で書く
 3. houki-nta-mcp の 2 周目（最初の差分）で `scripts/` の 3 本をパッケージに置き換える
-4. pdf 系・e-shiwake は `spec-ids init` から始める。最初の 1 機能は各リポジトリで 1 つだけ
+4. 2 つ目のリポジトリ（houki-egov-mcp、または pdf 系・e-shiwake）に同じ 3 ファイルをコピーする直前が切り出しの境界。そこから `spec-ids init` で始める。最初の 1 機能は各リポジトリで 1 つだけ
 5. Steward / Auditor / Publisher の指示文は、1 機能・1 差分の試験が通ってから Claude plugin として別に出す（手順書 §9）
