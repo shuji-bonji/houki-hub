@@ -1,7 +1,8 @@
 # 仕様 ID の突合・採番を npm パッケージにする計画（houki-hub#26 の続き）
 
 - 日付: 2026-09-22（JST）
-- 状態: 計画。着手は houki-nta-mcp の `spec/nta-get-tsutatsu` PR のマージ後
+- 状態: **完了（2026-09-24 JST）**。`@shuji-bonji/spec-ids` 0.1.0 を npm に publish（初回は手元で `npm publish`、以後は Trusted Publisher 経由）。houki-nta-mcp は PR #51 で `scripts/` を削除しパッケージに切り替え、main の CI（spec-gate）が通っている。次は #50 の 2 ツール目から（`docs/notes/2026-09-24-instructions-nta-issue50-specs.md`）
+- 元の状態: 計画。着手は houki-nta-mcp の `spec/nta-get-tsutatsu` PR のマージ後
 - 出典: ai-design-advisor Discussion #21、houki-hub `docs/DECISIONS.md` 2026-09-21 / 2026-09-22 の行
 
 ## 目的
