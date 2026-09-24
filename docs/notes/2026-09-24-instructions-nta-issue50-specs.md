@@ -8,7 +8,7 @@
 
 役は Spec Steward。実装とテストの期待値は書き換えない。
 
-1. 対象を 1 つ決める（例: `nta_get_qa`）。ブランチは `spec/<tool>`（例: `spec/nta-get-qa`）
+1. 対象を 1 つ決める（例: `nta_get_qa`）。ブランチは `spec-init/<tool>`（例: `spec-init/nta-get-tax-answer`）。`spec/` は差分の仕様 PR 用で、CI の `pr-scope` が `src/` の変更を止める（2026-09-25 から）
 2. 読むもの: `src/tools/definitions.ts` のそのツールの定義、`src/tools/handlers.ts` の handler、そのツールを扱う `*.test.ts`（`src/tools/` と `src/services/`）。見本として `specs/current/nta_get_tsutatsu/spec.md`
 3. `specs/current/<tool>/spec.md` を書く。節は見本と同じ: 先頭のメタ（機能 ID、版、承認日は空欄、起こした元の版とファイル）、アクター、入力、できること、できないこと、未決
 4. 「できること」は振る舞い 1 つにつき `### <ID> <題>` 1 つ。ID は `npx spec-ids next <tool> --count N` で取る（`N` は振る舞いの数）。実装コードの関数名・テーブル名は書かない。応答のフィールド名・エラー `code`・引数名は書く
@@ -25,7 +25,7 @@
 - `specs/current/` の既存の `spec.md`（他のツール分）は触らない
 - 同じ振る舞いを 2 つのツールで書かない。共通の振る舞い（略称解決、DB 優先取得、`DOC_NOT_FOUND` など）は、そのツールの `spec.md` に「〜と同じ」と書かず、そのツールの応答として独立に書く（ID はツールごと）
 - 実装を直したくなっても直さない。`specs/changes/` の候補として PR 本文に書く
-- 承認日は Steward は空欄のままにする。人がマージする前に、そのブランチで JST の日付と PR 番号を書く（houki-nta-mcp の AGENTS.md「仕様の正本」）
+- 承認日は Steward は空欄のままにする。人がマージする前に、そのブランチで「- 承認日: YYYY-MM-DD（PR #N）」を書く。空欄のままだと CI の `pr-scope` が RED になる（houki-nta-mcp の AGENTS.md「PR の種類」）
 
 ## 順序の目安
 
