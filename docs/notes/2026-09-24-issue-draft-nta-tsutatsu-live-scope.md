@@ -1,6 +1,6 @@
 # Issue 草案: nta_get_tsutatsu の国税庁サイトからの取得は、消費税法基本通達でしか成功しない
 
-- 起票先: shuji-bonji/houki-nta-mcp
+- 起票先: shuji-bonji/houki-nta-mcp（起票済み: #54）
 - 日付: 2026-09-24（JST）
 - 経緯: houki-nta-mcp#53（`specs/changes/20260924-tsutatsu-clause-forms/`）を起こす途中で見つけた。proposal.md の末尾「この差分に含めないが、確かめる中で見つけたこと」の Issue 化
 
