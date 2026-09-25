@@ -2,6 +2,7 @@
 
 - 日付: 2026-09-24（JST）
 - 対象: houki-nta-mcp Issue #50「specs/ を構築」。残り 13 ツール
+- 進捗（2026-09-26 JST）: 残り 12 ツールを起こした。状態と取り込み方は `2026-09-26-nta-issue50-remaining-12.md`、PR 本文は `2026-09-26-nta-issue50-pr-bodies.md`
 - 前提: PR #49 マージ済み（`nta_get_tsutatsu` が見本）。`@shuji-bonji/spec-ids` に切り替える PR（ブランチ `spec/use-spec-ids-package`）のマージ後に着手する
 
 ## 1 ツール分の作業（1 チャット = 1 ツールが目安）
