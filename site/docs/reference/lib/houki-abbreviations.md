@@ -1,6 +1,6 @@
 ---
 title: "houki-abbreviations — API リファレンス"
-description: "houki-abbreviations v0.6.0 の公開 API（関数 19 個・定数 6 個・インターフェース 11 個・型 6 個）のシグネチャ・追加された版・family での使用状況（dist/index.d.ts から自動生成）"
+description: "houki-abbreviations v0.6.0 の公開 API（関数 21 個・定数 6 個・インターフェース 11 個・型 6 個）のシグネチャ・追加された版・family での使用状況（dist/index.d.ts から自動生成）"
 ---
 
 # houki-abbreviations — API リファレンス
@@ -8,14 +8,14 @@ description: "houki-abbreviations v0.6.0 の公開 API（関数 19 個・定数 
 <!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import から。 -->
 
 ::: info
-**v0.6.0** の `dist/index.d.ts` から自動生成しました（関数 19 個・定数 6 個・インターフェース 11 個・型 6 個・2026-09-21）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.6.0** の `dist/index.d.ts` から自動生成しました（関数 21 個・定数 6 個・インターフェース 11 個・型 6 個・2026-09-27）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成の API リファレンスです。** 公開されている記号の名前・シグネチャ・説明・例を、パッケージの型定義（`dist/index.d.ts`）から写しています（正典は型定義です）。辞書の中身や設計上の約束は[解説ページ](/lib/houki-abbreviations)にあります。
 
 houki-hub family の MCP サーバーが共有するために公開しているパッケージです。**0.x の間は minor で破壊的変更が入ることがあります**。安定した互換性が要るときは版を固定してください。
 
-公開しているのは関数 19 個・定数 6 個・インターフェース 11 個・型 6 個です。そのうち houki-egov-mcp と houki-nta-mcp が実際に import しているのは **17 個**で、残りは公開しているだけです（テストコードの import は数えていません）。各記号の説明と例は、一覧の下に用途ごとにまとめてあります。
+公開しているのは関数 21 個・定数 6 個・インターフェース 11 個・型 6 個です。そのうち houki-egov-mcp と houki-nta-mcp が実際に import しているのは **17 個**で、残りは公開しているだけです（テストコードの import は数えていません）。各記号の説明と例は、一覧の下に用途ごとにまとめてあります。
 
 ## 読み込み方
 
@@ -36,13 +36,15 @@ import { resolveAbbreviation } from '@shuji-bonji/houki-abbreviations';
 | [`getAllNames`](#getallnames) | v0.5.0 | 未使用 | `abbr` / `formal` / `aliases` のいずれかから、そのエントリの **全別表記** を文字列配列で返す。 |
 | [`isValidLawId`](#isvalidlawid) | v0.5.0 | 未使用 | e-Gov の `law_id` 形式が妥当かを判定する純粋関数。 |
 | [`judgeStaleness`](#judgestaleness) | v0.4.1 | `houki-egov-mcp`<br>`houki-nta-mcp` | 経過日数から staleness レベルを判定する純関数。 |
+| [`kanjiToNumber`](#kanjitonumber) | v0.6.0 | 未使用 | 漢数字を数値にする。 |
 | [`levenshtein`](#levenshtein) | v0.4.0 | 未使用 | Levenshtein 距離 (動的計画法、O(m*n) 時間 / O(min(m,n)) 空間)。 |
 | [`listByCategory`](#listbycategory) | v0.1.0 | 未使用 | 指定カテゴリのエントリ一覧を返す。 |
 | [`listByDomain`](#listbydomain) | v0.1.0 | 未使用 | 指定ドメインのエントリ一覧を返す。 |
 | [`listBySourceMcpHint`](#listbysourcemcphint) | v0.1.0 | `houki-egov-mcp` | 指定 MCP が管轄するエントリ一覧を返す。 |
 | [`lookupByLawId`](#lookupbylawid) | v0.5.0 | 未使用 | e-Gov `law_id` から辞書エントリを引く。 |
-| [`lookupByLawNum`](#lookupbylawnum) | v0.5.0 | 未使用 | 法令番号（漢数字表記）から辞書エントリを引く。 |
+| [`lookupByLawNum`](#lookupbylawnum) | v0.5.0 | 未使用 | 法令番号から辞書エントリを引く。 |
 | [`normalizeJpText`](#normalizejptext) | v0.3.0 | `houki-egov-mcp`<br>`houki-nta-mcp` | 日本語テキストの全角ゆらぎを保守的に半角化する。 |
+| [`normalizeLawNum`](#normalizelawnum) | v0.6.0 | 未使用 | 法令番号の表記を、照合に使える 1 つの形に揃える。 |
 | [`normalizeSearchQuery`](#normalizesearchquery) | v0.3.0 | `houki-egov-mcp`<br>`houki-nta-mcp` | 検索クエリ向けの積極的な正規化。 |
 | [`resolveAbbreviation`](#resolveabbreviation) | v0.1.0 | `houki-egov-mcp`<br>`houki-nta-mcp` | 略称・通称・正式名称のいずれかから辞書エントリを引く。 |
 | [`searchByName`](#searchbyname) | v0.4.0 | 未使用 | 名前で検索 (部分一致)。 |
@@ -248,6 +250,48 @@ interface ResolveAbbreviationOptions {
 
 全角の数字・記号・空白を半角に揃えます。DB に取り込むときと検索するときに同じ関数を通すことで、片方だけ揃わずにヒットしなくなるのを防ぎます。
 
+### kanjiToNumber
+
+*関数 ・ v0.6.0 で追加 ・ family では未使用*
+
+```ts
+function kanjiToNumber(input: string): number | null;
+```
+
+漢数字を数値にする。
+
+次の 2 つの書き方を受け付ける。どちらとも読めない並びは `null`。
+
+- **位取り**（単位 十・百・千 を使う書き方）: `三十` → 30、`百八` → 108、
+  `千五十` → 1050、`一千` → 1000。千の位までを扱い、万以上は対象にしない。
+  `三三`（数字が続く）や `十十`（位が下がらない）は `null`。
+- **位ごと**（算用数字と同じく 1 桁ずつ並べる書き方。単位を含まず、`〇` を使える）:
+  `二五` → 25、`一三七` → 137、`三〇` → 30。人事院規則の番号（`一四―五`）や
+  判例の引用（`昭二五・一〇・二五`）がこの書き方。
+
+2 つの書き方が混ざった並び（`二〇十`）は `null`。1 文字（`五`）はどちらの
+読み方でも同じ値になる。
+
+houki-egov-mcp v0.7.0 の `kanjiToNumber`（条番号用。位取りのみ）と同じ名前で、
+位取りの読み方はそちらと同じ結果を返す。位ごとの書き方を受け付ける点だけが違う。
+
+| 引数 | 説明 |
+|---|---|
+| `input` | 漢数字だけの文字列 |
+
+**戻り値**: 数値。漢数字として読めなければ `null`
+
+::: details 例
+```ts
+kanjiToNumber('二十五');   // 25
+kanjiToNumber('百三十七'); // 137
+kanjiToNumber('二五');     // 25（位ごと）
+kanjiToNumber('一三七');   // 137（位ごと）
+kanjiToNumber('元');       // null（「元年」は normalizeLawNum が扱う）
+kanjiToNumber('25');       // null（算用数字は対象外）
+```
+:::
+
 ### normalizeJpText
 
 *関数 ・ v0.3.0 で追加 ・ houki-egov-mcp / houki-nta-mcp が使用*
@@ -279,6 +323,54 @@ normalizeJpText('183～193共-1');  // '183~193共-1'（チルダのみ半角化
 normalizeJpText('ＰＬ法');         // 'PL法'（大文字保持）
 normalizeJpText('  消法  ');      // '消法'（trim）
 normalizeJpText('消　法');         // '消 法'（全角スペース → 半角）
+```
+:::
+
+### normalizeLawNum
+
+*関数 ・ v0.6.0 で追加 ・ family では未使用*
+
+```ts
+function normalizeLawNum(input: string): string;
+```
+
+法令番号の表記を、照合に使える 1 つの形に揃える。
+
+`昭和二十五年法律第百三十七号` と `昭和25年法律第137号` と `昭和２５年法律第１３７号`
+を同じ文字列（`昭和25年法律第137号`）にする。`lookupByLawNum` はこの関数を
+入力と辞書の両方に通してから比較する（Normalize-everywhere）。
+
+行うこと:
+
+1. `normalizeJpText` と同じ全角 → 半角の変換（数字・英字・ハイフン・空白）
+2. 空白をすべて取り除く（`昭和25年 法律 第137号` → `昭和25年法律第137号`）
+3. `元年` → `1年`（`令和元年` → `令和1年`）
+4. 漢数字の並びを算用数字にする（{@link kanjiToNumber}。位取りと位ごとの両方）。
+   読めない並びはそのまま残す
+5. 算用数字の先頭の 0 を取る（`第0137号` → `第137号`）
+6. ダッシュ類（`―` `－` `‐` `–` `—` `−`）を `-` に揃える（人事院規則の `一―一` → `1-1`）
+
+行わないこと: 元号の別表記（`S25` / `昭25`）、`第` や `号` の有無の吸収、
+法令の種別名（`法律` / `政令`）の補完。これらは表記の揺れではなく別の書き方なので、
+呼び出し側で揃える。
+
+入力が空文字や `null`/`undefined` 相当（`!input`）の場合は空文字を返す。
+
+| 引数 | 説明 |
+|---|---|
+| `input` | 法令番号（漢数字・算用数字・全角数字のいずれでも） |
+
+**戻り値**: 算用数字に揃えた法令番号
+
+::: details 例
+```ts
+normalizeLawNum('昭和二十五年法律第百三十七号'); // '昭和25年法律第137号'
+normalizeLawNum('昭和25年法律第137号');         // '昭和25年法律第137号'
+normalizeLawNum('昭和２５年法律第１３７号');     // '昭和25年法律第137号'
+normalizeLawNum('昭和二五年法律第一三七号');     // '昭和25年法律第137号'（位ごとの漢数字）
+normalizeLawNum('令和元年法律第一号');           // '令和1年法律第1号'
+normalizeLawNum('昭和二十四年人事院規則一―一'); // '昭和24年人事院規則1-1'
+normalizeLawNum('昭和二十一年憲法');             // '昭和21年憲法'
 ```
 :::
 
@@ -539,17 +631,18 @@ lookupByLawId('999XX0000000000');          // null
 function lookupByLawNum(law_num: string): AbbreviationEntry | null;
 ```
 
-法令番号（漢数字表記）から辞書エントリを引く。完全一致のみ。
+法令番号から辞書エントリを引く。
 
-漢数字↔算用数字の正規化は v0.5.0 ではサポートしない。呼び出し側で
-表記を揃える責務。
+入力と辞書の `law_num` の両方を `normalizeLawNum` に通してから比較するので、
+漢数字（`昭和六十三年法律第百八号`）でも算用数字（`昭和63年法律第108号`）でも
+全角数字でも同じエントリが返る（v0.6.0 から。v0.5.x は漢数字の完全一致のみ）。
 
 ::: details 例
 ```ts
 import { lookupByLawNum } from '@shuji-bonji/houki-abbreviations';
 
 lookupByLawNum('昭和六十三年法律第百八号')?.formal;  // '消費税法'
-lookupByLawNum('昭和63年法律第108号');                 // null（v0.5.0 では正規化なし）
+lookupByLawNum('昭和63年法律第108号')?.formal;        // '消費税法'（v0.6.0 から算用数字でも引ける）
 ```
 :::
 
@@ -722,18 +815,20 @@ e-Gov の `law_id` 形式が妥当かを判定する純粋関数。
 
 ##### 認識する種別
 
-現時点で本パッケージの辞書に実エントリが存在する種別のみ厳格に判定する:
+2026-09-20 に e-Gov 法令 API v2 `GET /api/2/laws` で取得した全 9,569 件の
+`law_id` を調べ、実在するすべての形を受け付ける（v0.6.0、Issue #6）。
+長さは全件 15 文字。
 
-- 標準: `AC` / `CO` / `IO` / `MO` / `RU`（15 文字）
-- 憲法: `CONSTITUTION`（15 文字）
+| 形 | 件数 | 例 |
+|---|---|---|
+| `AC` / `CO` / `IO` / `DF` / `DT` + 10 桁 | 4,677 | `363AC0000000108`（消費税法） |
+| `M` / `R` + 16 進 8 文字 + 3 桁 | 4,735 | `340M50000040011`（所得税法施行規則） |
+| `RJNJ` + 8 桁 | 142 | `324RJNJ01001000`（人事院規則一―一） |
+| `RPMD` + 8 桁 | 14 | `351RPMD12230000`（内閣総理大臣決定） |
+| `CONSTITUTION` | 1 | `321CONSTITUTION` |
 
-e-Gov の bulk data には他の種別コード（例: `DF` 系、`M\d{2}` 形式の省令系
-など）も存在することが確認されているが、**正確な仕様未確定** のため
-v0.5.0 では未対応。新種別の law_id を持つエントリを辞書に追加する場合は、
-本パッケージ側でパターンを拡張するまで `validateAllEntries` が
-`invalid_law_id` error を返すので注意。
-
-将来 v0.6.x で e-Gov 全種別の正確な仕様確認後に対応予定。
+v0.5.x が受け付けていた `MO` / `RU` は e-Gov の実データに 1 件も無かったため
+v0.6.0 で外した（省令は `M`、規則は `M` か `R` で始まる）。
 
 | 引数 | 説明 |
 |---|---|
@@ -744,13 +839,13 @@ v0.5.0 では未対応。新種別の law_id を持つエントリを辞書に�
 ::: details 例
 ```ts
 isValidLawId('363AC0000000108');  // true（消費税法）
+isValidLawId('340M50000040011');  // true（所得税法施行規則。v0.6.0 から）
+isValidLawId('105DF0000000337');  // true（太政官布告。v0.6.0 から）
 isValidLawId('321CONSTITUTION');  // true（日本国憲法）
+isValidLawId('505MO0000000020');  // false（e-Gov に無い形。v0.5.x では true だった）
 isValidLawId('AAA');              // false
 isValidLawId('');                 // false
 isValidLawId(' 363AC0000000108'); // false（前後空白は呼び出し側で trim）
-
-// 未対応の種別（v0.5.0 では false が返る）
-isValidLawId('105DF0000000337');  // false（DF 種別は未対応）
 ```
 :::
 
