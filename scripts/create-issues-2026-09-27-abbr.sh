@@ -29,7 +29,7 @@ TABLE=$(cat <<'TSV'
 07-extract-spanning-and-width.md	extractLawNames が 2 つの法令名にまたがる一致を返し、全角の表記を吸収しない
 08-fuzzy-short-query.md	findSimilar・suggestCorrection が短い query で意味の違う略称や入力そのものを候補に返す
 09-normalization-differs.md	関数ごとに全角・ダッシュ類・大文字の扱いが揃っていない
-10-limit-nan.md	limit に NaN を渡したときの扱いと上限が関数ごとに違う
+10-limit-nan.md	limit の NaN・小数・上限の扱いが関数ごとに違う
 11-law-id-strictness.md	isValidLawId が元号の桁と府省コードの範囲を確かめない
 12-numerals-and-characters.md	漢数字・大きな数・BMP 外の文字で入力が意図と違う値になる
 13-kokuji-category.md	告示を辞書に入れるときの category が CATEGORIES に無い
