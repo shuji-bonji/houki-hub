@@ -74,15 +74,17 @@ proposal.md の「人が判断すること」に書くこと:
 - ADDED を `specs/current/resolve_abbreviation/spec.md` と `specs/current/abbreviation_entries/spec.md` の「できること」の末尾に足す
 - 未決 3 を `3. **全角数字・全角ハイフン・全角チルダの吸収。** → SPEC-ABBR-RESOLVE-ABBREVIATION-014、SPEC-ABBR-ABBREVIATION-ENTRIES-017` の 1 行にする（番号は変えない）
 - 2 本の `spec.md` の承認日の行に「差分 `20260927-resolve-normalize-rule` は <仕様 PR の承認日>（PR #<仕様 PR の番号>）」を足す。**置き換えはこの 2 行だけにする**（リポジトリ全体の一括置換はしない）
-- `git mv specs/changes/20260927-resolve-normalize-rule specs/releases/<タグ>/`、proposal.md の「状態」を取り込み済みにする
-- タグ: テストと spec だけなので、版を上げない選択もある。上げるなら v0.6.2（CHANGELOG の Tests 節）。上げない場合、releases のフォルダー名は次に出すタグにする（決めるのは人）
+- **版は上げない**（2026-09-27 に決定。テストと spec だけで、続けて Issue #13〜#25 の対応で版を上げるため）。CHANGELOG は `[Unreleased]` の Tests 節に書く
+- そのため `specs/releases/<タグ>/` へはまだ移さない。`specs/changes/20260927-resolve-normalize-rule/` は残したまま、proposal.md の「状態」を「取り込み済み（`specs/current/` へは 2026-MM-DD。`specs/releases/` への移動は次にタグを打つ実装 PR の最終コミット）」にする
+- 次にタグを打つ実装 PR（Issue の対応）の Publisher は、その PR の差分と一緒に、この差分も `git mv specs/changes/20260927-resolve-normalize-rule specs/releases/<そのタグ>/` で移す
+- `spec-ids check` は、同じ ID が current と changes の両方にあっても止めない（重複を見るのは箱の中だけ）。取り込み後に changes に残っていても CI は通る
 
 ## 3. 確かめること（各 PR で）
 
-- `npx spec-ids check`（仕様 PR の後は changes に 2 ID、取り込みの後は current 213 IDs / changes 0）
+- `npx spec-ids check`（仕様 PR の後は changes に 2 ID、取り込みの後は current 213 IDs / changes 2 IDs。changes の 2 ID は次のタグで releases へ移すまで残る）
 - `npx vitest --run`、`npm run lint`、`npm run format:check`
 - `BASE_REF=origin/main HEAD_REF=<ブランチ> node .github/scripts/check-pr-scope.mjs`（仕様 PR は承認日を書くまで RED）
-- マージは手元の ff マージ。マージ後に `git ls-files specs/changes` が `.gitkeep` だけであること
+- マージは手元の ff マージ。マージ後の `specs/changes/` にあるのは `.gitkeep` と `20260927-resolve-normalize-rule/`（取り込み済み、状態がそう書いてあること）だけであること
 
 ## 4. 別チャットに貼る指示文
 
@@ -114,5 +116,5 @@ houki-abbreviations の実装 PR の最終コミットとして、承認済み�
 ブランチ: test/20260927-resolve-normalize-rule
 差分: specs/changes/20260927-resolve-normalize-rule/
 指示: houki-hub docs/notes/2026-09-27-instructions-abbr-resolve-normalize.md の 2.2（承認日の置き換えは 2 行だけ）
-spec-ids check と pr-scope が通ることを確かめる。コミットは「spec: 20260927-resolve-normalize-rule を specs/current/ に取り込み、releases/<tag>/ へ移す」の 1 つ。
+spec-ids check と pr-scope が通ることを確かめる。版は上げないので releases へは移さない（指示書 2.2）。コミットは「spec: 20260927-resolve-normalize-rule を specs/current/ に取り込む」の 1 つ。
 ```
