@@ -36,3 +36,22 @@ ID は `spec-ids next` が `specs/current/` しか見ないため、7 本のあ�
 1. `DRY_RUN=1 ./scripts/create-issues-2026-09-27-nta-untested.sh` で題名を確かめ、`./scripts/create-issues-2026-09-27-nta-untested.sh` で起票する（番号は `created.tsv` に残る）
 2. `./scripts/apply-issue-numbers-2026-09-27-nta-untested.sh` で、3 本のブランチの proposal.md にある仮の番号 `#ISSUE-01`〜`#ISSUE-04` を実際の番号に置き換え、各ブランチのコミットに amend する
 3. 7 本のブランチを署名して push し、仕様 PR を開く
+
+## 受入テストで見つかった不具合（1 件、2026-09-28）
+
+7 差分の受入テストを書いたとき、`test/20260927-search-hit-responses` の 1 件（SPEC-NTA-SEARCH-RULES-015、`nta_search_bunshokaitou`）が RED になりました。仕様どおりで実装が合っていないので、不具合の Issue にします。
+
+| # | 本文 | 題名 |
+|---|---|---|
+| 05 | `05-snippet-cut-mid-word.md` | 検索の snippet が、4 文字以上の語の途中で `<b>` を閉じて切れる |
+
+起票は 1 件なので、`create-issues-2026-09-27-nta-untested.sh`（01〜04 を起票する）は使わず、次のコマンドで行います。
+
+```sh
+url=$(gh issue create -R shuji-bonji/houki-nta-mcp \
+  -t '検索の snippet が、4 文字以上の語の途中で <b> を閉じて切れる' \
+  -F docs/notes/issues-2026-09-27-nta-untested/05-snippet-cut-mid-word.md)
+printf '%s\t%s\t%s\n' 05-snippet-cut-mid-word.md "${url##*/}" "$url" >> docs/notes/issues-2026-09-27-nta-untested/created.tsv
+```
+
+ほかの 6 差分の受入テストは main に入りました（2026-09-28）。残りは、この Issue の fix PR → `test/20260927-search-hit-responses` の rebase → `chore: v0.21.1` → Publisher（7 差分の取り込み）です。
