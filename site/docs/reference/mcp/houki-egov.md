@@ -1,6 +1,6 @@
 ---
 title: "houki-egov-mcp — ツールリファレンス"
-description: "houki-egov-mcp v0.15.1 の全 11 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-egov-mcp v0.15.2 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-egov-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-egov-mcp v0.15.1 の全 11 ツールの引数・型・既定
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.15.1** の `tools/list` から自動生成しました（11 ツール・2026-09-21）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.15.2** の `tools/list` から自動生成しました（14 ツール・2026-09-28）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-egov)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -30,6 +30,9 @@ description: "houki-egov-mcp v0.15.1 の全 11 ツールの引数・型・既定
 | [`get_related_laws`](#get-related-laws) | 法令名の規則で関連する法令を引く。 |
 | [`get_article_references`](#get-article-references) | 条文本文が引用している参照を取り出す。 |
 | [`verify_citations`](#verify-citations) | LLM が組み立てた法令の引用リストを、1 回の呼び出しでまとめて実在確認する。 |
+| [`list_attachments`](#list-attachments) | 法令に付いている添付ファイル（別表・様式・別記の図。 |
+| [`get_attachment`](#get-attachment) | 添付ファイル 1 件（src 指定）か、その法令履歴の添付ファイルをまとめた zip（src 省略）を取る。 |
+| [`get_law_file`](#get-law-file) | 法令本文を 1 つのファイル（xml / json / html / rtf / docx）で取る道を返す。 |
 
 ## search_law
 
@@ -1202,4 +1205,283 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
 `label` は判定に使わず、そのまま `results[].input` に返るので、書きかけの原稿の表記と突き合わせられます。`not_found` の件は citation から外し、`next_actions` の `get_toc` で条番号を引き直します。`ambiguous` の件は、`candidates[]`（法令名が複数当たった場合）か `next_actions`（項を足す場合）を見て指定を直します。
 
 **確かめていないこと**: 引用が主張を支えるかどうかは判定しません。また削除された条（e-Gov が `Num="534:535"` でまとめている条）を個別の条番号で渡すと `not_found` になります。
+:::
+
+## list_attachments
+
+法令に付いている添付ファイル（別表・様式・別記の図。jpg / pdf）の一覧を返す。各ファイルに、認証なしで開ける取得 URL と、法令の中の置き場所（「別表第一（第一条関係）」「附録第十一号様式」のような見出しと関係条文、条の中なら条番号）を付ける。get_law の条文には図の中身が入らないので、別表・様式の図が要るときにこのツールで URL を取る。pdf は pdf-reader-mcp の read_url に url を渡して読める。ファイルの中身は返さない。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `law_name` | string | **必須** |  | 法令名または略称。例: "戸籍法施行規則", "国旗及び国歌に関する法律" |
+| `at` | string | 任意 |  | 時点指定。YYYY-MM-DD 形式（get_law と同じ）。添付ファイルは法令履歴ごとに付くので、時点を変えると一覧も変わる |
+
+::: tip 条文に入らないものはここから
+別表・様式・別記の図は `get_law` の Markdown には入りません（`Fig` 要素は落ちます）。届書の書式や旗の寸法図が要るときは、まずこのツールで一覧と URL を取ります。URL は認証なしで開けるので、pdf は pdf-reader-mcp の `read_url` にそのまま渡せます。
+:::
+
+::: details 呼び出し例 — 「国旗国歌法の日章旗の寸法図はどこにあるか」
+- 実測: v0.15.0（2026-09-20）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "国旗及び国歌に関する法律" }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "meta": {
+    "law_id": "411AC0000000127",
+    "title": "国旗及び国歌に関する法律",
+    "law_num": "平成十一年法律第百二十七号",
+    "law_revision_id": "411AC0000000127_19990813_000000000000000",   // 添付ファイルはこの履歴に付く
+    "retrieved_at": "2026-09-20T13:49:27.274Z",
+    "url": "https://laws.e-gov.go.jp/law/411AC0000000127"
+  },
+  "count": 2,
+  "attachments": [
+    {
+      "src": "./pict/H11HO127-001.jpg",                 // get_attachment の src にそのまま渡す
+      "file_name": "H11HO127-001.jpg",
+      "file_type": "jpg",
+      "content_type": "image/jpeg",
+      "url": "https://laws.e-gov.go.jp/api/2/attachment/411AC0000000127_19990813_000000000000000?src=.%2Fpict%2FH11HO127-001.jpg",
+      "location": { "tag": "AppdxNote", "title": "別記第一", "related_article": "（第一条関係）" },   // 日章旗の制式
+      "updated": "2024-07-25T00:20:13+09:00"
+    },
+    {
+      "src": "./pict/H11HO127-002.jpg",
+      "file_name": "H11HO127-002.jpg",
+      "file_type": "jpg",
+      "content_type": "image/jpeg",
+      "url": "https://laws.e-gov.go.jp/api/2/attachment/411AC0000000127_19990813_000000000000000?src=.%2Fpict%2FH11HO127-002.jpg",
+      "location": { "tag": "AppdxNote", "title": "別記第二", "related_article": "（第二条関係）" },   // 君が代の楽譜
+      "updated": "2024-07-25T00:20:13+09:00"
+    }
+  ],
+  "zip_url": "https://laws.e-gov.go.jp/api/2/attachment/411AC0000000127_19990813_000000000000000",
+  "note": "国旗及び国歌に関する法律 の添付ファイル 2 件（jpg 2 件）。url は認証なしで開けます。",
+  "next_actions": [
+    {
+      "action": "get_attachment",
+      "reason": "1 件を保存するときは save: true を付ける（保存しないなら一覧の url をそのまま使えます）",
+      "example": { "law_name": "国旗及び国歌に関する法律", "src": "./pict/H11HO127-001.jpg", "save": true }
+    }
+  ]
+}
+```
+
+`location` は e-Gov の一覧（`attached_files_info`）には無い情報で、本文の `Fig` 要素がどの別表・様式の下にあるかから付けています。
+:::
+
+::: details 呼び出し例 — 「戸籍法施行規則の様式（届書の書式）を一覧で」
+- 実測: v0.15.0（2026-09-20）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "戸籍法施行規則" }
+```
+
+**返る JSON（抜粋）**
+
+```jsonc
+{
+  "meta": { "law_id": "322M40000010094", "title": "戸籍法施行規則", "law_revision_id": "322M40000010094_20260626_508M60000010043", "…": "…" },
+  "count": 42,
+  "attachments": [
+    {
+      "src": "./pict/2JH00000247973.jpg", "file_type": "jpg", "content_type": "image/jpeg",
+      "url": "https://laws.e-gov.go.jp/api/2/attachment/322M40000010094_20260626_508M60000010043?src=.%2Fpict%2F2JH00000247973.jpg",
+      "location": { "tag": "AppdxTable", "title": "別表第二", "related_article": "（第三十条の二関係）" },
+      "updated": "2026-07-15T10:10:29+09:00"
+    },
+    // … jpg 7 件
+    {
+      "src": "./pict/2FH00000007000.pdf", "file_type": "pdf", "content_type": "application/pdf",
+      "url": "https://laws.e-gov.go.jp/api/2/attachment/322M40000010094_20260626_508M60000010043?src=.%2Fpict%2F2FH00000007000.pdf",
+      "location": { "tag": "AppdxStyle", "title": "附録第一号様式", "related_article": "戸籍（第一条関係）" },
+      "updated": "2026-07-15T10:10:24+09:00"
+    },
+    {
+      "src": "./pict/2FH00000076885.pdf", "file_type": "pdf", "content_type": "application/pdf",
+      "url": "https://laws.e-gov.go.jp/api/2/attachment/322M40000010094_20260626_508M60000010043?src=.%2Fpict%2F2FH00000076885.pdf",
+      "location": { "tag": "AppdxStyle", "title": "附録第十一号様式", "related_article": "出生の届書（日本産業規格Ａ列四番）（第五十九条関係）" },
+      "updated": "2026-07-15T10:10:24+09:00"
+    }
+    // … pdf 35 件（別表 7・様式 22・書式 13）
+  ],
+  "note": "戸籍法施行規則 の添付ファイル 42 件（jpg 7 件、pdf 35 件）。url は認証なしで開けます。",
+  "next_actions": [
+    { "action": "get_attachment", "reason": "…", "example": { "law_name": "戸籍法施行規則", "src": "./pict/2JH00000247973.jpg", "save": true } },
+    { "action": "pdf-reader-mcp:read_url", "reason": "pdf の添付は pdf-reader-mcp の read_url に url を渡すと本文を読めます", "example": { "url": "https://laws.e-gov.go.jp/api/2/attachment/322M40000010094_20260626_508M60000010043?src=.%2Fpict%2F2FH00000007000.pdf" } }
+  ]
+}
+```
+
+`location.title` で「附録第十一号様式」を選び、その `url` を pdf-reader-mcp の `read_url` に渡せば出生届の書式が読めます。添付が無い法令（民法）では `count: 0` の成功応答で、エラーにはなりません。
+:::
+
+## get_attachment
+
+添付ファイル 1 件（src 指定）か、その法令履歴の添付ファイルをまとめた zip（src 省略）を取る。既定では e-Gov からファイルを取らず、URL とメタ情報（ファイル名・種別・置き場所）だけを返す。save: true のときだけファイルを取得してサーバー側の保存先（既定は XDG_CACHE_HOME か ~/.cache の下の houki-egov-mcp/files/。環境変数 HOUKI_EGOV_FILES_DIR で変更）に書き、絶対パスを返す。保存先はツールの引数では指定できない。base64 の中身は返さない。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `law_name` | string | **必須** |  | 法令名または略称 |
+| `src` | string | 任意 |  | list_attachments が返す attachments[].src（例 "./pict/H11HO127-001.jpg"）。ファイル名だけ（"H11HO127-001.jpg"）でも引ける。省略すると添付ファイル全部の zip |
+| `at` | string | 任意 |  | 時点指定。YYYY-MM-DD 形式。list_attachments と同じ時点を渡す |
+| `save` | boolean | 任意 | `false` | true でファイルを取得してディスクに保存し、応答の saved.path に絶対パスを返す（デフォルト: false）。false のときは URL だけを返し、e-Gov からファイルは取らない |
+
+::: tip 既定ではファイルを取りません
+`save` を付けないと e-Gov の `/attachment` は呼ばず、URL と置き場所だけを返します。URL は `list_attachments` にも入っているので、保存したいときだけこのツールを `save: true` で呼びます。保存先はサーバー側で決まり（既定 `${XDG_CACHE_HOME:-~/.cache}/houki-egov-mcp/files/<law_revision_id>/`、環境変数 `HOUKI_EGOV_FILES_DIR` で変更）、引数では指定できません。
+:::
+
+::: details 呼び出し例 — 「日章旗の寸法図をディスクに置く」
+- 実測: v0.15.0（2026-09-20）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "国旗及び国歌に関する法律", "src": "./pict/H11HO127-001.jpg", "save": true }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "meta": { "law_id": "411AC0000000127", "title": "国旗及び国歌に関する法律", "law_revision_id": "411AC0000000127_19990813_000000000000000", "…": "…" },
+  "kind": "file",                                   // src を省くと "zip"
+  "src": "./pict/H11HO127-001.jpg",
+  "file_name": "H11HO127-001.jpg",
+  "file_type": "jpg",
+  "content_type": "image/jpeg",
+  "url": "https://laws.e-gov.go.jp/api/2/attachment/411AC0000000127_19990813_000000000000000?src=.%2Fpict%2FH11HO127-001.jpg",
+  "location": { "tag": "AppdxNote", "title": "別記第一", "related_article": "（第一条関係）" },
+  "updated": "2024-07-25T00:20:13+09:00",
+  "saved": {
+    "path": "/Users/you/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/H11HO127-001.jpg",
+    "bytes": 12614,
+    "response_content_type": "image/jpeg"           // e-Gov の応答ヘッダー。pdf は application/octet-stream で返る
+  },
+  "note": "H11HO127-001.jpg（12.3 KB）を /Users/you/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/H11HO127-001.jpg に保存しました。"
+}
+```
+
+`src` はファイル名だけ（`"H11HO127-001.jpg"`）でも引けます。pdf を保存したときは `next_actions` に pdf-reader-mcp の `read_text`（`path` 付き）が入ります。
+:::
+
+::: details 呼び出し例 — 一覧に無い `src` を渡したとき（`ATTACHMENT_NOT_FOUND`）
+- 実測: v0.15.0（2026-09-20）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "国旗及び国歌に関する法律", "src": "nope.jpg" }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "error": "添付ファイルが見つかりません: nope.jpg（国旗及び国歌に関する法律、履歴 411AC0000000127_19990813_000000000000000）",
+  "code": "ATTACHMENT_NOT_FOUND",
+  "hint": "この履歴の添付ファイル 2 件: ./pict/H11HO127-001.jpg, ./pict/H11HO127-002.jpg",
+  "next_actions": [
+    { "action": "list_attachments", "reason": "添付ファイルの一覧から src を選び直せます", "example": { "law_name": "国旗及び国歌に関する法律" } }
+  ]
+}
+```
+
+添付が 1 件も無い法令（民法）で呼んだときも `ATTACHMENT_NOT_FOUND` です。一覧にはあるのに e-Gov の `/attachment` が「存在しない」（code 404003）を返したときも同じ code で、`detail.cause` に e-Gov の応答本文が入ります。
+:::
+
+## get_law_file
+
+法令本文を 1 つのファイル（xml / json / html / rtf / docx）で取る道を返す。既定では認証なしで開ける URL だけを返し、save: true のときだけファイルを取得してサーバー側の保存先（既定は XDG_CACHE_HOME か ~/.cache の下の houki-egov-mcp/files/。環境変数 HOUKI_EGOV_FILES_DIR で変更）に書いて絶対パスを返す。条文を読むだけなら get_law / get_law_range のほうが小さく済む（民法の xml は 1.6 MB、docx は 182 KB）。人が Word や ブラウザーで開く版が要るとき（docx / html / rtf）と、法令 XML をそのまま処理したいとき（xml / json）のためのツール。
+
+### 引数
+
+| 引数 | 型 | 必須 | 既定値 | 説明 |
+|---|---|---|---|---|
+| `law_name` | string | **必須** |  | 法令名または略称。例: "民法", "消法" |
+| `file_type` | `"xml"` \| `"json"` \| `"html"` \| `"rtf"` \| `"docx"` | **必須** |  | ファイル種別。xml = 法令標準 XML、json = e-Gov の JSON、html、rtf、docx（Word） |
+| `at` | string | 任意 |  | 時点指定。YYYY-MM-DD 形式。その時点以前で最新の履歴の本文ファイルになる（e-Gov の asof） |
+| `save` | boolean | 任意 | `false` | true でファイルを取得してディスクに保存し、応答の saved.path に絶対パスを返す（デフォルト: false）。保存すると e-Gov のファイル名から法令履歴 ID（saved.law_revision_id）が分かる |
+
+::: tip 条文を読むなら get_law / get_law_range
+`xml` / `json` は法令全体で、民法は 1.6 MB あります。条文を読むだけなら `get_law`（1 条）か `get_law_range`（章・節）のほうが小さく済みます。このツールは、人が Word やブラウザーで開く版（`docx` / `html` / `rtf`）が要るときと、法令標準 XML をそのまま処理したいときのものです。
+:::
+
+::: details 呼び出し例 — 「民法の全文を Word で」（URL だけ）
+- 実測: v0.15.0（2026-09-20）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "民法", "file_type": "docx" }
+```
+
+**返る JSON**
+
+```jsonc
+{
+  "meta": {
+    "law_id": "129AC0000000089",
+    "title": "民法",
+    "law_num": "明治二十九年法律第八十九号",
+    "retrieved_at": "2026-09-20T13:49:48.560Z",
+    "url": "https://laws.e-gov.go.jp/law/129AC0000000089"
+  },
+  "file_type": "docx",
+  "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "url": "https://laws.e-gov.go.jp/api/2/law_file/docx/129AC0000000089",     // 認証なしで開ける
+  "note": "民法 の本文を docx で取る URL です。認証なしで開けます（現時点で最新の履歴）。ファイルをディスクに置くには save: true を付けてください（/Users/you/.cache/houki-egov-mcp/files 以下に保存します）。"
+}
+```
+
+`save` を付けないと e-Gov には法令名の解決（`/laws`）しか問い合わせません。`at` を付けると URL に `?asof=YYYY-MM-DD` が付き、その時点以前で最新の履歴の本文になります。
+:::
+
+::: details 呼び出し例 — 「2020 年 4 月 1 日時点の国旗国歌法を HTML で保存」
+- 実測: v0.15.0（2026-09-20）
+- ローカル DB: 不要
+
+**引数**
+
+```jsonc
+{ "law_name": "国旗及び国歌に関する法律", "file_type": "html", "at": "2020-04-01", "save": true }
+```
+
+**返る JSON（抜粋）**
+
+```jsonc
+{
+  "meta": { "law_id": "411AC0000000127", "title": "国旗及び国歌に関する法律", "at": "2020-04-01", "…": "…" },
+  "file_type": "html",
+  "content_type": "text/html",
+  "url": "https://laws.e-gov.go.jp/api/2/law_file/html/411AC0000000127?asof=2020-04-01",
+  "saved": {
+    "path": "/Users/you/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/411AC0000000127_19990813_000000000000000.html",
+    "bytes": 38537,
+    "file_name": "411AC0000000127_19990813_000000000000000.html",   // e-Gov の Content-Disposition のまま
+    "law_revision_id": "411AC0000000127_19990813_000000000000000"    // ファイル名から分かる「どの履歴の本文か」
+  },
+  "note": "411AC0000000127_19990813_000000000000000.html（37.6 KB）を … に保存しました。"
+}
+```
+
+保存すると e-Gov のファイル名から法令履歴 ID が取れます（URL だけのときは分かりません）。実測では民法の docx が 182 KB、消費税法の rtf が 1.8 MB でした。1 ファイル 50 MB を超えるときは保存せず `INVALID_ARGUMENT` を返します。
 :::
