@@ -6,7 +6,7 @@
     "layer = 役割 / form = 配布形態（誰が起動するか）/ status = released・planned・concept。",
     "planned / concept は名前と束ねる単位を予約しているだけで、ディレクトリも npm も無い。"
   ],
-  "generatedAt": "2026-09-26T19:32:59.863Z",
+  "generatedAt": "2026-09-27T17:38:20.241Z",
   "generatedBy": "scripts/generate-stack.mjs",
   "npmScope": "@shuji-bonji",
   "repos": [
@@ -40,16 +40,16 @@
       "status": "released",
       "public": true,
       "note": "国税庁。法令解釈通達・質疑応答事例・タックスアンサー・文書回答・事務運営指針・改正通達。14 tools。family の参照実装",
-      "published": "0.21.0",
+      "published": "0.21.1",
       "local": {
-        "version": "0.21.0",
-        "tag": "v0.21.0",
+        "version": "0.21.1",
+        "tag": "v0.21.1",
         "dirty": false,
         "unpushedCommits": 0
       },
       "consistency": {
         "status": "match",
-        "detail": "0.21.0"
+        "detail": "0.21.1"
       }
     },
     {
@@ -61,16 +61,16 @@
       "status": "released",
       "public": true,
       "note": "略称辞書 174 エントリ（6 分野）+ 全角ゆらぎ正規化 + 鮮度判定 + 逆引き + 検証ヘルパ。全 MCP が依存 (^0.4.1 指定のため MCP に入るのは 0.4.1。0.5 系で足した逆引き・検証は MCP 未使用)",
-      "published": "0.6.0",
+      "published": "0.6.1",
       "local": {
         "version": "0.6.1",
-        "tag": "v0.6.1",
+        "tag": "v0.6.0",
         "dirty": false,
         "unpushedCommits": 0
       },
       "consistency": {
-        "status": "drift",
-        "detail": "npm 0.6.0 ≠ local 0.6.1"
+        "status": "match",
+        "detail": "0.6.1"
       }
     },
     {
@@ -108,7 +108,7 @@
         "version": null,
         "tag": null,
         "dirty": true,
-        "unpushedCommits": 1
+        "unpushedCommits": 0
       },
       "consistency": {
         "status": "not_published",
