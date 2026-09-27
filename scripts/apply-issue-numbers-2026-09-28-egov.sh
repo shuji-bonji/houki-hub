@@ -17,7 +17,7 @@ BRANCH="spec/20260928-undecided-to-issues"
 [ -s "$MAP" ] || { echo "created.tsv がありません。先に create-issues-2026-09-28-egov.sh を実行してください。" >&2; exit 1; }
 [ "$(wc -l < "$MAP" | tr -d ' ')" = "17" ] || { echo "created.tsv が 17 行ではありません。" >&2; exit 1; }
 current="$(git -C "$TARGET" rev-parse --abbrev-ref HEAD)"
-[ "$current" = "$BRANCH" ] || { echo "$TARGET が $BRANCH ではありません（今は $current）。" >&2; exit 1; }
+[ "$current" = "$BRANCH" ] || { echo "$TARGET が $BRANCH ではありません（今は ${current}）。" >&2; exit 1; }
 
 files=$(git -C "$TARGET" grep -l '#ISSUE-[0-9][0-9]' -- specs || true)
 [ -n "$files" ] || { echo "仮の番号が見つかりません（置き換え済みの可能性があります）。" >&2; exit 1; }

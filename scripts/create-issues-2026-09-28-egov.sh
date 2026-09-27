@@ -46,7 +46,7 @@ if [ "$DRY_RUN" != "1" ]; then
   gh auth status >/dev/null 2>&1 || { echo "gh auth login を実行してください。" >&2; exit 1; }
 fi
 
-echo "起票先: $OWNER/$REPO（$COUNT 件）"
+echo "起票先: ${OWNER}/${REPO}（${COUNT} 件）"
 printf '%s\n' "$TABLE" | while IFS=$'\t' read -r file title; do
   [ -f "$BODY_DIR/$file" ] || { echo "本文が見つかりません: $BODY_DIR/$file" >&2; exit 1; }
   printf '  %-32s %s\n' "$file" "$title"
