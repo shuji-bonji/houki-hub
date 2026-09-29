@@ -271,7 +271,7 @@ egov は Issue の数が多いので、変える場所でまとめます。
 | --- | --- | --- |
 | エラーの一覧と例文 | houki-research-skill | `docs/ERROR-CODES.md` を各 MCP の `common_errors` に合わせる（T2 の code の変更）。`examples/` と `workflows/` の呼び出し例を T1 の規則（`limit` の上限など）に合わせる。`mcp-refs.config.json` の版を上げて `mcp-snapshots/` を作り直し、`node scripts/check-mcp-refs.mjs` を通す。版は egov 0.16.0 / nta 0.22.0 の後に 1 回、段階 5 の後に 1 回 |
 | 呼び出し例の再実測 | houki-hub | `scripts/reference-examples/` のうち、段階 2〜5 で振る舞いが変わったツールの例を、新しい版で実測し直す（2026-09-21 の「契約の確認」と同じ方法。例の見出しは変えず、実測の版と JSON を差し替える）。`node scripts/generate-reference.mjs` と `generate-stack.mjs --readme` は shuji の Mac で回す |
-| #27 のページ | houki-hub | `specs/current/<dir>/spec.md` から生成する。段階 4 で `common_errors` と `search_rules` が落ち着いた後に着手し、段階 5 の版ごとに再生成する。Skill のページは SKILL.md と workflows/ から生成する（#27 のコメント 2026-09-27 の方針） |
+| #27 のページ | houki-hub | `specs/current/<dir>/spec.md` から生成する。段階 4 で `common_errors` と `search_rules` が落ち着いた後に着手し、段階 5 の版ごとに再生成する。Skill のページは SKILL.md と workflows/ から生成する（#27 のコメント 2026-09-27 の方針）。同じ時期に、`docs/notes/2026-09-29-scope-by-audience.md`（Discussion #36 の整理）の 2 節・4 節を利用者向けに整理して site に載せ、仕様 ID と層の対応をリンクで結ぶ |
 | #26 の close | houki-hub | nta #75（spec.md の不足）が main に入り、houki-abbreviations の運用（spec-gate / pr-scope）が 0.7.0 で 1 周した時点で、#26 の「specs/ を構築」は完了とみなせる |
 
 ## 5. 劣化を起こさないための決まり
