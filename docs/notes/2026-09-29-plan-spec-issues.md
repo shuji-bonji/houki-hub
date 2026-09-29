@@ -446,6 +446,21 @@ GitHub Actions の main の最新の実行結果です（VM から vitest を実
 - nta #73 の proposal.md「人が判断すること」: 文書 ID が空のタックスアンサーの行は消さない（案 A、2026-09-30 決定。CHANGELOG に消し方を記載）/ `nta_get_jimu_unei`・`nta_get_bunshokaitou` にも (b) と同じ `kind` の補いを入れる（2026-09-30 決定）。仕様ブランチに `d90915a`（jimu-unei 007 MODIFIED・008 ADDED、bunshokaitou 005・006 MODIFIED・008 ADDED）、実装ブランチを載せ直して `c0b98f0` test / `a143e67` fix / `1d0d446` CHANGELOG を追加。ADDED は計 5 件、MODIFIED は計 7 件
 - egov の `node_modules` に `@shuji-bonji/spec-ids` が無い（devDependencies にはある）。Mac で `npm install` が要る
 
+### 段階 3・5b の進捗（2026-10-01 JST）
+
+段階 3: houki-abbreviations に仕様 PR 用ブランチ 4 本を積んだ（main → 1 → 2 → 3 → 4 の順。未署名・未 push、承認日空欄。同じディレクトリを複数の差分が触るので、マージもこの順）。コードは変えていない。
+
+| 順 | ブランチ | コミット | Issue | ADDED / MODIFIED / REMOVED |
+| --- | --- | --- | --- | --- |
+| 1 | `spec/20261001-normalize` | `6913de1` | #21・#19・#24 | 16 / 6 / 0 |
+| 2 | `spec/20261001-input-guards` | `6c3cd46` | #22・#18・#23 | 19 / 8 / 0 |
+| 3 | `spec/20261001-dictionary-rules` | `0f1cb89` | #14・#15・#25・#16・#20 | 12 / 19 / 1（VALIDATE-ALL-ENTRIES-008 の警告 `alias_collides_with_abbr` を `duplicate_name` のエラーに含める） |
+| 4 | `spec/20261001-freeze` | `940d80c` | #13 | 2 / 1 / 0 |
+
+各ブランチで `spec-ids check` exit 0（current 211 ID・changes 累計 83 ID）、pr-scope の指摘は承認日の空欄だけ。実データで決めた値: `findSimilar` の比のしきい値 1/3（`民法` → `民`・`民訴`・`民執`・`民保`、`法` → `[]`、`労基側` → `労基法`・`労基則` が境界）、`kanjiToNumber` は 16 文字以上で `null`、`isValidLawId` の新しい正規表現は 2026-10-01 の e-Gov 全 9,570 件で true（`DH` 0 件、`R` の機関番号は `00000001`〜`00000012`、`M` の 2 桁目は 1〜6 のみ）。proposal.md の「人が判断すること」で承認前に見る主な点: (a) `limit` は 1 未満・小数・500 超も例外にし v0.6.1 で足した 4 ID を MODIFIED（T1「丸めない」に全面的に揃えた。`NaN` / `Infinity` / 500 超だけ例外にする案も併記）、(b) `computeDaysSince` は解釈できない値・時差なし・ISO 以外・存在しない日付で `RangeError`（egov・nta の `freshness.ts` は例外を捕まえる必要がある）、(c) `normalizeJpText` のダッシュ 7 種を `-` に揃えると、egov の ingester と nta の DB の検索用列の投入済みの値と食い違うので、段階 4 で再正規化かスキーマの版上げが要る、(d) `normalizeLawNum` の漢数字は「年・号の直前、第の直後、ダッシュの隣」だけ変換、(e) `kokuji` は `rule` の次に足し、管轄は `houki-nta` / `houki-mhlw`（e-Gov 法令 API は告示を持たないので `houki-egov` の説明から告示を外す）、(f) 名前の重なりと自分の `abbr` / `formal` と同じ別名はエラー（辞書 33 件の `aliases` の修正は実装 PR）。#17 は実装 PR で文書を直す。決定との食い違い: `scripts/verify-law-ids.mjs` は今は辞書の 9 件しか突き合わせていないので、全件の形の検査は実装 PR で足す。
+
+段階 5b: houki-hub ブランチ `feat/5-change-detection`（`8b34aec` ③ `scripts/check-example-versions.mjs` + テスト / `c967ac3` ① `stack-check.yml` を毎日 07:17 JST にし `.github/scripts/stack-drift-issue.mjs` で Issue「stack.json の版が npm と違う」（ラベル `stack-drift`）を立てる・更新する・閉じる / `5c7237a` 文書 `docs/notes/2026-10-01-hub5-change-detection.md` と README）。`node --test '.github/scripts/*.test.mjs' 'scripts/*.test.mjs'` 15 件 pass。③の実行結果: 47 例すべてが現行（egov 0.15.4 / nta 0.21.3）より古い版で測ったまま（2026-09-21 の回帰確認では 0.15.1 / 0.19.0 に対して劣化なし。段階 4 の直前に nta の変わったツールの例を取り直す）。①は `.github/` の変更なので main 直接ではなく PR で（shuji が判断）。main に入れた最初の実行で、stack.json（nta 0.21.2）と npm（0.21.3）のずれで Issue が 1 件立つ。`stack.json` の `houki-abbreviations` は `local.tag` が `v0.6.0` のまま `version` 0.6.1（タグ漏れは `consistency` では検知されない）。
+
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
 
 初版起こしの未決 31 のうち、テストが無いだけのものを除いた 12 件です（spec.md の項目数では 13。1 件目が cli_entry 2 と cli_refresh 4 の 2 項目にまたがる）。2026-09-30 に 7 件にまとめて #106〜#112 として起票した（下書きと対応表は `docs/notes/issues-2026-09-30-nta-cli-db/`、起票結果は `created.tsv`）。まとめ方: 1・2・7 → #106、3・8 → #107、4・9・11 → #108、5 → #109、6 → #110、10 → #111、12 → #112。cli_health_check 3（bulk download 後の警告のしきい値）は受入テストを書くときに決めればよいので Issue にせず残した。未決を「→ #N」に縮める仕様 PR #114 は main にマージ済み（`099b6ce`。実装の変更: 不要のため current を直接書き換え。`specs/changes/20260930-cli-db-undecided-to-issues/` は次の実装 PR の取り込みで releases へ移す）。
