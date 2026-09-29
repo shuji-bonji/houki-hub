@@ -429,12 +429,14 @@ GitHub Actions の main の最新の実行結果です（VM から vitest を実
 
 マージの手順: 仕様 PR を先にマージ（承認日と PR 番号を proposal.md に書く）→ 実装ブランチを main に載せ直し → Mac で `npm run check`（biome）・`npx tsc --noEmit`・`npx vitest --run`・`npx spec-ids check` → 取り込みコミット（current に ADDED / MODIFIED を反映、未決を消す、`git mv` で `specs/releases/v0.15.4/` と `v0.21.3/` へ）→ 実装 PR マージ → タグ → publish。取り込みコミットは仕様 PR の番号が決まってから Claude が作ります（サブエージェントの報告に「取り込みで変える箇所」の一覧あり）。
 
+2026-09-30 の進み: egov は仕様 PR #81 と実装ブランチがマージされ、v0.15.4 を npm・MCP Registry・plugin に公開済み（main `69f6e9a`）。CI の `format:check` が `cli_status.test.ts` で落ちたため shuji が整形し直してからマージした（VM では biome が動かないので、以後は Mac で `npm run check` を先に回す）。取り込み（current に 018・008 を足し、承認日に PR #81、`specs/releases/v0.15.4/` へ `git mv`）はタグの後になったので、ブランチ `chore/20260930-publish-bugfix-batch`（`c7750c7`、未署名・未 push）に置いた。版は上げない。nta は案 A（空の行は消さない）を採用し、`fix/20260930-nta-73-db-values` に CHANGELOG の 1 行を足した（`569cfdf`）。
+
 判断が要る点（マージ前に shuji が決める）:
 
 - egov #75: 終わった時点の通知でも `totalEstimated` は推定値のままなので、表示は `2.2 KB / ~290 MB (100.0%)` になる → このままでよい（`~` が推定値の印なので実際のバイト数に置き換えない。2026-09-30 決定）
 - egov CHANGELOG: main の Unreleased にあった houki-abbreviations `^0.6.1` の行を 0.15.4 の Changed に移した → 移してよい（2026-09-30 決定）
 - egov の版: 先例 `f1e66b7` に揃えて `.claude-plugin/plugin.json` と `server.json` も 0.15.4 にした（nta は `server.json` だけ。plugin.json は別コミットの慣習）
-- nta #73 の proposal.md「人が判断すること」: 文書 ID が空のタックスアンサーの行を移行で消すか（今の国税庁サイトでは作られる条件が無く、移行で版を上げると v0.21.2 以前で開いたときに全テーブルが作り直されるため、残した）/ `nta_get_jimu_unei`・`nta_get_bunshokaitou` にも (b) と同じ `kind` の補いを入れるか
+- nta #73 の proposal.md「人が判断すること」: 文書 ID が空のタックスアンサーの行は消さない（案 A、2026-09-30 決定。CHANGELOG に消し方を記載）/ `nta_get_jimu_unei`・`nta_get_bunshokaitou` にも (b) と同じ `kind` の補いを入れるか → 未決定（今回の差分では変えていない）
 - egov の `node_modules` に `@shuji-bonji/spec-ids` が無い（devDependencies にはある）。Mac で `npm install` が要る
 
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
