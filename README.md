@@ -147,6 +147,7 @@ graph LR
 node scripts/generate-stack.mjs            # 生成（手元）
 node scripts/generate-stack.mjs --check    # npm と照合（CI）。ずれていれば exit 1
 node scripts/generate-stack.mjs --readme   # 上の表を差し替え
+node scripts/check-example-versions.mjs    # 呼び出し例の「実測: vX」を上の版と突き合わせ、古い版で測ったままの例を一覧に
 ```
 
 `--check` は**ローカルの clone を見ない**。CI に clone は無いので、照合は npm だけで完結する。
@@ -170,7 +171,8 @@ node scripts/generate-stack.mjs --readme   # 上の表を差し替え
 ```
 houki-hub/
 ├── site/                 ドキュメントサイト（VitePress、GitHub Pages に公開予定）
-├── scripts/              stack.json の生成・照合
+├── scripts/              stack.json の生成・照合、呼び出し例の実測版の照合
+├── .github/              stack-check.yml（毎日の照合と Issue 化）とそのスクリプト
 ├── stack.json            構成の正典（実測値）
 ├── docs/
 │   ├── ROADMAP.md        現状と予定（リポジトリ横断）
@@ -199,7 +201,8 @@ pdf-agent-stack と違い、`docs/` は追跡して公開する。family 全体�
 
 | 検査 | 見ているもの | ずれたとき何が起きるか | 状態 |
 | --- | --- | --- | --- |
-| `generate-stack.mjs --check` | stack.json / README の表 vs npm | 構成表の版が古いまま残る | 週 1 と push で回る |
+| `stack-check.yml`（`.github/scripts/stack-drift-issue.mjs`） | stack.json / README の表 vs npm | 構成表の版が古いまま残る | 毎日 07:17 JST と push で回り、ずれは Issue `stack.json の版が npm と違う`（ラベル `stack-drift`）に立てる。解消したら閉じる |
+| `check-example-versions.mjs` | 呼び出し例の「実測: vX」vs 公開版 | 古い版で測った JSON が例として残る | 上の Issue の本文に一覧を載せる。取り直しは人が行う |
 | skill-contract-probe | houki-research が分岐に使うフィールド（`isError` / `code` / `legal_status` など）vs 公開版の応答 | Skill の分岐が例外を出さずに素通りする | 未移植（pdf-agent-stack から移す予定） |
 | version-mentions | 文中に書いた版 vs いまある版 | まだ無い版を「ある」と書いた文が残る | 未移植 |
 
