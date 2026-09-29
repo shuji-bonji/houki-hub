@@ -389,11 +389,58 @@ publish の回数は MCP 8 回、houki-abbreviations 1 回、Skill 2 回の計 1
 
 このメモは houki-hub `docs/notes/2026-09-29-plan-spec-issues.md` に置きます。段階が進むごとに 7 章の表に「済（日付・PR 番号）」を書き足し、回帰の基準（段階 0）はこの下に追記します。
 
-### 回帰の基準（段階 0 で記入）
+### 回帰の基準（2026-09-29 JST に記入）
 
-| リポジトリ | コミット | `npm test` | `npx spec-ids check` | 日付（JST） |
+GitHub Actions の main の最新の実行結果です（VM から vitest を実行できないため、CI の結果を基準にします）。
+
+| リポジトリ | コミット | CI（lint・テスト Node 22 / 24・build） | spec-gate（`spec-ids check`） | 実行日時 |
 | --- | --- | --- | --- | --- |
-| houki-abbreviations | | | | |
-| houki-egov-mcp | | | | |
-| houki-nta-mcp | | | | |
-| houki-research-skill | | `node scripts/check-mcp-refs.mjs` | — | |
+| houki-abbreviations 0.6.1 | `6046fa1` | success | success（別 workflow `spec-gate`） | 2026-09-27 04:48 JST |
+| houki-egov-mcp 0.15.3 | `6664058` | success（spec-gate・pr-scope を含む） | success | 2026-09-29 00:18 JST |
+| houki-nta-mcp 0.21.2 | `ddfc4fc` | success（spec-gate・pr-scope を含む） | success。Canary（国税庁サイト実接続）も success（`7eff4f6`、2026-09-28 15:03 JST） | 2026-09-29 00:26 JST |
+| houki-research-skill 0.15.0 | `aad6385` | success（`check-mcp-refs`） | MCP drift（npm latest との突き合わせ）success | 2026-09-28 14:16 JST |
+
+### 呼び出し例の実測版（2026-09-29 JST に確認）
+
+- houki-egov: 24 例。実測版は v0.5.3〜v0.15.0 だが、2026-09-21 の回帰確認で 0.15.1 に対して全例を流し「劣化なし」。0.15.2（受入テストの追加のみ）・0.15.3（説明・README のみ）は実行されるコードを変えていないので、2026-09-21 の表が現行の比較元になる
+- houki-nta: 23 例。2026-09-21 の回帰確認は 0.19.0 に対して。その後の 0.20.0〜0.21.1 で振る舞いが変わったツールの例は、段階 4 の「契約の確認」の前に取り直す候補: `nta_get_kaisei_tsutatsu`（0.20.0 で別紙の `kind` が `comparison` に、0.20.2 で案内文を除去。例は v0.10.4 / v0.14.1）、`nta_get_bunshokaitou`（0.20.1 で末尾の案内文を除去。例は v0.10.4 ×2）、`nta_get_jimu_unei`（0.20.2。例は v0.10.4）、検索 6 ツールの例（0.21.1 で `snippet` の切り出し方が変わった。例は v0.10.2〜v0.14.0 の 10 例）。`nta_get_tsutatsu`（v0.21.0）・`nta_inspect_pdf_meta`（v0.20.0）・`nta_get_qa` / `nta_get_tax_answer`（v0.17.0、変更なし）は取り直し不要
+
+### 段階 0・1 の進捗（2026-09-29 JST）
+
+| 作業 | 状態 |
+| --- | --- |
+| 0-a 回帰の基準 | 済（上の表） |
+| 0-b 呼び出し例の実測版 | 済（上の一覧。取り直しは段階 4 の直前） |
+| 0-c houki-abbreviations の依存 `^0.6.1` | ブランチ作成済み（未署名・未 push）: houki-nta-mcp `chore/abbr-0.6.1`（`7c3a13c`）、houki-egov-mcp `chore/abbr-0.6.1`（`94d8294`）。package.json・package-lock.json（`node_modules/@shuji-bonji/houki-abbreviations` の項だけ 0.6.1 に差し替え。VM の npm 10.9.8 で作り直すと `libc` の項が消えるため手で差し替えた）・CHANGELOG の Unreleased。CI のテストで 0.6.1 との動作差が無いことを確かめる |
+| 0-d Skill の `mcp-refs.config.json` | ブランチ作成済み（未署名・未 push）: houki-research-skill `chore/mcp-refs-egov-0.15.3-nta-0.21.2`（`8a78787`、0.15.1）。`mcp-snapshots/` の差分は `version` と `errorCodesSource` の URL だけ。`check-mcp-refs` は問題なし |
+| 0-e nta #75 の初版 spec.md | ブランチ作成済み（未署名・未 push・承認日空欄）: houki-nta-mcp `spec-init/issue-75-cli-db`（`617487f` spec 5 単位 / `608549c` テスト名に ID）。`db_schema` 18・`cli_entry` 5・`cli_bulk_download` 10・`cli_refresh` 6・`cli_health_check` 6 の計 45 ID、テスト名 65 か所（7 ファイル）、未決 31。`spec-ids check` exit 0（current 21 単位・189 ID）、pr-scope の指摘は承認日の空欄だけ。vitest は VM で動かないので、マージ前に Mac で `npx vitest --run` を実行する。実装のフラグは表の当たりと違い、`--refresh-stale=<日数>` の実行は `--apply`、`--strict`・`--tsutatsu=<正式名>`・税目フラグ 3 つも該当の単位に入れた |
+| 1 横断の決定 | 転記済み（hub main、コミット待ち）: `docs/DECISIONS.md` の「決定済み」に 2026-09-29 の 9 行、`docs/notes/issues-2026-09-29-decisions/`（種類 B の 28 Issue へのコメント本文と README）、`scripts/comment-issues-2026-09-29-decisions.sh`（gh CLI。shuji が Mac で実行） |
+
+### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
+
+初版起こしの未決 31 のうち、テストが無いだけのものを除いた 12 件です。egov の初版と同じく、種別ごとに Issue にします（段階 2 の前に起票し、対応は段階 4・5 に割り付ける）。
+
+1. 知らないフラグ（`--bulk-downlod` のような打ち間違い、`--db-path /path` の空白区切り、`--refresh-stale=abc`）を黙って読み飛ばし、MCP サーバーとして待ち続ける。`--db-path=<path>` だけを渡しても MCP サーバーはそのパスを使わない（egov は `exit 2`、SPEC-EGOV-CLI-ENTRY-004）→ egov #61 と同じ種類
+2. `--version` の出力が nta（版の数字だけ）と egov（`<パッケージ名> v<版>`）で違う
+3. 版 3 より前・10 より大きい版の DB は全テーブルを消して作り直す（新しい版で作った DB を古い版のサーバーで開くと消える）→ egov #60 と同じ問題。段階 5 の egov 0.19.0 と同じ規則にする
+4. `--refresh` の使い方の説明「既存 DB を消去して再 DL」が実際（対象の通達の節・条項だけを消す、文書系は置き換え）と違う → nta #70 と同じ種類
+5. `--refresh-stale --apply` は差分更新で、`--refresh` を組み合わせても全部取り直しにならない
+6. 税目を絞った投入（`--bunsho-taxonomy` など）では、索引から消えた文書の印（`orphaned_at`）を付け直さない
+7. `--tsutatsu` に基本通達 4 種以外を渡すと想定外の例外（`fatal error`、exit 1）で終わる
+8. `clearAllData` がテストにだけあり、`src/db/index.ts` の説明にある `HOUKI_NTA_REFRESH=1` を読む実装が無い → egov #60 の「全データを消す機能」と同じ
+9. 使い方に `HOUKI_NTA_BASELINE_DIR`・`HOUKI_NTA_FILES_DIR` が載っていない → nta #70 と同じ種類
+10. `--check-baseline-drift` の 9 件のうち、menu.htm の下にない 4 種別は常に `ok` で `<ok>/9 OK` に数える
+11. `--refresh-stale` の「N 日以上古い」と「N 日より古い」の境界が使い方の文言と違う
+12. `document.doc_type` / `taxonomy` に列の制約が無い
+
+あわせて、cli_bulk_download の `hint` 群は `HOUKI_NTA_DB_PATH` / `XDG_CACHE_HOME` を案内するが、CLI の `--db-path` で投入した DB は MCP サーバーから見えない（MCP サーバーは環境変数だけで DB を決める）。nta #70 に足す事実。
+
+### 段階 1 の転記で見つかった、計画書との食い違い
+
+- T1 の「理由」欄に「`search_fulltext` の 1〜30 への丸めも同じ規則に揃える」と書いたが、8 章では未決にしている。DECISIONS.md とコメントは未決の側に揃えた（仕様 PR で決める）
+- abbr #22 の本文は「1 未満は 1 件」を今の動きのまま受入テストにする前提で、T1 の「丸めない」と食い違う。仕様 PR で決める
+- nta #66: inputSchema の `pattern`（T1）は入口の正規化（T3）より前に走る。全角を受け付けるなら、形の検査を各ツールの処理に置くか、`pattern` を全角も通す形にする。SPEC-NTA-GET-TAX-ANSWER-001 は全角を `INVALID_ARGUMENT` と既に約束しているので、T3 に揃えると MODIFIED になる
+- T4 の「`meta` に `at` と `retrieved_at` を常に付ける」は egov の形で、nta の応答には `meta` が無い。nta に `meta` を足すかは仕様 PR で決める。egov も `get_toc` の `meta` と SPEC-EGOV-GET-ARTICLE-REFERENCES-034 が「`at` を省いたときは付かない」と約束しているので、`null` に揃えると MODIFIED になる
+- nta #71 の `hits` / `results` の名前を揃える案は 5.1「フィールドを消す変更は入れない」と衝突するので、0.23.0 では付け替えない
+- egov #48: `item` は文字列も受け付ける（SPEC-EGOV-GET-LAW-002）ので inputSchema では止められず、`paragraph` は `INVALID_ARGUMENT`、`item` は `INVALID_ARTICLE_NUM` のままになる
+- 「決めない」候補（5.4）として README に 7 件を挙げた: abbr #16・#13・#20・#23、nta #67・#72、egov #62（「通知」の行だけ）。abbr #13 を「凍結しない」にするなら、段階 3 の表の `spec/<日付>-freeze` の行を消す
