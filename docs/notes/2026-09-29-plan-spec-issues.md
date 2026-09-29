@@ -253,6 +253,7 @@ egov は Issue の数が多いので、変える場所でまとめます。
 
 0.18.0 と 0.19.0 の順について。0.18.0 の 7 件はどれも DB のスキーマを変えません（#45・#51・#63 は e-Gov API の応答の扱い、#55・#67 は検索のクエリの組み立て、#62 は解説の表、#72 は XML の読み取り）。0.19.0 で DB を変えても 0.18.0 の実装をやり直すことにはならず、逆に 0.19.0 を先にしても 0.18.0 で DB をもう一度変えることはありません。57 件の中で DB のスキーマに触るのは上の 3 件だけなので、3 件を 1 つの版にまとめれば、どちらの順でも利用者の再取り込みは 1 回です。0.18.0 を先にする理由は、#45・#51・#63 が「違う法令・条文を根拠にする」害で最も大きく、再取り込みを待たずに出せるからです。
 | nta の検索規則 | #80・#81・#72 | nta 0.24.0 | `search_rules` の spec.md にまとまる。#81 は不具合として直す案（大文字小文字を区別しない）。#80 は SPEC-NTA-SEARCH-RULES-009 の本文どおり（元の語を部分一致で足す）に直す案 |
+| nta の DB と CLI（#75 の未決から起票） | `issues-2026-09-30-nta-cli-db/` の 01・02・04・05・06・07（起票後に番号を記入） | nta 0.24.0 | 01（知らないフラグ・不正な日数・未対応の通達名で黙って起動するか例外。`--version` の文）は egov #61 と同じ規則、02（版が合わない DB の作り直し、全データ消去の入口）は egov #60 と同じ規則。07（`document.doc_type` / `taxonomy` の `CHECK` 制約）は 02 とまとめてスキーマの版上げを 1 回にする。03（使い方の文の食い違い）は T5 として #70 と同じ仕様 PR（nta 0.23.0） |
 
 ### 段階 5b: houki-hub#5（変更把握の仕組み）
 
@@ -360,11 +361,11 @@ gantt
 | houki-egov-mcp | 0.16.0 | 4 | #46・#47・#48・#49・#52・#53・#54・#57・#69 + 依存 `^0.7.0` |
 | houki-nta-mcp | 0.22.0 | 4 | #64・#65・#66・#67・#68・#69・#79 + 依存 `^0.7.0` |
 | houki-egov-mcp | 0.17.0 | 4 | #56・#64・#65・#66 |
-| houki-nta-mcp | 0.23.0 | 4 | #70・#71・#82 |
+| houki-nta-mcp | 0.23.0 | 4 | #70・#71・#82・CLI の使い方の文（`issues-2026-09-30-nta-cli-db/03`） |
 | houki-research-skill | 0.16.0 | 6 | ERROR-CODES / examples / snapshots を 0.16.0 / 0.22.0 に |
 | houki-egov-mcp | 0.18.0 | 5 | #45・#51・#63・#55・#67・#62・#72 |
 | houki-egov-mcp | 0.19.0 | 5 | #58・#59・#60・#61・#71（#59・#60・#71 でスキーマの版上げ 1 回） |
-| houki-nta-mcp | 0.24.0 | 5 | #72・#80・#81 |
+| houki-nta-mcp | 0.24.0 | 5 | #72・#80・#81 + DB・CLI の 6 件（`issues-2026-09-30-nta-cli-db/01・02・04〜07`。スキーマの版上げ 1 回） |
 | houki-research-skill | 0.17.0 | 6 | 段階 5 の追随 |
 
 publish の回数は MCP 8 回、houki-abbreviations 1 回、Skill 2 回の計 11 回です。Issue ごとに publish すると 57 回近くになるので、これで 5 分の 1 に減ります。
@@ -430,6 +431,8 @@ GitHub Actions の main の最新の実行結果です（VM から vitest を実
 マージの手順: 仕様 PR を先にマージ（承認日と PR 番号を proposal.md に書く）→ 実装ブランチを main に載せ直し → Mac で `npm run check`（biome）・`npx tsc --noEmit`・`npx vitest --run`・`npx spec-ids check` → 取り込みコミット（current に ADDED / MODIFIED を反映、未決を消す、`git mv` で `specs/releases/v0.15.4/` と `v0.21.3/` へ）→ 実装 PR マージ → タグ → publish。取り込みコミットは仕様 PR の番号が決まってから Claude が作ります（サブエージェントの報告に「取り込みで変える箇所」の一覧あり）。
 
 2026-09-30 の進み: egov は仕様 PR #81 と実装ブランチがマージされ、v0.15.4 を npm・MCP Registry・plugin に公開済み（main `69f6e9a`）。CI の `format:check` が `cli_status.test.ts` で落ちたため shuji が整形し直してからマージした（VM では biome が動かないので、以後は Mac で `npm run check` を先に回す）。取り込み（current に 018・008 を足し、承認日に PR #81、`specs/releases/v0.15.4/` へ `git mv`）はタグの後になったので、ブランチ `chore/20260930-publish-bugfix-batch`（`c7750c7`、未署名・未 push）に置いた。版は上げない。nta は案 A（空の行は消さない）を採用し、`fix/20260930-nta-73-db-values` に CHANGELOG の 1 行を足した（`569cfdf`）。
+
+2026-09-30（続き）: nta も仕様 PR #104 と実装ブランチがマージされ、v0.21.3 を npm・MCP Registry に公開済み（main `b4b81e2`）。egov の取り込み（`8ba4603`）は main に入った。nta の取り込みはブランチ `chore/20260930-publish-nta-73`（`62d8e21`、未署名・未 push、版は上げない）に置いた: ADDED 5 件・MODIFIED 7 件を current に反映、未決 3 件を消し、承認日に PR #104、`specs/releases/v0.21.3/` へ `git mv`。`spec-ids check`（current 194 ID・changes 0）と pr-scope は OK。これがマージされれば段階 2 は完了。テストは VM に `$HOME/tmp/nta`（`npm ci --ignore-scripts` → `better-sqlite3` を `npm run install` → src・tests を複製）を作れば vitest・biome・tsc が回せることを確かめた（nta 0.21.3 の受入テストの EM SPACE の不具合をこれで直した）。
 
 判断が要る点（マージ前に shuji が決める）:
 
