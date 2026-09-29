@@ -431,8 +431,8 @@ GitHub Actions の main の最新の実行結果です（VM から vitest を実
 
 判断が要る点（マージ前に shuji が決める）:
 
-- egov #75: 終わった時点の通知でも `totalEstimated` は推定値のままなので、表示は `2.2 KB / ~290 MB (100.0%)` になる。実際のバイト数に置き換えるかは Issue の範囲外として変えていない
-- egov CHANGELOG: main の Unreleased にあった houki-abbreviations `^0.6.1` の行を 0.15.4 の Changed に移した。Unreleased に残す方針なら戻す
+- egov #75: 終わった時点の通知でも `totalEstimated` は推定値のままなので、表示は `2.2 KB / ~290 MB (100.0%)` になる → このままでよい（`~` が推定値の印なので実際のバイト数に置き換えない。2026-09-30 決定）
+- egov CHANGELOG: main の Unreleased にあった houki-abbreviations `^0.6.1` の行を 0.15.4 の Changed に移した → 移してよい（2026-09-30 決定）
 - egov の版: 先例 `f1e66b7` に揃えて `.claude-plugin/plugin.json` と `server.json` も 0.15.4 にした（nta は `server.json` だけ。plugin.json は別コミットの慣習）
 - nta #73 の proposal.md「人が判断すること」: 文書 ID が空のタックスアンサーの行を移行で消すか（今の国税庁サイトでは作られる条件が無く、移行で版を上げると v0.21.2 以前で開いたときに全テーブルが作り直されるため、残した）/ `nta_get_jimu_unei`・`nta_get_bunshokaitou` にも (b) と同じ `kind` の補いを入れるか
 - egov の `node_modules` に `@shuji-bonji/spec-ids` が無い（devDependencies にはある）。Mac で `npm install` が要る
