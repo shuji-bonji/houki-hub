@@ -461,6 +461,19 @@ GitHub Actions の main の最新の実行結果です（VM から vitest を実
 
 段階 5b: houki-hub ブランチ `feat/5-change-detection`（`8b34aec` ③ `scripts/check-example-versions.mjs` + テスト / `c967ac3` ① `stack-check.yml` を毎日 07:17 JST にし `.github/scripts/stack-drift-issue.mjs` で Issue「stack.json の版が npm と違う」（ラベル `stack-drift`）を立てる・更新する・閉じる / `5c7237a` 文書 `docs/notes/2026-10-01-hub5-change-detection.md` と README）。`node --test '.github/scripts/*.test.mjs' 'scripts/*.test.mjs'` 15 件 pass。③の実行結果: 47 例すべてが現行（egov 0.15.4 / nta 0.21.3）より古い版で測ったまま（2026-09-21 の回帰確認では 0.15.1 / 0.19.0 に対して劣化なし。段階 4 の直前に nta の変わったツールの例を取り直す）。①は `.github/` の変更なので main 直接ではなく PR で（shuji が判断）。main に入れた最初の実行で、stack.json（nta 0.21.2）と npm（0.21.3）のずれで Issue が 1 件立つ。`stack.json` の `houki-abbreviations` は `local.tag` が `v0.6.0` のまま `version` 0.6.1（タグ漏れは `consistency` では検知されない）。
 
+### 段階 3 の実装（2026-10-01 JST）
+
+仕様 PR 4 本は #30〜#33 として 2026-10-01 に main（`3ac6b08`）へマージされた。その上に houki-abbreviations のブランチ `test/20261001-0.7.0` を積んだ（未署名・未 push）。積み順は受入テスト 4 コミット（`fd57c9d` normalize / `e6d0080` input-guards / `88af7e7` dictionary-rules / `c929c86` freeze。既存 6 ファイルの末尾に `describe('<関数> — 20261001-<slug>')` を追記、`it` 265 → 350、実装前は 81 RED）→ 実装 4 コミット（`c665a4b` normalize / `406933a` input-guards / `b24ff05` dictionary-rules（辞書 33 件の `aliases` 修正を含む。29 件は `aliases` 自体が無くなる）/ `cbf05b9` freeze）→ `d3f8902`（`scripts/verify-law-ids.mjs` を e-Gov `GET /api/2/laws` 全件取得型にし、月次の `verify-law-ids.yml` を足す。input-guards の proposal の #23 の答えに書かれていた範囲。VM から e-Gov に届いたので実行済み: 辞書 9 件 NG 0、全 9,570 件 `isValidLawId` OK）→ `cf7e53d`（ci.yml の build で `npm run validate`）→ `6fa44d9`（README・CONTRIBUTING・JSDoc、#17）→ `213bb97`（`chore: v0.7.0`、CHANGELOG に「互換性」の節）→ `0fa4070`（取り込み。current 18 本に反映、`specs/releases/v0.7.0/<slug>/` へ git mv、REMOVED-008 のテスト削除）。`tsc` / `eslint` / `prettier` / `spec-ids check`（current 259 ID・changes 0）/ pr-scope（impl、77 ファイル）/ `npm run validate`（0 errors 0 warnings）はすべて通る。
+
+`vitest` は 349 件中 347 GREEN、RED 2 件は仕様の例の誤りで、テストは変えていない（判断待ち）:
+
+1. SPEC-ABBR-NORMALIZE-LAW-NUM-013 の例 `'昭和二十四年人事院規則一─一'` → `'昭和24年人事院規則1─1'`。015（漢数字は年・号・第・ダッシュの隣だけ変換。罫線 `─` と長音 `ー` はダッシュではない）に従うと `一─一` のまま。013 の趣旨は「罫線を `-` にしない」なので、例を `'昭和24年人事院規則一─一'`（長音も同様）に直す案を勧める
+2. SPEC-ABBR-LOOKUP-BY-LAW-ID-005 の 2 つ目の例 `'３６３ＡＣ００００００１０８'` が 14 文字（0 が 1 つ足りない）。15 文字に直す誤植修正
+
+実装で決めた点: VALIDATE-ALL-ENTRIES-015 は「`abbr` が生の文字列で重なるなら `duplicate_abbr`（その重なりに `duplicate_name` は出さない）。`formal` / `aliases` が別エントリの名前と重なるなら名前ごとに `duplicate_name`」。`computeDaysSince` の秒の小数は 1〜3 桁、うるう秒は不可。`extractLawNames` の `normalize` は位置を保つため空白を取り除かない半角化。CHANGELOG の日付は承認日 2026-10-01 にしたので publish 日に直す。
+
+段階 4 への申し送り（CHANGELOG「互換性」から）: `computeDaysSince`（`RangeError` / `TypeError`）と `judgeStaleness`（`RangeError`）を egov・nta の `freshness.ts` で捕まえる。`normalizeJpText` がダッシュ類 `‐ ‑ – — ― −` を `-` にするので、egov の ingester と nta の DB の検索用列の再正規化（nta 0.14.2 → 0.15.0 の全角英字と同じ手順）が要る。`AbbreviationStats` の 3 つの Record が全値キー、`Category` に `kokuji`（`CATEGORIES` の添字がずれる）、定数は `Readonly`。`alias_collides_with_abbr` の警告は廃止（`errors` の `duplicate_name`）。
+
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
 
 初版起こしの未決 31 のうち、テストが無いだけのものを除いた 12 件です（spec.md の項目数では 13。1 件目が cli_entry 2 と cli_refresh 4 の 2 項目にまたがる）。2026-09-30 に 7 件にまとめて #106〜#112 として起票した（下書きと対応表は `docs/notes/issues-2026-09-30-nta-cli-db/`、起票結果は `created.tsv`）。まとめ方: 1・2・7 → #106、3・8 → #107、4・9・11 → #108、5 → #109、6 → #110、10 → #111、12 → #112。cli_health_check 3（bulk download 後の警告のしきい値）は受入テストを書くときに決めればよいので Issue にせず残した。未決を「→ #N」に縮める仕様 PR #114 は main にマージ済み（`099b6ce`。実装の変更: 不要のため current を直接書き換え。`specs/changes/20260930-cli-db-undecided-to-issues/` は次の実装 PR の取り込みで releases へ移す）。
