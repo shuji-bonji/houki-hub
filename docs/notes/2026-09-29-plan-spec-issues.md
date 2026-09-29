@@ -416,6 +416,27 @@ GitHub Actions の main の最新の実行結果です（VM から vitest を実
 | 0-e nta #75 の初版 spec.md | ブランチ作成済み（未署名・未 push・承認日空欄）: houki-nta-mcp `spec-init/issue-75-cli-db`（`617487f` spec 5 単位 / `608549c` テスト名に ID）。`db_schema` 18・`cli_entry` 5・`cli_bulk_download` 10・`cli_refresh` 6・`cli_health_check` 6 の計 45 ID、テスト名 65 か所（7 ファイル）、未決 31。`spec-ids check` exit 0（current 21 単位・189 ID）、pr-scope の指摘は承認日の空欄だけ。vitest は VM で動かないので、マージ前に Mac で `npx vitest --run` を実行する。実装のフラグは表の当たりと違い、`--refresh-stale=<日数>` の実行は `--apply`、`--strict`・`--tsutatsu=<正式名>`・税目フラグ 3 つも該当の単位に入れた |
 | 1 横断の決定 | 転記済み（hub main、コミット待ち）: `docs/DECISIONS.md` の「決定済み」に 2026-09-29 の 9 行、`docs/notes/issues-2026-09-29-decisions/`（種類 B の 28 Issue へのコメント本文と README）、`scripts/comment-issues-2026-09-29-decisions.sh`（gh CLI。shuji が Mac で実行） |
 
+### 段階 2 の進捗（2026-09-30 JST）
+
+段階 0 の 4 ブランチと段階 1 のコメント投稿はマージ・実行済み（shuji、2026-09-30）。段階 2 は仕様 PR 用と実装 PR 用の 2 ブランチを各リポジトリに用意した段階です（未署名・未 push。承認日は空欄）。
+
+| リポジトリ | ブランチ | コミット | 内容 |
+| --- | --- | --- | --- |
+| houki-egov-mcp | `spec/20260930-bugfix-batch` | `145579b` | proposal.md（実装の変更: 要）、ADDED SPEC-EGOV-EXPLAIN-LAW-TYPE-018（`Object.prototype` の名前は `found: false`）、SPEC-EGOV-CLI-STATUS-008（件数の区切りは言語設定によらず `,`）。#70・#75 は仕様を変えないので差分に含めない |
+| houki-egov-mcp | `fix/20260930-bugfix-batch`（上に積む） | `407bd3a` test / `c12e3ea` fix / `9968d17` chore v0.15.4 | #70 `verifyOneCitation()` で `LAW_NOT_FOUND` の件ごとに `next_actions` を決め直す。#73 `findLawHierarchy()` を `Object.hasOwn`。#74 `toLocaleString('en-US')`。#75 `streamToFile()` の最後の通知を `ratio: 1.0` に固定。テストは `src/spec-tests/bugfix-20260930/`・`zip-fetcher.test.ts`・`untested-20260928/verify_citations.test.ts`。CHANGELOG の 0.15.4 に houki-abbreviations `^0.6.1` の Changed も移した |
+| houki-nta-mcp | `spec/20260930-nta-73-db-values` | `4c4bb80` | 3 件とも不具合と判定。MODIFIED TAX-ANSWER-008・KAISEI-005・006・INSPECT-010、ADDED TAX-ANSWER-011・KAISEI-008・INSPECT-018 |
+| houki-nta-mcp | `fix/20260930-nta-73-db-values`（上に積む） | `7fe4fc8` test / `cb05427` fix / `24f57ea` chore v0.21.3 | (a) `getTaxAnswer` / `readTaxAnswerFromDb` で `no` を引数の値にする。(b) `handleNtaGetKaiseiTsutatsu` で `fillMissingKinds` を通す。(c) `pdfFileNamesForUrls()` で最後のパス要素が重なるときは直前の要素を `_` でつないだ名前にする（`0026003-067_pdf_01.pdf`）。スキーマの版上げ・`--refresh` は不要 |
+
+マージの手順: 仕様 PR を先にマージ（承認日と PR 番号を proposal.md に書く）→ 実装ブランチを main に載せ直し → Mac で `npm run check`（biome）・`npx tsc --noEmit`・`npx vitest --run`・`npx spec-ids check` → 取り込みコミット（current に ADDED / MODIFIED を反映、未決を消す、`git mv` で `specs/releases/v0.15.4/` と `v0.21.3/` へ）→ 実装 PR マージ → タグ → publish。取り込みコミットは仕様 PR の番号が決まってから Claude が作ります（サブエージェントの報告に「取り込みで変える箇所」の一覧あり）。
+
+判断が要る点（マージ前に shuji が決める）:
+
+- egov #75: 終わった時点の通知でも `totalEstimated` は推定値のままなので、表示は `2.2 KB / ~290 MB (100.0%)` になる。実際のバイト数に置き換えるかは Issue の範囲外として変えていない
+- egov CHANGELOG: main の Unreleased にあった houki-abbreviations `^0.6.1` の行を 0.15.4 の Changed に移した。Unreleased に残す方針なら戻す
+- egov の版: 先例 `f1e66b7` に揃えて `.claude-plugin/plugin.json` と `server.json` も 0.15.4 にした（nta は `server.json` だけ。plugin.json は別コミットの慣習）
+- nta #73 の proposal.md「人が判断すること」: 文書 ID が空のタックスアンサーの行を移行で消すか（今の国税庁サイトでは作られる条件が無く、移行で版を上げると v0.21.2 以前で開いたときに全テーブルが作り直されるため、残した）/ `nta_get_jimu_unei`・`nta_get_bunshokaitou` にも (b) と同じ `kind` の補いを入れるか
+- egov の `node_modules` に `@shuji-bonji/spec-ids` が無い（devDependencies にはある）。Mac で `npm install` が要る
+
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
 
 初版起こしの未決 31 のうち、テストが無いだけのものを除いた 12 件です。egov の初版と同じく、種別ごとに Issue にします（段階 2 の前に起票し、対応は段階 4・5 に割り付ける）。
