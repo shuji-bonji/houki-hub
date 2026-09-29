@@ -1,12 +1,17 @@
 name: Stack version check
 
-# stack.json / README の構成表が npm の公開版とずれていないかを照合する。
-# 各 MCP のリリース後に stack 再生成を忘れると、ここが落ちて気づける。
-# 直すのは手元で: node scripts/generate-stack.mjs --readme → commit
+# stack.json / README の構成表が npm の公開版とずれていないかを毎日照合し、
+# ずれていれば houki-hub 自身に Issue「stack.json の版が npm と違う」（ラベル stack-drift）を立てる。
+# 同じ Issue が open のままなら本文を差し替え、ずれの中身が変わったときだけコメントする。
+# ずれが解消したら、その Issue を閉じる。npm に届かなかったときは Issue に触らず exit 2 で終わる。
+# Issue の本文には、古い版で測ったままの呼び出し例（scripts/check-example-versions.mjs）の一覧も載せる。
+# （houki-hub#5 の①③。経緯は docs/notes/2026-10-01-hub5-change-detection.md）
+#
+# 直すのは手元で: node scripts/generate-stack.mjs --readme → commit → push（push で再検査し、Issue が閉じる）
 
 on:
   schedule:
-    - cron: '0 21 * * 1' # 毎週月曜 06:00 JST（pdf-agent-stack と同じ時刻）
+    - cron: '17 22 * * *' # 毎日 07:17 JST
   workflow_dispatch:
   push:
     branches: [main]
@@ -14,10 +19,18 @@ on:
       - 'stack.json'
       - 'README.md'
       - 'scripts/generate-stack.mjs'
+      - 'scripts/check-example-versions.mjs'
+      - 'scripts/reference-examples/**'
+      - '.github/scripts/**'
       - '.github/workflows/stack-check.yml'
 
 permissions:
   contents: read
+  issues: write
+
+concurrency:
+  group: stack-check
+  cancel-in-progress: false
 
 jobs:
   check:
@@ -27,5 +40,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # 依存なし（npm view と stack.json の突き合わせのみ）。install 不要
-      - run: node scripts/generate-stack.mjs --check
+      # 依存なし（npm registry と GitHub API を fetch で読むだけ）。install 不要
+      - name: 判定と本文のテスト
+        run: node --test '.github/scripts/*.test.mjs' 'scripts/*.test.mjs'
+      - name: npm と照合して Issue を同期
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node .github/scripts/stack-drift-issue.mjs
