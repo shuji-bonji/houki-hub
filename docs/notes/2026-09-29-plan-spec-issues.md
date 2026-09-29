@@ -381,6 +381,7 @@ publish の回数は MCP 8 回、houki-abbreviations 1 回、Skill 2 回の計 1
 | egov 0.18.0 と 0.19.0 の順 | 0.18.0（法令の引き当て・検索）→ 0.19.0（DB・CLI）。DB のスキーマに触る #59・#60・#71 は 0.19.0 の 1 回にまとめるので、どちらの順でもやり直しは無い（段階 5 の説明） |
 | houki-hub#5 | 段階 6 の前に入れる（段階 5b） |
 | houki-abbreviations #13（凍結） | 凍結する（案 A、2026-09-30）。`abbreviationEntries` は各エントリと `aliases` まで、公開定数も `Object.freeze`。代入は `TypeError` にして黙って通さない。0.7.0 の CHANGELOG に「互換性」の節を書く。egov・nta は読むだけなので動作は変わらない |
+| houki-abbreviations #16（`getAbbreviationStats`） | `DOMAINS` / `CATEGORIES` / `SOURCE_MCP_HINTS` の全値をキーにし、辞書に無い値は `0` を返す（案 A、2026-09-30）。`byCategory.hanrei` は `undefined` ではなく `0`。型は `Record<Domain, number>` / `Record<Category, number>` / `Record<SourceMcpHint, number>`。実数（総数 174 など）は仕様に固定しない |
 
 まだ決めていないこと:
 
