@@ -18,7 +18,7 @@ houki-hub#26（仕様を担保するエージェントの導入）で 3 リポ�
 
 - 3 リポジトリとも、仕様 PR（`spec/<yyyymmdd>-<slug>`、`specs/changes/` だけ）と実装 PR（テスト・`src/`・版・最終コミットで `specs/current/` へ取り込み）の 2 本運用です。CI の `spec-gate`（`npx spec-ids check`）と `pr-scope` が止めます。
 - houki-egov-mcp と houki-nta-mcp は、houki-abbreviations から `resolveAbbreviation` / `normalizeJpText` / `normalizeSearchQuery` / `listBySourceMcpHint` と、`judgeStaleness` / `STALENESS_THRESHOLDS`（`src/services/freshness.ts`）を使っています。0.x の `^` は minor を跨がないので、houki-abbreviations の minor を上げても、MCP 側の `package.json` を上げて publish しない限り MCP には入りません。
-- houki-nta-mcp の `src/tools/handlers.ts` には「`code` は v0.14.0 から変えない」と書いてあります。code を変える Issue（#64・#65）は、この方針との折り合いを先に決める必要があります。
+- houki-nta-mcp の `src/tools/handlers.ts` の `explainDocIdNotFound()` の JSDoc に「`code` は v0.14.0 から変えない（改正通達・事務運営指針は TSUTATSU_NOT_FOUND、文書回答事例は DOC_NOT_FOUND）」と書いてあります。これは v0.14.1（patch）で「DB に 1 件も無い」と「その docId が無い」を 2 つの応答に分けたときに、patch では code を変えずに `error` の文言・`available_doc_ids`・`next_actions` だけを変えた、という記録です。family 全体の方針ではありません。code を変える Issue（#64・#65）は、minor で出し CHANGELOG に旧 → 新を書けば、この記録と矛盾しません。
 
 ## 2. Issue の 4 つの種類
 
@@ -191,13 +191,13 @@ flowchart TB
 
 T1〜T5 の規則を、houki-hub の `docs/DECISIONS.md` に「決定済み」として書き、各 Issue にその節へのリンクをコメントします。ここで決めるのは規則だけで、仕様 PR は段階 3・4 でリポジトリごとに書きます。
 
-判断の材料として、現時点で勧める案を書いておきます。採るかどうかは shuji の決定です。
+次の表の「勧める案」を、2026-09-29 JST に shuji が採用しました。段階 1 の作業は、この表を houki-hub `docs/DECISIONS.md` に写し、各 Issue にその節へのリンクをコメントすることです。
 
 | テーマ | 勧める案 | 理由 |
 | --- | --- | --- |
 | T1 引数の検査 | 数値は inputSchema に `type: "integer"` と `minimum` / `maximum` を書き、日付は `pattern`、必須の文字列は `minLength: 1` を書く。`common_errors` の検査で `INVALID_ARGUMENT` にし、丸めない。空白だけの文字列は各ツールで `INVALID_ARGUMENT`。`detail.issues` は違反 1 件ごとに `{ path, message }` を分け、`path` に引数名を入れ、`tool` を付け、`message` は日本語 | 「黙って丸める」（egov #54、nta #68）と「探していないのに 0 件」（nta #69）を同時に無くせる。inputSchema に書けば tools/list を読む LLM にも伝わる。`search_fulltext` の 1〜30 への丸めも同じ規則に揃える |
 | T2 code | `SOURCE_*` は「取得元との通信が失敗した」ときだけ、`*_NOT_FOUND` は「検索が成功して 0 件」のときだけにする。404 は番号の誤り（`DOC_NOT_FOUND`、`retryable: false`）。接続の失敗は `err.cause.code` を見て `SOURCE_UNAVAILABLE`。nta の文書系 3 ツールは `DOC_NOT_FOUND` に揃える（改正通達・事務運営指針を `TSUTATSU_NOT_FOUND` から変える）。`FILE_TOO_LARGE` は pdf-reader-mcp に既にあるので、egov #49 でも同じ code を使う | LLM が「書き間違い」と「一時的な障害」を code で見分けられる（egov #46 の害が最も大きい）。nta の「code を変えない」方針とは食い違うので、変える場合は次の「互換の扱い」に従う |
-| T2 の互換の扱い | code を置き換えるときは、(1) CHANGELOG に「互換性」の節で旧 code → 新 code を書く、(2) 同じ日に houki-research-skill の `docs/ERROR-CODES.md` を直す、(3) minor を上げる。旧 code を並行して返す期間は設けない（`retryable` と `next_actions` で案内する） | 2 つの code を返す実装は仕様が 2 通りになり、spec.md にも 2 つ書くことになる。利用側は Skill と hub の呼び出し例だけなので、同日に直せば足りる |
+| T2 の互換の扱い | code を置き換えるときは、(1) CHANGELOG に「互換性」の節で旧 code → 新 code を書く、(2) 同じ日に houki-research-skill の `docs/ERROR-CODES.md` を直す、(3) minor を上げる。旧 code を並行して返す期間は設けない（`retryable` と `next_actions` で案内する）。nta の `explainDocIdNotFound()` の JSDoc の「v0.14.0 から変えない」は patch での判断なので、minor で変えるときは JSDoc の文も書き換える | 2 つの code を返す実装は仕様が 2 通りになり、spec.md にも 2 つ書くことになる。利用側は Skill と hub の呼び出し例だけなので、同日に直せば足りる |
 | T3 正規化 | 名前を受け取る公開関数（`getAllNames` / `extractLawNames` / `lookupByLawId`）にも `normalize` の指定を足し、`normalizeJpText` でダッシュ類を `-` に揃える。MCP 側は入口で `normalize: true` を使う。`extractLawNames` の `position` / `length` は元の文字列の位置で返す | 揃える場所を houki-abbreviations の 1 か所にすれば、egov と nta で同じ入力が同じ結果になる（nta の「Normalize-everywhere」と同じ考え方） |
 | T4 応答の形 | 値が無いフィールドは `null` を入れる（フィールドを消さない）。`meta` には `at`（時点）と `retrieved_at` を常に付ける。検索の `results[]` には全種別で `issuedAt` を付け、タックスアンサーは「法令時点」であることを別のフィールド名（例: `basisDate`、`nta_get_qa` と同じ）にする | LLM は「フィールドが無い」と「値が無い」を区別しにくい。`null` に揃えると型が一定になる |
 | T5 文書の食い違い | 動きを変える必要が無い行は文書を直す（仕様 PR 不要、実装 PR 1 本）。動きを変える行だけ仕様 PR に入れる。egov #56 の `INTERNAL_ERROR` は `retryable: false` に直す（`hint` の「報告してください」と合わせる） | Issue の完了条件がそう書いている |
@@ -244,8 +244,21 @@ egov は Issue の数が多いので、変える場所でまとめます。
 | --- | --- | --- | --- |
 | 法令の引き当て | #45・#51・#63 | egov 0.18.0 | 害が最も大きい 3 件。#45 は T2 の「検索が成功して 0 件」の規則を前提にする（完全一致が無いときは候補の一覧を `LAW_NOT_FOUND` の `hint` に入れて条文を返さない案）。#51 は `get_law` / `verify_citations` の探す範囲を本則に限り、附則は `suppl_index` で指定する案。#63 は確かでないときは `target_law` を付けない案 |
 | 検索と解説と添付 | #55・#67・#62・#72 | egov 0.18.0 か 0.19.0 | #67 は nta #21（0 件のときだけ通称を展開）と同じ規則にする。#55 の `domain` は外す案（`search_fulltext` と揃える） |
-| DB と CLI | #58・#59・#60・#61・#71 | egov 0.19.0 | スキーマの版を上げるのは #59（公布日 `NULL`）と #71（`NOT NULL`）だけなので、この 2 件を同じ版に入れてスキーマの版上げを 1 回にする。#60（新しい版の DB を触らない、サーバーと `--status` は DB を作らない）を同じ版か先の版に入れる。約 290 MB の再取り込みが要ることを CHANGELOG と README に書く |
+| DB と CLI | #58・#59・#60・#61・#71 | egov 0.19.0 | スキーマの版を上げるのは #59（公布日を `NULL` にできるようにする）・#60（`sync_state.schema_version` 列を外す）・#71（`laws.law_revision_id` に `NOT NULL`）の 3 件で、必ず同じ版に入れてスキーマの版上げを 1 回にする。#58（`last_sync_date` の値の決め方）と #61（表示）はスキーマを変えない。約 290 MB の再取り込みが要ることを CHANGELOG と README に書く |
+
+0.18.0 と 0.19.0 の順について。0.18.0 の 7 件はどれも DB のスキーマを変えません（#45・#51・#63 は e-Gov API の応答の扱い、#55・#67 は検索のクエリの組み立て、#62 は解説の表、#72 は XML の読み取り）。0.19.0 で DB を変えても 0.18.0 の実装をやり直すことにはならず、逆に 0.19.0 を先にしても 0.18.0 で DB をもう一度変えることはありません。57 件の中で DB のスキーマに触るのは上の 3 件だけなので、3 件を 1 つの版にまとめれば、どちらの順でも利用者の再取り込みは 1 回です。0.18.0 を先にする理由は、#45・#51・#63 が「違う法令・条文を根拠にする」害で最も大きく、再取り込みを待たずに出せるからです。
 | nta の検索規則 | #80・#81・#72 | nta 0.24.0 | `search_rules` の spec.md にまとまる。#81 は不具合として直す案（大文字小文字を区別しない）。#80 は SPEC-NTA-SEARCH-RULES-009 の本文どおり（元の語を部分一致で足す）に直す案 |
+
+### 段階 5b: houki-hub#5（変更把握の仕組み）
+
+段階 6 の前に入れます（2026-09-29 JST に shuji が決定）。段階 4〜5 で MCP の publish が 8 回あり、そのたびに Skill と hub の追随が要るので、追随漏れを人の記憶ではなく CI で検知できるようにしてから段階 6 に進みます。#5 の本文の①〜③のうち、この計画に効くのは次の 2 つです。
+
+| 作業 | 内容 | この計画での使い方 |
+| --- | --- | --- |
+| ① 通知を Issue にする | houki-hub の `stack-check.yml` を毎日にし、npm の版と `stack.json` のずれを見つけたら houki-hub 自身に Issue を立てる（同じ Issue を更新する） | MCP を publish した翌日には「hub の版表が古い」Issue が立つ。段階 6 の着手の合図になる |
+| ③ 呼び出し例の実測版を機械が見る | `scripts/reference-examples/` の各例の先頭の「実測: vX」を `stack.json` の公開版と突き合わせ、古い版で測ったままの例を一覧にする | 5.2 の「契約の確認」で流し直す例を、手で探さずに一覧から取れる |
+
+②（CI でリファレンスを再生成して PR を出す）は `npx -y` での起動が通るかの確認から始まるので、この計画の外で進めます。①と③は段階 4 の最初の publish（egov 0.16.0 / nta 0.22.0）までに入れておくのが望ましく、段階 3（houki-abbreviations）と並行できます。
 
 ### 段階 6: 下流の追随と #27
 
@@ -265,10 +278,10 @@ egov は Issue の数が多いので、変える場所でまとめます。
 | 変更の種類 | 起きうる劣化 | マージ前に確かめること |
 | --- | --- | --- |
 | inputSchema を厳しくする（T1: `integer` / `minimum` / `maximum` / `pattern` / `minLength`） | 今まで通っていた呼び出しが `INVALID_ARGUMENT` になる | houki-hub `scripts/reference-examples/` と houki-research-skill の `examples/` `workflows/` `SKILL.md` の呼び出し例を grep し、新しい inputSchema で通ることを確かめる。`limit: 100` のような例があれば、先に例を直す |
-| code を置き換える（T2） | Skill の `ERROR-HANDLING.md` の分岐と、hub の呼び出し例の `code` が古くなる。nta の「v0.14.0 から code を変えない」方針に反する | 置き換える code を CHANGELOG の「互換性」の節に旧 → 新で書く。Skill の `docs/ERROR-CODES.md` の PR を同じ日に用意する。`specs/current/common_errors/spec.md` の code の表を先に直す（Skill の CI がこの表と突き合わせる） |
+| code を置き換える（T2） | Skill の `ERROR-HANDLING.md` の分岐と、hub の呼び出し例の `code` が古くなる | minor で出す。置き換える code を CHANGELOG の「互換性」の節に旧 → 新で書く。Skill の `docs/ERROR-CODES.md` の PR を同じ日に用意する。`specs/current/common_errors/spec.md` の code の表を先に直す（Skill の CI がこの表と突き合わせる） |
 | houki-abbreviations の minor を上げる | MCP には自動で入らない（`^0.4.1` の罠）。入れたときに `freshness` の判定（#18）や正規化（#21）の結果が変わる | MCP 側で依存を上げる PR の中で、`freshness.test.ts` と `resolve_abbreviation` の受入テストを実行する。0.7.0 の CHANGELOG に「MCP から見て変わる結果」を書く |
 | `Object.freeze`（abbr #13） | 利用側が返り値に代入していれば `TypeError` | 着手前に egov・nta の `src/` を grep（段階 3 の表に記載） |
-| DB のスキーマの版を上げる（egov #59・#71） | 利用者の約 290 MB の取り込みが消える。古い版のサーバーで新しい DB を開くと消える（#60） | 版上げは段階 5 の 1 回にまとめる。#60 の「新しい版の DB は触らない」を同じ版か先に入れる。README と CHANGELOG に再取り込みの案内を書く |
+| DB のスキーマの版を上げる（egov #59・#60・#71） | 利用者の約 290 MB の取り込みが消える。古い版のサーバーで新しい DB を開くと消える（#60） | 版上げは egov 0.19.0 の 1 回にまとめる（3 件を分けない）。#60 の「新しい版の DB は触らない」を同じ版に入れる。README と CHANGELOG に再取り込みの案内を書く |
 | 応答のフィールドを足す・`null` に揃える（T4） | JSON を読む側が `undefined` 前提で書いていれば結果が変わる | 利用側は Skill と hub の例だけなので、`null` を前提にした文に直す。フィールドを消す変更は入れない（足すか `null` にするだけ） |
 
 ### 5.2 release ごとの「契約の確認」
@@ -313,6 +326,8 @@ gantt
   section 段階 5
   egov 0.18.0（法令の引き当て・検索）        :f0, after e1, 4d
   egov 0.19.0（DB・CLI）/ nta 0.24.0         :f1, after f0, 4d
+  section 段階 5b
+  houki-hub#5 ①③（通知の Issue 化・実測版の照合） :h0, after b0, 3d
   section 段階 6
   Skill・hub の追随、#27 のページ            :g0, after e1, 8d
 ```
@@ -320,7 +335,7 @@ gantt
 同時に進められるもの:
 
 - 段階 0 の 5 つの作業と、段階 1 の決定
-- 段階 2（egov / nta の不具合）と段階 3（houki-abbreviations）
+- 段階 2（egov / nta の不具合）と段階 3（houki-abbreviations）と段階 5b（houki-hub#5 の①③）
 - 段階 4 の egov と nta（別リポジトリなので採番は衝突しない。ただし T1・T2 の規則は段階 1 の決定を共有する）
 - 段階 6 の Skill の追随は、egov 0.16.0 / nta 0.22.0 の publish 直後から
 
@@ -349,12 +364,21 @@ gantt
 
 publish の回数は MCP 8 回、houki-abbreviations 1 回、Skill 2 回の計 11 回です。Issue ごとに publish すると 57 回近くになるので、これで 5 分の 1 に減ります。
 
-## 8. この計画で決めていないこと
+## 8. 決定の記録
 
-- 段階 1 の各テーマの規則そのもの（4 章に「勧める案」を書いたが、決定は shuji）
-- nta #64・#65 で code を置き換えるかどうか（「v0.14.0 から code を変えない」方針を改めるか）
-- egov 0.18.0 と 0.19.0 の順（DB・CLI を先にするか）
-- houki-hub#5（変更把握の仕組み）を段階 6 の前に入れるか。入れると MCP の publish から Skill・hub の追随漏れを機械で検知できるが、この 57 件とは独立の作業
+2026-09-29 JST に shuji が決めたこと:
+
+| 項目 | 決定 |
+| --- | --- |
+| 段階 1 の T1〜T5 の規則 | 4 章の「勧める案」のとおりにする。段階 1 の作業は `docs/DECISIONS.md` への転記と Issue へのコメント |
+| nta #64・#65 の code の置き換え | 置き換える。`explainDocIdNotFound()` の JSDoc の「v0.14.0 から変えない」は v0.14.1（patch）での判断で、minor では変えてよい（1 章の前提） |
+| egov 0.18.0 と 0.19.0 の順 | 0.18.0（法令の引き当て・検索）→ 0.19.0（DB・CLI）。DB のスキーマに触る #59・#60・#71 は 0.19.0 の 1 回にまとめるので、どちらの順でもやり直しは無い（段階 5 の説明） |
+| houki-hub#5 | 段階 6 の前に入れる（段階 5b） |
+
+まだ決めていないこと:
+
+- T1 で `search_fulltext` の `limit` の 1〜30 への丸め（既存の約束）も `INVALID_ARGUMENT` に変えるか。T1 の規則どおりなら変えるが、既存の仕様 ID の MODIFIED になる
+- houki-hub#5 の②（CI でのリファレンス再生成）をいつ入れるか
 
 ## 9. 記録
 
