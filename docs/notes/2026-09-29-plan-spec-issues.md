@@ -144,6 +144,9 @@ flowchart TB
     EGOV5["egov 法令の引き当て #45 #51 #63<br/>検索 #55 #67 / 解説 #62 / 添付 #72<br/>DB・CLI #58 #59 #60 #61 #71"]
     NTA5["nta #72 #80 #81"]
   end
+  subgraph L5B["段階 5b"]
+    HUB5["houki-hub#5 ①③<br/>publish 後の追随漏れを CI で検知"]
+  end
   subgraph L6["段階 6: 下流の追随"]
     SKILL["houki-research-skill<br/>ERROR-CODES / examples / snapshots"]
     HUB["houki-hub<br/>呼び出し例の再実測 / stack.json / #27 のページ"]
@@ -165,6 +168,8 @@ flowchart TB
   EGOV5 --> SKILL
   NTA5 --> SKILL
   SKILL --> HUB
+  DEC --> HUB5
+  HUB5 --> SKILL
 ```
 
 依存の理由は次の 3 つです。
@@ -358,7 +363,7 @@ gantt
 | houki-nta-mcp | 0.23.0 | 4 | #70・#71・#82 |
 | houki-research-skill | 0.16.0 | 6 | ERROR-CODES / examples / snapshots を 0.16.0 / 0.22.0 に |
 | houki-egov-mcp | 0.18.0 | 5 | #45・#51・#63・#55・#67・#62・#72 |
-| houki-egov-mcp | 0.19.0 | 5 | #58・#59・#60・#61・#71（スキーマの版上げ 1 回） |
+| houki-egov-mcp | 0.19.0 | 5 | #58・#59・#60・#61・#71（#59・#60・#71 でスキーマの版上げ 1 回） |
 | houki-nta-mcp | 0.24.0 | 5 | #72・#80・#81 |
 | houki-research-skill | 0.17.0 | 6 | 段階 5 の追随 |
 
