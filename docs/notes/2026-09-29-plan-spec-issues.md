@@ -495,7 +495,20 @@ proposal.md の「人が判断すること」で承認前に見る主な点:
 - nta: (1) `docId` 3 種の形は「入力」の表の例から書いたので、投入済み DB の `document.doc_id` を全件通して確かめる。(2) 語が 1 つも残らない `keyword`（1 文字・記号だけ）は egov と揃えて今のまま 0 件（新しい ID なし）。(3) `nta_get_tax_answer` の `no` を 4 桁に限る（012）。(4) `message` の表は egov の 022 と同じ。片方だけ変えない。
 - 両方: 識別子・日付の形の検査のうち、nta は T3 の正規化を先に通すため inputSchema の `pattern` を使わず各ツールの処理に置いた。egov の `at` は正規化の対象でないので `pattern` に置いた。
 
-次: T1 の 2 本がマージされたら、その上に T2（egov #46・#49・#69 + freshness の例外の code / nta #64・#65 + 同）を egov → nta の順で積む。
+T1 は 2026-10-01 にマージした（egov PR #84、nta PR #117）。その上に T2 の仕様 PR 用ブランチを 1 本ずつ積んだ（未署名・未 push、承認日空欄）。どちらも `spec-ids check` は exit 0、pr-scope の指摘は承認日の空欄だけ。
+
+| リポジトリ | ブランチ | コミット | 内容 |
+| --- | --- | --- | --- |
+| houki-egov-mcp | `spec/20261001-t2-error-codes`（main `58013cb` の上） | `2c37e97` | #46・#49・#69 と freshness の例外。12 単位。ADDED 19 / MODIFIED 0 / REMOVED 0。`common_errors` 027（`SOURCE_*` は通信の失敗だけ、`*_NOT_FOUND` は成功して 0 件だけ。code の対応表）・028（`cause.code` で `SOURCE_UNAVAILABLE`）・029（法令名検索の失敗は 10 ツールで `SOURCE_*`）・030（`FILE_TOO_LARGE`）・031（同期の記録の日付を解釈できないときは `INTERNAL_ERROR` `retryable: false`）。10 ツールに 1 ID ずつ、`get_attachment` / `get_law_file` に 50 MB の ID、`verify_citations` 043（関係の無い例外は `INTERNAL_ERROR`）、`search_fulltext` 035、`cli_status` 009 |
+| houki-nta-mcp | `spec/20261001-t2-error-codes`（main `f6d0156` の上） | `25bdcd9` | #64・#65 と freshness の例外。5 単位。ADDED 6 / MODIFIED 4 / REMOVED 0。`common_errors` 016（規則と対応表）・017（`fetched_at` を解釈できないときは `INTERNAL_ERROR` `retryable: false`）。`nta_get_jimu_unei` 001・002 と `nta_get_kaisei_tsutatsu` 001・002 を `DOC_NOT_FOUND` に MODIFIED。`nta_get_qa` 014・015 と `nta_get_tax_answer` 013・014（404・410・404 ページへの転送は `DOC_NOT_FOUND` `retryable: false`、通信の失敗は `SOURCE_API_ERROR`） |
+
+T2 の proposal.md の「人が判断すること」で承認前に見る主な点:
+
+- egov: (1) `ECONNRESET` / `ETIMEDOUT` も `SOURCE_UNAVAILABLE` に含めた（決定は 3 つ）。(2) `verify_citations` は判定できた件を返さない（変えない）。(3) 50 MB の上限は固定のまま。(4) 同期の記録の日付を解釈できないときは検索を `INTERNAL_ERROR` で止める（`freshness: null` は「記録が無い」の意味で使っているため）。(5) 法令本文の取得で e-Gov が 404 を返したときの code が `get_law`（`SOURCE_API_ERROR`）と `verify_citations`（`LAW_NOT_FOUND`）で違うが、#46・#49・#69 の外なので変えていない。
+- nta: (1) 410 と soft-404 を 404 と同じにした。(2) 通信の失敗は `SOURCE_API_ERROR` 1 つのまま（egov のように 4 つに分けない）。(3) `next_actions` の `example` の `keyword` は `"<探したい語>"` の置き換えの印。(4) `resolve_abbreviation` の「辞書に無い」は `resolved: null` のまま（egov と同じ）。
+- 見つかった不具合（T2 の外）: houki-egov-mcp `specs/current/cli_status/spec.md` の 007 と 008 の間に、差分ファイルの定型文（`### SPEC-…` は、current の「できること」の末尾に足す`・`## ADDED`）が残っている（`8ba4603` の取り込みで混入）。次の取り込みか、文書だけの小さな PR で消す。
+
+次: T2 の 2 本がマージされたら、その上に T3（houki-abbreviations `^0.7.0` を前提にした正規化。egov #52 / nta #66 の全角、DB の検索用列の再正規化の扱い）を egov → nta の順で積む。
 
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
 
