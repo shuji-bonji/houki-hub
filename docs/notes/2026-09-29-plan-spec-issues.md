@@ -383,6 +383,8 @@ publish の回数は MCP 8 回、houki-abbreviations 1 回、Skill 2 回の計 1
 | houki-abbreviations #13（凍結） | 凍結する（案 A、2026-09-30）。`abbreviationEntries` は各エントリと `aliases` まで、公開定数も `Object.freeze`。代入は `TypeError` にして黙って通さない。0.7.0 の CHANGELOG に「互換性」の節を書く。egov・nta は読むだけなので動作は変わらない |
 | houki-abbreviations #16（`getAbbreviationStats`） | `DOMAINS` / `CATEGORIES` / `SOURCE_MCP_HINTS` の全値をキーにし、辞書に無い値は `0` を返す（案 A、2026-09-30）。`byCategory.hanrei` は `undefined` ではなく `0`。型は `Record<Domain, number>` / `Record<Category, number>` / `Record<SourceMcpHint, number>`。実数（総数 174 など）は仕様に固定しない |
 | houki-abbreviations #20（`findSimilar` / `suggestCorrection`） | (1) 編集距離を名前の長さで割った比にしきい値を設ける（値は仕様 PR で実データを見て決める。0.34 前後）。最短文字数は設けず、距離 0 の完全一致は短くても返す。(2) `suggestCorrection` は距離 0（query と同じ名前）を候補から外す。(3) README と JSDoc に「`findSimilar` は編集距離で近い名前を返す。一覧が欲しいときは `searchByName`」と書く（2026-09-30）。混同しやすい文字の表（例↔令、規↔則）による訂正は、実際の打ち間違いが集まってから別の Issue で検討する（将来の改善要望） |
+| 段階 4 の仕様 PR の分け方 | 案 A（2026-10-01）: リポジトリごとにテーマ別の仕様 PR 3 本を積み上げる（main → T1 `spec/20261001-t1-argument-guards` → T2 `spec/20261001-t2-error-codes` → T3 `spec/20261001-t3-normalize`）。3 テーマが同じ spec.md（`common_errors`・`get_law`・nta の取得 4 ツールなど）を触るので採番の都合で直列。マージもこの順。実装 PR は 1 本（`feat/20261001-0.16.0` / `feat/20261001-0.22.0`）で、1 コミット目に houki-abbreviations `^0.7.0` への依存の変更を置き、その後にテーマごとの `test:` → `fix:`/`feat:` → `chore: v0.16.0` / `v0.22.0` → 取り込みの順に積む。仕様 PR はテーマごとに egov → nta の順で続けて書く（`INVALID_ARGUMENT` の `detail` の形と code の説明文を同じ文にするため） |
+| 段階 3 の申し送り 2 件の置き場 | `computeDaysSince` / `judgeStaleness` の例外（`RangeError` / `TypeError`）の code は T2 の仕様 PR で決める。DB の検索用列の再正規化（`normalizeJpText` のダッシュ類）は T3 の仕様 PR で扱い、Steward が実データで影響を確かめてから、egov は `schema_version` を上げない方法（`schema_meta` のキーで起動時に UPDATE）か 0.19.0 の再取り込みまで見送り、nta は v11 の migration か 0.24.0 まで見送り、のどれかを proposal.md に書く（2026-10-01） |
 | houki-abbreviations #23（`isValidLawId`） | 公式仕様（laws.e-gov.go.jp の「法令種別と法令ID」）に合わせて狭める（案 A、2026-09-30）: 元号 `[1-5]`、`DH`（太政官布達）を足す、府省令は `M[1-6]`、`R` の機関番号は 10 進 8 桁（`00000001`〜`00000019`）、憲法は `321CONSTITUTION` だけ。実在する全件（2026-09-20 時点 9,569 件）が通ることを `scripts/verify-law-ids.mjs` で CI で確かめ続ける |
 
 まだ決めていないこと:
@@ -475,6 +477,25 @@ GitHub Actions の main の最新の実行結果です（VM から vitest を実
 段階 4 への申し送り（CHANGELOG「互換性」から）: `computeDaysSince`（`RangeError` / `TypeError`）と `judgeStaleness`（`RangeError`）を egov・nta の `freshness.ts` で捕まえる。`normalizeJpText` がダッシュ類 `‐ ‑ – — ― −` を `-` にするので、egov の ingester と nta の DB の検索用列の再正規化（nta 0.14.2 → 0.15.0 の全角英字と同じ手順）が要る。`AbbreviationStats` の 3 つの Record が全値キー、`Category` に `kokuji`（`CATEGORIES` の添字がずれる）、定数は `Readonly`。`alias_collides_with_abbr` の警告は廃止（`errors` の `duplicate_name`）。
 
 段階 3 の完了（2026-09-30 JST）: 実装 PR #34（`test/20261001-0.7.0`、`fix(spec)` の `dbf591c` を含む 14 コミット）を main にマージし、タグ `v0.7.0` から npm に 0.7.0 を公開（2026-09-30 08:04 JST）。`verify-law-ids`（`d3f8902`）は残す。対応した Issue #13〜#25 の close コメント草案は `docs/notes/issues-2026-09-30-abbr-0.7.0-close/`、投稿と close は `scripts/close-issues-2026-09-30-abbr-0.7.0.sh`。abbr 側に残る直し: CHANGELOG の `## [0.7.0] - 2026-10-01`、proposal.md 4 本と current 18 本の承認日行、`verify-law-ids.mjs` の説明の「2026-10-01」は実際には 2026-09-30 JST（次の `docs:` PR か 0.7.1 で直す）。#17 で 0.7.0 が直していない 2 点（`docs/v0.4.0-roadmap.md` の `findSimilar` の例、`src/search.test.ts` SPEC-ABBR-FIND-SIMILAR-002 のコメント）も同じ PR で。段階 4 への候補 Issue: `verify-law-ids` が落ちたとき `invalid_law_id` の ID をどの部分が既知の集合の外かまで出す、失敗時に Issue を立てる step（`stack-drift` と同じ形）。
+
+### 段階 4 の進捗（2026-10-01 JST）
+
+T1 の仕様 PR 用ブランチを egov と nta に 1 本ずつ積んだ（未署名・未 push、承認日空欄）。どちらも `spec-ids check` は exit 0、pr-scope の指摘は承認日の空欄だけ。
+
+| リポジトリ | ブランチ | コミット | 内容 |
+| --- | --- | --- | --- |
+| houki-egov-mcp | `spec/20261001-t1-argument-guards`（main `8ba4603` の上） | `0046d0f` | #47・#48・#53・#54・#57。15 単位（`common_errors` + ツール 14 本）。ADDED 36 / MODIFIED 9 / REMOVED 3（`GET-TOC-022`、`SEARCH-FULLTEXT-025`・`026`）。`common_errors` に 020〜026（`tool`、`detail.issues` の分け方、日本語の `message` の表、数値の範囲の表、`at` の `pattern` と暦に無い日付、`minLength: 1`、空白だけの扱い） |
+| houki-nta-mcp | `spec/20261001-t1-argument-guards`（main `099b6ce` の上） | `522395b` | #66（形）・#67・#68・#69・#79。16 単位（`common_errors`・`search_rules` + ツール 14 本）。ADDED 29 / MODIFIED 6 / REMOVED 0。`common_errors` に 010〜015（egov の 021〜023・025・026 と同じ文 + 識別子の形はツールの処理で確かめる 015）。#67 は「今の動きを意図とする」で `SEARCH-RULES-018`（実装の変更: 不要） |
+
+計画書 5.1 の事前確認（inputSchema を厳しくする前の grep）は済み: houki-hub の呼び出し例 47 本と houki-research-skill の `examples/` `workflows/` `SKILL.md` の値は `limit` 2〜8・`latest` 2〜5・`depth` 1〜2・`paragraph` 1〜5・`at` は `YYYY-MM-DD` だけで、T1 の inputSchema で落ちる例は無い。
+
+proposal.md の「人が判断すること」で承認前に見る主な点:
+
+- egov: (1) `search_fulltext` の `limit` の 1〜30 への丸めをやめる側で書いた（8 章の未決。025・026 を REMOVED、033 を ADDED）。(2) `tool` の置き場は nta と同じ本文の直下（段階 1 のコメントは `detail.tool` と書いたが、揃える先の nta に合わせた）。(3) `get_attachment` の空白だけの `src` は省略と同じ（zip）。(4) `latest` / `depth` は上限なし。(5) `message` の文言を約束にするか（022 の表）。
+- nta: (1) `docId` 3 種の形は「入力」の表の例から書いたので、投入済み DB の `document.doc_id` を全件通して確かめる。(2) 語が 1 つも残らない `keyword`（1 文字・記号だけ）は egov と揃えて今のまま 0 件（新しい ID なし）。(3) `nta_get_tax_answer` の `no` を 4 桁に限る（012）。(4) `message` の表は egov の 022 と同じ。片方だけ変えない。
+- 両方: 識別子・日付の形の検査のうち、nta は T3 の正規化を先に通すため inputSchema の `pattern` を使わず各ツールの処理に置いた。egov の `at` は正規化の対象でないので `pattern` に置いた。
+
+次: T1 の 2 本がマージされたら、その上に T2（egov #46・#49・#69 + freshness の例外の code / nta #64・#65 + 同）を egov → nta の順で積む。
 
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
 
