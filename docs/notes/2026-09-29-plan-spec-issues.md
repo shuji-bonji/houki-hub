@@ -508,6 +508,8 @@ T2 の proposal.md の「人が判断すること」で承認前に見る主な�
 - nta: (1) 410 と soft-404 を 404 と同じにした。(2) 通信の失敗は `SOURCE_API_ERROR` 1 つのまま（egov のように 4 つに分けない）。(3) `next_actions` の `example` の `keyword` は `"<探したい語>"` の置き換えの印。(4) `resolve_abbreviation` の「辞書に無い」は `resolved: null` のまま（egov と同じ）。
 - 見つかった不具合（T2 の外）: houki-egov-mcp `specs/current/cli_status/spec.md` の 007 と 008 の間に、差分ファイルの定型文（`### SPEC-…` は、current の「できること」の末尾に足す`・`## ADDED`）が残っている（`8ba4603` の取り込みで混入）。次の取り込みか、文書だけの小さな PR で消す。
 
+T2 の proposal.md の「人が判断すること」から Issue に移す 2 件の草案を置いた（gh が使えないので、人が投稿してから番号を書く）: `docs/notes/2026-10-01-issue-draft-nta-source-error-codes.md`（nta の通信の失敗を egov と同じ 4 つの code に分けるか）、`docs/notes/2026-10-01-issue-draft-egov-law-text-404-code.md`（law_id が決まった後の e-Gov の 400・404 を `SOURCE_API_ERROR` と `LAW_NOT_FOUND` のどちらに揃えるか）。どちらも段階 4 の外（段階 5 の候補）。specs/current の定型文の混入は houki-egov-mcp `docs/20261001-cli-status-stray-lines`（`bc60fa3`、cli_status と explain_law_type の 2 ファイル）で消す。
+
 次: T2 の 2 本がマージされたら、その上に T3（houki-abbreviations `^0.7.0` を前提にした正規化。egov #52 / nta #66 の全角、DB の検索用列の再正規化の扱い）を egov → nta の順で積む。
 
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
