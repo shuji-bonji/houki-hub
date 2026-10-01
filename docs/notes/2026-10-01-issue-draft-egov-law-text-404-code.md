@@ -1,7 +1,7 @@
 # issue 草案: 法令本文の取得で e-Gov が 404 を返したときの code がツールで違う
 
 対象リポジトリ: houki-egov-mcp（2026-10-01 作成）
-提出先: https://github.com/shuji-bonji/houki-egov-mcp/issues
+提出先: https://github.com/shuji-bonji/houki-egov-mcp/issues/87
 タイトル案: law_id が決まった後の e-Gov の 400・404 を、`SOURCE_API_ERROR`（`get_law` など）と `LAW_NOT_FOUND`（`verify_citations`）のどちらに揃えるか
 ラベル案: spec, question
 
@@ -15,13 +15,13 @@ T2 の仕様差分 `specs/changes/20261001-t2-error-codes`（SPEC-EGOV-COMMON-ER
 
 ## 現状（v0.15.4）
 
-| 場面 | code | 仕様 ID |
-| --- | --- | --- |
-| `get_law` で法令本文の取得が 404（429 以外の 4xx） | `SOURCE_API_ERROR`、`retryable: false`、`detail.status: 404` | SPEC-EGOV-GET-LAW-031 |
-| `get_toc` / `get_law_range` / `get_law_revisions` の同じ場面 | `SOURCE_API_ERROR`、`retryable: false` | SPEC-EGOV-GET-TOC-014、SPEC-EGOV-GET-LAW-RANGE-019、SPEC-EGOV-GET-LAW-REVISIONS-008 |
-| `get_attachment` で e-Gov が 400・404（404003 以外） | `SOURCE_API_ERROR`、`retryable: false`、`detail.cause` に応答本文 | SPEC-EGOV-GET-ATTACHMENT-018 |
-| `get_attachment` で e-Gov が 404003（添付の実体が無い） | `ATTACHMENT_NOT_FOUND` | SPEC-EGOV-GET-ATTACHMENT-010 |
-| `get_law_file` の同じ場面 | `SOURCE_API_ERROR`、`retryable: false` | SPEC-EGOV-GET-LAW-FILE-014 |
+| 場面                                                          | code                                                                                  | 仕様 ID                                                                                |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `get_law` で法令本文の取得が 404（429 以外の 4xx）            | `SOURCE_API_ERROR`、`retryable: false`、`detail.status: 404`                          | SPEC-EGOV-GET-LAW-031                                                                  |
+| `get_toc` / `get_law_range` / `get_law_revisions` の同じ場面  | `SOURCE_API_ERROR`、`retryable: false`                                                | SPEC-EGOV-GET-TOC-014、SPEC-EGOV-GET-LAW-RANGE-019、SPEC-EGOV-GET-LAW-REVISIONS-008    |
+| `get_attachment` で e-Gov が 400・404（404003 以外）          | `SOURCE_API_ERROR`、`retryable: false`、`detail.cause` に応答本文                     | SPEC-EGOV-GET-ATTACHMENT-018                                                           |
+| `get_attachment` で e-Gov が 404003（添付の実体が無い）       | `ATTACHMENT_NOT_FOUND`                                                                | SPEC-EGOV-GET-ATTACHMENT-010                                                           |
+| `get_law_file` の同じ場面                                     | `SOURCE_API_ERROR`、`retryable: false`                                                | SPEC-EGOV-GET-LAW-FILE-014                                                             |
 | `verify_citations` で `law_id` を書いた件に e-Gov が 400・404 | その件を `status: "not_found"`・`code: "LAW_NOT_FOUND"`（ツール全体はエラーにしない） | SPEC-EGOV-VERIFY-CITATIONS-015（`src/services/law-service.ts` の `isLawIdRejected()`） |
 
 同じ「e-Gov がその law_id を知らない」を、`verify_citations` だけが `LAW_NOT_FOUND` にしています。

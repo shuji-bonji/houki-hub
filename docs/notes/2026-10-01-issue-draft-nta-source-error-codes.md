@@ -1,7 +1,7 @@
 # issue 草案: 国税庁サイトとの通信の失敗を `SOURCE_API_ERROR` 1 つで返している
 
 対象リポジトリ: houki-nta-mcp（2026-10-01 作成）
-提出先: https://github.com/shuji-bonji/houki-nta-mcp/issues
+提出先: https://github.com/shuji-bonji/houki-nta-mcp/issues/120
 タイトル案: 国税庁サイトとの通信の失敗を、houki-egov-mcp と同じ 4 つの code（`SOURCE_TIMEOUT` / `SOURCE_RATE_LIMITED` / `SOURCE_UNAVAILABLE` / `SOURCE_API_ERROR`）に分けるか
 ラベル案: spec, question
 
@@ -13,13 +13,13 @@ T2 の仕様差分 `specs/changes/20261001-t2-error-codes`（SPEC-NTA-COMMON-ERR
 
 houki-egov-mcp は、同じ T2 の差分（SPEC-EGOV-COMMON-ERRORS-027・028）で通信の失敗を 4 つに分けています。
 
-| e-Gov への要求の終わり方 | houki-egov-mcp の `code` | `retryable` |
-| --- | --- | --- |
-| HTTP 429 | `SOURCE_RATE_LIMITED` | `true` |
-| 応答を待ちきれなかった | `SOURCE_TIMEOUT` | `true` |
-| HTTP 5xx | `SOURCE_API_ERROR` | `true` |
-| HTTP 4xx（429 を除く） | `SOURCE_API_ERROR` | `false` |
-| 接続できない（`cause.code` が `ENOTFOUND` / `EAI_AGAIN` / `ECONNREFUSED` / `ECONNRESET` / `ETIMEDOUT`） | `SOURCE_UNAVAILABLE` | `true` |
+| e-Gov への要求の終わり方                                                                                | houki-egov-mcp の `code` | `retryable` |
+| ------------------------------------------------------------------------------------------------------- | ------------------------ | ----------- |
+| HTTP 429                                                                                                | `SOURCE_RATE_LIMITED`    | `true`      |
+| 応答を待ちきれなかった                                                                                  | `SOURCE_TIMEOUT`         | `true`      |
+| HTTP 5xx                                                                                                | `SOURCE_API_ERROR`       | `true`      |
+| HTTP 4xx（429 を除く）                                                                                  | `SOURCE_API_ERROR`       | `false`     |
+| 接続できない（`cause.code` が `ENOTFOUND` / `EAI_AGAIN` / `ECONNREFUSED` / `ECONNRESET` / `ETIMEDOUT`） | `SOURCE_UNAVAILABLE`     | `true`      |
 
 houki-nta-mcp の `specs/current/common_errors/spec.md` の code の表には `SOURCE_TIMEOUT` / `SOURCE_RATE_LIMITED` の行がありますが、「v0.21.0 ではどのツールも返さない」と書いています。`SOURCE_UNAVAILABLE` は表にありません。
 

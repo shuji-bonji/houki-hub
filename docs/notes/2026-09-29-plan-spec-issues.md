@@ -524,6 +524,8 @@ T3 の proposal.md の「人が判断すること」で承認前に見る主な�
 - egov: (1) `search_law` の管轄外の略称を `OUT_OF_SCOPE` にした（0 件の成功に `note` を付ける案もある）。(2) `resolve_abbreviation` に `in_scope` / `hint` を足した（nta と同じ形。フィールドを足すだけ）。(3) 上の DB の件数の確認。
 - nta: (1) 識別子の全角を受け付けて揃える側で書いた（`INVALID_ARGUMENT` で半角を案内する案もある）。(2) 上の DB の件数の確認。(3) `search_rules` 019 に略称と識別子の揃え方をまとめた。
 
+T3 は 2026-10-01 にマージした（egov PR #86 `70e3227`、nta PR #119 `8d4653c`）。実装は別の会話で行うので、指示を `docs/notes/2026-10-01-stage4-impl-instructions.md` に置いた（A: egov 0.16.0、B: nta 0.22.0、C: publish の日の houki-research-skill）。
+
 次: T3 の 2 本がマージされたら、段階 4 の実装 PR（`feat/20261001-0.16.0` / `feat/20261001-0.22.0`。1 コミット目に houki-abbreviations `^0.7.0` への依存の変更、その後 T1 → T2 → T3 の順に `test:` → `fix:`/`feat:`、`chore:` で版、`specs/current/` への取り込み）。実装 PR の前に、上の DB の件数の確認と、nta の `document.doc_id` を T1 の `docId` の形に全件通す確認をする。
 
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
