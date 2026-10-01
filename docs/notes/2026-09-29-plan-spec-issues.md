@@ -87,6 +87,7 @@ houki-hub#26（仕様を担保するエージェントの導入）で 3 リポ�
 | #45 | 完全一致しないとき 1 件目の法令を知らせずに使う | C | （T2 と接する） | 5 | 高 |
 | #51 | 本則と附則を区別せず、附則の条を本則の条として返す | C | — | 5 | 高 |
 | #63 | 名前の形から関係法令・委任先を推定し、実在しない法令を指す | C | — | 5 | 高 |
+| #87 | law_id が決まった後の e-Gov の 400・404 の code がツールで違う（`get_law` 系は `SOURCE_API_ERROR`、`verify_citations` は `LAW_NOT_FOUND`）。2026-10-01 に T2 から起票 | C | （T2 と接する） | 5 | 中 |
 | #55 | `search_law` の `domain` が絞り込まず、`total_count` が総数でない | C | — | 5 | 中 |
 | #67 | `search_fulltext` の通称の展開が本文にも効く | C | — | 5 | 中 |
 | #62 | `explain_law_type` が「通知」と一部の種別コードで解説を返さない | C | — | 5 | 低 |
@@ -116,6 +117,7 @@ houki-hub#26（仕様を担保するエージェントの導入）で 3 リポ�
 | #72 | `nta_search_qa` の `domain` 引数 | C | — | 5 | 低 |
 | #80 | 3 文字未満の略称で略称そのものを含む文書が返らない | C | search_rules | 5 | 中 |
 | #81 | 英字 2 文字の語と 3 文字以上の語を混ぜると 0 件 | C | search_rules | 5 | 中 |
+| #120 | 国税庁サイトとの通信の失敗を `SOURCE_API_ERROR` 1 つで返す（egov は 4 つの code に分ける）。2026-10-01 に T2 から起票 | C | （T2 と接する） | 5 | 低 |
 
 ## 3. 依存関係
 
@@ -247,12 +249,12 @@ egov は Issue の数が多いので、変える場所でまとめます。
 
 | まとまり | Issue | 版 | 進め方と注意 |
 | --- | --- | --- | --- |
-| 法令の引き当て | #45・#51・#63 | egov 0.18.0 | 害が最も大きい 3 件。#45 は T2 の「検索が成功して 0 件」の規則を前提にする（完全一致が無いときは候補の一覧を `LAW_NOT_FOUND` の `hint` に入れて条文を返さない案）。#51 は `get_law` / `verify_citations` の探す範囲を本則に限り、附則は `suppl_index` で指定する案。#63 は確かでないときは `target_law` を付けない案 |
+| 法令の引き当て | #45・#51・#63・#87 | egov 0.18.0 | 害が最も大きい 3 件。#45 は T2 の「検索が成功して 0 件」の規則を前提にする（完全一致が無いときは候補の一覧を `LAW_NOT_FOUND` の `hint` に入れて条文を返さない案）。#51 は `get_law` / `verify_citations` の探す範囲を本則に限り、附則は `suppl_index` で指定する案。#63 は確かでないときは `target_law` を付けない案 |
 | 検索と解説と添付 | #55・#67・#62・#72 | egov 0.18.0 か 0.19.0 | #67 は nta #21（0 件のときだけ通称を展開）と同じ規則にする。#55 の `domain` は外す案（`search_fulltext` と揃える） |
 | DB と CLI | #58・#59・#60・#61・#71 | egov 0.19.0 | スキーマの版を上げるのは #59（公布日を `NULL` にできるようにする）・#60（`sync_state.schema_version` 列を外す）・#71（`laws.law_revision_id` に `NOT NULL`）の 3 件で、必ず同じ版に入れてスキーマの版上げを 1 回にする。#58（`last_sync_date` の値の決め方）と #61（表示）はスキーマを変えない。約 290 MB の再取り込みが要ることを CHANGELOG と README に書く |
 
 0.18.0 と 0.19.0 の順について。0.18.0 の 7 件はどれも DB のスキーマを変えません（#45・#51・#63 は e-Gov API の応答の扱い、#55・#67 は検索のクエリの組み立て、#62 は解説の表、#72 は XML の読み取り）。0.19.0 で DB を変えても 0.18.0 の実装をやり直すことにはならず、逆に 0.19.0 を先にしても 0.18.0 で DB をもう一度変えることはありません。57 件の中で DB のスキーマに触るのは上の 3 件だけなので、3 件を 1 つの版にまとめれば、どちらの順でも利用者の再取り込みは 1 回です。0.18.0 を先にする理由は、#45・#51・#63 が「違う法令・条文を根拠にする」害で最も大きく、再取り込みを待たずに出せるからです。
-| nta の検索規則 | #80・#81・#72 | nta 0.24.0 | `search_rules` の spec.md にまとまる。#81 は不具合として直す案（大文字小文字を区別しない）。#80 は SPEC-NTA-SEARCH-RULES-009 の本文どおり（元の語を部分一致で足す）に直す案 |
+| nta の検索規則と code | #80・#81・#72・#120 | nta 0.24.0 | `search_rules` の spec.md にまとまる。#81 は不具合として直す案（大文字小文字を区別しない）。#80 は SPEC-NTA-SEARCH-RULES-009 の本文どおり（元の語を部分一致で足す）に直す案 |
 | nta の DB と CLI（#75 の未決から起票） | #106・#107・#109・#110・#111・#112 | nta 0.24.0 | #106（知らないフラグ・不正な日数・未対応の通達名で黙って起動するか例外。`--version` の文）は egov #61 と同じ規則、#107（版が合わない DB の作り直し、全データ消去の入口）は egov #60 と同じ規則。#112（`document.doc_type` / `taxonomy` の `CHECK` 制約）は #107 とまとめてスキーマの版上げを 1 回にする。#108（使い方の文の食い違い）は T5 として #70 と同じ仕様 PR（nta 0.23.0） |
 
 ### 段階 5b: houki-hub#5（変更把握の仕組み）
@@ -363,9 +365,9 @@ gantt
 | houki-egov-mcp | 0.17.0 | 4 | #56・#64・#65・#66 |
 | houki-nta-mcp | 0.23.0 | 4 | #70・#71・#82・#108 |
 | houki-research-skill | 0.16.0 | 6 | ERROR-CODES / examples / snapshots を 0.16.0 / 0.22.0 に |
-| houki-egov-mcp | 0.18.0 | 5 | #45・#51・#63・#55・#67・#62・#72 |
+| houki-egov-mcp | 0.18.0 | 5 | #45・#51・#63・#87・#55・#67・#62・#72 |
 | houki-egov-mcp | 0.19.0 | 5 | #58・#59・#60・#61・#71（#59・#60・#71 でスキーマの版上げ 1 回） |
-| houki-nta-mcp | 0.24.0 | 5 | #72・#80・#81・#106・#107・#109・#110・#111・#112（#107・#112 でスキーマの版上げ 1 回） |
+| houki-nta-mcp | 0.24.0 | 5 | #72・#80・#81・#120・#106・#107・#109・#110・#111・#112（#107・#112 でスキーマの版上げ 1 回） |
 | houki-research-skill | 0.17.0 | 6 | 段階 5 の追随 |
 
 publish の回数は MCP 8 回、houki-abbreviations 1 回、Skill 2 回の計 11 回です。Issue ごとに publish すると 57 回近くになるので、これで 5 分の 1 に減ります。
@@ -508,7 +510,7 @@ T2 の proposal.md の「人が判断すること」で承認前に見る主な�
 - nta: (1) 410 と soft-404 を 404 と同じにした。(2) 通信の失敗は `SOURCE_API_ERROR` 1 つのまま（egov のように 4 つに分けない）。(3) `next_actions` の `example` の `keyword` は `"<探したい語>"` の置き換えの印。(4) `resolve_abbreviation` の「辞書に無い」は `resolved: null` のまま（egov と同じ）。
 - 見つかった不具合（T2 の外）: houki-egov-mcp `specs/current/cli_status/spec.md` の 007 と 008 の間に、差分ファイルの定型文（`### SPEC-…` は、current の「できること」の末尾に足す`・`## ADDED`）が残っている（`8ba4603` の取り込みで混入）。次の取り込みか、文書だけの小さな PR で消す。
 
-T2 の proposal.md の「人が判断すること」から Issue に移す 2 件の草案を置いた（gh が使えないので、人が投稿してから番号を書く）: `docs/notes/2026-10-01-issue-draft-nta-source-error-codes.md`（nta の通信の失敗を egov と同じ 4 つの code に分けるか）、`docs/notes/2026-10-01-issue-draft-egov-law-text-404-code.md`（law_id が決まった後の e-Gov の 400・404 を `SOURCE_API_ERROR` と `LAW_NOT_FOUND` のどちらに揃えるか）。どちらも段階 4 の外（段階 5 の候補）。specs/current の定型文の混入は houki-egov-mcp `docs/20261001-cli-status-stray-lines`（`bc60fa3`、cli_status と explain_law_type の 2 ファイル）で消す。
+T2 の proposal.md の「人が判断すること」から Issue に移す 2 件の草案を置き、2026-10-01 に投稿した（houki-egov-mcp #87、houki-nta-mcp #120。どちらも段階 5 に割り付けた: egov #87 は 0.18.0 の「法令の引き当て」、nta #120 は 0.24.0。T2 の proposal.md はマージ済みなので番号は書き足さず、この計画書と草案の「提出先」に残す）: `docs/notes/2026-10-01-issue-draft-nta-source-error-codes.md`（nta の通信の失敗を egov と同じ 4 つの code に分けるか）、`docs/notes/2026-10-01-issue-draft-egov-law-text-404-code.md`（law_id が決まった後の e-Gov の 400・404 を `SOURCE_API_ERROR` と `LAW_NOT_FOUND` のどちらに揃えるか）。どちらも段階 4 の外（段階 5 の候補）。specs/current の定型文の混入は houki-egov-mcp `docs/20261001-cli-status-stray-lines`（`bc60fa3`、cli_status と explain_law_type の 2 ファイル）で消す。
 
 T2 は 2026-10-01 にマージした（egov PR #85、nta PR #118）。specs/current の定型文の混入も egov `1e7b33f` で消した。その上に T3 の仕様 PR 用ブランチを 1 本ずつ積んだ（未署名・未 push、承認日空欄）。どちらも `spec-ids check` は exit 0、pr-scope の指摘は承認日の空欄だけ。
 
