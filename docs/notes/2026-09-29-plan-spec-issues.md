@@ -510,7 +510,21 @@ T2 の proposal.md の「人が判断すること」で承認前に見る主な�
 
 T2 の proposal.md の「人が判断すること」から Issue に移す 2 件の草案を置いた（gh が使えないので、人が投稿してから番号を書く）: `docs/notes/2026-10-01-issue-draft-nta-source-error-codes.md`（nta の通信の失敗を egov と同じ 4 つの code に分けるか）、`docs/notes/2026-10-01-issue-draft-egov-law-text-404-code.md`（law_id が決まった後の e-Gov の 400・404 を `SOURCE_API_ERROR` と `LAW_NOT_FOUND` のどちらに揃えるか）。どちらも段階 4 の外（段階 5 の候補）。specs/current の定型文の混入は houki-egov-mcp `docs/20261001-cli-status-stray-lines`（`bc60fa3`、cli_status と explain_law_type の 2 ファイル）で消す。
 
-次: T2 の 2 本がマージされたら、その上に T3（houki-abbreviations `^0.7.0` を前提にした正規化。egov #52 / nta #66 の全角、DB の検索用列の再正規化の扱い）を egov → nta の順で積む。
+T2 は 2026-10-01 にマージした（egov PR #85、nta PR #118）。specs/current の定型文の混入も egov `1e7b33f` で消した。その上に T3 の仕様 PR 用ブランチを 1 本ずつ積んだ（未署名・未 push、承認日空欄）。どちらも `spec-ids check` は exit 0、pr-scope の指摘は承認日の空欄だけ。
+
+| リポジトリ | ブランチ | コミット | 内容 |
+| --- | --- | --- | --- |
+| houki-egov-mcp | `spec/20261001-t3-normalize`（main `1e7b33f` の上） | `78935c4` | #52 と DB の検索用列。14 単位。ADDED 17 / MODIFIED 0 / REMOVED 0。`resolve_abbreviation` 011（全角・ダッシュ類・全角空白を吸収）・012・013（`in_scope` と `hint`。nta と同じ形）、`search_law` 014・015（管轄外の略称は `OUT_OF_SCOPE`）、`law_name` を引く 10 ツールに 1 ID ずつ、`search_fulltext` 036 と `db_schema` 024（DB の検索用列は 0.16.0 では入れ直さず 0.19.0 の取り込みで揃える。版は 2 のまま） |
+| houki-nta-mcp | `spec/20261001-t3-normalize`（main `6e835f2` の上） | `5ad1783` | #66 の全角と DB の検索用列。10 単位。ADDED 11 / MODIFIED 2 / REMOVED 0。`search_rules` 019（略称辞書を引く 3 か所は `normalize: true`、識別子 4 種は `normalizeJpText` を通してから T1 の形の検査）と各ツールの ID、`search_rules` 007 を MODIFIED（ダッシュ類を足す）、`db_schema` 019・020（版 10 → 11 で入れ直す。版 4 → 5 と同じ手順）、001 を MODIFIED（版 11）。T1 の `nta_get_tax_answer` 001 の「T3 で決める」の 1 文は、同じ ID を 2 つの差分で MODIFIED にすると `spec-ids check` が採番の衝突と見るので、取り込みの指示として書いた |
+
+DB の検索用列（ダッシュ類）の扱いは、egov と nta で分けた: egov は版を上げると空の DB になり（SPEC-EGOV-DB-SCHEMA-016）290 MB の再取り込みが 2 回になるので 0.19.0 まで見送り、nta は版 4 → 5 の「取りに行かずに入れ直す」移行が既にあり行数も少ないので 0.22.0 で版 11 にする。どちらも実データでダッシュ類を含む行の件数は確かめていない（VM から `~/.cache/houki-*-mcp/` に届かない）。承認の前に `SELECT COUNT(*) FROM articles WHERE body GLOB '*[‐‑–—―−]*'`（egov）と `clause` / `document` の同じ問い合わせ（nta）を実行して、egov で多ければ 0.16.0 で入れ直す側に、nta で 0 件なら見送る側に変える。
+
+T3 の proposal.md の「人が判断すること」で承認前に見る主な点:
+
+- egov: (1) `search_law` の管轄外の略称を `OUT_OF_SCOPE` にした（0 件の成功に `note` を付ける案もある）。(2) `resolve_abbreviation` に `in_scope` / `hint` を足した（nta と同じ形。フィールドを足すだけ）。(3) 上の DB の件数の確認。
+- nta: (1) 識別子の全角を受け付けて揃える側で書いた（`INVALID_ARGUMENT` で半角を案内する案もある）。(2) 上の DB の件数の確認。(3) `search_rules` 019 に略称と識別子の揃え方をまとめた。
+
+次: T3 の 2 本がマージされたら、段階 4 の実装 PR（`feat/20261001-0.16.0` / `feat/20261001-0.22.0`。1 コミット目に houki-abbreviations `^0.7.0` への依存の変更、その後 T1 → T2 → T3 の順に `test:` → `fix:`/`feat:`、`chore:` で版、`specs/current/` への取り込み）。実装 PR の前に、上の DB の件数の確認と、nta の `document.doc_id` を T1 の `docId` の形に全件通す確認をする。
 
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
 
