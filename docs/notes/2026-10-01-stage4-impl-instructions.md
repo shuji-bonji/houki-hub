@@ -4,9 +4,9 @@
 
 - 指示 A: houki-egov-mcp 0.16.0（新しい会話にそのまま貼る）
 - 指示 B: houki-nta-mcp 0.22.0（別の新しい会話にそのまま貼る）
-- 指示 C: 2 つを publish した日に houki-research-skill を直す（さらに別の会話）
+- 指示 C: 2 つを publish した日に houki-research-skill を 0.16.0 として追随させる（さらに別の会話。2026-10-02 に書き直した）
 
-A と B は別リポジトリなので並行してよい。C は A と B の両方を publish した後。
+A と B は別リポジトリなので並行してよい。C は A と B の両方を publish した後。A（egov 0.16.0）と B（nta 0.22.0）は 2026-10-02 に main に入った。
 
 ---
 
@@ -211,17 +211,68 @@ test: のコミットでは新しいテストが落ち、次の fix: / feat: で
 
 ---
 
-## 指示 C: houki-research-skill（egov 0.16.0 と nta 0.22.0 を publish した日）
+## 指示 C: houki-research-skill 0.16.0（egov 0.16.0 と nta 0.22.0 を publish した日）
+
+2026-10-02 に書き直した。初めの版は「`mcp-refs.config.json` の版と `mcp-snapshots/` は段階 6 で上げる」としていたが、Skill の CI（`ci.yml`）は `update-mcp-snapshots.mjs --check` と `check-mcp-refs.mjs` を走らせ、`docs/ERROR-CODES.md` の各 MCP の列の印を `mcp-snapshots/` の code の一覧と突き合わせる。そのため、`ERROR-CODES.md` で houki-egov-mcp の列に `FILE_TOO_LARGE` の印を付けるには、同じ PR で版と `mcp-snapshots/` も上げる必要がある（印だけ付けると「正本に無い」、版だけ上げると「表に印が無い」で止まる）。週 1 回の `mcp-drift.yml`（npm の latest と突き合わせる）も、この PR を入れるまで `FILE_TOO_LARGE` で落ちる。
 
 ```text
-houki-egov-mcp 0.16.0 と houki-nta-mcp 0.22.0 を publish しました。T2 の「互換の扱い」（houki-hub docs/DECISIONS.md 2026-09-29）に従い、同じ日に houki-research-skill の code の一覧を直してください。
+houki-egov-mcp 0.16.0 と houki-nta-mcp 0.22.0 を publish しました。T2 の「互換の扱い」（houki-hub docs/DECISIONS.md 2026-09-29）に従い、同じ日に houki-research-skill を 0.16.0 として追随させてください。この会話の役は Skill の文書の追随です。MCP の仕様（各 MCP の specs/current/）は変えません。
 
-- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/skill/houki-research-skill（実体は skills フォルダー側。device_bash で git を使うなら houki-hub と skills の両方の削除許可を取る）
-- ブランチ: docs/<日付>-error-codes-egov016-nta022
-- 直すもの:
-  - skills/houki-research/docs/ERROR-CODES.md: FILE_TOO_LARGE の行の houki-egov-mcp の列に ○、TSUTATSU_NOT_FOUND の説明から「改正通達・事務運営指針を含む」を外す、SOURCE_UNAVAILABLE の houki-egov-mcp の列を確かめる。正は各 MCP の specs/current/common_errors/spec.md の code の表
-  - skills/houki-research/examples/error-recovery-patterns.md の「シナリオ 2 — TSUTATSU_NOT_FOUND」は nta_get_kaisei_tsutatsu の例なので、見出しと応答の例の code を DOC_NOT_FOUND に直す
-  - SKILL.md と docs/ERROR-HANDLING.md は DOC_NOT_FOUND / TSUTATSU_NOT_FOUND を並べて書いているので、文は変えない（違っていたら報告）
-- mcp-refs.config.json の版の更新と mcp-snapshots/ の作り直しは段階 6 で行うので、この PR には入れない
-- コミットを作るところまで。署名・push・PR・マージは私が行う
+## 場所と版
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/skill/houki-research-skill（実体は skills フォルダー側。Cowork の device_bash では $HOME/mnt/houki-hub/skill/houki-research-skill）
+- ブランチ: docs/20261002-egov016-nta022
+- 版: 0.15.1 → 0.16.0（.claude-plugin/plugin.json と CHANGELOG.md）
+
+## 最初に読むもの
+
+1. CHANGELOG.md の 0.15.0・0.15.1（ERROR-CODES.md の位置づけと、版を上げたときの書き方）
+2. scripts/mcp-refs.config.json、scripts/update-mcp-snapshots.mjs と scripts/check-mcp-refs.mjs の冒頭のコメント、.github/workflows/ci.yml
+3. code の正本: ../../mcp/houki-egov-mcp/specs/current/common_errors/spec.md と ../../mcp/houki-nta-mcp/specs/current/common_errors/spec.md の「エラーの code」の表（どちらも 0.16.0 / 0.22.0 を取り込んだ後）
+4. 互換性の正本: 両 MCP の CHANGELOG.md の 0.16.0 / 0.22.0 の「互換性」の節
+
+## 手順
+
+1. 私（Mac）に次を実行してもらい、npm と GitHub のタグが揃っていることを確かめる（VM の npm と GitHub は 403 になる）
+   - npm view @shuji-bonji/houki-egov-mcp version → 0.16.0
+   - npm view @shuji-bonji/houki-nta-mcp version → 0.22.0
+   - GitHub に v0.16.0 / v0.22.0 のタグがある（update-mcp-snapshots.mjs はタグの specs/current/common_errors/spec.md を読む）
+2. scripts/mcp-refs.config.json の houki-egov を 0.16.0、houki-nta を 0.22.0 にする
+3. 私の Mac で node scripts/update-mcp-snapshots.mjs を実行してもらう（npm からの取得と MCP の起動が要るので VM では動かない）。mcp-snapshots/ の差分を確かめる。見込みは次のとおりで、違ったら止めて報告する
+   - houki-egov: errorCodes に FILE_TOO_LARGE が増える。ツール名・引数名・必須は変わらない（T1〜T3 は inputSchema の制約だけを変えた）
+   - houki-nta: errorCodes は変わらない（TSUTATSU_NOT_FOUND は基本通達で残る）。ツールも変わらない
+4. 文書を直す（下の一覧）
+5. node --test 'scripts/test/*.test.mjs'、node scripts/check-mcp-refs.mjs、node scripts/update-mcp-snapshots.mjs --check を通す（最後の 1 つは Mac で）
+6. plugin.json の版と CHANGELOG.md の 0.16.0 を書く
+
+## 直すもの
+
+- skills/houki-research/docs/ERROR-CODES.md
+  - FILE_TOO_LARGE: houki-egov-mcp の列に ○。説明を「ファイルが大きさの上限（50 MB）を超えている（pdf-reader-mcp は PDF、houki-egov-mcp は get_attachment / get_law_file の save: true）」にする
+  - TSUTATSU_NOT_FOUND: 説明から「（改正通達・事務運営指針を含む）」を外す（houki-nta-mcp 0.22.0 で DOC_NOT_FOUND に揃えた。基本通達の場面だけが残る）
+  - DOC_NOT_FOUND: houki-nta-mcp の説明に「国税庁サイトにそのページが無い（nta_get_qa / nta_get_tax_answer の 404）」を足す
+  - LAW_NOT_FOUND と SOURCE_* の説明が「検索が成功して 0 件」と「通信の失敗」を分けているかを確かめ、分けていなければ両 MCP の common_errors の表の文に合わせる
+- skills/houki-research/examples/error-recovery-patterns.md の「シナリオ 2 — TSUTATSU_NOT_FOUND」: nta_get_kaisei_tsutatsu の例なので、見出しと応答の例の code を DOC_NOT_FOUND に、版の注記を houki-nta-mcp v0.22.0 にする。hint などほかのフィールドは 0.22.0 の SPEC-NTA-GET-KAISEI-TSUTATSU-002 の本文と照らして、違えば直す
+- skills/houki-research/SKILL.md の表（258〜259 行あたり）: 「取得ツールの DOC_NOT_FOUND / TSUTATSU_NOT_FOUND で available_doc_ids が付く」を DOC_NOT_FOUND だけにする。検索ツールの行（cli_bulk_download）は nta_search_tsutatsu が TSUTATSU_NOT_FOUND を返すので残す
+- skills/houki-research/docs/ERROR-HANDLING.md
+  - 「LAW_NOT_FOUND / … / DOC_NOT_FOUND」の節: nta_get_qa / nta_get_tax_answer で国税庁サイトにページが無いときも DOC_NOT_FOUND（retryable: false、next_actions は検索ツール）であることを 1 行足す
+  - 「OUT_OF_SCOPE」の節: houki-egov-mcp 0.16.0 の search_law も管轄外の略称で OUT_OF_SCOPE を返すことを 1 行足す
+  - 「INTERNAL_ERROR / UNKNOWN_TOOL」の節: 両 MCP とも、DB の取得時点・同期の記録の日付を読めないときは INTERNAL_ERROR・retryable: false で、next_actions（nta）または hint（egov）が取り込みのやり直しを案内する。この場合は「MCP のバグ」ではなく、案内のコマンドをユーザーに伝える、と書く
+  - FILE_TOO_LARGE の扱い（保存せず、応答の url をそのまま使う）が無ければ、PDF の code の節の近くに短く足す
+- 段階 6 の houki-hub の呼び出し例（scripts/reference-examples/）とリファレンスの再生成は、この PR に入れない
+
+## 守ること
+
+- 各 MCP の仕様と CHANGELOG を正本にし、Skill 側で code の意味を新しく決めない。正本と合わない記述を見つけたら直さずに報告する
+- 文字列の連結（スクリプトを触る場合）は + を使わずテンプレートリテラル
+- コミットを作るところまで。署名・push・PR・マージ・タグは私が行う
+- Cowork の VM で git を使うなら、先に houki-hub と skills の両方のフォルダーの削除許可を取る。VM の git には user.name が無いので GIT_AUTHOR_NAME="shuji narumi" GIT_AUTHOR_EMAIL="71716610+shuji-bonji@users.noreply.github.com"（COMMITTER も同じ）を渡す
+
+## 終わったら報告すること
+
+- コミットのハッシュと件名
+- mcp-snapshots/ の差分（code とツールの増減）
+- check-mcp-refs.mjs の結果（文書の件数、呼び出し例・ツール名・code の数）
+- 正本と合わずに直さなかった記述
+- PR 本文の草案（houki-egov-mcp 0.16.0・houki-nta-mcp 0.22.0 への追随であること、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```
