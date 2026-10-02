@@ -212,7 +212,7 @@ houki-egov-mcp 0.17.0 と houki-nta-mcp 0.23.0 を publish しました。同じ
 ## 場所と版
 
 - リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/skill/houki-research-skill（実体は skills フォルダー側。Cowork の device_bash では $HOME/mnt/houki-hub/skill/houki-research-skill）
-- ブランチ: docs/<publish した日>-egov017-nta023
+- ブランチ: docs/20261003-egov017-nta023
 - 版: 0.16.1 → 0.17.0（.claude-plugin/plugin.json と CHANGELOG.md）
 
 ## 最初に読むもの
@@ -224,10 +224,9 @@ houki-egov-mcp 0.17.0 と houki-nta-mcp 0.23.0 を publish しました。同じ
 
 ## 手順
 
-1. 私（Mac）に次を実行してもらい、npm と GitHub のタグが揃っていることを確かめる（VM の npm と GitHub は 403 になる）
+1. GitHub の v0.17.0 / v0.23.0 のタグと MCP Registry への publish は 2026-10-03 に確かめ済み。npm の版だけ私（Mac）に確かめてもらう（VM の npm は 403 になる）
    - npm view @shuji-bonji/houki-egov-mcp version → 0.17.0
    - npm view @shuji-bonji/houki-nta-mcp version → 0.23.0
-   - GitHub に v0.17.0 / v0.23.0 のタグがある
 2. scripts/mcp-refs.config.json の houki-egov を 0.17.0、houki-nta を 0.23.0 にする
 3. 私の Mac で node scripts/update-mcp-snapshots.mjs を実行してもらい、mcp-snapshots/ の差分を確かめる。見込みは「errorCodes・ツール名・引数名・必須はどちらも変わらない」（T4・T5 は code と inputSchema を変えていない）。違ったら止めて報告する
 4. 文書を直す（下の一覧）
@@ -242,6 +241,8 @@ houki-egov-mcp 0.17.0 と houki-nta-mcp 0.23.0 を publish しました。同じ
 - 値の有無の読み方: houki-egov-mcp の meta.at（渡さないときは null）、houki-nta-mcp の results[].issuedAt / basisDate（タックスアンサーの日付は basisDate で、発出日ではない）について、Skill の文（citation の時点の書き方、発出日で新しい文書を選ぶ手順など）がキーの有無を前提にしていれば値で読む文に直す。basisDate を発出日として引用しないことを docs/CITATION.md に 1 行足す
 - get_law_revisions の「最新」が施行日の新しい順（未施行を含む）であること、いま効力のある版は current_revision_status が CurrentEnforced の要素であることを、改正履歴を引く手順に書いていなければ足す
 - examples/ と workflows/ の応答の例で、0.17.0 / 0.23.0 で変わった形（null のキー、resolve_abbreviation の next_actions、nta_search_tax_answer の next_actions）を載せているものがあれば、両 MCP の仕様の本文に合わせる
+- タックスアンサーの 8xxx 帯（2026-10-03 追記）: 作者の DB には 8xxx 帯のタックスアンサーが 16 件ある。nta_search_tax_answer はこれを返し、ヒットの先頭が 8xxx なら next_actions（SPEC-NTA-SEARCH-TAX-ANSWER-006）が nta_get_tax_answer を案内するが、nta_get_tax_answer は 8xxx を INVALID_ARGUMENT で断る（SPEC-NTA-GET-TAX-ANSWER-002。DB も引かない）。タックスアンサーを読む手順に「8xxx 帯の docId は nta_get_tax_answer で取れない。results[].sourceUrl を案内する」を 1 行足す。MCP 側の扱い（8xxx に対応するか、006 で 8xxx を案内しないか）は houki-nta-mcp の別の Issue で決めるので、Skill では今の動きだけを書く
+- houki-nta-mcp 0.23.0 の CHANGELOG の「互換性」には、取得 3 ツールの json の document.taxonomy も DB に税目が無ければ null になると書かれている。税目で分岐する記述があれば値で読む文にする
 - 段階 6 の houki-hub の呼び出し例（scripts/reference-examples/）とリファレンスの再生成は、この PR に入れない
 
 ## 守ること
