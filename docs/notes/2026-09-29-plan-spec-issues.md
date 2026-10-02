@@ -528,7 +528,7 @@ T3 の proposal.md の「人が判断すること」で承認前に見る主な�
 
 T3 は 2026-10-01 にマージした（egov PR #86 `70e3227`、nta PR #119 `8d4653c`）。実装は別の会話で行うので、指示を `docs/notes/2026-10-01-stage4-impl-instructions.md` に置いた（A: egov 0.16.0、B: nta 0.22.0、C: publish の日の houki-research-skill）。
 
-2026-10-02: nta の実装の前の確認で、T1 の docId の形（数字の桁数で書いた 3 つの ID）に合わない値が DB に見つかった（文書回答事例だけで 87 件）。shuji の決定（使える文字と `/` の区切りだけを見る）に従い、houki-nta-mcp に仕様 PR 用ブランチ `spec/20261002-t1-docid-forms`（`bf0e623`、main `8d4653c` の上）を作った。同じ ID の見出しを 2 つの差分に置くと `spec-ids check` が止めるので、T1 の差分の 3 つの ID の本文を直接書き換え、新しい差分には proposal.md（理由・前後の形・DB の確認・承認日）だけを置いた。nta の実装 PR（`feat/20261001-0.22.0`）の T1 は、この仕様 PR のマージ後に進める。
+2026-10-02: nta の実装の前の確認で、T1 の docId の形（数字の桁数で書いた 3 つの ID）に合わない値が DB に見つかった（文書回答事例だけで 87 件）。shuji の決定（使える文字と `/` の区切りだけを見る）に従い、houki-nta-mcp に仕様 PR 用ブランチ `spec/20261002-t1-docid-forms`（`bf0e623`、main `8d4653c` の上）を作った。同じ ID の見出しを 2 つの差分に置くと `spec-ids check` が止めるので、T1 の差分の 3 つの ID の本文を直接書き換え、新しい差分には proposal.md（理由・前後の形・DB の確認・承認日）だけを置いた。nta の実装 PR（`feat/20261001-0.22.0`）の T1 は、この仕様 PR のマージ後に進める。同日、DB の全件（4 種別）で新しい形と `nta_get_qa` の `topic/category/id` に合わない値が 0 件であることを確かめ、PR #121（`322b67f`）でマージした。実装 PR のブランチはその上に積み直され、T1 の実装（`e286f1f`）は訂正後の 3 つの形を使っている。
 
 次: T3 の 2 本がマージされたら、段階 4 の実装 PR（`feat/20261001-0.16.0` / `feat/20261001-0.22.0`。1 コミット目に houki-abbreviations `^0.7.0` への依存の変更、その後 T1 → T2 → T3 の順に `test:` → `fix:`/`feat:`、`chore:` で版、`specs/current/` への取り込み）。実装 PR の前に、上の DB の件数の確認と、nta の `document.doc_id` を T1 の `docId` の形に全件通す確認をする。
 

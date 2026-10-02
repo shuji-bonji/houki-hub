@@ -177,7 +177,7 @@ test: のコミットでは新しいテストが落ち、次の fix: / feat: で
 
 ## 実装の前に私に頼むこと（Mac のターミナルで実行してもらう）
 
-1. （2026-10-02 追記）この確認で合わない docId が見つかり、差分 `20261002-t1-docid-forms`（ブランチ spec/20261002-t1-docid-forms）で SPEC-NTA-GET-KAISEI-TSUTATSU-010・SPEC-NTA-GET-JIMU-UNEI-010・SPEC-NTA-GET-BUNSHOKAITOU-010 の形を緩めた。T1 の実装は、その仕様 PR のマージ後の T1 の差分の本文で行う。下は訂正前の確認の記録
+1. （2026-10-02 追記）この確認で合わない docId が見つかり、差分 `20261002-t1-docid-forms`（PR #121、2026-10-02 マージ、`322b67f`）で SPEC-NTA-GET-KAISEI-TSUTATSU-010・SPEC-NTA-GET-JIMU-UNEI-010・SPEC-NTA-GET-BUNSHOKAITOU-010 の形を緩めた。T1 の実装は、その仕様 PR のマージ後の T1 の差分の本文で行う。下は訂正前の確認の記録
 
    T1 の「人が判断すること」1（docId の形）の確認。何も出なければ OK です
 
