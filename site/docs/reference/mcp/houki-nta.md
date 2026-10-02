@@ -1,6 +1,6 @@
 ---
 title: "houki-nta-mcp — ツールリファレンス"
-description: "houki-nta-mcp v0.22.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-nta-mcp v0.23.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-nta-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-nta-mcp v0.22.0 の全 14 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.22.0** の `tools/list` から自動生成しました（14 ツール・2026-10-03）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.23.0** の `tools/list` から自動生成しました（14 ツール・2026-10-03）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-nta)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -1241,7 +1241,7 @@ v0.18.3 までは `next_actions` の代わりに `reader_hints` が付いてい�
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `abbr` | string (minLength 1) | **必須** |  | 略称。例: "消基通", "所基通", "電帳法"。全角の英数字・ダッシュ類・全角スペースは半角に揃えてから引く |
+| `abbr` | string (minLength 1) | **必須** |  | 略称。例: "消基通", "所基通", "法基通"。全角の英数字・ダッシュ類・全角スペースは半角に揃えてから引く |
 
 ::: details 呼び出し例 — 「電帳法 は houki-nta-mcp で引けるか」
 - 実測: v0.10.4（2026-09-08）

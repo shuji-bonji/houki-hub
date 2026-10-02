@@ -536,6 +536,28 @@ T3 は 2026-10-01 にマージした（egov PR #86 `70e3227`、nta PR #119 `8d46
 
 残り: 段階 4 の後半（egov 0.17.0 / nta 0.23.0。T4 応答の形 + T5 文書と実装の食い違い。egov #56・#64・#65・#66、nta #70・#71・#82・#108）の仕様 PR。houki-hub の `stack.json` と README の表は egov 0.15.4 / nta 0.21.3 / skill 0.15.1 のままなので、Mac で `node scripts/generate-stack.mjs --readme` を回す。段階 6 の houki-hub の呼び出し例（`get_law_file.md` の 50 MB の `INVALID_ARGUMENT`、`nta_get_kaisei_tsutatsu.md` の `TSUTATSU_NOT_FOUND`、`resolve_abbreviation.md` の `in_scope` など）とリファレンスの再生成は、計画どおり段階 5 の後にまとめるか、0.16.0 / 0.22.0 の分だけ先に出すかを決める。
 
+2026-10-03: 段階 4 の後半（T4・T5）の仕様 PR 用ブランチを egov と nta に 2 本ずつ積んだ（未署名・未 push、承認日空欄）。どれも `spec-ids check` は exit 0、pr-scope の指摘は承認日の空欄だけ。T5 は T4 の上に積み、T4 と T5 で同じ仕様 ID は使っていない。
+
+| リポジトリ | ブランチ | コミット | 内容 |
+| --- | --- | --- | --- |
+| houki-egov-mcp | `spec/20261003-t4-response-shape`（main `7b22169` の上） | `c496400` | #64・#65・#66。10 単位。ADDED 4 / MODIFIED 17 / REMOVED 0。`meta` を持つ 10 ツールで `meta.at` を常に置く（渡さないときは `null`）、`get_law` の `paragraph_num` / `item_num` を常に置き補った項は `1`（040）、`get_law_range` の続きの例に `max_chars` と `at`、`get_law_revisions` は施行日の新しい順にツールで並べる（016）・状態の値は e-Gov のまま（017）・8 つのキーを `null` で埋める、`get_attachment` のファイル名だけの `src` が 2 件以上に当たれば `INVALID_ARGUMENT`（029）、`get_law_file` は法令履歴 ID が分からなければ `null`・`filename*` を優先 |
+| houki-egov-mcp | `spec/20261003-t5-docs-mismatch`（T4 の上） | `ec5a573` | #56（と #65 の description の行）。ADDED 1 / MODIFIED 3。`INTERNAL_ERROR` は `retryable: false`・`next_actions` 無し（007・018）、`UNKNOWN_TOOL` は日本語の `error`・`retryable: false`（002）、`see_also` は GitHub の URL（EXPLAIN-LAW-TYPE-020）。実装 PR で直す文書 6 行 |
+| houki-nta-mcp | `spec/20261003-t4-response-shape`（main `3b2a0f9` の上） | `a81c8e6` | #71・#82。10 単位。ADDED 1 / MODIFIED 21 / REMOVED 0。`meta` は足さない（`at` の引数が無く、取得時点は `freshness` と `fetchedAt` で返している）。検索 5 ツールの `results[]` に `issuedAt`・`basisDate`（タックスアンサーの法令時点）を全種別で置く、索引の印を `null` で常に置く、`nta_search_tsutatsu` の 0 件に `count: 0`・`freshness`・`legal_status`、`available_clauses` は両経路とも最大 50 件、DB だけを引く 3 ツールの markdown に「取得元」の行、`hits` / `results` の名前は今のまま（SEARCH-RULES-020）、COMMON-ERRORS-017 の対象から取得 6 ツールを外す |
+| houki-nta-mcp | `spec/20261003-t5-docs-mismatch`（T4 の上） | `7365db0` | #70・#108（と T2 から持ち越した `INTERNAL_ERROR`）。ADDED 1 / MODIFIED 5。`resolve_abbreviation` に `delegate_to_mcp`、`nta_search_tax_answer` に `nta_get_tax_answer` の案内（006）、空の DB の案内を `--bulk-download-all`、`INTERNAL_ERROR` / `UNKNOWN_TOOL` を egov と同じ形に。実装 PR で直す文書 8 行 |
+
+proposal.md の「人が判断すること」で承認前に見る主な点:
+
+- egov T4: (1) `meta` を持たない 4 ツールには足さない。(2) Issue の外の「付かない」フィールド（エラーの本文、`saved`、打ち切っていないときの `next_from_article` など）は今回 `null` にしない。(3) 状態の値に日本語のフィールドを足さない。(4) 029 の code は `INVALID_ARGUMENT`。(5) 施行日が `null` の改正は先頭。
+- egov T5: (1) `UNKNOWN_TOOL` の文は `存在しないツールです: <name>`。(2) `INTERNAL_ERROR` の `next_actions` は無し（Issue を開く案内は足さない）。
+- nta T4: (1) `meta` を足さない。(2) 索引の印は `null` で常に置き、値の種類は増やさない。(3) 「取得元」の行を改正通達・文書回答事例にも足した。(4) 0 件の `base_laws_by_tsutatsu` / `next_actions` は付けないまま。(5) `taxAnswer.basisDate` を取得側にも足した。(6) `available_clauses` を 50 件で切る。
+- nta T5: (1) Issue の外の `INTERNAL_ERROR` / `UNKNOWN_TOOL` を egov に揃えた（外すなら 3 つの ID を外す）。(2) `8xxx` 帯に記事があるかは確かめていない。(3) #70 の改正通達の `hint` の行は、SPEC-NTA-SEARCH-KAISEI-TSUTATSU-002 がすでに今の文を約束しているので片付いている扱い。
+
+0.16.0 / 0.22.0 で既に片付いていた行（Issue にコメントして消す候補）: egov #56 の README「まず試す」の本文（「14 ツールのうち 13」に直っている。174 行目の「6 ツール」は残るので直す文書に入れた）と README のエラーの表（`UNKNOWN_TOOL` / `INTERNAL_ERROR` とも `false` で正しい。実装の側を合わせる）、nta #70 の改正通達の `hint` の行、egov #65 の `latest` の 0 以下・小数（0.16.0 の T1 で `INVALID_ARGUMENT`）。
+
+次: 4 本の署名・push・PR 作成（T4 → T5 の順にマージ）。マージ後に実装の会話へ渡す指示（egov 0.17.0 / nta 0.23.0）を置く。T5 の「実装 PR で直す文書」は、各 T5 の proposal.md の表がそのまま実装の会話の入力になる。0.17.0 / 0.23.0 の publish の日に、houki-research-skill の `docs/ERROR-CODES.md`・`docs/ERROR-HANDLING.md`（`INTERNAL_ERROR` の再試行）と `SKILL.md` の索引の印の文（「付いていたら」→「値が `removed_from_index` なら」）を直す。
+
+T4・T5 は 2026-10-03 にマージした（egov PR #91・#92、main `3105adb`。nta PR #124・#126、main `15edd5d`）。実装は別の会話で行うので、指示を `docs/notes/2026-10-03-stage4b-impl-instructions.md` に置いた（E: egov 0.17.0、F: nta 0.23.0、G: publish の日の houki-research-skill 0.17.0）。
+
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
 
 初版起こしの未決 31 のうち、テストが無いだけのものを除いた 12 件です（spec.md の項目数では 13。1 件目が cli_entry 2 と cli_refresh 4 の 2 項目にまたがる）。2026-09-30 に 7 件にまとめて #106〜#112 として起票した（下書きと対応表は `docs/notes/issues-2026-09-30-nta-cli-db/`、起票結果は `created.tsv`）。まとめ方: 1・2・7 → #106、3・8 → #107、4・9・11 → #108、5 → #109、6 → #110、10 → #111、12 → #112。cli_health_check 3（bulk download 後の警告のしきい値）は受入テストを書くときに決めればよいので Issue にせず残した。未決を「→ #N」に縮める仕様 PR #114 は main にマージ済み（`099b6ce`。実装の変更: 不要のため current を直接書き換え。`specs/changes/20260930-cli-db-undecided-to-issues/` は次の実装 PR の取り込みで releases へ移す）。

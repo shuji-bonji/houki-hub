@@ -1,6 +1,6 @@
 ---
 title: "houki-egov-mcp — ツールリファレンス"
-description: "houki-egov-mcp v0.16.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-egov-mcp v0.17.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-egov-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-egov-mcp v0.16.0 の全 14 ツールの引数・型・既定
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.16.0** の `tools/list` から自動生成しました（14 ツール・2026-10-03）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.17.0** の `tools/list` から自動生成しました（14 ツール・2026-10-03）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-egov)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -25,7 +25,7 @@ description: "houki-egov-mcp v0.16.0 の全 14 ツールの引数・型・既定
 | [`get_law_range`](#get-law-range) | 法令の編・章・節・款・目のいずれか、または附則 1 本を範囲にして、その中の条を本文ごと取得する。 |
 | [`search_fulltext`](#search-fulltext) | 法令の条文本文をキーワードで横断全文検索する（ローカル SQLite FTS5）。 |
 | [`resolve_abbreviation`](#resolve-abbreviation) | 略称・通称から正式な法令名と law_id を解決する。 |
-| [`get_law_revisions`](#get-law-revisions) | 法令の改正履歴を取得する。 |
+| [`get_law_revisions`](#get-law-revisions) | 法令の改正履歴を取得します。 |
 | [`explain_law_type`](#explain-law-type) | 法令種別（憲法・法律・政令・省令・規則・条例・告示・通達 等）の制定主体・階層上の位置・国民への拘束力・実務上の注意点を解説する。 |
 | [`get_related_laws`](#get-related-laws) | 法令名の規則で関連する法令を引く。 |
 | [`get_article_references`](#get-article-references) | 条文本文が引用している参照を取り出す。 |
@@ -316,7 +316,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 |---|---|---|---|---|
 | `law_name` | string (minLength 1) | **必須** |  | 法令名または略称 |
 | `at` | string | 任意 |  | 時点指定（YYYY-MM-DD） |
-| `depth` | integer (≥ 1) | 任意 |  | 構造階層の打ち切り深さ（1 以上の整数）。1=編まで、2=章まで、3=節まで。省略時は全階層。例: 民法を depth=1 で取得すると「第一編 総則」「第二編 物権」のような大区分のみが返る |
+| `depth` | integer (≥ 1) | 任意 |  | 本則の構造階層（編・章・節・款・目）を上から何階層まで返すか（1 以上の整数）。最上位の階層から数えるので、編を持つ法令（民法など）では 1 が編まで、章から始まる法令（消費税法など）では 1 が章までです。省略時は全階層 |
 | `suppl` | `"list"` \| `"full"` \| `"none"` | 任意 | `"list"` | 附則をどこまで返すか。"list"（デフォルト）=改正法ごとの見出しと条数だけ、"full"=附則の中の条まで、"none"=附則を返さない。附則は改正法ごとに積み上がり、所得税法は 352 本・条 983 件あるため、既定では見出しだけを返す |
 | `with_amend_titles` | boolean | 任意 | `false` | 附則に改正法の題名を付ける（デフォルト: false）。附則の属性には法令番号しか無いため、改正履歴（get_law_revisions と同じ e-Gov の応答）を 1 回引いて法令番号で照合する。e-Gov の改正履歴は近年の改正が中心なので、それより古い改正法の題名は付かない（付いた本数と付かなかった本数は応答の suppl.amend_law_titles に入る） |
 
@@ -694,7 +694,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 
 ## get_law_revisions
 
-法令の改正履歴を取得する。e-Gov v2 /law_revisions を使用。各改正の公布日・施行日・改正法令番号・状態（現行/旧法/未施行）等を返す。
+法令の改正履歴を取得します。e-Gov v2 の /law_revisions を使います。各改正の公布日・施行日・改正法令番号・状態（current_revision_status。CurrentEnforced=現行、PreviousEnforced=旧法、UnEnforced=未施行）等を返します。並びは施行日の新しい順で、まだ施行されていない改正も含みます。
 
 ### 引数
 
