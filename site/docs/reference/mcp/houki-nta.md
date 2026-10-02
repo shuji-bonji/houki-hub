@@ -1,6 +1,6 @@
 ---
 title: "houki-nta-mcp — ツールリファレンス"
-description: "houki-nta-mcp v0.21.3 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-nta-mcp v0.22.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-nta-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-nta-mcp v0.21.3 の全 14 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.21.3** の `tools/list` から自動生成しました（14 ツール・2026-09-30）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.22.0** の `tools/list` から自動生成しました（14 ツール・2026-10-03）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-nta)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -42,8 +42,8 @@ description: "houki-nta-mcp v0.21.3 の全 14 ツールの引数・型・既定�
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `keyword` | string | **必須** |  | 検索キーワード。例: "軽減税率", "電子帳簿", "棚卸資産"。略称も可（例: "電帳法"）。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
-| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+| `keyword` | string (minLength 1) | **必須** |  | 検索キーワード。例: "軽減税率", "電子帳簿", "棚卸資産"。略称も可（例: "電帳法"）。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `limit` | integer (1–50) | 任意 | `10` | 取得件数。1 以上 50 以下の整数（デフォルト: 10）。範囲の外は丸めずに INVALID_ARGUMENT |
 
 ::: warning ローカル DB が必要です
 `houki-nta-mcp --bulk-download-all` で基本通達 4 種を取り込んでいないと、結果は空になります。応答の `freshness.staleness` が `outdated` のときは、同じコマンドで取り直してください。
@@ -151,7 +151,7 @@ description: "houki-nta-mcp v0.21.3 の全 14 ツールの引数・型・既定�
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `name` | string | **必須** |  | 通達名または略称。例: "消費税法基本通達", "消基通", "所得税基本通達", "所基通" |
+| `name` | string (minLength 1) | **必須** |  | 通達名または略称。例: "消費税法基本通達", "消基通", "所得税基本通達", "所基通" |
 | `clause` | string | 任意 |  | 通達番号。形は通達ごとに違う。消費税法基本通達: 章-節-条（例 "5-1-9", "1-4-13の2"）。法人税基本通達: 章-節-条で、節に枝番号が付くことがある（例 "1-1-1", "1-3の2-1"）。所得税基本通達: 条-項。複数の条に共通する通達は "条~条共-項"（例 "34-1", "2-4の2", "23~35共-6"）。相続税法基本通達: 条-項。複数の条に共通する通達は "条・条共-項"（例 "3-1", "1の3・1の4共-1"）。全角の数字・ハイフンは半角に揃えて読む（DB から返すときも、国税庁サイトから取るときも） |
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
@@ -217,10 +217,10 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `keyword` | string | **必須** |  | 検索キーワード。例: "社内会議 軽減税率", "テレワーク 必要経費"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `keyword` | string (minLength 1) | **必須** |  | 検索キーワード。例: "社内会議 軽減税率", "テレワーク 必要経費"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
 | `domain` | `"tax"` \| `"labor"` \| `"accounting"` \| `"commercial"` \| `"civil"` \| `"administrative"` | 任意 |  | 分野で絞り込み。質疑応答事例はすべて税務なので、"tax" は絞り込まず、それ以外は 0 件になる。税目で絞り込むときは topic を使う |
 | `topic` | `"shotoku"` \| `"gensen"` \| `"joto"` \| `"sozoku"` \| `"hyoka"` \| `"hojin"` \| `"shohi"` \| `"inshi"` \| `"hotei"` | 任意 |  | 税目で絞り込み。shotoku=所得税 / gensen=源泉所得税 / joto=譲渡所得 / sozoku=相続税・贈与税 / hyoka=財産の評価 / hojin=法人税 / shohi=消費税 / inshi=印紙税 / hotei=法定調書 |
-| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+| `limit` | integer (1–50) | 任意 | `10` | 取得件数。1 以上 50 以下の整数（デフォルト: 10）。範囲の外は丸めずに INVALID_ARGUMENT |
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。質疑応答事例は現状すべて HTML のみで PDF を持たないため true 指定時は空配列になる |
 
 ::: details 呼び出し例 — 「テレワークに関係する質疑応答事例」
@@ -342,15 +342,15 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 
 ## nta_get_qa
 
-国税庁の質疑応答事例 1 件を取得する。URL 形式: /law/shitsugi/{topic}/{category}/{id}.htm。format=json では【関係法令通達】を法令（related_laws）と通達（related_tsutatsu）に分け、next_actions で houki-egov-mcp の get_law と nta_get_tsutatsu を案内する。
+国税庁の質疑応答事例 1 件を取得する。URL 形式: /law/shitsugi/{topic}/{category}/{id}.htm。国税庁サイトにそのページが無いときはエラー DOC_NOT_FOUND を返し、nta_search_qa を案内する。format=json では【関係法令通達】を法令（related_laws）と通達（related_tsutatsu）に分け、next_actions で houki-egov-mcp の get_law と nta_get_tsutatsu を案内する。
 
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
 | `topic` | `"shotoku"` \| `"gensen"` \| `"joto"` \| `"sozoku"` \| `"hyoka"` \| `"hojin"` \| `"shohi"` \| `"inshi"` \| `"hotei"` | **必須** |  | 税目フォルダ。shotoku=所得税, gensen=源泉所得税, joto=譲渡所得, sozoku=相続税・贈与税, hyoka=財産の評価, hojin=法人税, shohi=消費税, inshi=印紙税, hotei=法定調書 |
-| `category` | string | **必須** |  | カテゴリ番号（章相当）。例: "01", "02"。/law/shitsugi/{topic}/01.htm の TOC で確認できる |
-| `id` | string | **必須** |  | 事例番号。例: "19" |
+| `category` | string (minLength 1) | **必須** |  | カテゴリ番号（章相当）。1 桁か 2 桁の数字。例: "01", "02"。全角の数字は半角に揃えて読む。/law/shitsugi/{topic}/01.htm の TOC で確認できる |
+| `id` | string (minLength 1) | **必須** |  | 事例番号。1 桁か 2 桁の数字。例: "19"。全角の数字は半角に揃えて読む |
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: details 呼び出し例 — 「消費税の質疑応答事例 02/19 の照会と回答、関係法令通達」
@@ -464,8 +464,8 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `keyword` | string | **必須** |  | 検索キーワード。例: "ふるさと納税", "医療費控除"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
-| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+| `keyword` | string (minLength 1) | **必須** |  | 検索キーワード。例: "ふるさと納税", "医療費控除"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `limit` | integer (1–50) | 任意 | `10` | 取得件数。1 以上 50 以下の整数（デフォルト: 10）。範囲の外は丸めずに INVALID_ARGUMENT |
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。様式・別表系の説明など PDF 添付がある重要トピックを抽出したい時に true を指定 |
 
 ::: details 呼び出し例 — 「医療費控除のタックスアンサー」
@@ -523,13 +523,13 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 
 ## nta_get_tax_answer
 
-国税庁のタックスアンサー（よくある税の質問）本文を番号で取得する。番号の先頭桁から税目フォルダを自動判定。例: 6101 → 消費税の基本的なしくみ
+国税庁のタックスアンサー（よくある税の質問）本文を番号で取得する。番号の先頭桁から税目フォルダを自動判定。例: 6101 → 消費税の基本的なしくみ。国税庁サイトにそのページが無いときはエラー DOC_NOT_FOUND を返し、nta_search_tax_answer を案内する
 
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `no` | string | **必須** |  | タックスアンサー番号。先頭桁で税目決定: 1xxx=所得税, 2xxx=源泉, 3xxx=譲渡, 4xxx=相続・贈与, 5xxx=法人税, 6xxx=消費税, 7xxx=印紙税, 9xxx=お知らせ。例: "6101", "1120" |
+| `no` | string (minLength 1) | **必須** |  | タックスアンサー番号。4 桁の数字（全角の数字は半角に揃えて読む）。先頭桁で税目決定: 1xxx=所得税, 2xxx=源泉, 3xxx=譲渡, 4xxx=相続・贈与, 5xxx=法人税, 6xxx=消費税, 7xxx=印紙税, 9xxx=お知らせ。例: "6101", "1120" |
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: tip 引数名は `no` です
@@ -592,9 +592,9 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `keyword` | string | **必須** |  | 検索キーワード。例: "電子帳簿", "インボイス", "軽減税率"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
-| `taxonomy` | string | 任意 |  | 税目フォルダで絞り込み。"shohi" / "shotoku" / "hojin" / "sisan/sozoku" のいずれか |
-| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+| `keyword` | string (minLength 1) | **必須** |  | 検索キーワード。例: "電子帳簿", "インボイス", "軽減税率"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `taxonomy` | string | 任意 |  | 税目フォルダで絞り込み。例: "shohi" / "shotoku" / "hojin" / "sisan/sozoku"。値は列挙で検査しない。DB に無い値のときは available_taxonomies で正しい値を返す |
+| `limit` | integer (1–50) | 任意 | `10` | 取得件数。1 以上 50 以下の整数（デフォルト: 10）。範囲の外は丸めずに INVALID_ARGUMENT |
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。改正通達は新旧対照表 PDF を持つことが多く、改正点だけ知りたい時は true 推奨 |
 
 ::: tip 改正点だけ知りたいときは `hasPdf: true`
@@ -664,7 +664,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `docId` | string | **必須** |  | 文書 ID。新形式 "0026003-067" または旧形式 "240401" 等。`nta_search_kaisei_tsutatsu` 結果や DB hint で取得 |
+| `docId` | string (minLength 1) | **必須** |  | 文書 ID。英小文字・数字・- だけの値（例: "0026003-067"、"240401"）。全角の数字・ハイフンは半角に揃えて読む。`nta_search_kaisei_tsutatsu` 結果や DB hint で取得 |
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: details 呼び出し例 — 「令和 7 年 4 月 1 日の消基通改正の本文と添付 PDF」
@@ -755,9 +755,9 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `keyword` | string | **必須** |  | 検索キーワード。例: "書面添付", "重加算税"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
-| `taxonomy` | string | 任意 |  | 税目で絞り込み。"shotoku" / "hojin" / "sozoku" / "shohi" 等 |
-| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+| `keyword` | string (minLength 1) | **必須** |  | 検索キーワード。例: "書面添付", "重加算税"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `taxonomy` | string | 任意 |  | 税目で絞り込み。例: "shotoku" / "hojin" / "sozoku" / "shohi"。値は列挙で検査しない。DB に無い値のときは available_taxonomies で正しい値を返す |
+| `limit` | integer (1–50) | 任意 | `10` | 取得件数。1 以上 50 以下の整数（デフォルト: 10）。範囲の外は丸めずに INVALID_ARGUMENT |
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。別紙・別表 PDF を伴う指針だけを抽出したい時に true を指定 |
 
 ::: details 呼び出し例 — 「書面添付制度の事務運営指針」
@@ -823,7 +823,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `docId` | string | **必須** |  | 文書 ID。例: "shotoku/shinkoku/170331" / "sozoku/170111_1"。`nta_search_jimu_unei` 結果や DB hint で取得 |
+| `docId` | string (minLength 1) | **必須** |  | 文書 ID。税目/…/フォルダー名 の形（例: "shotoku/shinkoku/170331" / "sozoku/170111_1"）。全角の数字・ハイフンは半角に揃えて読む。`nta_search_jimu_unei` 結果や DB hint で取得 |
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: details 呼び出し例 — 「酒税の書面添付制度の事務運営指針」（検索結果の 2 件目）
@@ -878,9 +878,9 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `keyword` | string | **必須** |  | 検索キーワード。例: "電子帳簿", "適格請求書", "災害損失"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
-| `taxonomy` | string | 任意 |  | 税目で絞り込み。"shotoku" / "hojin" / "sozoku" / "gensen" / "joto-sanrin" / "shohi" 等（URL の税目フォルダ名）。国税局のページの別表記（"souzoku" / "gensenshotoku" / "joto_sanrin"）は、同じ税目としてまとめて検索する。DB にある値は、該当が無いときの応答の available_taxonomies で分かる |
-| `limit` | number | 任意 | `10` | 取得件数（デフォルト: 10、最大: 50） |
+| `keyword` | string (minLength 1) | **必須** |  | 検索キーワード。例: "電子帳簿", "適格請求書", "災害損失"。3 文字以上の語を推奨（FTS5 trigram のため）。2 文字の語は本文の部分一致で補完し、その旨を応答の search_notes に示す |
+| `taxonomy` | string | 任意 |  | 税目で絞り込み。"shotoku" / "hojin" / "sozoku" / "gensen" / "joto-sanrin" / "shohi" 等（URL の税目フォルダ名）。国税局のページの別表記（"souzoku" / "gensenshotoku" / "joto_sanrin"）は、同じ税目としてまとめて検索する。値は列挙で検査しない。DB に無い値のときは available_taxonomies で正しい値を返す |
+| `limit` | integer (1–50) | 任意 | `10` | 取得件数。1 以上 50 以下の整数（デフォルト: 10）。範囲の外は丸めずに INVALID_ARGUMENT |
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。回答書本文 PDF を持つ事例だけを抽出したい時に true を指定 |
 
 ::: tip 本文で検索できます（v0.10.3 以降）
@@ -1019,7 +1019,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `docId` | string | **必須** |  | 文書 ID。例: "shotoku/250416" (本庁) / "tokyo/shotoku/260218" (東京国税局) |
+| `docId` | string (minLength 1) | **必須** |  | 文書 ID。税目/フォルダー名（本庁。例: "shotoku/250416"）か 局/税目/フォルダー名（国税局。例: "tokyo/shotoku/260218"）。全角の数字・ハイフンは半角に揃えて読む |
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: tip 本文は「表 + 別紙」でできています
@@ -1111,7 +1111,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
 | `docType` | `"kaisei"` \| `"jimu-unei"` \| `"bunshokaitou"` \| `"tax-answer"` | **必須** |  | 文書種別。改正通達 (kaisei) / 事務運営指針 (jimu-unei) / 文書回答事例 (bunshokaitou) / タックスアンサー (tax-answer)。質疑応答事例 (qa-jirei) は PDF を持たないため対象外 |
-| `docId` | string | **必須** |  | 文書 ID。各 docType の `nta_search_*` 結果や `nta_get_*` のレスポンスから得られる |
+| `docId` | string (minLength 1) | **必須** |  | 文書 ID。各 docType の `nta_search_*` 結果や `nta_get_*` のレスポンスから得られる。全角の数字・ハイフンは半角に揃えて読む |
 | `kind` | `"comparison"` \| `"attachment"` \| `"qa-pdf"` \| `"related"` \| `"notice"` \| `"unknown"` | 任意 |  | この種別の PDF だけを返す。改正点だけ見たいときは comparison。改正通達（kaisei）でタイトルが「別紙 N」だけの PDF は新旧対照表本体のことが多いので comparison として返す。省略すると全件 |
 | `save` | boolean | 任意 |  | true のとき、返す PDF をサーバー側の保存先に取得し、saved[] に絶対パスを返す。pdf-reader-mcp の extract_tables / read_text はローカルファイルしか読まないので、表として取るときに使う。既に保存済みなら再取得しない（saved[].cached が true）。既定 false |
 
@@ -1241,7 +1241,7 @@ v0.18.3 までは `next_actions` の代わりに `reader_hints` が付いてい�
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
 |---|---|---|---|---|
-| `abbr` | string | **必須** |  | 略称。例: "消基通", "所基通", "電帳法" |
+| `abbr` | string (minLength 1) | **必須** |  | 略称。例: "消基通", "所基通", "電帳法"。全角の英数字・ダッシュ類・全角スペースは半角に揃えてから引く |
 
 ::: details 呼び出し例 — 「電帳法 は houki-nta-mcp で引けるか」
 - 実測: v0.10.4（2026-09-08）
