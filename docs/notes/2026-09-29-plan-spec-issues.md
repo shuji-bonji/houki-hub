@@ -532,6 +532,10 @@ T3 は 2026-10-01 にマージした（egov PR #86 `70e3227`、nta PR #119 `8d46
 
 次: T3 の 2 本がマージされたら、段階 4 の実装 PR（`feat/20261001-0.16.0` / `feat/20261001-0.22.0`。1 コミット目に houki-abbreviations `^0.7.0` への依存の変更、その後 T1 → T2 → T3 の順に `test:` → `fix:`/`feat:`、`chore:` で版、`specs/current/` への取り込み）。実装 PR の前に、上の DB の件数の確認と、nta の `document.doc_id` を T1 の `docId` の形に全件通す確認をする。
 
+2026-10-02: 段階 4 の前半（T1・T2・T3）を出した。houki-egov-mcp 0.16.0（`specs/releases/v0.16.0/` に T1・T2・T3 と `20261002-t1-followups`）、houki-nta-mcp 0.22.0（`specs/releases/v0.22.0/` に T1・T2・T3・`20261002-t1-docid-forms`・`20260930-cli-db-undecided-to-issues`）、houki-research-skill 0.16.0（`d26f909`。`mcp-refs.config.json` を egov 0.16.0・nta 0.22.0 に上げ、`mcp-snapshots/` を作り直し、ERROR-CODES.md・ERROR-HANDLING.md・SKILL.md・例を追随）を publish し、プラグインも更新した。egov には T1 の書き残しを直す仕様 PR `20261002-t1-followups` を足した（022 の和の型の `message`、GET-LAW-RANGE-023 の例、REMOVED を指す未決）。egov の main は `7b22169` がマージコミットになっている（AGENTS.md の ff-only と違う形。中身は問題なし）。
+
+残り: 段階 4 の後半（egov 0.17.0 / nta 0.23.0。T4 応答の形 + T5 文書と実装の食い違い。egov #56・#64・#65・#66、nta #70・#71・#82・#108）の仕様 PR。houki-hub の `stack.json` と README の表は egov 0.15.4 / nta 0.21.3 / skill 0.15.1 のままなので、Mac で `node scripts/generate-stack.mjs --readme` を回す。段階 6 の houki-hub の呼び出し例（`get_law_file.md` の 50 MB の `INVALID_ARGUMENT`、`nta_get_kaisei_tsutatsu.md` の `TSUTATSU_NOT_FOUND`、`resolve_abbreviation.md` の `in_scope` など）とリファレンスの再生成は、計画どおり段階 5 の後にまとめるか、0.16.0 / 0.22.0 の分だけ先に出すかを決める。
+
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
 
 初版起こしの未決 31 のうち、テストが無いだけのものを除いた 12 件です（spec.md の項目数では 13。1 件目が cli_entry 2 と cli_refresh 4 の 2 項目にまたがる）。2026-09-30 に 7 件にまとめて #106〜#112 として起票した（下書きと対応表は `docs/notes/issues-2026-09-30-nta-cli-db/`、起票結果は `created.tsv`）。まとめ方: 1・2・7 → #106、3・8 → #107、4・9・11 → #108、5 → #109、6 → #110、10 → #111、12 → #112。cli_health_check 3（bulk download 後の警告のしきい値）は受入テストを書くときに決めればよいので Issue にせず残した。未決を「→ #N」に縮める仕様 PR #114 は main にマージ済み（`099b6ce`。実装の変更: 不要のため current を直接書き換え。`specs/changes/20260930-cli-db-undecided-to-issues/` は次の実装 PR の取り込みで releases へ移す）。
