@@ -61,3 +61,9 @@
 バルク機能の見直しで、別の不具合を見つけた: e-Gov は施行日の当日に同じ版を未施行の欄を空にして配り直す（XML は同じ）が、取り込みは `content_hash` が同じなので `unchanged` として飛ばし、状態が `UnEnforced` のまま、旧版が `CurrentEnforced` のまま残る。Issue の下書き 01。2026-11-01 に施行される版で表に出る。
 
 2026-10-04 JST に houki-egov-mcp #107（施行日の当日の配り直し）・#108（`api-fallback` の `note` と案内のコマンド）として起票した。
+
+## 起票した Issue（2026-10-04）
+
+- houki-egov-mcp #108 への追記（応答と起動時のログに DB のパス）、#110（DB の場所を確かめるコマンドと `--status` の警告）、#111（DB のファイル名に版を入れるか）
+- houki-nta-mcp #138（上の 3 件の nta 版）
+- 本文と投稿の記録: `docs/notes/issues-2026-10-04-db-path/`、`scripts/post-issues-2026-10-04-db-path.sh`
