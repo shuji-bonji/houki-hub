@@ -1,6 +1,6 @@
 # 段階 4 後半の実装 PR の指示（egov 0.17.0 / nta 0.23.0）
 
-2026-10-03（JST）に Spec Steward の会話で作った、実装を別の会話に渡すための指示です。仕様 PR（T4・T5）は egov・nta とも承認・マージ済みです（egov PR #91・#92、nta PR #124・#126。main は egov `3105adb`、nta `15edd5d`）。AGENTS.md の決まり（Steward と Coder は同じ会話で起動しない）に従い、実装は新しい会話で行います。
+2026-10-03（JST）に Spec Steward の会話で作った、実装を別の会話に渡すための指示です。仕様 PR（T4・T5）は egov・nta とも承認・マージ済みです（egov PR #91・#92、nta PR #125・#126。main は egov `3105adb`、nta `15edd5d`）。AGENTS.md の決まり（Steward と Coder は同じ会話で起動しない）に従い、実装は新しい会話で行います。
 
 - 指示 E: houki-egov-mcp 0.17.0（新しい会話にそのまま貼る）
 - 指示 F: houki-nta-mcp 0.23.0（別の新しい会話にそのまま貼る）
@@ -117,7 +117,7 @@ houki-nta-mcp の段階 4 後半の実装 PR を作ってください。この�
 ## 最初に読むもの（この順）
 
 1. AGENTS.md（PR の種類・役割・仕様 ID）と CONTRIBUTING.md
-2. specs/changes/20261003-t4-response-shape/ の proposal.md と specs/*/spec.md（PR #124）
+2. specs/changes/20261003-t4-response-shape/ の proposal.md と specs/*/spec.md（PR #125。proposal.md の承認日の行は #124 と誤記していた）
 3. specs/changes/20261003-t5-docs-mismatch/ の proposal.md と specs/*/spec.md（PR #126）。とくに「実装 PR で直す文書」の表
 4. 差分が参照する specs/current/<dir>/spec.md の仕様 ID
 5. 前の版の実装 PR の形の手本: specs/releases/v0.22.0/ と CHANGELOG.md の 0.22.0
@@ -174,7 +174,7 @@ test: のコミットでは新しいテストが落ち、次の feat: / fix: で
 ## 取り込み（最後のコミット）
 
 - 2 つの proposal.md の「取り込みのとき（Publisher）」に従う。ADDED は「できること」の末尾に足し、MODIFIED は見出しの行（題）も含めて差分の見出しと本文に置き換える。「エラーの code」の表・「未決」の項目も指示どおりに直す（search_rules の未決 3 は書き換え、cli_refresh の未決 5 は「日より古い」に直す）
-- 各 spec.md の承認日の行に「差分 `20261003-t4-response-shape` は <proposal.md の承認日>（PR #124）」「差分 `20261003-t5-docs-mismatch` は <proposal.md の承認日>（PR #126）」を足す。日付は各 proposal.md の「- 承認日:」の行の値をそのまま写す
+- 各 spec.md の承認日の行に「差分 `20261003-t4-response-shape` は <proposal.md の承認日>（PR #125）」「差分 `20261003-t5-docs-mismatch` は <proposal.md の承認日>（PR #126）」を足す。日付は各 proposal.md の「- 承認日:」の行の値をそのまま写す
 - git mv で specs/changes/20261003-t4-response-shape・20261003-t5-docs-mismatch を specs/releases/v0.23.0/ へ移し、各 proposal.md の「状態」を「取り込み済み（v0.23.0）」にする
 - npx spec-ids check と、BASE_REF=main HEAD_REF=feat/20261003-0.23.0 node .github/scripts/check-pr-scope.mjs を通す
 
@@ -199,7 +199,7 @@ T5 の「人が判断すること」3（8xxx 帯）と、basisDate の値の確�
 - spec-ids check と pr-scope の結果、上の確認の結果
 - 仕様に無い判断が要った点、食い違いの報告
 - 契約の確認で出るはずの差分の一覧（ツールごと）
-- PR 本文の草案（Closes #70 #71 #82 #108、仕様 PR #124 #126 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+- PR 本文の草案（Closes #70 #71 #82 #108、仕様 PR #125 #126 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```
 
 ---

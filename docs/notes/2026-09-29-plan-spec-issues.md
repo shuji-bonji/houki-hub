@@ -556,7 +556,19 @@ proposal.md の「人が判断すること」で承認前に見る主な点:
 
 次: 4 本の署名・push・PR 作成（T4 → T5 の順にマージ）。マージ後に実装の会話へ渡す指示（egov 0.17.0 / nta 0.23.0）を置く。T5 の「実装 PR で直す文書」は、各 T5 の proposal.md の表がそのまま実装の会話の入力になる。0.17.0 / 0.23.0 の publish の日に、houki-research-skill の `docs/ERROR-CODES.md`・`docs/ERROR-HANDLING.md`（`INTERNAL_ERROR` の再試行）と `SKILL.md` の索引の印の文（「付いていたら」→「値が `removed_from_index` なら」）を直す。
 
-T4・T5 は 2026-10-03 にマージした（egov PR #91・#92、main `3105adb`。nta PR #124・#126、main `15edd5d`）。実装は別の会話で行うので、指示を `docs/notes/2026-10-03-stage4b-impl-instructions.md` に置いた（E: egov 0.17.0、F: nta 0.23.0、G: publish の日の houki-research-skill 0.17.0）。
+T4・T5 は 2026-10-03 にマージした（egov PR #91・#92、main `3105adb`。nta PR #125・#126、main `15edd5d`）。実装は別の会話で行うので、指示を `docs/notes/2026-10-03-stage4b-impl-instructions.md` に置いた（E: egov 0.17.0、F: nta 0.23.0、G: publish の日の houki-research-skill 0.17.0）。
+
+2026-10-03: 段階 4 の後半を出した。houki-egov-mcp 0.17.0（PR #93、`specs/releases/v0.17.0/` に T4・T5）、houki-nta-mcp 0.23.0（PR #127、`specs/releases/v0.23.0/` に T4・T5）を publish し（MCP Registry にも登録）、プラグインも更新した。houki-research-skill 0.17.0（指示 G。`mcp-refs.config.json` を egov 0.17.0・nta 0.23.0 に上げ、ERROR-CODES.md・ERROR-HANDLING.md・SKILL.md・CITATION.md・ARCHITECTURE.md・workflows を追随）と 0.17.1（houki-research-skill #24・PR #25。`tax-research.md` の `source_mcp_hint` の値を `houki-egov` / `houki-nta` に直した。0.17.0 の作業中に見つけた、それより前からの誤り）を出した。
+
+nta 0.23.0 の実装で、作者の DB に 8xxx 帯のタックスアンサーが 16 件あることが分かり、T5 の文書 1（未対応の番号帯のエラー文）は保留した。国税庁の索引を確かめると、番号の先頭の桁で決める税目フォルダが索引と合わない記事が 8xxx を含めて 129 件あった。8xxx 帯に対応する方針（shuji の決定）で houki-nta-mcp #128 を起票した（草案は `docs/notes/2026-10-03-issue-draft-nta-tax-answer-8xxx.md`）。Skill 0.17.0 は、#128 が直るまで「8xxx の docId は `nta_get_tax_answer` で取れないので `sourceUrl` を案内する」と書いている。
+
+houki-nta-mcp #120（通信の失敗の code を egov と同じ 4 つに分けるか）には、2026-10-02 に 0.22.0 の 4xx の扱いの追記（403・400 などで `fetchNtaPage` は取り直さないのに `retryable: true` を返す）、2026-10-03 に Skill 側で直す箇所の追記（`examples/error-recovery-patterns.md` のシナリオ 4 の `SOURCE_TIMEOUT`、ERROR-HANDLING.md の retry の回数の書き方の不揃い）がある。#120 と #128 は、どちらも `nta_get_qa` / `nta_get_tax_answer` / `nta_get_tsutatsu` の国税庁サイトから取る経路の話なので、段階 5 の nta 0.24.0 で一緒に扱う候補。
+
+承認日の行の食い違い（2026-10-03 に確認）: egov の T4・T5 の proposal.md と `specs/current/` の承認日は「2026-10-01」だが、PR #91・#92 のマージは 2026-10-03 03:25・03:55 JST。nta の T4 は「2026-10-02（PR #124）」と書かれているが、#124 は T4 を戻す Revert の PR（マージされていない）で、T4 のマージは PR #125（2026-10-03 03:35 JST）。T5 は「2026-10-02（PR #126）」で、マージは 2026-10-03 04:04 JST。日付は UTC の日付で書いた可能性がある。直すなら、`specs/current/` の承認日の行と `specs/releases/v0.17.0/`・`v0.23.0/` の proposal.md を直す小さな PR（実装の変更なし）が要る。
+
+段階 4 の後片付け（2026-10-03）: (1) egov #47 は、v0.16.0 で `at` の形の検査を入れたので閉じ、残りの 3 つ（その時点に法令が無い `at`、`verify_citations` で `at` を法令名の検索に使うか、`verify_citations` の未決 2）を #87 に移す。(2) nta #70 は閉じていたが、#71・#82・#108 は 0.23.0 の実装 PR の後も open だった（`Closes` が効かなかった）。(3) 承認日の行の食い違いは直す。egov・nta とも `docs/20261003-approval-dates` ブランチに 1 コミット（egov `4f45c95`: T4・T5 の承認日を 2026-10-03 にし、`verify_citations` の未決 2 の指す先を #87 に。nta `96061ab`: T4 を「2026-10-03（PR #125）」、T5 を 2026-10-03 にし、CHANGELOG 0.23.0 の #124 を #125 に）。どちらも `spec-ids check` と pr-scope が通る（実装 PR の種類。`specs/changes/` を触らないので範囲内）。(1)(2) のコメントと close は `scripts/close-issues-2026-10-03-stage4.sh`（本文は `docs/notes/issues-2026-10-03-stage4-close/`）で行う。v0.16.0 の差分の承認日（egov PR #84〜#86・#89、nta PR #117〜#119・#121）は、マージの日（JST）と照らして直していない（#89 だけ「2026-10-01」で、マージは 2026-10-02 21:40 JST。承認した日と読めば誤りではない）。
+
+段階 4 の契約の確認（5.2、2026-10-03）: publish 済みの egov 0.17.0 / nta 0.23.0 に reference-examples の 47 件を流した。劣化 0 件（一致 5、差分あり 41、未確認 1）で、5.2 の条件を満たす。差分の多くは T4 の `null` の追加（egov 16 件の `meta.at`、nta の索引の印と `issuedAt` / `basisDate`）と `staleness` の `stale`（DB の取り込みから 13〜25 日）。段階 6 で直す例の文が 3 件（egov `get_law_file` の 50 MB の文が `INVALID_ARGUMENT` のまま、nta `nta_get_kaisei_tsutatsu` の例の `code` が `TSUTATSU_NOT_FOUND` のまま、egov `resolve_abbreviation` の例の `aliases`）。Issue の種が 1 件（`nta_search_jimu_unei` の `legal_status.note` が `nta_get_jimu_unei` の json と違う文のまま）。記録は `docs/notes/2026-10-03-regression-check-egov-0.17.0-nta-0.23.0.md`。
 
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
 
