@@ -267,20 +267,20 @@ houki-nta-mcp の段階 5（0.24.0）の実装 PR を作ってください。こ
 
 ## 指示 O: houki-research-skill 0.18.0
 
-egov 0.18.0 と nta 0.24.0 の両方を publish した日に、新しい会話に貼ります（2026-10-04 に両方 publish 済み。M を待たずに始めてよい）。egov 0.19.0 は DB と CLI の版で、Skill の手順が使うツールの応答はほぼ変わらないので、0.19.0 の publish の後に mcp-refs.config.json の版上げと check-mcp-refs だけを patch（0.18.1）で行う。
+egov 0.18.0・0.19.0 と nta 0.24.0 はすべて 2026-10-04 に publish 済みです。O は 3 つの版をまとめて 1 回で追随します（以前の版の指示にあった「0.19.0 は後で patch 0.18.1」は取りやめ）。
 
 ```text
-houki-research-skill を houki-egov-mcp 0.18.0 と houki-nta-mcp 0.24.0（どちらも 2026-10-04 に publish 済み）に追随させてください。egov 0.19.0 はこの会話では扱いません。版は 0.17.1 → 0.18.0 です。
+houki-research-skill を houki-egov-mcp 0.19.0（0.18.0 の変更を含む）と houki-nta-mcp 0.24.0 に追随させてください。3 つの版とも 2026-10-04 に publish 済みです。版は 0.17.1 → 0.18.0 です。
 
 ## 場所
 
 - リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/skill/houki-research-skill（device_bash では $HOME/mnt/houki-hub/skill/houki-research-skill）
-- 起点: main（2026-10-04 時点は 1f2a15d、0.17.1。scripts/mcp-refs.config.json は egov 0.17.0 / nta 0.23.0）。git fetch で origin と同じか確かめる
-- ブランチ: docs/<作業日の yyyymmdd>-egov018-nta024
+- 起点: main（2026-10-04 時点は 1f2a15d、0.17.1。scripts/mcp-refs.config.json は egov 0.17.0 / nta 0.23.0。MCP 側の main は egov f3b7fc1（v0.19.0）、nta 527322a（v0.24.0））。git fetch で origin と同じか確かめる
+- ブランチ: docs/<作業日の yyyymmdd>-egov019-nta024
 
 ## 直すもの
 
-入力は、houki-egov-mcp の CHANGELOG.md の 0.18.0 と houki-nta-mcp の CHANGELOG.md の 0.24.0 の「互換性」の節、各 MCP の specs/releases/v0.18.0/・v0.24.0/ の proposal.md の「互換性」「呼び出し例への影響」です（L・N の会話の報告があれば、その「houki-research-skill で直す箇所」も）。2026-10-04 に grep して見つけた箇所を下に挙げますが、作業の前に grep し直してください。
+入力は、houki-egov-mcp の CHANGELOG.md の 0.18.0・0.19.0 と houki-nta-mcp の CHANGELOG.md の 0.24.0 の「互換性」の節、各 MCP の specs/releases/v0.18.0/・v0.19.0/・v0.24.0/ の proposal.md の「互換性」「呼び出し例への影響」です（L・N の会話の報告があれば、その「houki-research-skill で直す箇所」も）。2026-10-04 に grep して見つけた箇所を下に挙げますが、作業の前に grep し直してください。
 
 
 - docs/ERROR-CODES.md: 各 MCP の specs/current/common_errors/spec.md に合わせる
@@ -292,11 +292,14 @@ houki-research-skill を houki-egov-mcp 0.18.0 と houki-nta-mcp 0.24.0（どち
 - get_article_references の kind の一覧に suppl を書いている箇所があれば足す
 - SKILL.md 166 行目と workflows/tax-research.md 223 行目の「8xxx 帯の docId は nta_get_tax_answer で取れない（INVALID_ARGUMENT で断られ…）」: nta 0.24.0 で 8xxx 帯を取れるようになった（#128）ので、文を消すか「v0.24.0 以上では取れる」に直す
 - docs/CITATION.md・examples の legal_status.note の引用: 事務運営指針を引用する箇所があれば、nta 0.24.0 の「通達・事務運営指針は行政内部文書であり、…」にする（通達の箇所は今のまま）
+- search_fulltext の api-fallback の説明（SKILL.md 120 行目、workflows/tax-research.md 129 行目、workflows/feasibility-check.md 85・268 行目、examples/invoice-registration.md 38 行目）: egov 0.19.0 では「DB が無い」に加えて「DB の版が古い（0.18.x 以前に作った DB）・新しい・読めない」ときも search_law に切り替え、note で作り直しを案内する。文に足す
+- egov 0.19.0 の DB の作り直し: 0.18.x 以前に作った DB は使えず、houki-egov-mcp --bulk-download-everything（約 290 MB）で作り直す。作り直した DB を 0.18.x 以前で開くと全テーブルが消える。SKILL.md 339 行目付近の前提の一覧と README の表に書く
+- search_fulltext の段落だけの附則のヒットは「附則(<n>)」（egov 0.19.0、#101）。「intro」を載せた例があれば直す（2026-10-04 の grep では無かった）
 - SKILL.md・docs のローカル DB の案内: nta 0.24.0 で DB が版 12 になり、0.23.x 以前で開くと作り直されること（nta の CHANGELOG の 0.24.0 の冒頭の注意）を、案内に書く必要があるか確かめる
 - README.md の対応する MCP の版の表（155・156 行目付近）に、0.18.0 / 0.24.0 で使うようになった機能があれば書き足す
 - SKILL.md・workflows・examples の呼び出し例を、新しい inputSchema（get_law・verify_citations の suppl_index、law_type の ImperialOrder・Constitution）で grep し直す
-- scripts/mcp-refs.config.json の版を上げ、node scripts/update-mcp-snapshots.mjs で mcp-snapshots/ を作り直し、node scripts/check-mcp-refs.mjs を通す（VM から npm に届かないときは、私が Mac で回すコマンドを報告に書く）
-- 版を書いている箇所（0.17.1 で grep する。mcp-snapshots/ は除く）を 0.18.0 にし、CHANGELOG に「egov 0.18.0 / nta 0.24.0 に追随」と直した箇所を書く
+- scripts/mcp-refs.config.json の版を egov 0.19.0 / nta 0.24.0 に上げ、node scripts/update-mcp-snapshots.mjs で mcp-snapshots/ を作り直し、node scripts/check-mcp-refs.mjs を通す（VM から npm に届かないときは、私が Mac で回すコマンドを報告に書く）
+- 版を書いている箇所（0.17.1 で grep する。mcp-snapshots/ は除く）を 0.18.0 にし、CHANGELOG に「egov 0.18.0・0.19.0 / nta 0.24.0 に追随」と直した箇所を書く
 
 ## 守ること・報告すること
 

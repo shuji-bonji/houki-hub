@@ -6,7 +6,7 @@
     "layer = 役割 / form = 配布形態（誰が起動するか）/ status = released・planned・concept。",
     "planned / concept は名前と束ねる単位を予約しているだけで、ディレクトリも npm も無い。"
   ],
-  "generatedAt": "2026-10-03T18:40:28.522Z",
+  "generatedAt": "2026-10-03T20:51:42.656Z",
   "generatedBy": "scripts/generate-stack.mjs",
   "npmScope": "@shuji-bonji",
   "repos": [
@@ -19,16 +19,16 @@
       "status": "released",
       "public": true,
       "note": "e-Gov 法令 API v2。法律・政令・省令の本文・目次・改正履歴 + ローカル SQLite FTS5 全文検索 + 章・節単位の範囲取得 + 添付ファイル（別表・様式の図）と xml / docx の本文ファイル。14 tools",
-      "published": "0.18.0",
+      "published": "0.19.0",
       "local": {
-        "version": "0.18.0",
-        "tag": "v0.18.0",
+        "version": "0.19.0",
+        "tag": "v0.19.0",
         "dirty": false,
         "unpushedCommits": 0
       },
       "consistency": {
         "status": "match",
-        "detail": "0.18.0"
+        "detail": "0.19.0"
       }
     },
     {
@@ -84,8 +84,8 @@
       "note": "family 横断の手順。error contract / citation / 業法独占規定（弁護士法 72 条・税理士法 52 条・社労士法 27 条）の正典。workflow は tax-research と feasibility-check の 2 つ",
       "published": null,
       "local": {
-        "version": "0.17.1",
-        "tag": "v0.17.1",
+        "version": "0.18.0",
+        "tag": "v0.18.0",
         "dirty": false,
         "unpushedCommits": 0
       },
