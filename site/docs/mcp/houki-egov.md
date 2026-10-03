@@ -37,13 +37,13 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 
 | 項目 | 内容 |
 | --- | --- |
-| 取得元 | e-Gov が配布する全法令の一括データ（zip 約 290 MB）を 1 本。ほかの 6 ツールは e-Gov 法令 API v2 をその場で呼びます |
+| 取得元 | e-Gov が配布する全法令の一括データ（zip 約 290 MB）を 1 本。ほかの 13 ツールは e-Gov 法令 API v2 をその場で呼びます |
 | DB ファイル | `${XDG_CACHE_HOME:-~/.cache}/houki-egov-mcp/laws.db`（`HOUKI_EGOV_DB_PATH` で変えられます。コマンドライン引数での指定はありません） |
 | テーブル | `laws` `articles` `revisions_meta` `sync_state`。全文検索の索引は `laws_fts` `articles_fts`（FTS5 trigram） |
 | 鮮度の持ち方 | DB 全体で 1 つ（`sync_state` は 1 行）。`--status` で確かめられます |
 | 更新の粒度 | 日ごとの差分（`--sync`、v0.8.0+）。最終同期日から今日までの日次差分 zip を順に取り込みます。全件の再実行でも版ごとに `content_hash` を比べ、変わった版だけ入れ直します |
-| DB が要るツール | 7 のうち 1（`search_fulltext`）。DB が無いと法令名の一致で返り、`source: "api-fallback"` が付きます |
-| 版が上がったとき | v0.5.1 より前に作った DB は `--bulk-download-everything` の実行し直しが要ります（編を持つ法令の本則が入っていません） |
+| DB が要るツール | 14 のうち 1（`search_fulltext`）。DB が無いと法令名の一致で返り、`source: "api-fallback"` が付きます |
+| 版が上がったとき | 0.19.0 で DB の版を 3 にしました。0.18.x 以前に作った DB は `--bulk-download-everything` で作り直します。作り直した DB を 0.18.x 以前で開くと全テーブルが消えます（[版をまたぐときの注意](/guide/local-database#版をまたぐときの注意)） |
 
 各項目の詳細は以下の各節にあります。
 
@@ -56,13 +56,13 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 | ある | 条文の本文を横断した全文検索の結果。ヒットごとに条番号・snippet・score・`freshness` が付きます |
 | 無い | `search_law` と同じ**法令名の一致**の結果。`source: "api-fallback"` が付き、`next_actions` に DB の作り方が入ります |
 
-ほかの 8 ツール（`search_law`・`get_law`・`get_toc`・`get_law_revisions`・`resolve_abbreviation`・`explain_law_type`・`get_related_laws`・`get_article_references`）は
+ほかの 13 ツール（`search_law`・`get_law`・`get_toc`・`get_law_range`・`get_law_revisions`・`resolve_abbreviation`・`explain_law_type`・`get_related_laws`・`get_article_references`・`verify_citations`・`list_attachments`・`get_attachment`・`get_law_file`）は
 e-Gov 法令 API をその場で呼ぶので、DB の有無に関係なく同じように動きます。
 
 ### 作り方
 
 ```sh
-npx -y @shuji-bonji/houki-egov-mcp --bulk-download-everything
+npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything
 ```
 
 全法令の zip（約 290 MB）を 1 本取得して取り込みます。進み具合は標準エラー出力に出ます。
@@ -71,7 +71,7 @@ npx -y @shuji-bonji/houki-egov-mcp --bulk-download-everything
 ### 最新にする
 
 ```sh
-npx -y @shuji-bonji/houki-egov-mcp --sync
+npx -y @shuji-bonji/houki-egov-mcp@latest --sync
 ```
 
 `sync_state` の最終同期日から今日までの日次差分 zip（1 日分は数十 KB〜30 MB）を日付順に取り込みます（v0.8.0+）。
@@ -115,7 +115,7 @@ flowchart TB
 ### 同期の状態を見る
 
 ```sh
-npx -y @shuji-bonji/houki-egov-mcp --status
+npx -y @shuji-bonji/houki-egov-mcp@latest --status
 ```
 
 DB のパス、`laws` と `articles` の件数、最後に同期した日付、経過日数、`fresh` / `stale` / `outdated` の判定を表示します。
@@ -130,6 +130,9 @@ DB のパス、`laws` と `articles` の件数、最後に同期した日付、�
 MCP サーバーと CLI で `HOUKI_EGOV_DB_PATH` や `XDG_CACHE_HOME` が違うと、別々のファイルを指すことになります。
 取り込んだはずなのに `search_fulltext` の応答に `source: "api-fallback"` が付くときは、まずここを確かめてください。
 
+plugin は環境変数を持たないので、既定の `~/.cache/houki-egov-mcp/laws.db` を開きます。環境変数を付けずに実行した CLI は、plugin と同じこのファイルを作り、更新します。
+起動のしかたごとに開くファイルと、別のファイルで作った DB の移し方は、[ローカル DB（全文検索用）の「DB のファイルの決まり方」](/guide/local-database#db-のファイルの決まり方)にまとめています。
+
 ### パッケージを更新したとき
 
 DB はパッケージの更新で消えません。取り込み方が変わったときだけ、取り直しが要ります。
@@ -138,6 +141,7 @@ DB はパッケージの更新で消えません。取り込み方が変わっ�
 | --- | --- |
 | v0.5.0 / v0.5.1 | `--bulk-download-everything` を実行し直します。v0.5.1 より前に作った DB には、編（Part）を持つ法令（民法・会社法など）の本則が入っていません |
 | v0.8.0 | 取り直しは不要です。`--sync` で最終同期日からの差分を取り込めます |
+| v0.19.0 | DB の版を 3 にしました。`--bulk-download-everything` で作り直します（取り込んだ中身は消えます）。作り直した後は 0.18.x 以前で開かないでください |
 
 各版で何が変わったかは、リポジトリの [CHANGELOG](https://github.com/shuji-bonji/houki-egov-mcp/blob/main/CHANGELOG.md) にあります。
 

@@ -180,7 +180,7 @@ v0.15.0 までは、`nta_get_qa` と `nta_get_tax_answer` が DB を引かずに
 初めて入れたときは、通達 1 本だけを入れて動くことを確かめてください（v0.18.0）。
 
 ```sh
-npx -y @shuji-bonji/houki-nta-mcp --quickstart
+npx -y @shuji-bonji/houki-nta-mcp@latest --quickstart
 ```
 
 消費税法基本通達 1 本を約 3〜5 分で取り込みます。終わると、その通達に対して `nta_search_tsutatsu` と `nta_get_tsutatsu` が使えます。別の通達にしたいときは `--quickstart --tsutatsu=所得税基本通達` のように指定します。
@@ -188,7 +188,7 @@ npx -y @shuji-bonji/houki-nta-mcp --quickstart
 6 種別をまとめて取り込むときは次を実行します。国税庁サイトを 1 ページずつ取りに行くので約 100 分かかります。開始前に、種別ごとの件数と所要時間の目安を表示します。
 
 ```sh
-npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything
+npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-everything
 ```
 
 必要な種別だけを先に入れることもできます。所要時間は `--help` の記載です。`--help` は「まず試す → 種別を足す → 全部入り → 保守」の順に並んでいます。
@@ -217,10 +217,10 @@ npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything
 
 ```sh
 # 消費税と所得税の文書回答事例だけ
-npx -y @shuji-bonji/houki-nta-mcp --bulk-download-bunshokaitou --bunsho-taxonomy=shohi,shotoku
+npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-bunshokaitou --bunsho-taxonomy=shohi,shotoku
 
 # 消費税のタックスアンサーだけ
-npx -y @shuji-bonji/houki-nta-mcp --bulk-download-tax-answer --tax-answer-taxonomy=shohi
+npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-tax-answer --tax-answer-taxonomy=shohi
 ```
 
 v0.14.2 から、一覧に無い値を渡すと、何も投入せずに使える値を表示して終了します（終了コード 1）。`--help` にも同じ一覧が出ます。v0.14.1 までは値を見ていなかったため、税目を打ち間違えても 0 件のまま正常終了していました（[houki-nta-mcp#25](https://github.com/shuji-bonji/houki-nta-mcp/issues/25)）。
@@ -269,16 +269,16 @@ houki-nta-mcp 側で解析を変えた直後は、国税庁のページが変わ
 
 ```sh
 # 30 日以上古い節を一覧する（この時点では何も取得しません）
-npx -y @shuji-bonji/houki-nta-mcp --refresh-stale=30
+npx -y @shuji-bonji/houki-nta-mcp@latest --refresh-stale=30
 
 # 実際に取り直す
-npx -y @shuji-bonji/houki-nta-mcp --refresh-stale=30 --apply
+npx -y @shuji-bonji/houki-nta-mcp@latest --refresh-stale=30 --apply
 ```
 
 全部を入れ直すときは `--refresh` を付けます。既存のデータを消してから取り直すので、最初の投入と同じだけ時間がかかります。
 
 ```sh
-npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything --refresh
+npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-everything --refresh
 ```
 
 `--refresh` を付けずに再実行したときは、国税庁サイトが `304 Not Modified` を返す節を飛ばすので短時間で終わります。

@@ -38,7 +38,7 @@ houki-egov-mcp の `search_fulltext` は、条文本文を横断検索するツ�
 本文の全文検索を使うには、一度だけ次を実行します。
 
 ```sh
-npx -y @shuji-bonji/houki-egov-mcp --bulk-download-everything
+npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything
 ```
 
 DB は `~/.cache/houki-egov-mcp/laws.db` にでき、`HOUKI_EGOV_DB_PATH` で場所を変えられます。
@@ -47,7 +47,7 @@ DB は `~/.cache/houki-egov-mcp/laws.db` にでき、`HOUKI_EGOV_DB_PATH` で場
 houki-nta-mcp も同じ形で、通達本体・改正通達・タックスアンサーなどを取り込みます。初めて入れたときは、通達 1 本だけを入れて動くことを確かめてください。
 
 ```sh
-npx -y @shuji-bonji/houki-nta-mcp --quickstart
+npx -y @shuji-bonji/houki-nta-mcp@latest --quickstart
 ```
 
 消費税法基本通達 1 本を約 3〜5 分で取り込みます（v0.18.0）。終わると、その通達に対して検索と取得が使えます。
@@ -56,7 +56,7 @@ DB が無い状態でも、取得ツール（`nta_get_tsutatsu` など）は国�
 6 種別すべてを取り込むときは次を実行します。国税庁サイトを 1 ページずつ取りに行くので**約 100 分**かかります。
 
 ```sh
-npx -y @shuji-bonji/houki-nta-mcp --bulk-download-everything
+npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-everything
 ```
 
 税目を絞って必要な分だけ先に入れることもできます。2 回目以降も取得自体は行いますが、内容が変わっていない節は投入を省きます。
