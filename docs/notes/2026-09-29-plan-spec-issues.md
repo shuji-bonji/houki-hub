@@ -602,3 +602,14 @@ houki-nta-mcp #120（通信の失敗の code を egov と同じ 4 つに分け�
 - nta #71 の `hits` / `results` の名前を揃える案は 5.1「フィールドを消す変更は入れない」と衝突するので、0.23.0 では付け替えない
 - egov #48: `item` は文字列も受け付ける（SPEC-EGOV-GET-LAW-002）ので inputSchema では止められず、`paragraph` は `INVALID_ARGUMENT`、`item` は `INVALID_ARTICLE_NUM` のままになる
 - 「決めない」候補（5.4）として README に 7 件を挙げた: abbr #16・#13・#20・#23、nta #67・#72、egov #62（「通知」の行だけ）。abbr #13 を「凍結しない」にするなら、段階 3 の表の `spec/<日付>-freeze` の行を消す
+
+### この計画の締め（2026-10-04 JST）
+
+この計画の対象の Issue（57 件と、途中で足した egov #87・#88・#97・#98・#101・#102、nta #106〜#112・#120・#123・#128・#131 など）は、すべて閉じた。最後の版は egov 0.19.0、nta 0.24.0、houki-abbreviations 0.7.0、houki-research-skill 0.18.0。houki-hub の `stack.json` と README の表は 2026-10-04 に作り直した。
+
+この計画では終えず、次の計画に引き継ぐもの:
+
+1. **5.2 の契約の確認（egov 0.19.0 / nta 0.24.0 で全 47 例）**: 記録は 0.17.0 / 0.23.0 の回（`2026-10-03-regression-check-egov-0.17.0-nta-0.23.0.md`）まで。段階 5 の版での全例の確認はまだ行っていない
+2. **段階 6**: 呼び出し例の取り直し（0.17.0 / 0.23.0 の回の「見つかったこと」1・2 と、段階 5 の各 proposal.md の「呼び出し例への影響」が入力）、`generate-reference.mjs` でのリファレンスの再生成、#27 のページ、#26 を閉じること、`2026-09-29-scope-by-audience.md` の site への掲載
+3. **8 章の未決**: houki-hub#5 の②（CI でのリファレンスの再生成）をいつ入れるか
+4. **計画の後に立った Issue**（対応の計画は別の会話で立て直す）: houki-egov-mcp #105・#107・#108・#110・#111、houki-nta-mcp #116・#137・#138、houki-abbreviations #35。関係する文書は `2026-10-04-handoff-egov-db-path.md`、`issues-2026-10-04-db-path/`、`issues-2026-10-04-egov-bulk/`、`issues-2026-10-04-nta-0.24.0-followups/`
