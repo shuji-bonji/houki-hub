@@ -365,9 +365,9 @@ gantt
 | houki-egov-mcp | 0.17.0 | 4 | #56・#64・#65・#66 |
 | houki-nta-mcp | 0.23.0 | 4 | #70・#71・#82・#108 |
 | houki-research-skill | 0.16.0 | 6 | ERROR-CODES / examples / snapshots を 0.16.0 / 0.22.0 に |
-| houki-egov-mcp | 0.18.0 | 5 | #45・#51・#63・#87・#55・#67・#62・#72 |
+| houki-egov-mcp | 0.18.0 | 5 | #45・#51・#63・#87・#55・#67・#62・#72・#88・#97・#98（#88・#97・#98 は 2026-10-03 に追加） |
 | houki-egov-mcp | 0.19.0 | 5 | #58・#59・#60・#61・#71（#59・#60・#71 でスキーマの版上げ 1 回） |
-| houki-nta-mcp | 0.24.0 | 5 | #72・#80・#81・#120・#106・#107・#109・#110・#111・#112（#107・#112 でスキーマの版上げ 1 回） |
+| houki-nta-mcp | 0.24.0 | 5 | #72・#80・#81・#120・#106・#107・#109・#110・#111・#112・#123・#128・#131（#107・#112 でスキーマの版上げ 1 回。#123・#128・#131 は 2026-10-03 に追加） |
 | houki-research-skill | 0.17.0 | 6 | 段階 5 の追随 |
 
 publish の回数は MCP 8 回、houki-abbreviations 1 回、Skill 2 回の計 11 回です。Issue ごとに publish すると 57 回近くになるので、これで 5 分の 1 に減ります。
@@ -569,6 +569,10 @@ houki-nta-mcp #120（通信の失敗の code を egov と同じ 4 つに分け�
 段階 4 の後片付け（2026-10-03）: (1) egov #47 は、v0.16.0 で `at` の形の検査を入れたので閉じ、残りの 3 つ（その時点に法令が無い `at`、`verify_citations` で `at` を法令名の検索に使うか、`verify_citations` の未決 2）を #87 に移す。(2) nta #70 は閉じていたが、#71・#82・#108 は 0.23.0 の実装 PR の後も open だった（`Closes` が効かなかった）。(3) 承認日の行の食い違いは直す。egov・nta とも `docs/20261003-approval-dates` ブランチに 1 コミット（egov `4f45c95`: T4・T5 の承認日を 2026-10-03 にし、`verify_citations` の未決 2 の指す先を #87 に。nta `96061ab`: T4 を「2026-10-03（PR #125）」、T5 を 2026-10-03 にし、CHANGELOG 0.23.0 の #124 を #125 に）。どちらも `spec-ids check` と pr-scope が通る（実装 PR の種類。`specs/changes/` を触らないので範囲内）。(1)(2) のコメントと close は `scripts/close-issues-2026-10-03-stage4.sh`（本文は `docs/notes/issues-2026-10-03-stage4-close/`）で行う。v0.16.0 の差分の承認日（egov PR #84〜#86・#89、nta PR #117〜#119・#121）は、マージの日（JST）と照らして直していない（#89 だけ「2026-10-01」で、マージは 2026-10-02 21:40 JST。承認した日と読めば誤りではない）。
 
 段階 4 の契約の確認（5.2、2026-10-03）: publish 済みの egov 0.17.0 / nta 0.23.0 に reference-examples の 47 件を流した。劣化 0 件（一致 5、差分あり 41、未確認 1）で、5.2 の条件を満たす。差分の多くは T4 の `null` の追加（egov 16 件の `meta.at`、nta の索引の印と `issuedAt` / `basisDate`）と `staleness` の `stale`（DB の取り込みから 13〜25 日）。段階 6 で直す例の文が 3 件（egov `get_law_file` の 50 MB の文が `INVALID_ARGUMENT` のまま、nta `nta_get_kaisei_tsutatsu` の例の `code` が `TSUTATSU_NOT_FOUND` のまま、egov `resolve_abbreviation` の例の `aliases`）。Issue の種が 1 件（`nta_search_jimu_unei` の `legal_status.note` が `nta_get_jimu_unei` の json と違う文のまま）。記録は `docs/notes/2026-10-03-regression-check-egov-0.17.0-nta-0.23.0.md`。
+
+段階 5 の仕様 PR の指示（2026-10-03）: `docs/notes/2026-10-03-stage5-spec-instructions.md` に 4 つの会話の指示を置いた。H（egov 0.18.0。#45・#51・#63・#87 と #55・#67・#88・#62・#72 の 2 本）、I（egov 0.19.0。DB と CLI の 5 件、H の後）、J（nta 0.24.0。#123 の文の直し・#80・#81・#72・#120・#128・#131 の 3 本）、K（nta 0.24.0。DB と CLI の 6 件、I の承認後。nta #106・#107 は egov #61・#60 と同じ規則にするため）。7 章の表に、計画書の後に立った egov #88 と nta #123・#128・#131 を足した。nta #116（基本通達の範囲を広げるか）は段階 5 の外。
+
+段階 5 の仕様 PR はすべてマージ済み（egov #95・#96・#99・#100・#103。#99 で #97・#98、#103 で #101・#102 を足した。nta #132〜#135）。実装の指示は `docs/notes/2026-10-04-stage5-impl-instructions.md`（2026-10-04）: L（egov 0.18.0。#45・#51・#63・#87・#55・#67・#88・#62・#72・#97・#98）、M（egov 0.19.0。#58〜#61・#71・#101・#102、DB の版 3 で約 290 MB の取り込み直し。L のマージ後）、N（nta 0.24.0。#123・#80・#81・#72・#120・#128・#131・#106・#107・#109〜#112、DB の版 12 へ行を保って移行）、O（houki-research-skill 0.18.0。egov 0.18.0 と nta 0.24.0 の publish の日）。L と N は並行できる。
 
 ### nta #75 の初版で見つかった、判断が要る未決（Issue 候補）
 
