@@ -1,9 +1,9 @@
 ::: warning ローカル DB が必要です
-`houki-egov-mcp --bulk-download-everything` で DB を作っていないと、応答の `source` が `"api-fallback"` になり、`search_law`（法令名のタイトル一致）の結果が `fallback` に入って返ります。そのときは本文検索は行われていません。`note` と `next_actions` に構築コマンドが入っています。
+`npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` で DB を作っていないと、応答の `source` が `"api-fallback"` になり、`search_law`（法令名のタイトル一致）の結果が `fallback` に入って返ります。そのときは本文検索は行われていません。`note` の先頭に開こうとした DB のパスが入り、`note` と `next_actions` に DB を作るコマンドが入っています（v0.20.0 から。DB を開けないときは `next_actions` が `search_law` の 1 件だけになります）。
 :::
 
 ::: details 呼び出し例 — 「民法で不法行為に関係する条は」
-- 実測: v0.19.1（2026-10-04）
+- 実測: v0.20.0（2026-10-05）
 - ローカル DB: あり（`freshness.last_sync_date` が 2026-10-04 の DB）
 
 **引数**
@@ -43,7 +43,8 @@
     "last_sync_date": "2026-10-04",
     "last_full_dl_at": "2026-10-03T19:19:36.391Z",
     "staleness": "fresh",
-    "days_since_sync": 0
+    "days_since_sync": 0,
+    "db_path": "~/.cache/houki-egov-mcp/laws.db"
   },
   "filters": {
     "law_type": null,
@@ -58,5 +59,6 @@
 - 「民法 第709条」のように法令名と条番号だけを渡すと、検索せずにその条を直接返します
 - `filters.domain` は 0.18.0 で `domain` の引数を外した後も応答に残っていて、`requested` は常に `null` です。`domain` を渡すと `INVALID_ARGUMENT`（`path: "domain"`）になります
 - この例は法令名と語をそのまま検索したので `expanded_keywords` がありません。略称（「労基法」など）は正式名称にも広げて検索し、通称（「インボイス」など）は元の語で条が 1 件も当たらなかったときだけ正式名称で探し直します（v0.18.0 から）。広げたときは、何に広げたかが `expanded_keywords` に入ります
-- `freshness.staleness` が `fresh` 以外なら、`--bulk-download-everything` の再実行を検討してください
+- `freshness.db_path` は引いた DB のパスで、ホームディレクトリの部分は `~` に置き換えてあります（v0.20.0 から）。ターミナルで `--sync` などを実行した DB と、MCP サーバーが開いた DB が同じかを確かめるときに使います。DB を引かなかったとき（`source: "api-fallback"`）は、`freshness` の 5 つのキーがすべて `null` です
+- `freshness.staleness` が `fresh` 以外なら、`npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` の再実行を検討してください
 :::
