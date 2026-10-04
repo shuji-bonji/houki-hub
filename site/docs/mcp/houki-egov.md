@@ -85,6 +85,7 @@ npx -y @shuji-bonji/houki-egov-mcp@latest --sync
 法令が改正されると、e-Gov の配布データにその法令の新しい**版**が入ります。
 `--sync` はその日の差分 zip から新しい版を取り込み、同じ法令の施行日が前の版を `PreviousEnforced` にします。
 `--bulk-download-everything` を実行し直す場合も、版ごとに `content_hash` を比べて、変わった版だけを入れ直します。
+中身が同じ版でも、未施行だった版が施行済みとして届いたときは、版の状態だけを書き換えます（v0.19.1 から。下の「施行日の当日に状態が変わる版」）。
 
 ```mermaid
 flowchart TB
@@ -95,6 +96,7 @@ flowchart TB
   H{"版ごとに content_hash を比べる"}
   U["変わった版を入れ直す"]
   K["変わっていない版は触らない"]
+  P["中身が同じでも、未施行の版が施行済みとして届いたら<br/>状態だけを CurrentEnforced にする（v0.19.1）"]
   O["前の版の行は DB に残る"]
 
   Z -->|初回の取り込み| DB
@@ -103,6 +105,8 @@ flowchart TB
   Z -->|再実行| H
   H --> U
   H --> K
+  H --> P
+  P --> DB
   U --> DB
   U --> O
   O -.->|検索には出ない| S
@@ -111,6 +115,22 @@ flowchart TB
 古い版の行は DB に残りますが、検索には出ません。
 `search_fulltext` は `current_revision_status = 'CurrentEnforced' OR remain_in_force = 1` で現行の版に絞るためです。
 過去の版を見たいときは、`get_law_revisions` で改正履歴を引いてください。
+
+#### 施行日の当日に状態が変わる版
+
+e-Gov は、改正が公布された日の差分に、施行日ごとの版を未施行として入れます。施行日の当日の差分には、同じ版を同じ中身のまま、施行済みとしてもう一度入れます。
+v0.19.1 は、この版の状態だけを `UnEnforced` から `CurrentEnforced` にし、同じ法令の施行日が前の版を `PreviousEnforced` にします。条の本文は入れ直しません。
+状態を書き換えた版があると、取り込みの件数の後に `  状態の更新: <件数> 件 (…)` の行が出ます。
+
+v0.19.0 はこの版を「中身が同じ」として飛ばしていたので、施行日を過ぎても版が未施行のまま残り、`search_fulltext` が改正前の条文を返し続けることがありました（[houki-egov-mcp #107](https://github.com/shuji-bonji/houki-egov-mcp/issues/107)）。
+v0.19.0 で 2026-10-04 以降に `--sync` した DB は、v0.19.1 に上げた後に次のコマンドを 1 回実行してください。未施行のまま残った版の状態を直します（条の本文は入れ直しません。全件の zip 約 290 MB を取得します）。
+
+```sh
+npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything
+```
+
+v0.19.1 の `--sync` や `--status` が `[WARN] 施行日が last_sync_date …` を出したときも同じです。
+このコマンドが要る DB の正確な範囲は、リポジトリの [docs/NOTES.md](https://github.com/shuji-bonji/houki-egov-mcp/blob/main/docs/NOTES.md) にあります。
 
 ### 同期の状態を見る
 
@@ -142,6 +162,7 @@ DB はパッケージの更新で消えません。取り込み方が変わっ�
 | v0.5.0 / v0.5.1 | `--bulk-download-everything` を実行し直します。v0.5.1 より前に作った DB には、編（Part）を持つ法令（民法・会社法など）の本則が入っていません |
 | v0.8.0 | 取り直しは不要です。`--sync` で最終同期日からの差分を取り込めます |
 | v0.19.0 | DB の版を 3 にしました。`--bulk-download-everything` で作り直します（取り込んだ中身は消えます）。作り直した後は 0.18.x 以前で開かないでください |
+| v0.19.1 | DB の版は 3 のままです。v0.19.0 で 2026-10-04 以降に `--sync` した DB は、`--bulk-download-everything` を 1 回実行します（条の本文は入れ直しません。上の「施行日の当日に状態が変わる版」） |
 
 各版で何が変わったかは、リポジトリの [CHANGELOG](https://github.com/shuji-bonji/houki-egov-mcp/blob/main/CHANGELOG.md) にあります。
 
