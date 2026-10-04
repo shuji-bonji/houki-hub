@@ -1,5 +1,5 @@
 ::: details 呼び出し例 — 「電帳法 は houki-nta-mcp で引けるか」
-- 実測: v0.10.4（2026-09-08）
+- 実測: v0.24.0（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -25,9 +25,16 @@
     "note": "通称: 電子帳簿保存法 (電帳法)"
   },
   "in_scope": false,
-  "hint": "このエントリは houki-egov の管轄です。houki-egov-mcp で取得してください。"
+  "hint": "このエントリは houki-egov の管轄です。houki-egov-mcp で取得してください。",
+  "next_actions": [
+    {
+      "action": "delegate_to_mcp",
+      "reason": "houki-egov の管轄リソースです。該当 MCP に切り替えてください",
+      "example": { "mcp": "houki-egov" }
+    }
+  ]
 }
 ```
 
-`in_scope: false` は、この略称が houki-nta-mcp の管轄外（法律なので houki-egov-mcp）であることを示します。houki-egov-mcp 側の同名ツールとの違いはこの `in_scope` と `hint` で、辞書は同じ houki-abbreviations です。「消基通」「所基通」のような通達の略称なら `in_scope: true` になります。
+`in_scope: false` は、この略称が houki-nta-mcp の管轄外（法律なので houki-egov-mcp）であることを示します。houki-egov-mcp 側の同名ツールとの違いはこの `in_scope` と `hint` で、辞書は同じ houki-abbreviations です。「消基通」「所基通」のような通達の略称なら `in_scope: true` になります。管轄外のときは `next_actions` に `delegate_to_mcp`（`example.mcp` は担当のサーバー）が 1 件付きます（v0.23.0 から）。
 :::
