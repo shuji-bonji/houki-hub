@@ -442,3 +442,20 @@ Q4（T6）の勧める案:
 | 7 ファイルの取り直し・Skill の追随（指示 X） | 未。egov `search_fulltext.md` は 0.20.0 で、nta の検索 6 ファイルは 0.25.0 の後にまとめて行う（nta の `freshness` は 0.24.1 で値が、0.25.0 で `db_path` が変わるため、2 回に分けない） |
 | houki-hub の追随 | `stack.json` は nta 0.24.1 まで（main `af30aa4`）。egov 0.20.0 の `node scripts/generate-stack.mjs --readme` は未確認 |
 | abbr #35 | open のまま（2026-10-04 15:50 頃 JST に確認）。`./scripts/close-issues-2026-10-04-plan-stage6.sh` をもう一度流す |
+
+### 段階 3 の契約の確認の結果（2026-10-05 JST）
+
+| 項目 | 内容 |
+| --- | --- |
+| 判定 | 一致 27・差分あり 18・**劣化 1**・未確認 1。差分ありのうち 12 は予定どおり（`freshness.db_path`、npx の形、0.24.1 の範囲）、6 は 2026-10-04 の取り込み直しによる値の変化 |
+| 劣化 | `nta_get_tax_answer`（No.6101）の `sections` が 7 → 3。国税庁が令和 8 年 4 月 1 日版でページの小見出しを h3 にし、`src/services/tax-answer-parser.ts` の `extractSections()` が h2 だけで節を切るため、小見出しの文字列が落ちる。0.24.1・0.25.0 の変更が原因ではない。Issue の草案は `docs/notes/issues-2026-10-05-regression/nta-get-tax-answer-h3-sections.md`（未投稿）。例 `nta_get_tax_answer.md` は v0.24.0 の実測のまま残した |
+| ③ の照合の規則 | X の会話の勧めは (B)「- 確かめた版: vX」の行を足す。全例を流すことは変えずに、PR の差分を振る舞いの変わった例だけにする。(C)（minor が同じなら現行）は patch での変更（今回の 0.24.1）を見落とす。人が判断すること Q14 |
+| egov の DB | `--status` の `[WARN]` が実際に出た。`~/.cache/houki-egov-mcp/` に `laws.0191check.db`（4.66 GB）と `laws.v2.bak.db`（7.07 GB）が残っている。消すかは shuji が決める |
+| ③ の結果 | 47 例のうち古い 1（`nta_get_tax_answer` の保留分）・現行 45・照合しない 1 |
+
+段階 3c（案）: 劣化の修正を nta 0.25.1（patch）で先に出す。#144・#145・#146（段階 3b、nta 0.26.0）より前。理由は「誤った・欠けた内容を返す」害が #144〜146 より大きく、Issue の案 A（h3 も節の区切りにし、`sections` の形は変えない）なら patch で足りるため。取り込み済みのタックスアンサーの行は作り直しが要る（`full_text` も同じ関数を使うかを仕様 PR で確かめる）。
+
+| # | 何を | 案 | 勧める案 |
+| --- | --- | --- | --- |
+| Q14 | ③ の照合の規則 | (A) 今のまま / (B) 「確かめた版」の行を足す / (C) minor が同じなら現行 | **B**（X の会話の比較のとおり） |
+| Q15 | `nta_get_tax_answer` の h3 の劣化 | (A) nta 0.25.1 で先に直す / (B) 0.26.0 に #144〜146 とまとめる | **A** |
