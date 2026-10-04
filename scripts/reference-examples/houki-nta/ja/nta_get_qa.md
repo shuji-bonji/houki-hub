@@ -1,5 +1,5 @@
 ::: details 呼び出し例 — 「消費税の質疑応答事例 02/19 の照会と回答、関係法令通達」
-- 実測: v0.17.0（2026-09-13）
+- 実測: v0.24.0（2026-10-04）
 - ローカル DB: 不要。ただし DB に構造があればそこから返る（この例は 2 回目の呼び出しで `source: "db"`）
 
 **引数**
@@ -32,6 +32,9 @@
     "fetchedAt": "2026-09-12T18:37:44.863Z"
   },
   "source": "db",
+  "index_status": null,
+  "orphaned_at": null,
+  "notice": null,
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,
@@ -65,11 +68,11 @@
 
 `source` はローカル DB（`"db"`）と国税庁サイト（`"live"`）のどちらから返したかです（v0.16.0 から）。1 回目は `"live"` で、その結果が DB に書き戻されるので 2 回目からは `"db"` になります。`"db"` の `fetchedAt` は呼び出した時刻ではなく DB に取り込んだ日時なので、引用するときはその値をそのまま書きます。v0.15.0 までは毎回国税庁サイトから取得していました（[houki-nta-mcp #29](https://github.com/shuji-bonji/houki-nta-mcp/issues/29)）。
 
-国税庁の索引から外れた文書には `index_status: "removed_from_index"` と `orphaned_at` が付きます（v0.17.0 から）。この事例は索引にあるので付いていません。
+国税庁の索引から外れた文書では、上の段の `index_status` が `"removed_from_index"` になり、`orphaned_at` と `notice` に値が入ります（v0.17.0 から）。この事例は索引にあるので、3 つとも `null` です（キーは v0.23.0 から常にあります）。上の段の `notice` は索引の注記で、`qa.notice`（国税庁のページ下部の注記）とは別のものです。
 :::
 
 ::: details 呼び出し例 — 枝番号の号を挙げている事例（法人税 33/02）
-- 実測: v0.14.0（2026-09-12）
+- 実測: v0.24.0（2026-10-04）
 
 **引数**
 
