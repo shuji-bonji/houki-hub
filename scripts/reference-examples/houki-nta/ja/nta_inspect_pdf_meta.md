@@ -1,5 +1,5 @@
 ::: details 呼び出し例 — 「改正通達 0025004-026 の PDF は、どれをどう読めばよいか」
-- 実測: v0.20.0（2026-09-21）
+- 実測: v0.24.0（2026-10-04）
 - ローカル DB: あり
 
 **引数**
@@ -28,6 +28,9 @@
     { "title": "別紙2（PDF/449KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/02.pdf", "sizeKb": 449, "kind": "comparison", "read_strategy": "tables", "layout_note": "…" },
     { "title": "【参考】… 新旧対応表 …（PDF/399KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/pdf/b0025003-111.pdf", "sizeKb": 399, "kind": "comparison", "read_strategy": "tables", "layout_note": "…" }
   ],
+  "index_status": null,
+  "orphaned_at": null,
+  "notice": null,
   "next_actions": [
     {
       "action": "pdf-reader-mcp:read_url",
@@ -49,7 +52,7 @@
 }
 ```
 
-`attachedPdfs[].kind` は PDF のタイトルから分類したもので、`read_strategy` と `layout_note` はその kind に応じた読み方です。道具の名前を含まないので、pdf-reader-mcp 以外の PDF 読み取りツールでもそのまま使えます。`next_actions` は kind ごとに 1 件（同じ kind が複数あれば先頭の PDF）と、最後に pdf-reader-mcp が無い環境向けの `read_pdf` が付きます。`save` を付けていないので、pdf-reader-mcp 向けの例は URL のまま読む `read_url` です。本文は含まないので、全文が要るときは `nta_get_kaisei_tsutatsu` を使います。
+`attachedPdfs[].kind` は PDF のタイトルから分類したもので、`read_strategy` と `layout_note` はその kind に応じた読み方です。道具の名前を含まないので、pdf-reader-mcp 以外の PDF 読み取りツールでもそのまま使えます。`next_actions` は kind ごとに 1 件（同じ kind が複数あれば先頭の PDF）と、最後に pdf-reader-mcp が無い環境向けの `read_pdf` が付きます。`save` を付けていないので、pdf-reader-mcp 向けの例は URL のまま読む `read_url` です。本文は含まないので、全文が要るときは `nta_get_kaisei_tsutatsu` を使います。`index_status`・`orphaned_at`・`notice` は `nta_get_kaisei_tsutatsu` と同じ索引の印で、文書が国税庁の索引に載っている間は `null` です。
 
 「別紙1」「別紙2」は本文の新旧対照表で、「【参考】… 新旧対応表」は第 8 章の通達番号の対応表です。v0.20.0 から、改正通達（kaisei）でタイトルが「別紙」と番号だけの PDF は `comparison` として返します（[houki-nta-mcp#44](https://github.com/shuji-bonji/houki-nta-mcp/issues/44)）。v0.19.0 では別紙 1・2 が `attachment` になり、`kind: "comparison"` で絞ると参考の対応表だけが返っていました。DB の中身は変えていないので、再投入は要りません。
 
@@ -57,7 +60,7 @@ v0.18.3 までは `next_actions` の代わりに `reader_hints` が付いてい�
 :::
 
 ::: details 呼び出し例 — 「新旧対照表だけを保存して、表として取る」
-- 実測: v0.20.0（2026-09-21）
+- 実測: v0.24.0（2026-10-04）
 - ローカル DB: あり
 
 **引数**
@@ -93,6 +96,9 @@ v0.18.3 までは `next_actions` の代わりに `reader_hints` が付いてい�
       "cached": true
     }
   ],
+  "index_status": null,
+  "orphaned_at": null,
+  "notice": null,
   "next_actions": [
     {
       "action": "pdf-reader-mcp:extract_tables",
