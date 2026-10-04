@@ -367,7 +367,7 @@ Q4（T6）の勧める案:
 | --- | --- | --- | --- | --- |
 | Q | 1 | egov 0.19.1 の仕様 PR（#107） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #112、main `c88a3c9`。差分 `20261004-ingest-redistributed-revisions`、ADDED 6・MODIFIED 4） |
 | R | 1 | egov 0.19.1 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #113、main `3ca848e`、v0.19.1 を publish） |
-| S | 2 | 契約の確認（C）と呼び出し例の取り直し（6a） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
+| S | 2 | 契約の確認（C）と呼び出し例の取り直し（6a） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #38・#39。下の「段階 2 の進捗」） |
 | T | 3 | egov 0.20.0 の仕様 PR（#108・#110） | T6 の決定の後に作る（前の計画の `2026-10-03-stage5-spec-instructions.md` の H の形） | 未 |
 | U | 3 | nta 0.25.0 の仕様 PR（#138・#137） | T と同じ時期 | 未 |
 | V・W | 3 | egov 0.20.0 / nta 0.25.0 の実装 PR | T・U のマージ後 | 未 |
@@ -381,7 +381,7 @@ Q4（T6）の勧める案:
 
 | 作業 | 状態 |
 | --- | --- |
-| 0-a hub#5 ①③ | 未。2026-10-04 JST の 2 回目の確認で、ブランチ `feat/5-change-detection` が手元からも origin からも消えていた（コミット `5c7237a` は残っていた）。同じ名前のブランチを `5c7237a` に作り直した。main への取り込み（PR）は未 |
+| 0-a hub#5 ①③ | 済（2026-10-04 JST、PR #39、main `92a076a`〜`c977a82`）。`feat/5-change-detection`（`5c7237a`）を main `4f7f4ed` の上に載せ直し、段階 2 の会話で決めた 2 点（直接起動の判定を `realpathSync` で揃えて比べる `73fc4fe`、取り直せない例を「- 版の照合: しない（理由）」で照合から外す `c977a82`）を足した。テスト 19 件通過。マージ後の `stack-check` は push（run 37179856214）と `workflow_dispatch`（run 37180037156）の 2 回とも success、`stack-drift` の Issue は 0 件 |
 | 0-b site の DB の節 | 済（main `88cb609`） |
 | 0-c 計画書のコミット | 済（`5a48edc`・`fab2210`） |
 | 0-d egov #105 | 確認済み（1.3 の 5）。コメントと close は未 |
@@ -395,4 +395,17 @@ Q4（T6）の勧める案:
 | 仕様 PR | 済（2026-10-04 JST、PR #112、main `c88a3c9`）。Q3 の勧める案に加えて、033（全件の取り込みで、全件の CSV に無い未施行の版を前の版にする）を入れた。`[WARN]` の比べる日は計画書の「今日以前」から `last_sync_date` より前に変えた（proposal.md の「人が判断すること」3・4） |
 | 実装 PR | 済（2026-10-04 JST、PR #113、main `3ca848e`。#107 は閉じた）。houki-hub の site（`site/docs/mcp/houki-egov.md`）の追随も main に入った（`bb9b7b0`、マージ `65dc62d`） |
 | publish の前の確認 | 未（proposal.md の「publish の前の確認」1〜7、shuji の Mac） |
-| publish | 済。タグ `v0.19.1`（`3ca848e`）、npm の latest 0.19.1（2026-10-04 10:07 JST）、MCP Registry にも登録（shuji の `mcp-publisher publish` の出力で確認）。plugin（`.claude-plugin/plugin.json`）と claude-plugins の追随、houki-hub の `stack.json` の作り直し（`node scripts/generate-stack.mjs --readme`）は未確認 |
+| publish | 済。タグ `v0.19.1`（`3ca848e`）、npm の latest 0.19.1（2026-10-04 10:07 JST）、MCP Registry にも登録（shuji の `mcp-publisher publish` の出力で確認）。houki-hub の `stack.json` の作り直しは済（main `4f7f4ed`、houki-egov-mcp の `published` が 0.19.1）。plugin（`.claude-plugin/plugin.json`）と claude-plugins の追随は未確認（段階 2 では、Claude Desktop の plugin の egov のツールが会話の途中から見えるようになり、そのツールで流した） |
+
+### 段階 2 の進捗
+
+| 作業 | 状態 |
+| --- | --- |
+| 契約の確認（C） | 済（2026-10-04 JST）。記録は `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`（main `99f1971`）。egov 0.19.1 / nta 0.24.0 の plugin で 47 例中 46 例を流し、一致 4・差分あり 42・**劣化 0**・未確認 1・判断できない 0 |
+| 呼び出し例の取り直し（6a） | 済（PR #38、main `4bc7d31`〜`d5d8e50`）。ツールごとに 1 コミット（egov 14・nta 14）。2026-10-03 の回の見つかったこと 1 の 3 件と、段階 5 の proposal.md の「呼び出し例への影響」を直した。`nta_get_jimu_unei.md` の見出しから「（検索結果の 2 件目）」を外した（検索の順は取り込み直すたびに変わりうるため。shuji の決定） |
+| site の生成し直し（6b） | 済（PR #38 の `ce2fb9b`、PR #39 の後の `cd82369`）。差分は呼び出し例と例の先頭の注記だけで、引数の表は変わっていない |
+| 未確認の 1 例の扱い | 済（PR #39）。`nta_search_tsutatsu.md` の「DB が古いとき」に「- 版の照合: しない（126 日たった DB を用意できず、取り直せないため）」を置き、`check-example-versions.mjs` は `status: "excluded"` にする。照合の結果は 47 件のうち古い 0・現行 46・照合しない 1 |
+| nta の DB | 最初に流したとき、plugin の nta の DB に 2026-10-04 の取り込みの跡が無かった（6 種別とも `stale`）。shuji が `--db-path` と `HOUKI_NTA_DB_PATH` を付けずに `--bulk-download-everything` をやり直した後に検索 6 ツールを流し直した。前回の取り込みがどこに入ったかは確かめていない（T6 の実例になりうる。記録の見つかったこと 2） |
+| 見つかった Issue | houki-nta-mcp #139（`freshness` が索引から消えた文書の古い取得日時で止まり、投入をやり直しても `fresh` に戻らない。タックスアンサー No.2882 の行は 2026-10-07 に `outdated` になり、`warning` の案内では直らない）。草案は `docs/notes/issues-2026-10-04-nta-freshness/nta-freshness-orphaned.md`（main `ea270ca`）。対応の版と段階は未定 |
+| T6 で取り直す 7 ファイルの比較元 | 記録の「ローカル DB の状態」の表の「取り込み直し後」の列（egov `search_fulltext.md` は last_sync_date 2026-10-04・fresh） |
+| houki-hub のブランチ（5.4） | `docs/20261004-examples-egov-0.19-nta-0.24` は PR #38 で main に入った。`feat/5-change-detection` は PR #39 で main に入った。手元の `backup/5-change-detection-before-rebase`（`5c7237a`）は消してよい |
