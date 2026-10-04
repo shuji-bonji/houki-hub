@@ -1,10 +1,10 @@
 ::: warning ローカル DB が必要です
-`houki-nta-mcp --bulk-download-all` で基本通達 4 種を取り込んでいないと、結果は空になります。応答の `freshness.staleness` が `outdated` のときは、同じコマンドで取り直してください。
+`npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-all` で基本通達 4 種を取り込んでいないと、結果は空になります。応答の `freshness.staleness` が `outdated` のときは、同じコマンドで取り直してください。
 :::
 
 ::: details 呼び出し例 — 「軽減税率に関係する通達の節は」
-- 実測: v0.24.0（2026-10-04）
-- ローカル DB: あり（同じ日の `--bulk-download-everything` の後で `staleness: "fresh"`）
+- 実測: v0.25.0（2026-10-05）
+- ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
 
@@ -44,7 +44,8 @@
     "oldest_fetched_at": "2026-10-04T03:14:49.904Z",
     "newest_fetched_at": "2026-10-04T03:24:14.467Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   },
   "legal_status": {
     "binds_citizens": false,
@@ -88,11 +89,14 @@
     "newest_fetched_at": "2026-09-07T11:53:51.084Z",
     "staleness": "outdated",
     "days_since_oldest": 126,
-    "warning": "一部ドキュメントが 126 日前のデータです。最新化するには `--bulk-download-all` を実行してください"
+    "warning": "一部ドキュメントが 126 日前のデータです。最新化するには `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-all` を実行してください",
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   }
   // legal_status は同じ
 }
 ```
+
+この例の JSON は v0.10.2 の実測に、v0.25.0 で変わった 2 か所を仕様（SPEC-NTA-SEARCH-RULES-017・022）に合わせて書き足したものです。`warning` のコマンドが `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-all` の形になり（v0.24.x まではフラグだけ）、`freshness.db_path` が付きます。126 日たった DB を用意できないため、v0.25.0 では実測していません。
 
 `staleness` が `fresh` 以外のときは、返ってきた本文が国税庁サイトの現在の内容と違う可能性があります。回答にその旨を書き、`warning` にあるコマンドの実行を利用者に案内してください。`days_since_oldest` は範囲内で最も古い文書の経過日数なので、一部だけが古い場合もこの値になります。
 :::
