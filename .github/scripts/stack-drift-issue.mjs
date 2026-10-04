@@ -25,6 +25,7 @@ import {
   renderTable,
   SERVER_TO_REPO,
   summarize,
+  summaryLine,
 } from '../../scripts/check-example-versions.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -156,7 +157,7 @@ export function buildIssueBody({ drift, staleRows, currentByServer, checkedAt = 
   L.push(`\`node scripts/check-example-versions.mjs\` の結果です（現行版は npm の最新版: ${cur}）。呼び出し例の JSON は人が呼んで取り直すしかないので、ここでは一覧だけ出します。取り直す手順は \`docs/notes/2026-09-21-regression-check.md\` の「契約の確認」と同じです。`);
   L.push('');
   const stale = staleRows.filter((r) => r.status !== 'current');
-  L.push(`例 ${sum.total} 件のうち 古い ${sum.stale} / 現行 ${sum.current} / 現行より新しい ${sum.ahead} / 判定不能 ${sum.unknown}`);
+  L.push(summaryLine(sum));
   L.push('');
   if (stale.length) {
     L.push('<details>');

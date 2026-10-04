@@ -9,11 +9,15 @@
  * 古い版で測ったままの例を一覧にする。呼び出し例の JSON は人が呼んで取り直すしかないので、
  * ここでやるのは「どれを取り直すか」を機械で出すところまで。
  *
+ * 取り直せない例（例: 126 日たった DB に対する応答）は、「- 実測:」の次などに
+ *   - 版の照合: しない（理由）
+ * の行を置く。その例は版を比べず「照合しない」として理由と一緒に表に出し、--strict の失敗には数えない。
+ *
  *   node scripts/check-example-versions.mjs                       # 表で出す（stack.json の published と比較）
  *   node scripts/check-example-versions.mjs --json                # 機械可読
  *   node scripts/check-example-versions.mjs --all                 # 古くない例も含めて全件
  *   node scripts/check-example-versions.mjs --current houki-nta=0.21.3   # 現行版を引数で上書き（複数可）
- *   node scripts/check-example-versions.mjs --strict              # 古い例があれば exit 1（既定は 0）
+ *   node scripts/check-example-versions.mjs --strict              # 古い例があれば exit 1（既定は 0。照合しない例は数えない）
  *   node scripts/check-example-versions.mjs --root /path/to/houki-hub
  *
  * 依存なし（Node 22+）。判定部分は export してあり、scripts/check-example-versions.test.mjs で検査する。
@@ -33,12 +37,14 @@ export const SERVER_TO_REPO = {
 
 const DETAILS_RE = /^:::\s*details\s+(.*)$/;
 const MEASURED_RE = /^-\s*実測:\s*v?(\d+\.\d+\.\d+)(?:（([^）]*)）|\(([^)]*)\))?/;
+const EXCLUDED_RE = /^-\s*版の照合:\s*しない(?:\s*(?:（([^）]*)）|\(([^)]*)\)))?/;
 
 /**
  * 1 ファイルの本文から例を取り出す。
  * `::: details` の見出しごとに 1 例。見出しの直後（空行を挟んでもよい）の「- 実測: vX（日付）」を実測版とする。
  * 実測の行が無い例は measured: null で返す（見落としを隠さない）。
- * @returns {{ heading: string, line: number, measured: string|null, measuredAt: string|null }[]}
+ * 「- 版の照合: しない（理由）」の行があれば excluded: true と理由（excludedReason）を持たせる。
+ * @returns {{ heading: string, line: number, measured: string|null, measuredAt: string|null, excluded: boolean, excludedReason: string|null }[]}
  */
 export function parseExamples(text) {
   const lines = text.split(/\r?\n/);
@@ -48,7 +54,7 @@ export function parseExamples(text) {
     const line = lines[i];
     const details = line.match(DETAILS_RE);
     if (details) {
-      current = { heading: details[1].trim(), line: i + 1, measured: null, measuredAt: null };
+      current = { heading: details[1].trim(), line: i + 1, measured: null, measuredAt: null, excluded: false, excludedReason: null };
       examples.push(current);
       continue;
     }
@@ -62,6 +68,13 @@ export function parseExamples(text) {
       if (m) {
         current.measured = m[1];
         current.measuredAt = m[2] ?? m[3] ?? null;
+      }
+    }
+    if (!current.excluded) {
+      const x = line.match(EXCLUDED_RE);
+      if (x) {
+        current.excluded = true;
+        current.excludedReason = x[1] ?? x[2] ?? null;
       }
     }
   }
@@ -85,6 +98,7 @@ export function compareVersions(a, b) {
  *   current 実測版 = 現行版
  *   ahead   実測版 > 現行版（stack.json が古いか、publish 前に測った）
  *   unknown 実測の行が無い、または現行版が分からない
+ *   excluded 「- 版の照合: しない」の行がある（版を比べない）
  * @param {{ server: string, file: string, heading: string, line: number, measured: string|null }[]} examples
  * @param {Record<string, string|null>} currentByServer  { 'houki-nta': '0.21.3', ... }
  */
@@ -92,7 +106,9 @@ export function classifyExamples(examples, currentByServer) {
   return examples.map((ex) => {
     const current = currentByServer[ex.server] ?? null;
     let status = 'unknown';
-    if (ex.measured && current) {
+    if (ex.excluded) {
+      status = 'excluded';
+    } else if (ex.measured && current) {
       const d = compareVersions(ex.measured, current);
       status = d < 0 ? 'stale' : d > 0 ? 'ahead' : 'current';
     }
@@ -139,11 +155,17 @@ export function collectExamples(root) {
   return out;
 }
 
-const STATUS_JA = { stale: '古い', current: '現行', ahead: '現行より新しい', unknown: '判定不能' };
+const STATUS_JA = { stale: '古い', current: '現行', ahead: '現行より新しい', unknown: '判定不能', excluded: '照合しない' };
 
 /** 表に載せる見出し。先頭の「呼び出し例 — 」は列名と重なるので落とす */
 export function shortHeading(heading) {
   return heading.replace(/^呼び出し例\s*[—–-]\s*/, '').replace(/\|/g, '\\|');
+}
+
+/** 判定の列。照合しない例は理由を括弧で添える */
+export function statusLabel(r) {
+  const label = STATUS_JA[r.status];
+  return r.status === 'excluded' && r.excludedReason ? `${label}（${r.excludedReason.replace(/\|/g, '\\|')}）` : label;
 }
 
 /** Markdown の表。rows は classifyExamples の戻り値。ファイルは scripts/reference-examples/ からの相対 */
@@ -152,16 +174,28 @@ export function renderTable(rows) {
   for (const r of rows) {
     const file = r.file.replace(/^scripts\/reference-examples\//, '');
     L.push(
-      `| ${r.server} | \`${file}\` | ${shortHeading(r.heading)} | ${r.measured ? `v${r.measured}` : '（無し）'} | ${r.current ? `v${r.current}` : '（不明）'} | ${STATUS_JA[r.status]} |`,
+      `| ${r.server} | \`${file}\` | ${shortHeading(r.heading)} | ${r.measured ? `v${r.measured}` : '（無し）'} | ${r.current ? `v${r.current}` : '（不明）'} | ${statusLabel(r)} |`,
     );
   }
   return L.join('\n');
 }
 
+/** 集計の 1 行の文（標準出力と Issue 本文で同じ文にする） */
+export function summaryLine(sum) {
+  return `例 ${sum.total} 件のうち 古い ${sum.stale} / 現行 ${sum.current} / 現行より新しい ${sum.ahead} / 判定不能 ${sum.unknown} / 照合しない ${sum.excluded}`;
+}
+
 /** 集計の 1 行（Issue 本文や標準出力の見出しに使う） */
 export function summarize(rows) {
   const count = (s) => rows.filter((r) => r.status === s).length;
-  return { total: rows.length, stale: count('stale'), current: count('current'), ahead: count('ahead'), unknown: count('unknown') };
+  return {
+    total: rows.length,
+    stale: count('stale'),
+    current: count('current'),
+    ahead: count('ahead'),
+    unknown: count('unknown'),
+    excluded: count('excluded'),
+  };
 }
 
 // ── CLI ──────────────────────────────────────────────────────
@@ -185,7 +219,7 @@ function main(argv) {
   } else {
     const cur = Object.entries(current).map(([s, v]) => `${s} ${v ? `v${v}` : '（不明）'}`).join(' / ');
     console.log(`# 呼び出し例の実測版の照合（現行: ${cur}）\n`);
-    console.log(`例 ${sum.total} 件のうち 古い ${sum.stale} / 現行 ${sum.current} / 現行より新しい ${sum.ahead} / 判定不能 ${sum.unknown}\n`);
+    console.log(`${summaryLine(sum)}\n`);
     if (shown.length) console.log(renderTable(shown));
     else console.log('古い版で測ったままの例はありません。');
   }

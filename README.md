@@ -147,7 +147,7 @@ graph LR
 node scripts/generate-stack.mjs            # 生成（手元）
 node scripts/generate-stack.mjs --check    # npm と照合（CI）。ずれていれば exit 1
 node scripts/generate-stack.mjs --readme   # 上の表を差し替え
-node scripts/check-example-versions.mjs    # 呼び出し例の「実測: vX」を上の版と突き合わせ、古い版で測ったままの例を一覧に
+node scripts/check-example-versions.mjs    # 呼び出し例の「実測: vX」を上の版と突き合わせ、古い版で測ったままの例を一覧に（「- 版の照合: しない」の例は除く）
 ```
 
 `--check` は**ローカルの clone を見ない**。CI に clone は無いので、照合は npm だけで完結する。

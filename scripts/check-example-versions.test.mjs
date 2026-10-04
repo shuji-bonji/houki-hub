@@ -13,7 +13,9 @@ import {
   parseExamples,
   renderTable,
   shortHeading,
+  statusLabel,
   summarize,
+  summaryLine,
 } from './check-example-versions.mjs';
 
 const SAMPLE = `::: tip 引数名は \`law_name\` です
@@ -48,6 +50,8 @@ test('parseExamples: ::: details ごとに 1 例、直後の「実測: vX（日�
     line: 5,
     measured: '0.5.3',
     measuredAt: '2026-09-08',
+    excluded: false,
+    excludedReason: null,
   });
   // 空行を挟んでも、日付の後ろに文が続いても拾う
   assert.equal(ex[1].measured, '0.10.2');
@@ -81,7 +85,7 @@ test('classifyExamples: stale / current / ahead / unknown', () => {
   assert.deepEqual(rows.map((r) => r.status), ['stale', 'current', 'ahead', 'unknown', 'unknown']);
   assert.equal(rows[0].current, '0.21.2');
   assert.equal(rows[4].current, null);
-  assert.deepEqual(summarize(rows), { total: 5, stale: 1, current: 1, ahead: 1, unknown: 2 });
+  assert.deepEqual(summarize(rows), { total: 5, stale: 1, current: 1, ahead: 1, unknown: 2, excluded: 0 });
 });
 
 test('currentVersionsFromStack: published を server 名で引く。未公開は null', () => {
@@ -136,4 +140,66 @@ test('isMainModule: シンボリックリンクを通して起動しても、実
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+const EXCLUDED_SAMPLE = `::: details 呼び出し例 — DB が古いとき（\`staleness: "outdated"\`）
+- 実測: v0.10.2（2026-09-07）。同じ呼び出しを、最後の取り込みから 126 日たった DB に対して行ったときの応答です
+- 版の照合: しない（126 日たった DB を用意できず、取り直せないため）
+:::
+
+::: details 呼び出し例 — 理由を書いていない例
+- 実測: v0.10.2（2026-09-07）
+- 版の照合: しない
+:::
+
+::: details 呼び出し例 — 本文で触れているだけの例
+- 実測: v0.10.2（2026-09-07）
+本文の「- 版の照合: しない」は行の先頭ではないので数えない。
+:::
+`;
+
+test('parseExamples: 「- 版の照合: しない（理由）」の行で excluded と理由を持たせる', () => {
+  const ex = parseExamples(EXCLUDED_SAMPLE);
+  assert.equal(ex.length, 3);
+  assert.equal(ex[0].measured, '0.10.2');
+  assert.equal(ex[0].excluded, true);
+  assert.equal(ex[0].excludedReason, '126 日たった DB を用意できず、取り直せないため');
+  // 理由が無くても照合しない
+  assert.equal(ex[1].excluded, true);
+  assert.equal(ex[1].excludedReason, null);
+  // 行の先頭が「- 版の照合:」でなければ照合する
+  assert.equal(ex[2].excluded, false);
+});
+
+test('classifyExamples: excluded は版を比べない。--strict が数える stale には入らない', () => {
+  const rows = classifyExamples(
+    parseExamples(EXCLUDED_SAMPLE).map((e) => ({ server: 'houki-nta', file: 'scripts/reference-examples/houki-nta/ja/nta_search_tsutatsu.md', ...e })),
+    { 'houki-nta': '0.24.0' },
+  );
+  assert.deepEqual(rows.map((r) => r.status), ['excluded', 'excluded', 'stale']);
+  assert.equal(rows[0].current, '0.24.0');
+  const sum = summarize(rows);
+  assert.deepEqual(sum, { total: 3, stale: 1, current: 0, ahead: 0, unknown: 0, excluded: 2 });
+  assert.equal(summaryLine(sum), '例 3 件のうち 古い 1 / 現行 0 / 現行より新しい 0 / 判定不能 0 / 照合しない 2');
+});
+
+test('renderTable / statusLabel: 照合しない例は理由を括弧で添えて表に残す', () => {
+  assert.equal(statusLabel({ status: 'excluded', excludedReason: 'DB を用意できない' }), '照合しない（DB を用意できない）');
+  assert.equal(statusLabel({ status: 'excluded', excludedReason: null }), '照合しない');
+  assert.equal(statusLabel({ status: 'stale' }), '古い');
+  const table = renderTable([
+    {
+      server: 'houki-nta',
+      file: 'scripts/reference-examples/houki-nta/ja/nta_search_tsutatsu.md',
+      heading: '呼び出し例 — DB が古いとき',
+      measured: '0.10.2',
+      current: '0.24.0',
+      status: 'excluded',
+      excludedReason: 'a|b',
+    },
+  ]);
+  assert.equal(
+    table.split('\n')[2],
+    '| houki-nta | `houki-nta/ja/nta_search_tsutatsu.md` | DB が古いとき | v0.10.2 | v0.24.0 | 照合しない（a\\|b） |',
+  );
 });
