@@ -3,7 +3,7 @@
 :::
 
 ::: details 呼び出し例 — 「書こうとしている引用 5 件をまとめて確かめる」
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -38,7 +38,7 @@
         "url": "https://laws.e-gov.go.jp/law/363AC0000000108"
       },
       "resolved_by": "abbreviation",          // 略称辞書で「消法」→「消費税法」
-      "article": { "num": "30", "label": "第30条", "caption": "（仕入れに係る消費税額の控除）" },
+      "article": { "num": "30", "label": "第30条", "caption": "（仕入れに係る消費税額の控除）", "suppl_index": null },
       "paragraph": 1
     },
     {
@@ -53,13 +53,14 @@
         "url": "https://laws.e-gov.go.jp/law/410AC0000000025"
       },
       "resolved_by": "exact_title",
-      "article": { "num": "7", "label": "第7条", "caption": "（電子取引の取引情報に係る電磁的記録の保存）" }
+      "article": { "num": "7", "label": "第7条", "caption": "（電子取引の取引情報に係る電磁的記録の保存）", "suppl_index": null }
     },
     {
       "index": 2,
       "input": { "law_name": "民法", "article": "9999", "label": "民法第9999条" },
       "status": "not_found",
       "law": { "law_id": "129AC0000000089", "title": "民法", "law_num": "明治二十九年法律第八十九号", "law_type": "Act", "url": "https://laws.e-gov.go.jp/law/129AC0000000089" },
+      "resolved_by": "abbreviation",
       "code": "ARTICLE_NOT_FOUND",
       "reason": "民法に第9999条はありません",
       "next_actions": [
@@ -70,7 +71,9 @@
       "index": 3,
       "input": { "law_name": "所得税法", "article": "2", "item": 8, "label": "所法2条8号" },
       "status": "ambiguous",
-      "article": { "num": "2", "label": "第2条", "caption": "（定義）" },
+      "law": { "law_id": "340AC0000000033", "title": "所得税法", "law_num": "昭和四十年法律第三十三号", "law_type": "Act", "url": "https://laws.e-gov.go.jp/law/340AC0000000033" },
+      "resolved_by": "abbreviation",
+      "article": { "num": "2", "label": "第2条", "caption": "（定義）", "suppl_index": null },
       "code": "INVALID_ARGUMENT",
       "reason": "所得税法第2条は項が 2 個あるため、号だけではどの項の号か決まりません",
       "next_actions": [
@@ -84,13 +87,16 @@
       "status": "found",
       "law": { "law_id": "340M50000040011", "title": "所得税法施行規則", "law_num": "昭和四十年大蔵省令第十一号", "law_type": "MinisterialOrdinance", "url": "https://laws.e-gov.go.jp/law/340M50000040011" },
       "resolved_by": "exact_title",
-      "article": { "num": "36_4", "label": "第36条の4", "caption": "（青色専従者給与に関する届出書の記載事項等）" }
+      "article": { "num": "36_4", "label": "第36条の4", "caption": "（青色専従者給与に関する届出書の記載事項等）", "suppl_index": null }
     }
   ],
   "method": "per_citation_lookup",
-  "note": "各件について「その条（指定があれば項・号）が e-Gov の法令にあるか」だけを確かめています。引用した条文が主張を支えるかどうかは判定していません。…"
+  "note": "各件について「その条（指定があれば項・号）が e-Gov の法令にあるか」だけを確かめています。引用した条文が主張を支えるかどうかは判定していません。…",
+  "meta": { "retrieved_at": "2026-10-04T01:20:26.615Z", "at": null }
 }
 ```
+
+`resolved_by` は法令名をどう決めたか（`abbreviation` は略称辞書、`exact_title` は e-Gov の題名の完全一致）です。「民法」「所得税法」は辞書に載っているので `abbreviation` になります。`article.suppl_index` は本則の条では `null` で、附則の条を `suppl_index` で指したときに附則の番号が入ります（v0.18.0 から）。本則に無く附則にだけある条番号は、本則の条として扱わず `not_found`（`ARTICLE_NOT_FOUND`）になります。
 
 `label` は判定に使わず、そのまま `results[].input` に返るので、書きかけの原稿の表記と突き合わせられます。`not_found` の件は citation から外し、`next_actions` の `get_toc` で条番号を引き直します。`ambiguous` の件は、`candidates[]`（法令名が複数当たった場合）か `next_actions`（項を足す場合）を見て指定を直します。
 
