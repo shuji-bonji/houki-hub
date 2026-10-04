@@ -1,9 +1,9 @@
 ::: tip 引数名は `no` です
-`id` ではありません。番号の先頭の桁で税目（1xxx=所得税、6xxx=消費税 など）を判定します。
+`id` ではありません。記事の URL は国税庁の索引で番号から決めます（v0.24.0 から。それまでは番号の先頭の桁で税目のフォルダーを決めていました）。8xxx（災害）の記事も取れます。索引に無い番号は、記事を取りに行かずに `DOC_NOT_FOUND` を返します。
 :::
 
 ::: details 呼び出し例 — 「No.6101 消費税の基本的なしくみ」
-- 実測: v0.17.0（2026-09-13）
+- 実測: v0.24.0（2026-10-04）
 - ローカル DB: 不要。ただし DB に構造があればそこから返る（この例は 2 回目の呼び出しで `source: "db"`）
 
 **引数**
@@ -19,6 +19,9 @@
   "taxAnswer": {
     "no": "6101",
     "title": "消費税の基本的なしくみ",
+    "effectiveDate": "令和7年4月1日現在法令等",
+    "basisDate": "2025-04-01",
+    "taxCategory": "消費税",
     "sections": [
       { "heading": "概要", "paragraphs": ["消費税は、特定の物品やサービスに課税する個別消費税（酒税・たばこ税等）とは異なり、消費一般に広く公平に課税する間接税です。…", "…"] },
       { "heading": "消費税の負担者", "paragraphs": ["…"] },
@@ -28,12 +31,13 @@
       { "heading": "根拠法令等", "paragraphs": ["消費税法など"] },
       { "heading": "関連リンク", "paragraphs": ["…"] }
     ],
-    "effectiveDate": "令和7年4月1日現在法令等",
-    "taxCategory": "消費税",
     "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6101.htm",
     "fetchedAt": "2026-09-12T20:05:55.721Z"
   },
   "source": "db",
+  "index_status": null,
+  "orphaned_at": null,
+  "notice": null,
   "legal_status": {
     "binds_citizens": false,
     "binds_courts": false,
@@ -43,7 +47,7 @@
 }
 ```
 
-`effectiveDate` は国税庁がページに書いている「何年何月何日現在の法令等に基づくか」で、取得日ではありません。`sections[].heading` が「根拠法令等」の節に法令名が入るので、そこから houki-egov-mcp の `get_law` につなげられます。
+`effectiveDate` は国税庁がページに書いている「何年何月何日現在の法令等に基づくか」で、取得日ではありません。同じ日付を `YYYY-MM-DD` にしたものが `basisDate` です。`index_status`・`orphaned_at`・`notice` は国税庁の索引から記事が消えたときに値が入り、この例では `null` です。`sections[].heading` が「根拠法令等」の節に法令名が入るので、そこから houki-egov-mcp の `get_law` につなげられます。
 
 `source` はローカル DB（`"db"`）と国税庁サイト（`"live"`）のどちらから返したかです（v0.16.0 から）。上と同じ呼び出しの 1 回目は `"live"` で、`fetchedAt` は取得した時刻（`2026-09-12T20:05:55.721Z`）でした。その結果が DB に書き戻されるので、2 回目は `"db"` になり `fetchedAt` は 1 回目の値のまま変わりません。**`"db"` の `fetchedAt` は呼び出した時刻ではなく、DB に取り込んだ日時です。** 引用するときはその値をそのまま書きます。
 
