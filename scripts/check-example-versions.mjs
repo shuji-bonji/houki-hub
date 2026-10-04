@@ -19,7 +19,7 @@
  * 依存なし（Node 22+）。判定部分は export してあり、scripts/check-example-versions.test.mjs で検査する。
  */
 
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, realpathSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -193,6 +193,22 @@ function main(argv) {
   process.exit(0);
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+/**
+ * このファイルが node で直接起動されたか。argv1 は process.argv[1]、moduleUrl は import.meta.url。
+ * 両方を realpathSync で実体のパスに揃えてから比べる。macOS の /tmp（/private/tmp へのシンボリックリンク）のように
+ * シンボリックリンクを通して起動すると、argv1 はリンクのパス、import.meta.url は実体のパスになり、
+ * 文字列のまま比べると一致せず、何も出さずに終了コード 0 で終わってしまうため。
+ * パスが読めないとき（存在しない・権限が無い）は false。
+ */
+export function isMainModule(argv1, moduleUrl) {
+  if (!argv1) return false;
+  try {
+    return realpathSync(argv1) === realpathSync(fileURLToPath(moduleUrl));
+  } catch {
+    return false;
+  }
+}
+
+if (isMainModule(process.argv[1], import.meta.url)) {
   main(process.argv);
 }

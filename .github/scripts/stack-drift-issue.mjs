@@ -21,6 +21,7 @@ import { fileURLToPath } from 'node:url';
 import {
   classifyExamples,
   collectExamples,
+  isMainModule,
   renderTable,
   SERVER_TO_REPO,
   summarize,
@@ -294,6 +295,6 @@ async function main(argv) {
   return 0;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (isMainModule(process.argv[1], import.meta.url)) {
   main(process.argv).then((code) => process.exit(code), (err) => { console.error(err); process.exit(2); });
 }

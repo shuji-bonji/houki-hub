@@ -1,9 +1,14 @@
 import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync, symlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { test } from 'node:test';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   classifyExamples,
   compareVersions,
   currentVersionsFromStack,
+  isMainModule,
   parseCurrentOverrides,
   parseExamples,
   renderTable,
@@ -112,4 +117,23 @@ test('renderTable: 見出しの「呼び出し例 — 」を落とし、ファ�
   const lines = table.split('\n');
   assert.equal(lines.length, 3);
   assert.equal(lines[2], '| houki-nta | `houki-nta/ja/nta_search_qa.md` | 「テレワーク」 | v0.10.4 | v0.21.2 | 古い |');
+});
+
+test('isMainModule: シンボリックリンクを通して起動しても、実体が同じなら true', () => {
+  const self = fileURLToPath(new URL('./check-example-versions.mjs', import.meta.url));
+  const url = pathToFileURL(self).href;
+  const dir = mkdtempSync(join(tmpdir(), 'check-example-versions-'));
+  try {
+    const link = join(dir, 'linked.mjs');
+    symlinkSync(self, link);
+    // macOS の /tmp と同じ形: argv[1] はリンクのパス、import.meta.url は実体のパス
+    assert.equal(isMainModule(link, url), true);
+    assert.equal(isMainModule(self, url), true);
+    // 別のファイル・無いファイル・argv[1] が無いときは false
+    assert.equal(isMainModule(fileURLToPath(import.meta.url), url), false);
+    assert.equal(isMainModule(join(dir, 'missing.mjs'), url), false);
+    assert.equal(isMainModule(undefined, url), false);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
