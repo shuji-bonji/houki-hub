@@ -1,5 +1,5 @@
 ::: details 呼び出し例 — 「消費税法の直近の改正と施行日」
-- 実測: v0.5.3（2026-09-08）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -16,8 +16,9 @@
     "law_id": "363AC0000000108",
     "title": "消費税法",
     "law_num": "昭和六十三年法律第百八号",
-    "retrieved_at": "2026-09-07T20:14:07.925Z",
-    "url": "https://laws.e-gov.go.jp/law/363AC0000000108"
+    "retrieved_at": "2026-10-04T01:18:59.503Z",
+    "url": "https://laws.e-gov.go.jp/law/363AC0000000108",
+    "at": null
   },
   "total": 65,
   "revisions": [
@@ -45,5 +46,5 @@
 }
 ```
 
-`current_revision_status` が `UnEnforced` のものは公布済みで未施行です。`amendment_enforcement_comment` に「政令で定める日」とあるときは、`amendment_enforcement_date` は上限の見込みで、確定日ではありません。`total` は全改正数で、`latest` を省略すると全件が返ります。
+`current_revision_status` が `UnEnforced` のものは公布済みで未施行です。`amendment_enforcement_comment` に「政令で定める日」とあるときは、`amendment_enforcement_date` は上限の見込みで、確定日ではありません。`total` は全改正数で、`latest` を省略すると全件が返ります。並びは施行日の新しい順です。
 :::
