@@ -1,5 +1,5 @@
 ::: details 呼び出し例 — 「通達は守らなくてよいのか」
-- 実測: v0.5.3（2026-09-08）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要（サーバー内蔵の知識）
 
 **引数**
@@ -16,7 +16,7 @@
   "found": true,
   "info": {
     "name": "通達",
-    "aliases": ["通知", "基本通達", "取扱通達"],
+    "aliases": ["基本通達", "取扱通達"],
     "enacting_body": "上級行政機関（各省庁・国税庁・最高裁等）",
     "hierarchy_rank": 99,
     "level": "agency-internal",
@@ -36,9 +36,9 @@
     ]
   },
   "related_tools": ["search_law", "get_law", "get_toc"],
-  "see_also": "docs/LAW-HIERARCHY.md"
+  "see_also": "https://github.com/shuji-bonji/houki-egov-mcp/blob/main/docs/LAW-HIERARCHY.md"
 }
 ```
 
-`binds_citizens: false` が、通達が国民を拘束しないことを表します。「施行令」「施行規則」「Act」のような別名も `name` に渡せます。
+`binds_citizens: false` が、通達が国民を拘束しないことを表します。「施行令」「施行規則」「Act」のような別名も `name` に渡せます。`see_also` は法令の階層をまとめた文書の URL です。
 :::
