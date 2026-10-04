@@ -366,7 +366,7 @@ Q4（T6）の勧める案:
 | 指示 | 段階 | 内容 | 置き場所 | 状態 |
 | --- | --- | --- | --- | --- |
 | Q | 1 | egov 0.19.1 の仕様 PR（#107） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #112、main `c88a3c9`。差分 `20261004-ingest-redistributed-revisions`、ADDED 6・MODIFIED 4） |
-| R | 1 | egov 0.19.1 の実装 PR | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
+| R | 1 | egov 0.19.1 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #113、main `3ca848e`）。タグと publish は未 |
 | S | 2 | 契約の確認（C）と呼び出し例の取り直し（6a） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
 | T | 3 | egov 0.20.0 の仕様 PR（#108・#110） | T6 の決定の後に作る（前の計画の `2026-10-03-stage5-spec-instructions.md` の H の形） | 未 |
 | U | 3 | nta 0.25.0 の仕様 PR（#138・#137） | T と同じ時期 | 未 |
@@ -381,9 +381,9 @@ Q4（T6）の勧める案:
 
 | 作業 | 状態 |
 | --- | --- |
-| 0-a hub#5 ①③ | 未（ブランチ `feat/5-change-detection` は main に入っていない。2026-10-04 確認） |
-| 0-b site の DB の節 | 未（ブランチ `docs/20261004-local-db-path`、`eab3d7c`） |
-| 0-c 計画書のコミット | 未 |
+| 0-a hub#5 ①③ | 未。2026-10-04 JST の 2 回目の確認で、ブランチ `feat/5-change-detection` が手元からも origin からも消えていた（コミット `5c7237a` は残っていた）。同じ名前のブランチを `5c7237a` に作り直した。main への取り込み（PR）は未 |
+| 0-b site の DB の節 | 済（main `88cb609`） |
+| 0-c 計画書のコミット | 済（`5a48edc`・`fab2210`） |
 | 0-d egov #105 | 確認済み（1.3 の 5）。コメントと close は未 |
 | 0-e abbr #35 | e-Gov は 200 を返す（2026-10-04）。再実行と close は未 |
 | 0-f hub #26 | Q9 待ち |
@@ -393,6 +393,6 @@ Q4（T6）の勧める案:
 | 作業 | 状態 |
 | --- | --- |
 | 仕様 PR | 済（2026-10-04 JST、PR #112、main `c88a3c9`）。Q3 の勧める案に加えて、033（全件の取り込みで、全件の CSV に無い未施行の版を前の版にする）を入れた。`[WARN]` の比べる日は計画書の「今日以前」から `last_sync_date` より前に変えた（proposal.md の「人が判断すること」3・4） |
-| 実装 PR | 未（指示 R） |
+| 実装 PR | 済（2026-10-04 JST、PR #113、main `3ca848e`。#107 は閉じた）。houki-hub の site（`site/docs/mcp/houki-egov.md`）の追随も main に入った（`bb9b7b0`、マージ `65dc62d`） |
 | publish の前の確認 | 未（proposal.md の「publish の前の確認」1〜7、shuji の Mac） |
-| publish | 未（目標 2026-10-15） |
+| publish | 未（2026-10-04 JST に確認: タグ `v0.19.1` は無く、npm の latest は 0.19.0。目標 2026-10-15） |
