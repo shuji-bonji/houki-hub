@@ -386,12 +386,12 @@ Q4（T6）の勧める案:
 | --- | --- | --- | --- | --- |
 | Q | 1 | egov 0.19.1 の仕様 PR（#107） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #112、main `c88a3c9`。差分 `20261004-ingest-redistributed-revisions`、ADDED 6・MODIFIED 4） |
 | QN | 1b | nta 0.24.1 の仕様 PR（#139） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #140、main `c29cd3c`。017 を MODIFIED 1。セッション `cse_01Psjfdj6qFSsBbpi3GUXzWr`） |
-| RN | 1b | nta 0.24.1 の実装 PR（#139） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
+| RN | 1b | nta 0.24.1 の実装 PR（#139） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、main・タグ `v0.24.1` `09ed4de`、npm 0.24.1 は 15:33 JST、MCP Registry 登録済み。#139 は閉じた） |
 | R | 1 | egov 0.19.1 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #113、main `3ca848e`、v0.19.1 を publish） |
 | S | 2 | 契約の確認（C）と呼び出し例の取り直し（6a） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #38・#39。下の「段階 2 の進捗」） |
 | T | 3 | egov 0.20.0 の仕様 PR（#108・#110） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #114、main `5847995`。セッション `cse_01Kqe2S8it6WECxbsm9ggtiX`） |
 | U | 3 | nta 0.25.0 の仕様 PR（#138・#137） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04）。T の仕様 PR の承認の後に始める |
-| V | 3 | egov 0.20.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
+| V | 3 | egov 0.20.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、main・タグ `v0.20.0` `326006f`、npm 0.20.0 は 15:48 JST、MCP Registry 登録済み。#108・#110 は閉じた） |
 | W | 3 | nta 0.25.0 の実装 PR | U のマージ後に作る | 未 |
 | X | 3 | Skill の追随と 7 ファイルの取り直し | V・W の publish の日 | 未 |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
@@ -431,3 +431,14 @@ Q4（T6）の勧める案:
 | 見つかった Issue | houki-nta-mcp #139（`freshness` が索引から消えた文書の古い取得日時で止まり、投入をやり直しても `fresh` に戻らない。タックスアンサー No.2882 の行は 2026-10-07 に `outdated` になり、`warning` の案内では直らない）。草案は `docs/notes/issues-2026-10-04-nta-freshness/nta-freshness-orphaned.md`（main `ea270ca`）。対応の版と段階は未定 |
 | T6 で取り直す 7 ファイルの比較元 | 記録の「ローカル DB の状態」の表の「取り込み直し後」の列（egov `search_fulltext.md` は last_sync_date 2026-10-04・fresh） |
 | houki-hub のブランチ（5.4） | `docs/20261004-examples-egov-0.19-nta-0.24` は PR #38 で main に入った。`feat/5-change-detection` は PR #39 で main に入った。手元の `backup/5-change-detection-before-rebase`（`5c7237a`）は消してよい |
+
+### 段階 1b・3 の進捗（2026-10-04 JST）
+
+| 作業 | 状態 |
+| --- | --- |
+| nta 0.24.1（#139） | 済。仕様 PR #140、実装は main `09ed4de`（タグ `v0.24.1`）。npm と MCP Registry に 0.24.1。No.2882 の行が 30 日に達する 2026-10-08 06:06 JST より前に出せた |
+| egov 0.20.0（T6: #108・#110） | 済。仕様 PR #114、実装は main `326006f`（タグ `v0.20.0`）。npm と MCP Registry に 0.20.0 |
+| nta 0.25.0（T6: #138、#137） | 未。指示 U（仕様 PR）から。起点は `09ed4de` |
+| 7 ファイルの取り直し・Skill の追随（指示 X） | 未。egov `search_fulltext.md` は 0.20.0 で、nta の検索 6 ファイルは 0.25.0 の後にまとめて行う（nta の `freshness` は 0.24.1 で値が、0.25.0 で `db_path` が変わるため、2 回に分けない） |
+| houki-hub の追随 | `stack.json` は nta 0.24.1 まで（main `af30aa4`）。egov 0.20.0 の `node scripts/generate-stack.mjs --readme` は未確認 |
+| abbr #35 | open のまま（2026-10-04 15:50 頃 JST に確認）。`./scripts/close-issues-2026-10-04-plan-stage6.sh` をもう一度流す |
