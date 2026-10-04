@@ -1,5 +1,5 @@
 ::: details 呼び出し例 — 「書面添付制度の事務運営指針」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -42,7 +42,8 @@
     "oldest_fetched_at": "2026-10-04T03:26:38.243Z",
     "newest_fetched_at": "2026-10-04T03:27:13.440Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   },
   "legal_status": {
     "binds_citizens": false,
