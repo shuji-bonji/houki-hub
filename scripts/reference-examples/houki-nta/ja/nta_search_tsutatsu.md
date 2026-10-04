@@ -3,8 +3,8 @@
 :::
 
 ::: details 呼び出し例 — 「軽減税率に関係する通達の節は」
-- 実測: v0.11.1（2026-09-11）
-- ローカル DB: あり（`--bulk-download-everything` から 3 日で `staleness: "fresh"`）
+- 実測: v0.24.0（2026-10-04）
+- ローカル DB: あり（同じ日の `--bulk-download-everything` の後で `staleness: "fresh"`）
 
 **引数**
 
@@ -24,9 +24,9 @@
       "abbr": "消基通",
       "clauseNumber": "5-9-10",
       "title": "持ち帰りのための飲食料品の譲渡か否かの判定",
-      "snippet": " … の譲渡に該当し<b>軽減税率</b>の適用対象とな … ",
+      "snippet": " … 施して行う飲食料品の譲渡に該当し<b>軽減税率</b>の適用対象となるのかは、当該飲食 … ",
       "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/05/09.htm",
-      "score": 0.4413,
+      "score": 0.4414,
       "scoreReasons": ["doc_type=tsutatsu weight 1.00"]
     },
     {
@@ -34,17 +34,17 @@
       "abbr": "消基通",
       "clauseNumber": "5-9-5",
       "title": "自動販売機による譲渡",
-      "snippet": " … のであるから、<b>軽減税率</b>の適用対象とな … ",
+      "snippet": " … 食料品を販売するものであるから、<b>軽減税率</b>の適用対象となる飲食料品の譲渡に … ",
       "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/05/09.htm",
-      "score": 0.4383,
+      "score": 0.4384,
       "scoreReasons": ["doc_type=tsutatsu weight 1.00"]
     }
   ],
   "freshness": {
-    "oldest_fetched_at": "2026-09-07T20:39:32.057Z",
-    "newest_fetched_at": "2026-09-07T20:49:00.912Z",
+    "oldest_fetched_at": "2026-10-04T03:14:49.904Z",
+    "newest_fetched_at": "2026-10-04T03:24:14.467Z",
     "staleness": "fresh",
-    "days_since_oldest": 3
+    "days_since_oldest": 0
   },
   "legal_status": {
     "binds_citizens": false,
