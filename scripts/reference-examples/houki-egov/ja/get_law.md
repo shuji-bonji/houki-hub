@@ -3,7 +3,7 @@
 :::
 
 ::: details 呼び出し例 — 「消費税法 57 条の 2 第 1 項の本文を JSON で」
-- 実測: v0.5.3（2026-09-08）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -20,6 +20,8 @@
   "data": {
     "article_num": "57_2",
     "paragraph_num": 1,
+    "item_num": null,
+    "suppl_index": null,
     "node": {
       "tag": "Paragraph",
       "attr": { "Num": "1" },
@@ -45,17 +47,18 @@
     "law_id": "363AC0000000108",
     "title": "消費税法",
     "law_num": "昭和六十三年法律第百八号",
-    "retrieved_at": "2026-09-07T20:13:51.255Z",
-    "url": "https://laws.e-gov.go.jp/law/363AC0000000108"
+    "retrieved_at": "2026-10-04T01:20:57.731Z",
+    "url": "https://laws.e-gov.go.jp/law/363AC0000000108",
+    "at": null
   }
 }
 ```
 
-`format` を省略すると Markdown の本文が返ります。引用するときは `meta.law_num`・`meta.url`・`meta.retrieved_at` を添えてください。
+`data.item_num` は号を指定したときの号番号、`data.suppl_index` は附則の条を `suppl_index` で指したときの附則の番号で、どちらも指定していないので `null` です。`meta.at` は時点（`at`）を渡していないので `null` です。`format` を省略すると Markdown の本文が返ります。引用するときは `meta.law_num`・`meta.url`・`meta.retrieved_at` を添えてください。
 :::
 
 ::: details 呼び出し例 — 「消費税法 30 条 2 項を Markdown で」（号と、号の下のイ・ロ）
-- 実測: v0.5.4（2026-09-11）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -74,8 +77,9 @@
     "law_id": "363AC0000000108",
     "title": "消費税法",
     "law_num": "昭和六十三年法律第百八号",
-    "retrieved_at": "2026-09-11T14:54:59.963Z",
-    "url": "https://laws.e-gov.go.jp/law/363AC0000000108"
+    "retrieved_at": "2026-10-04T01:20:59.907Z",
+    "url": "https://laws.e-gov.go.jp/law/363AC0000000108",
+    "at": null
   }
 }
 ```
@@ -96,14 +100,14 @@
 ---
 出典：e-Gov法令検索（デジタル庁）
 URL: https://laws.e-gov.go.jp/law/363AC0000000108
-取得日時: 2026-09-11T14:54:59.963Z
+取得日時: 2026-10-04T01:20:59.907Z
 ```
 
 号は「一」「二」のように e-Gov の表示どおりの漢数字で始まり、見出し語と本文の間は全角空白です。号の下のイ・ロ・ハは `- イ …` の箇条書きになります。
 :::
 
 ::: details 呼び出し例 — 「所得税法 89 条 1 項を Markdown で」（項の直下の表）
-- 実測: v0.5.4（2026-09-11）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -133,14 +137,14 @@ URL: https://laws.e-gov.go.jp/law/363AC0000000108
 ---
 出典：e-Gov法令検索（デジタル庁）
 URL: https://laws.e-gov.go.jp/law/340AC0000000033
-取得日時: 2026-09-11T14:54:56.829Z
+取得日時: 2026-10-04T01:21:02.176Z
 ```
 
 条文中の表は Markdown の表で返ります。法令の表の多くは見出し行を持たないため、1 行目（見出し行）は空欄です。`meta` は上の例と同じ形です（`law_num` は「昭和四十年法律第三十三号」）。
 :::
 
 ::: details 呼び出し例 — 枝番号の号（消費税法 2 条 1 項 8 号の 2）
-- 実測: v0.6.0（2026-09-12）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -159,7 +163,8 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
     "law_id": "363AC0000000108",
     "title": "消費税法",
     "law_num": "昭和六十三年法律第百八号",
-    "url": "https://laws.e-gov.go.jp/law/363AC0000000108"
+    "url": "https://laws.e-gov.go.jp/law/363AC0000000108",
+    "at": null
     // retrieved_at は省略
   }
 }
@@ -169,7 +174,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 :::
 
 ::: details 呼び出し例 — 存在しない条を指定したとき（`ARTICLE_NOT_FOUND`）
-- 実測: v0.5.3（2026-09-08）
+- 実測: v0.19.1（2026-10-04）
 
 **引数**
 
@@ -194,5 +199,5 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 }
 ```
 
-`next_actions[0]` に次に呼ぶべきツールと引数の例が入っています。エラーコードの語彙と、コードごとの対処は [houki-research Skill](/skills/houki-research) が定めています。
+`next_actions[0]` に次に呼ぶべきツールと引数の例が入っています。`article` は本則の中だけを探すので、本則に無く附則にだけある条番号も `ARTICLE_NOT_FOUND` になります（v0.18.0 から。附則の条は `suppl_index` で附則を指して取ります）。法令名が略称辞書にも e-Gov の題名にも完全一致しないときは、候補を付けた `LAW_NOT_FOUND` が返ります（v0.18.0 から）。エラーコードの語彙と、コードごとの対処は [houki-research Skill](/skills/houki-research) が定めています。
 :::
