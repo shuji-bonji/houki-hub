@@ -3,7 +3,7 @@
 :::
 
 ::: details 呼び出し例 — 「民法の契約の章をまとめて読みたい」
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -25,12 +25,12 @@
     "returned_count": 186,     // 本文を返した条の数
     "skipped_count": 0,
     "truncated": true,
-    "body_chars": 29911,
+    "body_chars": 29919,
     "max_chars": 30000,
     "first_article": "第521条",
     "last_article": "第684条",
     "next_from_article": "685",
-    "note": "範囲の条 198 件のうち 186 件を返しました（第521条〜第684条）。本文 29,911 文字（上限 30,000 文字）。上限で打ち切りました。続きは from_article: \"685\" を付けて同じ範囲を呼び直してください。",
+    "note": "範囲の条 198 件のうち 186 件を返しました（第521条〜第684条）。本文 29,919 文字（上限 30,000 文字）。上限で打ち切りました。続きは from_article: \"685\" を付けて同じ範囲を呼び直してください。",
     "next_actions": [
       {
         "action": "get_law_range",
@@ -48,17 +48,18 @@
     "law_id": "129AC0000000089",
     "title": "民法",
     "law_num": "明治二十九年法律第八十九号",
-    "retrieved_at": "2026-09-20T10:25:04.783Z",
-    "url": "https://laws.e-gov.go.jp/law/129AC0000000089"
+    "retrieved_at": "2026-10-04T01:21:36.587Z",
+    "url": "https://laws.e-gov.go.jp/law/129AC0000000089",
+    "at": null
   }
 }
 ```
 
-上限（既定 30,000 文字）に達したので、198 条のうち 186 条で打ち切っています。条の途中では切りません。続きは `{ "law_name": "民法", "path": "Part3/Chapter2", "from_article": "685" }` で取れます（`range.next_actions` にそのまま入っています）。
+上限（既定 30,000 文字）に達したので、198 条のうち 186 条で打ち切っています。条の途中では切りません。続きは `{ "law_name": "民法", "path": "Part3/Chapter2", "from_article": "685" }` で取れます（`range.next_actions` にそのまま入っています）。`max_chars` を渡したときは、`example` にも同じ `max_chars` が入ります。
 :::
 
 ::: details 呼び出し例 — 「遺留分の章だけ読みたい」（`path` で指定）
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -101,7 +102,7 @@
 :::
 
 ::: details 呼び出し例 — 「章だけ指定したら候補が返ってきた」
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -120,9 +121,11 @@
   "next_actions": [
     { "action": "get_law_range", "reason": "第一編　総則 第二章　人",
       "example": { "law_name": "民法", "path": "Part1/Chapter2" } },
+    { "action": "get_law_range", "reason": "第二編　物権 第二章　占有権",
+      "example": { "law_name": "民法", "path": "Part2/Chapter2" } },
     { "action": "get_law_range", "reason": "第三編　債権 第二章　契約",
       "example": { "law_name": "民法", "path": "Part3/Chapter2" } }
-    // …計 5 件
+    // …計 5 件（第四編・第五編の第二章が続く）
   ]
 }
 ```
@@ -131,7 +134,7 @@
 :::
 
 ::: details 呼び出し例 — 「附則の 7 本目を読む」
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
