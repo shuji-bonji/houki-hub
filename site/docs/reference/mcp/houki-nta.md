@@ -46,12 +46,12 @@ description: "houki-nta-mcp v0.25.0 の全 14 ツールの引数・型・既定�
 | `limit` | integer (1–50) | 任意 | `10` | 取得件数。1 以上 50 以下の整数（デフォルト: 10）。範囲の外は丸めずに INVALID_ARGUMENT |
 
 ::: warning ローカル DB が必要です
-`houki-nta-mcp --bulk-download-all` で基本通達 4 種を取り込んでいないと、結果は空になります。応答の `freshness.staleness` が `outdated` のときは、同じコマンドで取り直してください。
+`npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-all` で基本通達 4 種を取り込んでいないと、結果は空になります。応答の `freshness.staleness` が `outdated` のときは、同じコマンドで取り直してください。
 :::
 
 ::: details 呼び出し例 — 「軽減税率に関係する通達の節は」
-- 実測: v0.24.0（2026-10-04）
-- ローカル DB: あり（同じ日の `--bulk-download-everything` の後で `staleness: "fresh"`）
+- 実測: v0.25.0（2026-10-05）
+- ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
 
@@ -91,7 +91,8 @@ description: "houki-nta-mcp v0.25.0 の全 14 ツールの引数・型・既定�
     "oldest_fetched_at": "2026-10-04T03:14:49.904Z",
     "newest_fetched_at": "2026-10-04T03:24:14.467Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   },
   "legal_status": {
     "binds_citizens": false,
@@ -135,11 +136,14 @@ description: "houki-nta-mcp v0.25.0 の全 14 ツールの引数・型・既定�
     "newest_fetched_at": "2026-09-07T11:53:51.084Z",
     "staleness": "outdated",
     "days_since_oldest": 126,
-    "warning": "一部ドキュメントが 126 日前のデータです。最新化するには `--bulk-download-all` を実行してください"
+    "warning": "一部ドキュメントが 126 日前のデータです。最新化するには `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-all` を実行してください",
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   }
   // legal_status は同じ
 }
 ```
+
+この例の JSON は v0.10.2 の実測に、v0.25.0 で変わった 2 か所を仕様（SPEC-NTA-SEARCH-RULES-017・022）に合わせて書き足したものです。`warning` のコマンドが `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-all` の形になり（v0.24.x まではフラグだけ）、`freshness.db_path` が付きます。126 日たった DB を用意できないため、v0.25.0 では実測していません。
 
 `staleness` が `fresh` 以外のときは、返ってきた本文が国税庁サイトの現在の内容と違う可能性があります。回答にその旨を書き、`warning` にあるコマンドの実行を利用者に案内してください。`days_since_oldest` は範囲内で最も古い文書の経過日数なので、一部だけが古い場合もこの値になります。
 :::
@@ -157,7 +161,7 @@ description: "houki-nta-mcp v0.25.0 の全 14 ツールの引数・型・既定�
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: details 呼び出し例 — 「消基通 1-7-2（登録番号の構成）の本文」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`source: "db"`。DB に無ければ国税庁サイトから取得し、`source` が `"live"` になります）
 
 **引数**
@@ -182,7 +186,7 @@ description: "houki-nta-mcp v0.25.0 の全 14 ツールの引数・型・既定�
     "fullText": "登録番号の構成\n適格請求書発行事業者登録簿（…"
   },
   "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/01/07.htm",
-  "fetchedAt": "2026-09-07T20:39:38.910Z",
+  "fetchedAt": "2026-10-04T03:14:56.689Z",
   "source": "db",
   "legal_status": {
     "binds_citizens": false,
@@ -224,7 +228,7 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。質疑応答事例は現状すべて HTML のみで PDF を持たないため true 指定時は空配列になる |
 
 ::: details 呼び出し例 — 「テレワークに関係する質疑応答事例」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -258,7 +262,8 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
     "oldest_fetched_at": "2026-10-04T03:51:26.746Z",
     "newest_fetched_at": "2026-10-04T04:26:15.744Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   },
   "legal_status": {
     "binds_citizens": false,
@@ -273,7 +278,7 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 :::
 
 ::: details 呼び出し例 — 税目（topic）で絞る
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -307,7 +312,8 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
     "oldest_fetched_at": "2026-10-04T04:15:37.962Z",
     "newest_fetched_at": "2026-10-04T04:20:45.581Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   }
   // legal_status は上の例と同じ
 }
@@ -318,7 +324,7 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 :::
 
 ::: details 呼び出し例 — キーワードに合う文書が無いとき
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（質疑応答事例 1,841 件）
 
 **引数**
@@ -338,14 +344,15 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
     "oldest_fetched_at": "2026-10-04T03:51:26.746Z",
     "newest_fetched_at": "2026-10-04T04:26:15.744Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   }
   // legal_status は上の例と同じ
 }
 ```
 
 この語はページ下部の注記の文言で、v0.12.0 から注記は本文から外しているので 0 件になります。`hint` の件数で、DB に質疑応答事例が入っていることが分かります。
-質疑応答事例が DB に 1 件も無いときは、`results: []` ではなくエラー `DOC_NOT_FOUND` が返ります。`hint` に MCP サーバーが開いている DB ファイルのパスが、`next_actions` に `houki-nta-mcp --bulk-download-qa` が入ります。
+質疑応答事例が DB に 1 件も無いときは、`results: []` ではなくエラー `DOC_NOT_FOUND` が返ります。`hint` は DB の状態ごとに先頭の文が変わり、どれも開こうとした DB のパス（ホームは `~`）を含みます（v0.25.0 から）。DB のファイルが無いときは「ローカル DB（~/.cache/houki-nta-mcp/cache.db）がありません。…」、質疑応答事例だけが無いときは「ローカル DB（~/.cache/houki-nta-mcp/cache.db）に質疑応答事例（doc_type="qa-jirei"）が入っていません。…」で始まります。`next_actions` の `example.command` は `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-qa` です。
 :::
 
 ## nta_get_qa
@@ -362,7 +369,7 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: details 呼び出し例 — 「消費税の質疑応答事例 02/19 の照会と回答、関係法令通達」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: 不要。ただし DB に構造があればそこから返る（この例は 2 回目の呼び出しで `source: "db"`）
 
 **引数**
@@ -392,7 +399,7 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
     "notice": "令和7年8月1日現在の法令・通達等に基づいて作成しています。\n\nこの質疑事例は、照会に係る事実関係を前提とした一般的な回答であり、…この回答内容と異なる課税関係が生ずることがあることにご注意ください。",
     "basisDate": "2025-08-01",
     "sourceUrl": "https://www.nta.go.jp/law/shitsugi/shohi/02/19.htm",
-    "fetchedAt": "2026-09-12T18:37:44.863Z"
+    "fetchedAt": "2026-10-04T04:15:41.363Z"
   },
   "source": "db",
   "index_status": null,
@@ -435,7 +442,7 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 :::
 
 ::: details 呼び出し例 — 枝番号の号を挙げている事例（法人税 33/02）
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 
 **引数**
 
@@ -480,8 +487,8 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。様式・別表系の説明など PDF 添付がある重要トピックを抽出したい時に true を指定 |
 
 ::: details 呼び出し例 — 「医療費控除のタックスアンサー」
-- 実測: v0.24.0（2026-10-04）
-- ローカル DB: あり（同じ日の `--bulk-download-everything` の後。`staleness` は `stale`。理由は下）
+- 実測: v0.25.0（2026-10-05）
+- ローカル DB: あり（`staleness: "fresh"`。国税庁の索引から消えた記事が 1 件ある DB）
 
 **引数**
 
@@ -519,10 +526,11 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
     }
   ],
   "freshness": {
-    "oldest_fetched_at": "2026-09-07T21:06:49.516Z",
+    "oldest_fetched_at": "2026-10-04T03:37:08.048Z",
     "newest_fetched_at": "2026-10-04T03:51:17.445Z",
-    "staleness": "stale",
-    "days_since_oldest": 26
+    "staleness": "fresh",
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   },
   "legal_status": {
     "binds_citizens": false,
@@ -538,7 +546,7 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 
 `docId` がタックスアンサー番号です。そのまま `nta_get_tax_answer` の `no` に渡します。`next_actions` に先頭の記事を読む呼び出しが入っています（v0.23.0 から）。`basisDate` は記事の「令和8年4月1日現在法令等」を `YYYY-MM-DD` にしたもので、取得日ではありません。2 件目以降は score がほぼ同じ（0.2495 前後）なので、DB を取り込み直すと順が入れ替わることがあります。
 
-この実測の `staleness` は、`--bulk-download-everything` の直後なのに `stale` です。`freshness` はタックスアンサー全体の取得日時の範囲で、国税庁の索引から消えた記事（`orphaned_at` が付いた行）も含みます。この DB では No.2882 が 2026-10-04 に索引から消え、投入で取り直されないまま 2026-09-07 の取得日時で残っているため、`oldest_fetched_at` がその日時になっています。`legal_status.binds_tax_office` も `false` で、通達と違い税務職員も拘束しない参考資料です。
+`freshness` は、国税庁の索引にある記事だけの取得日時の範囲です（v0.24.1 から）。索引から消えた記事（`orphaned_at` が付いた行）は投入で取り直されないので、範囲から外しています。この DB では No.2882 が 2026-10-04 に索引から消え、2026-09-07 の取得日時のまま残っていますが、`oldest_fetched_at` はその日時にならず、`staleness` は `fresh` です。v0.24.0 までは、この記事の日時が `oldest_fetched_at` になり、投入をやり直しても `stale` のままでした（[houki-nta-mcp#139](https://github.com/shuji-bonji/houki-nta-mcp/issues/139)）。`freshness.db_path` は引いた DB のパスで、ホームディレクトリの部分は `~` に置き換えてあります（v0.25.0 から）。`legal_status.binds_tax_office` も `false` で、通達と違い税務職員も拘束しない参考資料です。
 :::
 
 ## nta_get_tax_answer
@@ -626,7 +634,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 :::
 
 ::: details 呼び出し例 — 「インボイス関係の改正通達を新旧対照表付きで」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -669,7 +677,8 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
     "oldest_fetched_at": "2026-10-04T03:24:14.576Z",
     "newest_fetched_at": "2026-10-04T03:26:38.132Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   },
   "search_notes": [
     "\"インボイス\" を含む文書は見つかりませんでした。略称辞書で \"インボイス\" は 消費税法 の通称として登録されているため、\"消費税法\" を含む文書に広げて検索しました。\"消費税法\" という語が出てくるだけの文書も含まれます"
@@ -700,7 +709,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: details 呼び出し例 — 「令和 7 年 4 月 1 日の消基通改正の本文と添付 PDF」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`source: "db"`）
 
 **引数**
@@ -721,7 +730,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
     "issuedAt": "2025-04-01",
     "issuer": "各国税局長 殿 沖縄国税事務所長 殿 各税関長 殿 沖縄地区税関長 殿\n国税庁長官 （官印省略）",
     "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/index.htm",
-    "fetchedAt": "2026-09-07T20:49:03.281Z",
+    "fetchedAt": "2026-10-04T03:24:16.836Z",
     "fullText": "課消2-4 課総11-10 … 令和7年4月1日\n…\n記\n1 消費税法基本通達について、別紙1「消費税法基本通達新旧対照表」の「改正前」欄に掲げる部分を「改正後」欄に掲げる部分のとおり改めることとし、令和7年4月1日から適用する。\n2 … 別紙2 … 令和8年11月1日から適用する。\n…",
     "attachedPdfs": [
       { "title": "別紙1（PDF/221KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/01.pdf", "sizeKb": 221, "kind": "comparison" },
@@ -747,7 +756,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 :::
 
 ::: details 呼び出し例 — 「docId を打ち間違えたとき」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（改正通達 118 件）
 
 **引数**
@@ -762,7 +771,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 {
   "error": "改正通達 docId=\"0025004-999\" は見つかりません",
   "code": "DOC_NOT_FOUND",
-  "hint": "DB の改正通達 118 件に、この docId はありません。available_doc_ids（新しい順に 30 件）から選ぶか、nta_search_kaisei_tsutatsu で検索して docId を確かめてください。DB を投入した後に国税庁が公開した文書は、`houki-nta-mcp --bulk-download-kaisei` をもう一度実行すると取り込めます",
+  "hint": "DB の改正通達 118 件に、この docId はありません。available_doc_ids（新しい順に 30 件）から選ぶか、nta_search_kaisei_tsutatsu で検索して docId を確かめてください。DB を投入した後に国税庁が公開した文書は、`npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-kaisei` をもう一度実行すると取り込めます",
   "next_actions": [
     { "action": "nta_search_kaisei_tsutatsu", "reason": "キーワード検索で正しい docId を探せます" }
   ],
@@ -778,7 +787,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 
 `available_doc_ids` には題名と発出日が入るので、探していた改正（この例では令和 7 年 4 月 1 日の消基通改正）を選び直せます。
 
-改正通達が DB に 1 件も入っていないときも `code` は同じ `DOC_NOT_FOUND` ですが、中身が変わります。`error` が「ローカル DB に改正通達が 1 件も無いため、docId=… を取得できません」になり、`next_actions[0].action` が `cli_bulk_download`（`example.command` は `houki-nta-mcp --bulk-download-kaisei`）、`hint` に MCP サーバーが開いている DB ファイルのパスが入り、`available_doc_ids` は付きません。`next_actions[0].action` を見れば、投入が必要なのか docId が誤っているのかを区別できます（v0.14.1 から）。
+改正通達が DB に 1 件も入っていないときも `code` は同じ `DOC_NOT_FOUND` ですが、中身が変わります。`error` が「ローカル DB に改正通達が 1 件も無いため、docId=… を取得できません」になり、`next_actions[0].action` が `cli_bulk_download`（`example.command` は `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-kaisei`）になり、`available_doc_ids` は付きません。`next_actions[0].action` を見れば、投入が必要なのか docId が誤っているのかを区別できます（v0.14.1 から）。`hint` は DB の状態ごとに先頭の文が変わり、どれも開こうとした DB のパス（ホームは `~`）を含みます（v0.25.0 から）。DB のファイルが無いときは「ローカル DB（~/.cache/houki-nta-mcp/cache.db）がありません。…」、改正通達だけが無いときは「ローカル DB（~/.cache/houki-nta-mcp/cache.db）に改正通達（doc_type="kaisei"）が入っていません。…」で始まり、後者には投入したシェルで `--status` を実行して DB が同じか確かめる手順が続きます。
 
 `nta_get_jimu_unei` と `nta_get_bunshokaitou` も同じ形（`code: "DOC_NOT_FOUND"`）で返します。v0.21.3 までの改正通達の `code` は `TSUTATSU_NOT_FOUND` でした。
 
@@ -799,7 +808,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。別紙・別表 PDF を伴う指針だけを抽出したい時に true を指定 |
 
 ::: details 呼び出し例 — 「書面添付制度の事務運営指針」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -842,7 +851,8 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
     "oldest_fetched_at": "2026-10-04T03:26:38.243Z",
     "newest_fetched_at": "2026-10-04T03:27:13.440Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   },
   "legal_status": {
     "binds_citizens": false,
@@ -868,7 +878,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: details 呼び出し例 — 「酒税の書面添付制度の事務運営指針」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`source: "db"`）
 
 **引数**
@@ -889,11 +899,11 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
     "issuedAt": "2009-04-01",
     "issuer": "各国税局長 殿 沖縄国税事務所長 殿\n国税庁長官",
     "sourceUrl": "https://www.nta.go.jp/law/jimu-unei/shozei/090401/01.htm",
-    "fetchedAt": "2026-09-12T18:40:39.467Z",
-    "fullText": "課酒6-3 課総2-8 官総-38 平成21年4月1日 改正 平成22年6月11日 改正 平成24年12月19日 改正 令和6年3月27日\n各国税局長 殿 沖縄国税事務所長 殿\n国税庁長官\n標題のことについては、下記のとおり定めたから、平成21年7月10日以降、これにより適切な運営を図られたい。…\n（趣旨） 書面添付制度（税理士法（昭和26年法律第237号。以下「法」という。）の平成13年度改正により、…\n記\n…\n【第1章 書面添付制度の運用に当たっての基本的な考え方】\n【1 制度の適正・円滑な運用及び普及・定着の推進】\n…\n【第2章 書面添付制度に係る事務手続及び留意事項】\n【1 意見聴取の実施】\n…\n【5 更正前の意見聴取】",
+    "fetchedAt": "2026-10-04T03:26:50.715Z",
+    "fullText": "課酒6-3 課総2-8 官総-38 平成21年4月1日 改正 平成22年6月11日 改正 平成24年12月19日 改正 令和6年3月27日 改正 令和8年9月17日\n各国税局長 殿 沖縄国税事務所長 殿\n国税庁長官\n標題のことについては、下記のとおり定めたから、平成21年7月10日以降、これにより適切な運営を図られたい。…\n（趣旨） 書面添付制度（税理士法（昭和26年法律第237号。以下「法」という。）の平成13年度改正により、…\n記\n…\n【第1章 書面添付制度の運用に当たっての基本的な考え方】\n【1 制度の適正・円滑な運用及び普及・定着の推進】\n…\n【第2章 書面添付制度に係る事務手続及び留意事項】\n【1 意見聴取の実施】\n…\n【5 更正前の意見聴取】",
     "attachedPdfs": [
-      { "title": "別紙1(PDF/191KB)", "url": "https://www.nta.go.jp/law/jimu-unei/shozei/090401/pdf/01.pdf", "sizeKb": 191, "kind": "attachment" },
-      { "title": "別紙2(PDF/158KB)", "url": "https://www.nta.go.jp/law/jimu-unei/shozei/090401/pdf/02.pdf", "sizeKb": 158, "kind": "attachment" }
+      { "title": "別紙1(PDF/87KB)", "url": "https://www.nta.go.jp/law/jimu-unei/shozei/090401/pdf/01.pdf", "sizeKb": 87, "kind": "attachment" },
+      { "title": "別紙2(PDF/69KB)", "url": "https://www.nta.go.jp/law/jimu-unei/shozei/090401/pdf/02.pdf", "sizeKb": 69, "kind": "attachment" }
     ],
     "orphanedAt": null
   },
@@ -910,7 +920,7 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 }
 ```
 
-`fullText` の 1 行目に文書番号と改正日が並びます。この例では平成 21 年に定め、令和 6 年 3 月 27 日まで 3 回改正されています。`issuedAt` は制定日で、最終改正日ではありません。最終改正がいつかは 1 行目から読んでください。
+`fullText` の 1 行目に文書番号と改正日が並びます。この例では平成 21 年に定め、令和 8 年 9 月 17 日まで 4 回改正されています（2026-10-04 の取り込みで、令和 8 年 9 月 17 日の改正が加わりました）。`issuedAt` は制定日で、最終改正日ではありません。最終改正がいつかは 1 行目から読んでください。
 
 末尾の `【…】` は章・節の見出しです。様式（応接簿など）は `attachedPdfs` にあり、どれも `kind: "attachment"`（別紙・別表）です。`nta_inspect_pdf_meta` に `docType: "jimu-unei"` を指定すると、PDF ごとの読み方（`read_strategy` / `layout_note`）と pdf-reader-mcp の呼び出し例（`next_actions`）が返ります。
 :::
@@ -929,11 +939,11 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。回答書本文 PDF を持つ事例だけを抽出したい時に true を指定 |
 
 ::: tip 本文で検索できます（v0.10.3 以降）
-v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の語でしか当たりませんでした。いまは回答内容・関係する法令条項等・別紙の照会文まで検索の対象です。v0.10.2 以前に作った DB を使っている場合は `houki-nta-mcp --bulk-download-bunshokaitou --refresh` で再投入してください。
+v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の語でしか当たりませんでした。いまは回答内容・関係する法令条項等・別紙の照会文まで検索の対象です。v0.10.2 以前に作った DB を使っている場合は `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-bunshokaitou --refresh` で再投入してください。
 :::
 
 ::: details 呼び出し例 — 「産科医療の給付金に関する文書回答事例」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -981,7 +991,8 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
     "oldest_fetched_at": "2026-10-04T03:27:23.963Z",
     "newest_fetched_at": "2026-10-04T03:37:07.872Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   },
   "legal_status": {
     "binds_citizens": false,
@@ -996,7 +1007,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 :::
 
 ::: details 呼び出し例 — 別紙の本文にしかない語で引く
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 
 「宇宙空間」は題名にも回答内容にもなく、別紙の照会文にだけ出てくる語です。
 
@@ -1035,7 +1046,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 :::
 
 ::: details 呼び出し例 — 税目の別表記をまとめて検索する（`taxonomy: "sozoku"`）
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -1077,12 +1088,12 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 | `format` | `"markdown"` \| `"json"` | 任意 | `"markdown"` | 出力形式 |
 
 ::: tip 本文は「表 + 別紙」でできています
-文書回答事例のページは、照会者・関係する法令条項等・回答年月日・回答者・回答内容が表に入り、照会の趣旨・事実関係・理由は「別紙」（別ページ）にあります。v0.10.3 / v0.10.4 から、表の各行を「見出し: 値」の形で取り込み、別紙を `【別紙】` として本文の末尾に連結します。v0.10.2 以前に作った DB には本文が入っていないので、`houki-nta-mcp --bulk-download-bunshokaitou --refresh` で再投入してください。
+文書回答事例のページは、照会者・関係する法令条項等・回答年月日・回答者・回答内容が表に入り、照会の趣旨・事実関係・理由は「別紙」（別ページ）にあります。v0.10.3 / v0.10.4 から、表の各行を「見出し: 値」の形で取り込み、別紙を `【別紙】` として本文の末尾に連結します。v0.10.2 以前に作った DB には本文が入っていないので、`npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-bunshokaitou --refresh` で再投入してください。
 :::
 
 ::: details 呼び出し例 — 「産科医療特別給付事業の給付金は非課税か」（本庁系）
-- 実測: v0.24.0（2026-10-04）
-- ローカル DB: あり（この文書の `fetchedAt` は 2026-09-08 の取り込みのまま）
+- 実測: v0.25.0（2026-10-05）
+- ローカル DB: あり（この文書の `fetchedAt` は 2026-10-04 の取り込み）
 
 **引数**
 
@@ -1102,7 +1113,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
     "issuedAt": "2025-04-07",
     "issuer": "国税庁",
     "sourceUrl": "https://www.nta.go.jp/law/bunshokaito/shotoku/250416/index.htm",
-    "fetchedAt": "2026-09-08T07:27:21.701Z",
+    "fetchedAt": "2026-10-04T03:27:25.095Z",
     "fullText": "取引等に係る税務上の取扱い等に関する照会（同業者団体等用）\n〔照会〕\n照会者 （フリガナ） 団体の名称: （コウセイロウドウショウ） 厚生労働省\n…\n関係する法令条項等: 所得税法第9条第1項18号、所得税法施行令第30条\n添付書類: ・産科医療特別給付事業 実施要綱\n〔回答〕\n回答年月日: 令和7年4月7日\n回答者: 国税庁課税部審理室長\n回答内容: 標題のことについては、ご照会に係る事実関係を前提とする限り、貴見のとおりで差し支えありません。 ただし、次のことを申し添えます。 (1) この文書回答は、…個々の納税者が行う具体的な取引等に適用する場合においては、この回答内容と異なる課税関係が生ずることがあります。 (2) この回答内容は国税庁としての見解であり、個々の納税者の申告内容等を拘束するものではありません。\n【別紙】\n別紙\n医政地発0331第4号 令和7年3月31日\n国税庁 課税部審理室長 殿\n厚生労働省医政局地域医療計画課長\n産科医療補償制度（以下「本体制度」といいます。）は、…\n記\n【1 本件事業の概要】\n【(1) 本件事業の給付対象】\n…\n【2 本件給付対象者に支払われる本件給付金が非課税所得として取り扱われる理由】\n…\n以上",
     "attachedPdfs": [],
     "orphanedAt": null
@@ -1128,7 +1139,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 :::
 
 ::: details 呼び出し例 — 国税局系（`tokyo/shohi/251017`）
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり
 
 国税局系は `docId` が局名から始まり、回答者が国税局の審理課長になります。別紙の置き場所もページごとに違います（`another.htm` / `01.htm#a01` / `besshi.htm`）が、呼び出す側が意識する必要はありません。
@@ -1151,7 +1162,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
     "issuedAt": "2025-10-17",
     "issuer": "東京国税局",
     "sourceUrl": "https://www.nta.go.jp/about/organization/tokyo/bunshokaito/shohi/251017/index.htm",
-    "fetchedAt": "2026-09-08T07:43:12.416Z",
+    "fetchedAt": "2026-10-04T03:35:35.116Z",
     "fullText": "【取引等に係る税務上の取扱い等に関する事前照会】\n〔照会〕\n…\n関係する法令条項等: 消費税法第4条、第7条 消費税法施行令第6条 消費税法施行規則第5条 消費税法基本通達5-7-13\n〔回答〕\n回答年月日 令和7年10月17日 回答者 東京国税局審理課長\n回答内容: 標題のことについては、ご照会に係る事実関係を前提とする限り、貴見のとおりで差し支えありません。…\n【別紙】\n【1 事前照会の趣旨】\n当社は、人工衛星を所有する顧客より発注を受け、ロケットによる人工衛星打上げ輸送サービス…\n【2 事前照会に係る取引等の事実関係】\n(1) 本件サービスについて …\nイ ロケットの準備 人工衛星の打上げが可能なロケットを調達する。\n…\n【3 上記2の事実関係に対して事前照会者の求める見解となることの理由】\n…\nロ 宇宙空間は「国内以外の地域」に該当するか …宇宙空間は、消費税法における「国内」に該当せず、「国内以外の地域」に該当するものと考えます。\n…\n以上",
     "attachedPdfs": [],
     "orphanedAt": null
@@ -1181,7 +1192,7 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 | `save` | boolean | 任意 |  | true のとき、返す PDF をサーバー側の保存先に取得し、saved[] に絶対パスを返す。pdf-reader-mcp の extract_tables / read_text はローカルファイルしか読まないので、表として取るときに使う。既に保存済みなら再取得しない（saved[].cached が true）。既定 false |
 
 ::: details 呼び出し例 — 「改正通達 0025004-026 の PDF は、どれをどう読めばよいか」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり
 
 **引数**
@@ -1242,7 +1253,7 @@ v0.18.3 までは `next_actions` の代わりに `reader_hints` が付いてい�
 :::
 
 ::: details 呼び出し例 — 「新旧対照表だけを保存して、表として取る」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり
 
 **引数**
@@ -1315,7 +1326,7 @@ v0.18.3 までは `next_actions` の代わりに `reader_hints` が付いてい�
 | `abbr` | string (minLength 1) | **必須** |  | 略称。例: "消基通", "所基通", "法基通"。全角の英数字・ダッシュ類・全角スペースは半角に揃えてから引く |
 
 ::: details 呼び出し例 — 「電帳法 は houki-nta-mcp で引けるか」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: 不要
 
 **引数**
