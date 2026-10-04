@@ -3,7 +3,7 @@
 :::
 
 ::: details 呼び出し例 — 「民法の大区分だけ見たい」
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -55,8 +55,9 @@
     "law_id": "129AC0000000089",
     "title": "民法",
     "law_num": "明治二十九年法律第八十九号",
-    "retrieved_at": "2026-09-20T10:25:04.777Z",
-    "url": "https://laws.e-gov.go.jp/law/129AC0000000089"
+    "retrieved_at": "2026-10-04T01:20:15.382Z",
+    "url": "https://laws.e-gov.go.jp/law/129AC0000000089",
+    "at": null
   },
   "node_count": 5,
   "truncated": true
