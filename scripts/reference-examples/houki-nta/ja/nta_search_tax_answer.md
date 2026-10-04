@@ -1,6 +1,6 @@
 ::: details 呼び出し例 — 「医療費控除のタックスアンサー」
-- 実測: v0.24.0（2026-10-04）
-- ローカル DB: あり（同じ日の `--bulk-download-everything` の後。`staleness` は `stale`。理由は下）
+- 実測: v0.25.0（2026-10-05）
+- ローカル DB: あり（`staleness: "fresh"`。国税庁の索引から消えた記事が 1 件ある DB）
 
 **引数**
 
@@ -38,10 +38,11 @@
     }
   ],
   "freshness": {
-    "oldest_fetched_at": "2026-09-07T21:06:49.516Z",
+    "oldest_fetched_at": "2026-10-04T03:37:08.048Z",
     "newest_fetched_at": "2026-10-04T03:51:17.445Z",
-    "staleness": "stale",
-    "days_since_oldest": 26
+    "staleness": "fresh",
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   },
   "legal_status": {
     "binds_citizens": false,
@@ -57,5 +58,5 @@
 
 `docId` がタックスアンサー番号です。そのまま `nta_get_tax_answer` の `no` に渡します。`next_actions` に先頭の記事を読む呼び出しが入っています（v0.23.0 から）。`basisDate` は記事の「令和8年4月1日現在法令等」を `YYYY-MM-DD` にしたもので、取得日ではありません。2 件目以降は score がほぼ同じ（0.2495 前後）なので、DB を取り込み直すと順が入れ替わることがあります。
 
-この実測の `staleness` は、`--bulk-download-everything` の直後なのに `stale` です。`freshness` はタックスアンサー全体の取得日時の範囲で、国税庁の索引から消えた記事（`orphaned_at` が付いた行）も含みます。この DB では No.2882 が 2026-10-04 に索引から消え、投入で取り直されないまま 2026-09-07 の取得日時で残っているため、`oldest_fetched_at` がその日時になっています。`legal_status.binds_tax_office` も `false` で、通達と違い税務職員も拘束しない参考資料です。
+`freshness` は、国税庁の索引にある記事だけの取得日時の範囲です（v0.24.1 から）。索引から消えた記事（`orphaned_at` が付いた行）は投入で取り直されないので、範囲から外しています。この DB では No.2882 が 2026-10-04 に索引から消え、2026-09-07 の取得日時のまま残っていますが、`oldest_fetched_at` はその日時にならず、`staleness` は `fresh` です。v0.24.0 までは、この記事の日時が `oldest_fetched_at` になり、投入をやり直しても `stale` のままでした（[houki-nta-mcp#139](https://github.com/shuji-bonji/houki-nta-mcp/issues/139)）。`freshness.db_path` は引いた DB のパスで、ホームディレクトリの部分は `~` に置き換えてあります（v0.25.0 から）。`legal_status.binds_tax_office` も `false` で、通達と違い税務職員も拘束しない参考資料です。
 :::
