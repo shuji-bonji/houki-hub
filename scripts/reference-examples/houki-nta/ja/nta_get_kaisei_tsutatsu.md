@@ -1,5 +1,5 @@
 ::: details 呼び出し例 — 「令和 7 年 4 月 1 日の消基通改正の本文と添付 PDF」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`source: "db"`）
 
 **引数**
@@ -20,7 +20,7 @@
     "issuedAt": "2025-04-01",
     "issuer": "各国税局長 殿 沖縄国税事務所長 殿 各税関長 殿 沖縄地区税関長 殿\n国税庁長官 （官印省略）",
     "sourceUrl": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/index.htm",
-    "fetchedAt": "2026-09-07T20:49:03.281Z",
+    "fetchedAt": "2026-10-04T03:24:16.836Z",
     "fullText": "課消2-4 課総11-10 … 令和7年4月1日\n…\n記\n1 消費税法基本通達について、別紙1「消費税法基本通達新旧対照表」の「改正前」欄に掲げる部分を「改正後」欄に掲げる部分のとおり改めることとし、令和7年4月1日から適用する。\n2 … 別紙2 … 令和8年11月1日から適用する。\n…",
     "attachedPdfs": [
       { "title": "別紙1（PDF/221KB）", "url": "https://www.nta.go.jp/law/tsutatsu/kihon/shohi/kaisei/0025004-026/pdf/01.pdf", "sizeKb": 221, "kind": "comparison" },
@@ -46,7 +46,7 @@
 :::
 
 ::: details 呼び出し例 — 「docId を打ち間違えたとき」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（改正通達 118 件）
 
 **引数**
@@ -61,7 +61,7 @@
 {
   "error": "改正通達 docId=\"0025004-999\" は見つかりません",
   "code": "DOC_NOT_FOUND",
-  "hint": "DB の改正通達 118 件に、この docId はありません。available_doc_ids（新しい順に 30 件）から選ぶか、nta_search_kaisei_tsutatsu で検索して docId を確かめてください。DB を投入した後に国税庁が公開した文書は、`houki-nta-mcp --bulk-download-kaisei` をもう一度実行すると取り込めます",
+  "hint": "DB の改正通達 118 件に、この docId はありません。available_doc_ids（新しい順に 30 件）から選ぶか、nta_search_kaisei_tsutatsu で検索して docId を確かめてください。DB を投入した後に国税庁が公開した文書は、`npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-kaisei` をもう一度実行すると取り込めます",
   "next_actions": [
     { "action": "nta_search_kaisei_tsutatsu", "reason": "キーワード検索で正しい docId を探せます" }
   ],
@@ -77,7 +77,7 @@
 
 `available_doc_ids` には題名と発出日が入るので、探していた改正（この例では令和 7 年 4 月 1 日の消基通改正）を選び直せます。
 
-改正通達が DB に 1 件も入っていないときも `code` は同じ `DOC_NOT_FOUND` ですが、中身が変わります。`error` が「ローカル DB に改正通達が 1 件も無いため、docId=… を取得できません」になり、`next_actions[0].action` が `cli_bulk_download`（`example.command` は `houki-nta-mcp --bulk-download-kaisei`）、`hint` に MCP サーバーが開いている DB ファイルのパスが入り、`available_doc_ids` は付きません。`next_actions[0].action` を見れば、投入が必要なのか docId が誤っているのかを区別できます（v0.14.1 から）。
+改正通達が DB に 1 件も入っていないときも `code` は同じ `DOC_NOT_FOUND` ですが、中身が変わります。`error` が「ローカル DB に改正通達が 1 件も無いため、docId=… を取得できません」になり、`next_actions[0].action` が `cli_bulk_download`（`example.command` は `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-kaisei`）になり、`available_doc_ids` は付きません。`next_actions[0].action` を見れば、投入が必要なのか docId が誤っているのかを区別できます（v0.14.1 から）。`hint` は DB の状態ごとに先頭の文が変わり、どれも開こうとした DB のパス（ホームは `~`）を含みます（v0.25.0 から）。DB のファイルが無いときは「ローカル DB（~/.cache/houki-nta-mcp/cache.db）がありません。…」、改正通達だけが無いときは「ローカル DB（~/.cache/houki-nta-mcp/cache.db）に改正通達（doc_type="kaisei"）が入っていません。…」で始まり、後者には投入したシェルで `--status` を実行して DB が同じか確かめる手順が続きます。
 
 `nta_get_jimu_unei` と `nta_get_bunshokaitou` も同じ形（`code: "DOC_NOT_FOUND"`）で返します。v0.21.3 までの改正通達の `code` は `TSUTATSU_NOT_FOUND` でした。
 
