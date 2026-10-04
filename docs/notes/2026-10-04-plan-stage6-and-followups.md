@@ -206,11 +206,11 @@ flowchart TB
 
 ### 段階 2: 契約の確認（C）と呼び出し例の取り直し（6a・6b）
 
-- C と 6a を 1 つの会話で行います（指示 R）。DB は egov・nta とも 2026-10-04 に新しくしたものを使い、流す前に egov は `--status`、nta は DB の取り込み日を記録します
+- C と 6a を 1 つの会話で行います（指示 S）。DB は egov・nta とも 2026-10-04 に新しくしたものを使い、流す前に egov は `--status`、nta は DB の取り込み日を記録します
 - 流す版は egov 0.19.0（0.19.1 が出ていれば 0.19.1。応答は同じ）と nta 0.24.0。plugin が起動している版を最初に確かめます
 - 判定の表は `docs/notes/<作業日>-regression-check-egov-0.19.0-nta-0.24.0.md`（2026-10-03 の回と同じ形）。劣化が 1 件でもあれば、例の差し替えを止めて Issue にします
 - 例の差し替えは houki-hub のブランチ `docs/<作業日>-examples-egov-0.19-nta-0.24` に、ツールごとに 1 コミット。見出しは変えず、「実測: vX（日付）」と JSON と例の後の文を差し替えます。2026-10-03 の回の「見つかったこと」1 の 3 件（`get_law_file` の 50 MB の文、`nta_get_kaisei_tsutatsu` の `code`、`resolve_abbreviation` の `aliases`）と、段階 5 の各 proposal.md の「呼び出し例への影響」（egov `get_article_references.md` の「`kind` は 3 つ」→ `suppl` を足して 4 つ、`search_law.md`・`search_fulltext.md` の `total_count`・`hint`・`next_actions`・`expanded_keywords`、nta `nta_search_qa.md` 84 行目の `domain` の説明）を必ず含めます
-- 差し替えの後に `node scripts/check-example-versions.mjs`（0-a の後に main にある）で、古い版で測ったままの例が 0 件であることを確かめます。未確認の 1 件（nta `nta_search_tsutatsu` の「DB が古いとき」）は、版の行を取り直せないので、③の対象から外す書き方を指示 R の会話で決めます
+- 差し替えの後に `node scripts/check-example-versions.mjs`（0-a の後に main にある）で、古い版で測ったままの例が 0 件であることを確かめます。未確認の 1 件（nta `nta_search_tsutatsu` の「DB が古いとき」）は、版の行を取り直せないので、③の対象から外す書き方を指示 S の会話で決めます
 - 6b（`node scripts/generate-reference.mjs`）は shuji の Mac で回します。`REGISTRY` は `mcp/<repo>/dist/index.js` を起動するので、egov・nta の作業コピーで `npm run build` が 0.19.x / 0.24.0 の main で済んでいることを先に確かめます
 
 T6 の版（段階 3）の後で取り直しになる例は、`freshness` を載せた 7 ファイル（egov `search_fulltext.md`、nta `nta_search_{bunshokaitou,jimu_unei,kaisei_tsutatsu,qa,tax_answer,tsutatsu}.md`）だけです。この 7 ファイルは、段階 3 の契約の確認（変えたツールだけを流す、前の計画 5.2）でどうせ流すので、そのときに差し替えます。ほかの 40 例は段階 3 で変わりません。
@@ -354,7 +354,7 @@ Q4（T6）の勧める案:
 ### 8.3 まだ決めていないこと（この計画の中で決める）
 
 - 0.19.1 の取り込みの件数の表示（`status_changed` の名前と、`--sync` の出力に足すか）は、仕様 PR で決める
-- 段階 2 の未確認の 1 例（nta の「DB が古いとき」）を③の照合からどう外すか（例の先頭の行の書き方）は、指示 R の会話で決める
+- 段階 2 の未確認の 1 例（nta の「DB が古いとき」）を③の照合からどう外すか（例の先頭の行の書き方）は、指示 S の会話で決める
 - #27 のページの URL（`/specs/<repo>/<dir>` の案）とサイドバーの構成は、6c-1 の会話で決める
 
 ## 9. 記録
@@ -365,15 +365,15 @@ Q4（T6）の勧める案:
 
 | 指示 | 段階 | 内容 | 置き場所 | 状態 |
 | --- | --- | --- | --- | --- |
-| P | 1 | egov 0.19.1 の仕様 PR（#107） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
-| Q | 1 | egov 0.19.1 の実装 PR | P のマージ後に作る（前の計画の `2026-10-04-stage5-impl-instructions.md` の L の形） | 未 |
-| R | 2 | 契約の確認（C）と呼び出し例の取り直し（6a） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
-| S | 3 | egov 0.20.0 の仕様 PR（#108・#110） | T6 の決定の後に作る（前の計画の `2026-10-03-stage5-spec-instructions.md` の H の形） | 未 |
-| T | 3 | nta 0.25.0 の仕様 PR（#138・#137） | S と同じ時期 | 未 |
-| U・V | 3 | egov 0.20.0 / nta 0.25.0 の実装 PR | S・T のマージ後 | 未 |
-| W | 3 | Skill の追随と 7 ファイルの取り直し | U・V の publish の日 | 未 |
-| X | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
-| Y | 4 | hub#5 ② | X の公開の後 | 未 |
+| Q | 1 | egov 0.19.1 の仕様 PR（#107） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #112、main `c88a3c9`。差分 `20261004-ingest-redistributed-revisions`、ADDED 6・MODIFIED 4） |
+| R | 1 | egov 0.19.1 の実装 PR | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
+| S | 2 | 契約の確認（C）と呼び出し例の取り直し（6a） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
+| T | 3 | egov 0.20.0 の仕様 PR（#108・#110） | T6 の決定の後に作る（前の計画の `2026-10-03-stage5-spec-instructions.md` の H の形） | 未 |
+| U | 3 | nta 0.25.0 の仕様 PR（#138・#137） | T と同じ時期 | 未 |
+| V・W | 3 | egov 0.20.0 / nta 0.25.0 の実装 PR | T・U のマージ後 | 未 |
+| X | 3 | Skill の追随と 7 ファイルの取り直し | V・W の publish の日 | 未 |
+| Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
+| Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 
 指示の形は前の計画と同じです: 「場所（起点のコミットと origin の確認）」「最初に読むもの（順番つき）」「Issue ごとの出発点（勧める案）」「守ること（VM の git の注意を含む）」「終わったら報告すること（PR 本文の草案を含む）」。
 
@@ -387,3 +387,12 @@ Q4（T6）の勧める案:
 | 0-d egov #105 | 確認済み（1.3 の 5）。コメントと close は未 |
 | 0-e abbr #35 | e-Gov は 200 を返す（2026-10-04）。再実行と close は未 |
 | 0-f hub #26 | Q9 待ち |
+
+### 段階 1 の進捗
+
+| 作業 | 状態 |
+| --- | --- |
+| 仕様 PR | 済（2026-10-04 JST、PR #112、main `c88a3c9`）。Q3 の勧める案に加えて、033（全件の取り込みで、全件の CSV に無い未施行の版を前の版にする）を入れた。`[WARN]` の比べる日は計画書の「今日以前」から `last_sync_date` より前に変えた（proposal.md の「人が判断すること」3・4） |
+| 実装 PR | 未（指示 R） |
+| publish の前の確認 | 未（proposal.md の「publish の前の確認」1〜7、shuji の Mac） |
+| publish | 未（目標 2026-10-15） |

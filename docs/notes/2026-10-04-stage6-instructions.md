@@ -1,15 +1,16 @@
-# 次の計画の最初の指示（P: egov 0.19.1 の仕様 PR / R: 契約の確認と呼び出し例の取り直し）
+# 次の計画の最初の指示（Q: egov 0.19.1 の仕様 PR / S: 契約の確認と呼び出し例の取り直し）
 
-2026-10-04（JST）に作った、`2026-10-04-plan-stage6-and-followups.md` の段階 1 と段階 2 を別の会話で始めるための指示です。P と R は別リポジトリ（P は houki-egov-mcp、R は houki-hub）なので並行できます。
+2026-10-04（JST）に作った、`2026-10-04-plan-stage6-and-followups.md` の段階 1 と段階 2 を別の会話で始めるための指示です。Q と S は別リポジトリ（Q は houki-egov-mcp、S は houki-hub）なので並行できます。
 
 | 指示 | 段階 | 内容 | 始める条件 |
 | --- | --- | --- | --- |
-| P | 1 | houki-egov-mcp 0.19.1 の仕様 PR（#107） | すぐ（0.19.1 の publish の目標は 2026-10-15。10-16 に 7 版が施行される） |
-| R | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 計画書の段階 0 の 0-a（hub#5 ①③）が main に入った後が望ましい。入っていなくても始められる（最後の③の確認だけ後に回す） |
+| Q | 1 | houki-egov-mcp 0.19.1 の仕様 PR（#107） | すぐ（0.19.1 の publish の目標は 2026-10-15。10-16 に 7 版が施行される） |
+| R | 1 | houki-egov-mcp 0.19.1 の実装 PR（#107） | 仕様 PR #112 のマージ後（2026-10-04 にマージ済み。main `c88a3c9`） |
+| S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 計画書の段階 0 の 0-a（hub#5 ①③）が main に入った後が望ましい。入っていなくても始められる（最後の③の確認だけ後に回す） |
 
 ---
 
-## 指示 P: houki-egov-mcp 0.19.1 の仕様 PR（#107）
+## 指示 Q: houki-egov-mcp 0.19.1 の仕様 PR（#107）
 
 ```text
 houki-egov-mcp #107（施行日の当日に配り直される版を unchanged として飛ばす）の仕様 PR を書いてください。この会話の役は Spec Steward です（AGENTS.md の「役割」）。実装・テストは書きません。急ぎます: shuji の DB（0.19.0、2026-10-03 作成）で、施行日が 2026-10-04〜10-31 の UnEnforced の版が 21 ありました（2026-10-04 JST）。施行日ごとでは 10-05 が 5、10-16 が 7、10-23 が 1、10-24 が 5、10-30 が 2、10-31 が 1 です。Issue の「次に起きるのは 2026-11-01」は当たっていません。0.19.1 の publish の目標は 2026-10-15（10-16 の前日）で、10-05 の 5 版は 0.19.1 の後から直す前提です。
@@ -61,12 +62,12 @@ houki-egov-mcp #107（施行日の当日に配り直される版を unchanged �
 - 「人が判断すること」の一覧（勧める案つき）
 - shuji に Mac で実行してもらう問い合わせ（上の UnEnforced の件数）
 - PR 本文の草案（Refs #107。Closes は実装 PR で書く。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
-- 実装 PR（指示 Q）に渡すこと: 受入テストの fixture の作り方の案（小さな zip と CSV）、0.19.1 の CHANGELOG の「互換性」の候補
+- 実装 PR（指示 R）に渡すこと: 受入テストの fixture の作り方の案（小さな zip と CSV）、0.19.1 の CHANGELOG の「互換性」の候補
 ```
 
 ---
 
-## 指示 R: 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a）
+## 指示 S: 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a）
 
 ```text
 houki-hub の呼び出し例（scripts/reference-examples/）47 件を、houki-egov-mcp 0.19.x と houki-nta-mcp 0.24.0 で流し直してください。1 回の実測で 2 つの作業を兼ねます。
@@ -115,4 +116,90 @@ houki-hub の呼び出し例（scripts/reference-examples/）47 件を、houki-e
 - 6b のために私が Mac で回すコマンド（egov・nta の作業コピーでの npm run build と node scripts/generate-reference.mjs）
 - T6（計画書の段階 3）で取り直しになる 7 ファイルの、今回の freshness の値（段階 3 の比較元にする）
 - PR 本文の草案（末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 R: houki-egov-mcp 0.19.1 の実装 PR（#107）
+
+仕様 PR #112（差分 `20261004-ingest-redistributed-revisions`、main `c88a3c9`）のマージの後に、新しい会話に貼ります。2026-10-04 JST に origin の main が `c88a3c9` であることを `git ls-remote` で確かめました。
+
+```text
+houki-egov-mcp 0.19.1（#107、施行日の当日に配り直される版の状態を取り込む）の実装 PR を作ってください。この会話の役は Test Designer → Coder → Spec Publisher です（AGENTS.md の「役割」）。仕様 PR #112 は承認・マージ済みで、この会話では仕様の意図を変えません。publish の目標は 2026-10-15（施行日 2026-10-16 の 7 版の前日）です。
+
+## 場所と版
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-egov-mcp（Cowork の device_bash では $HOME/mnt/houki-hub/mcp/houki-egov-mcp）
+- 起点: main の c88a3c9。作業の前に git ls-remote https://github.com/shuji-bonji/houki-egov-mcp refs/heads/main で origin と同じか確かめる（VM から ssh の remote には届かない）。specs/changes/ に 20261004-ingest-redistributed-revisions だけがあることを確かめる
+- ブランチ: fix/<作業日の yyyymmdd>-0.19.1
+- 版: 0.19.0 → 0.19.1（patch）。DB のスキーマの版は 3、INGEST_VERSION は 2 のまま
+- この PR で閉じる Issue: #107
+
+## 最初に読むもの（この順）
+
+1. AGENTS.md（PR の種類・役割・仕様 ID・ff マージ）と CONTRIBUTING.md の「ローカル DB を使う開発」「コーディング規約」
+2. specs/changes/20261004-ingest-redistributed-revisions/proposal.md と specs/{cli_bulk_download,cli_sync,cli_status}/spec.md
+3. 差分が参照する specs/current/<dir>/spec.md の仕様 ID（cli_bulk_download の 011・014・016・020・021、cli_sync の 002・006・010・014〜018、cli_status の 005、search_fulltext の 008）
+4. src/services/bulk/ingester.ts（316〜320 行目、ingestBatch、demoteOlderRevisions・demoteIfNewerExists、IngestZipOptions・IngestResult）と src/cli/index.ts（formatIngestCounts、printSyncResult、runStatus、ingestZip の呼び出し 3 か所）
+5. 前の版の実装 PR の形の手本: specs/releases/v0.19.0/ と CHANGELOG.md の 0.19.0
+
+proposal.md の「実装の変更」「実装 PR で直す文書」「互換性」「publish の前の確認」「取り込みのとき（Publisher）」が、この会話の作業の一覧です。「人が判断すること」1〜11 は書かれている側で承認済みです（033 を入れる、[WARN] は last_sync_date より前と比べる、status_changed は条件つきの新しい行、など）。仕様の本文が正で、proposal.md の表は要約です。仕様に書かれていない判断が要ったら、実装で決めずに止めて私に聞いてください。
+
+## 守ること
+
+- specs/changes/ は書き換えない。specs/current/ は最後の取り込みのコミットでだけ書く
+- テストは仕様の本文と「例:」から書き、実装を見て期待値を足さない。it の名前の先頭に仕様 ID を入れる。031 の医師法施行規則（323M40000100047）の 4 版の表は、小さな zip と CSV の fixture（09-02 → 09-17 → 10-01 の 3 回の取り込みと、033 用の全件の取り込み）で受入テストにする。e-Gov への実際の問い合わせはテストで行わない
+- テストを消して GREEN にしない。既存のテストの期待値が承認済みの差分で変わるとき（014 の「unchanged の版は何も書き換えない」など）は、その差分の仕様 ID を名前に入れて書き換える
+- CLI の既存の行の形と終了コードを変えない。新しい行（032・SYNC-020 の「状態の更新」、SYNC-021・STATUS-012 の [WARN]）は条件を満たすときだけ出す
+- MCP のツールの応答（フィールド・code・note・next_actions）は変えない
+- 033 は --bulk-download-everything のときだけ（IngestZipOptions に source とは別のオプションを足す。proposal.md の「実装の変更」）。--sync・--bulk-download-by-date では走らせない
+- TS のコードで文字列を + でつながない（テンプレートリテラル）
+- 公開文書（README・CHANGELOG・JSDoc）の文は「〜します」「〜です」で書く
+- 仕様と実装の食い違いや、仕様どおりにすると壊れる箇所を見つけたら、コードで勝手に合わせずに報告する（新しい specs/changes が要る）
+- コミットを作るところまで。署名・push・PR の作成・マージ・タグは私が行う
+
+## コミットの順
+
+1. test: 031・033・014・016・011 の受入テスト（fixture を含む）
+2. fix: 同じ XML で欄が空になった版の状態だけを書き換える（031・014・016・011）
+3. fix: 全件の取り込みで、全件の CSV に無い未施行の版を前の版にする（033）
+4. test: → feat: 件数の表示（032・SYNC-020）と [WARN]（SYNC-021・STATUS-012、件数を数える関数を 1 つにして --sync と --status で使う）
+5. docs: proposal.md の「実装 PR で直す文書」の 1〜3（CHANGELOG の例は 7 のコミットで入れてよい、README の DB の節、ingester.ts の JSDoc と INGEST_VERSION の JSDoc）
+6. chore: v0.19.1 — package.json・package-lock.json・server.json・.claude-plugin/plugin.json の版と CHANGELOG
+7. spec: 差分を specs/current/ に取り込み、specs/releases/v0.19.1/ へ移す（最後のコミット）
+
+test: のコミットでは新しいテストが落ち、次の fix: / feat: で通ることを確かめる。
+
+## CHANGELOG の 0.19.1
+
+- 日付は仮に作業日を書く。publish する日に私が直す
+- Fixed に #107。「互換性」の節に proposal.md の「互換性」の表と案内の文（「人が判断すること」7 のとおり、[WARN] が出たときも同じ、を足す。正確な範囲の補足は README から docs/NOTES.md に回す）
+- 取り込みの件数の出力の例（`  ingest 完了: …` と `  状態の更新: …` の 2 行）は、publish の前の確認の 3 の実測の値で書く。実測の前は仮の値を置き、仮であることを報告に書く
+
+## houki-hub の文書（proposal.md の「実装 PR で直す文書」4）
+
+- houki-hub の site/docs/mcp/houki-egov.md の「元データが変わったときに何が起きるか」に、施行日の当日の配り直しで状態が変わることと、0.19.0 の DB の直し方を書く。houki-hub（$HOME/mnt/houki-hub）のブランチ docs/<作業日の yyyymmdd>-egov-0.19.1 に 1 コミット（site/ の変更なので main に直接入れない）。egov の PR とは別に報告する
+
+## 取り込み（最後のコミット）
+
+- proposal.md の「取り込みのとき（Publisher）」に従う。承認日の行は proposal.md の「- 承認日: 2026-10-04（PR #112）」を写す
+- git mv で差分を specs/releases/v0.19.1/ へ移し、proposal.md の「状態」を「取り込み済み（v0.19.1）」にする
+- npx spec-ids check と、BASE_REF=main HEAD_REF=<ブランチ> node .github/scripts/check-pr-scope.mjs を通す
+- 計画書（houki-hub docs/notes/2026-10-04-plan-stage6-and-followups.md）の 9 章への記入は私が行う。書く内容（コミット・テストの数）を報告に含める
+
+## 検証
+
+- npm run build・npm test・npm run lint・npx spec-ids check は私の Mac か CI で通す。結果を貼るので、落ちたら直す
+- proposal.md の「publish の前の確認」1〜7 は私が Mac で行う。手順をそのまま報告に写し、この PR で変わったコマンド名や出力の文があれば直して書く
+- Cowork の VM（device_bash）で作業する場合: git を使う前に houki-hub フォルダーの削除許可を取る（.git の lock が残るため。接続し直すと許可が消える）。VM の git には user.name が無いので GIT_AUTHOR_NAME="shuji narumi" GIT_AUTHOR_EMAIL="71716610+shuji-bonji@users.noreply.github.com"（COMMITTER も同じ）を渡す。.git/objects/maintenance.lock や index.lock が残ったら消す。node_modules は Mac と共有しているので npm install・npm rebuild はしない。VM から npm の registry には届かない。vitest・biome は VM の別の場所に複製して回せることがある（houki-hub docs/notes/2026-09-29-plan-spec-issues.md の段階 2 の進捗、nta の $HOME/tmp/nta の例）
+
+## 終わったら報告すること
+
+- コミットの一覧（ハッシュと件名）。houki-hub のブランチとコミットも
+- 新しく足したテストと書き換えたテストの数、仕様 ID ごとの対応
+- spec-ids check と pr-scope の結果
+- 仕様に無い判断が要った点、食い違いの報告
+- publish の前の確認の手順（Mac で私が実行するコマンドの一覧）
+- houki-research-skill で直す箇所があるか（--sync・--status の出力や [WARN] を引用している箇所を grep）
+- PR 本文の草案（Closes #107、仕様 PR #112 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```
