@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 #
 # 次の計画（docs/notes/2026-10-04-plan-stage6-and-followups.md）の段階 0 の Issue の開け閉め。
-#   - houki-egov-mcp #107: 10 月中に施行日を迎える版が 21 あることを追記する（閉じない）
 #   - houki-egov-mcp #105: 確かめた結果をコメントして閉じる（Q8）
 #   - houki-abbreviations #35: 直近の verify-law-ids が成功していれば、その URL を入れてコメントして閉じる（Q7）
 #   - houki-nta-mcp #116: 計画の外にする理由をコメントする（閉じない。Q6）
 #   - houki-hub #26: コメントして閉じる（Q9）
+#   - T6 の決定（DECISIONS.md 2026-10-04）を egov #108・#110・nta #138 にコメントし、egov #111 は閉じる（Q4）
+#   - nta #137（Q5）と nta #139（0.24.1 で先に直す）に方針をコメントする
 # 本文は docs/notes/issues-2026-10-04-plan-stage6/ の Markdown。
 #
 #   使い方:  DRY_RUN=1 ./scripts/close-issues-2026-10-04-plan-stage6.sh   # 何をするかだけ表示
@@ -26,11 +27,16 @@ DRY_RUN="${DRY_RUN:-0}"
 
 # repo <TAB> number <TAB> file <TAB> action（close = コメントして閉じる / comment = コメントだけ）
 TABLE=$(cat <<'TSV'
-houki-egov-mcp	107	egov-107.md	comment
 houki-egov-mcp	105	egov-105.md	close
 houki-abbreviations	35	abbr-35.md	close
 houki-nta-mcp	116	nta-116.md	comment
 houki-hub	26	hub-26.md	close
+houki-egov-mcp	108	egov-108.md	comment
+houki-egov-mcp	110	egov-110.md	comment
+houki-egov-mcp	111	egov-111.md	close
+houki-nta-mcp	138	nta-138.md	comment
+houki-nta-mcp	137	nta-137.md	comment
+houki-nta-mcp	139	nta-139.md	comment
 TSV
 )
 COUNT=$(printf '%s\n' "$TABLE" | wc -l | tr -d ' ')

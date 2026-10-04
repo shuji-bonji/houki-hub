@@ -4,4 +4,4 @@ e-Gov 法令 API は 2026-10-04 JST に `GET https://laws.e-gov.go.jp/api/2/laws
 
 - 実行: {{RUN_URL}}
 
-コードの修正は要らなかったので閉じます。毎月 1 日の定期実行がメンテナンスと重なることへの備えは、houki-hub `docs/notes/2026-10-04-plan-stage6-and-followups.md` の Q7 で決めます。
+コードの修正は要らなかったので閉じます。毎月 1 日の定期実行がメンテナンスと重なることへの備えとして、定期実行を毎月 2 日 03:17 UTC（12:17 JST）にずらします（ブランチ `ci/20261004-verify-law-ids-cron`）。
