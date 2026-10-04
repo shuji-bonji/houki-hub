@@ -51,7 +51,7 @@ description: "houki-egov-mcp v0.19.1 の全 14 ツールの引数・型・既定
 :::
 
 ::: details 呼び出し例 — 「個情法の正式名と法令番号を知りたい」
-- 実測: v0.5.3（2026-09-08）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要（e-Gov 法令 API v2 をその場で呼びます）
 
 **引数**
@@ -65,7 +65,7 @@ description: "houki-egov-mcp v0.19.1 の全 14 ツールの引数・型・既定
 ```jsonc
 {
   "query": { "keyword": "個情法", "resolved": "個人情報の保護に関する法律" },
-  "total_count": 3,
+  "total_count": 17,
   "results": [
     {
       "law_id": "415AC0000000057",
@@ -82,11 +82,22 @@ description: "houki-egov-mcp v0.19.1 の全 14 ツールの引数・型・既定
       "law_type": "Act",
       "promulgation_date": "2003-05-30",
       "url": "https://laws.e-gov.go.jp/law/415AC0000000058"
+    },
+    {
+      "law_id": "415AC0000000059",
+      "title": "独立行政法人等の保有する個人情報の保護に関する法律",
+      "law_num": "平成十五年法律第五十九号",
+      "law_type": "Act",
+      "promulgation_date": "2003-05-30",
+      "url": "https://laws.e-gov.go.jp/law/415AC0000000059"
     }
-    // …3 件目は省略
-  ]
+  ],
+  "hint": null,
+  "next_actions": []
 }
 ```
+
+`total_count` は e-Gov で題名が一致した法令の総数（17 件）で、`limit: 3` で返した `results` の件数とは違います（v0.18.0 から。それまでは `results` の件数でした）。1 件以上当たったときは `hint` が `null`、`next_actions` が `[]` です。0 件のときは、条文の本文を探す `search_fulltext` と略称を確かめる `resolve_abbreviation` が `hint` と `next_actions` に入ります。
 
 `results[].law_id` をそのまま次の `get_law` / `get_toc` に渡せます。タイトル一致の検索なので、条文本文の中の語を探すときは `search_fulltext` を使ってください。
 :::
@@ -112,7 +123,7 @@ description: "houki-egov-mcp v0.19.1 の全 14 ツールの引数・型・既定
 :::
 
 ::: details 呼び出し例 — 「消費税法 57 条の 2 第 1 項の本文を JSON で」
-- 実測: v0.5.3（2026-09-08）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -129,6 +140,8 @@ description: "houki-egov-mcp v0.19.1 の全 14 ツールの引数・型・既定
   "data": {
     "article_num": "57_2",
     "paragraph_num": 1,
+    "item_num": null,
+    "suppl_index": null,
     "node": {
       "tag": "Paragraph",
       "attr": { "Num": "1" },
@@ -154,17 +167,18 @@ description: "houki-egov-mcp v0.19.1 の全 14 ツールの引数・型・既定
     "law_id": "363AC0000000108",
     "title": "消費税法",
     "law_num": "昭和六十三年法律第百八号",
-    "retrieved_at": "2026-09-07T20:13:51.255Z",
-    "url": "https://laws.e-gov.go.jp/law/363AC0000000108"
+    "retrieved_at": "2026-10-04T01:20:57.731Z",
+    "url": "https://laws.e-gov.go.jp/law/363AC0000000108",
+    "at": null
   }
 }
 ```
 
-`format` を省略すると Markdown の本文が返ります。引用するときは `meta.law_num`・`meta.url`・`meta.retrieved_at` を添えてください。
+`data.item_num` は号を指定したときの号番号、`data.suppl_index` は附則の条を `suppl_index` で指したときの附則の番号で、どちらも指定していないので `null` です。`meta.at` は時点（`at`）を渡していないので `null` です。`format` を省略すると Markdown の本文が返ります。引用するときは `meta.law_num`・`meta.url`・`meta.retrieved_at` を添えてください。
 :::
 
 ::: details 呼び出し例 — 「消費税法 30 条 2 項を Markdown で」（号と、号の下のイ・ロ）
-- 実測: v0.5.4（2026-09-11）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -183,8 +197,9 @@ description: "houki-egov-mcp v0.19.1 の全 14 ツールの引数・型・既定
     "law_id": "363AC0000000108",
     "title": "消費税法",
     "law_num": "昭和六十三年法律第百八号",
-    "retrieved_at": "2026-09-11T14:54:59.963Z",
-    "url": "https://laws.e-gov.go.jp/law/363AC0000000108"
+    "retrieved_at": "2026-10-04T01:20:59.907Z",
+    "url": "https://laws.e-gov.go.jp/law/363AC0000000108",
+    "at": null
   }
 }
 ```
@@ -205,14 +220,14 @@ description: "houki-egov-mcp v0.19.1 の全 14 ツールの引数・型・既定
 ---
 出典：e-Gov法令検索（デジタル庁）
 URL: https://laws.e-gov.go.jp/law/363AC0000000108
-取得日時: 2026-09-11T14:54:59.963Z
+取得日時: 2026-10-04T01:20:59.907Z
 ```
 
 号は「一」「二」のように e-Gov の表示どおりの漢数字で始まり、見出し語と本文の間は全角空白です。号の下のイ・ロ・ハは `- イ …` の箇条書きになります。
 :::
 
 ::: details 呼び出し例 — 「所得税法 89 条 1 項を Markdown で」（項の直下の表）
-- 実測: v0.5.4（2026-09-11）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -242,14 +257,14 @@ URL: https://laws.e-gov.go.jp/law/363AC0000000108
 ---
 出典：e-Gov法令検索（デジタル庁）
 URL: https://laws.e-gov.go.jp/law/340AC0000000033
-取得日時: 2026-09-11T14:54:56.829Z
+取得日時: 2026-10-04T01:21:02.176Z
 ```
 
 条文中の表は Markdown の表で返ります。法令の表の多くは見出し行を持たないため、1 行目（見出し行）は空欄です。`meta` は上の例と同じ形です（`law_num` は「昭和四十年法律第三十三号」）。
 :::
 
 ::: details 呼び出し例 — 枝番号の号（消費税法 2 条 1 項 8 号の 2）
-- 実測: v0.6.0（2026-09-12）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -268,7 +283,8 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
     "law_id": "363AC0000000108",
     "title": "消費税法",
     "law_num": "昭和六十三年法律第百八号",
-    "url": "https://laws.e-gov.go.jp/law/363AC0000000108"
+    "url": "https://laws.e-gov.go.jp/law/363AC0000000108",
+    "at": null
     // retrieved_at は省略
   }
 }
@@ -278,7 +294,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 :::
 
 ::: details 呼び出し例 — 存在しない条を指定したとき（`ARTICLE_NOT_FOUND`）
-- 実測: v0.5.3（2026-09-08）
+- 実測: v0.19.1（2026-10-04）
 
 **引数**
 
@@ -303,7 +319,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 }
 ```
 
-`next_actions[0]` に次に呼ぶべきツールと引数の例が入っています。エラーコードの語彙と、コードごとの対処は [houki-research Skill](/skills/houki-research) が定めています。
+`next_actions[0]` に次に呼ぶべきツールと引数の例が入っています。`article` は本則の中だけを探すので、本則に無く附則にだけある条番号も `ARTICLE_NOT_FOUND` になります（v0.18.0 から。附則の条は `suppl_index` で附則を指して取ります）。法令名が略称辞書にも e-Gov の題名にも完全一致しないときは、候補を付けた `LAW_NOT_FOUND` が返ります（v0.18.0 から）。エラーコードの語彙と、コードごとの対処は [houki-research Skill](/skills/houki-research) が定めています。
 :::
 
 ## get_toc
@@ -325,7 +341,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 :::
 
 ::: details 呼び出し例 — 「民法の大区分だけ見たい」
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -377,8 +393,9 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
     "law_id": "129AC0000000089",
     "title": "民法",
     "law_num": "明治二十九年法律第八十九号",
-    "retrieved_at": "2026-09-20T10:25:04.777Z",
-    "url": "https://laws.e-gov.go.jp/law/129AC0000000089"
+    "retrieved_at": "2026-10-04T01:20:15.382Z",
+    "url": "https://laws.e-gov.go.jp/law/129AC0000000089",
+    "at": null
   },
   "node_count": 5,
   "truncated": true
@@ -413,7 +430,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 :::
 
 ::: details 呼び出し例 — 「民法の契約の章をまとめて読みたい」
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -435,12 +452,12 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
     "returned_count": 186,     // 本文を返した条の数
     "skipped_count": 0,
     "truncated": true,
-    "body_chars": 29911,
+    "body_chars": 29919,
     "max_chars": 30000,
     "first_article": "第521条",
     "last_article": "第684条",
     "next_from_article": "685",
-    "note": "範囲の条 198 件のうち 186 件を返しました（第521条〜第684条）。本文 29,911 文字（上限 30,000 文字）。上限で打ち切りました。続きは from_article: \"685\" を付けて同じ範囲を呼び直してください。",
+    "note": "範囲の条 198 件のうち 186 件を返しました（第521条〜第684条）。本文 29,919 文字（上限 30,000 文字）。上限で打ち切りました。続きは from_article: \"685\" を付けて同じ範囲を呼び直してください。",
     "next_actions": [
       {
         "action": "get_law_range",
@@ -458,17 +475,18 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
     "law_id": "129AC0000000089",
     "title": "民法",
     "law_num": "明治二十九年法律第八十九号",
-    "retrieved_at": "2026-09-20T10:25:04.783Z",
-    "url": "https://laws.e-gov.go.jp/law/129AC0000000089"
+    "retrieved_at": "2026-10-04T01:21:36.587Z",
+    "url": "https://laws.e-gov.go.jp/law/129AC0000000089",
+    "at": null
   }
 }
 ```
 
-上限（既定 30,000 文字）に達したので、198 条のうち 186 条で打ち切っています。条の途中では切りません。続きは `{ "law_name": "民法", "path": "Part3/Chapter2", "from_article": "685" }` で取れます（`range.next_actions` にそのまま入っています）。
+上限（既定 30,000 文字）に達したので、198 条のうち 186 条で打ち切っています。条の途中では切りません。続きは `{ "law_name": "民法", "path": "Part3/Chapter2", "from_article": "685" }` で取れます（`range.next_actions` にそのまま入っています）。`max_chars` を渡したときは、`example` にも同じ `max_chars` が入ります。
 :::
 
 ::: details 呼び出し例 — 「遺留分の章だけ読みたい」（`path` で指定）
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -511,7 +529,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 :::
 
 ::: details 呼び出し例 — 「章だけ指定したら候補が返ってきた」
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -530,9 +548,11 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
   "next_actions": [
     { "action": "get_law_range", "reason": "第一編　総則 第二章　人",
       "example": { "law_name": "民法", "path": "Part1/Chapter2" } },
+    { "action": "get_law_range", "reason": "第二編　物権 第二章　占有権",
+      "example": { "law_name": "民法", "path": "Part2/Chapter2" } },
     { "action": "get_law_range", "reason": "第三編　債権 第二章　契約",
       "example": { "law_name": "民法", "path": "Part3/Chapter2" } }
-    // …計 5 件
+    // …計 5 件（第四編・第五編の第二章が続く）
   ]
 }
 ```
@@ -541,7 +561,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 :::
 
 ::: details 呼び出し例 — 「附則の 7 本目を読む」
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -594,8 +614,8 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 :::
 
 ::: details 呼び出し例 — 「民法で不法行為に関係する条は」
-- 実測: v0.5.3（2026-09-08）
-- ローカル DB: あり（`freshness.last_sync_date` が 2026-09-07 の DB）
+- 実測: v0.19.1（2026-10-04）
+- ローカル DB: あり（`freshness.last_sync_date` が 2026-10-04 の DB）
 
 **引数**
 
@@ -622,23 +642,23 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
       "caption": "（不法行為による損害賠償請求権の消滅時効）",
       "chapter_path": "第三編　債権 第五章　不法行為",
       "snippet": "<b>不法行為</b>による損害賠償の請求権は、次 … ",
-      "rank": -15.18,
-      "score": 0.703,
-      "score_reasons": ["fts rank -15.18 → base 0.603", "article_caption_match"],
+      "rank": -15.07,
+      "score": 0.701,
+      "score_reasons": ["fts rank -15.07 → base 0.601", "article_caption_match"],
       "url": "https://laws.e-gov.go.jp/law/129AC0000000089"
     },
-    { "article_num": "724の2", "caption": "（人の生命又は身体を害する不法行為による損害賠償請求権の消滅時効）", "score": 0.687 /* … */ },
-    { "article_num": "719", "caption": "（共同不法行為者の責任）", "score": 0.679 /* … */ }
+    { "article_num": "724の2", "caption": "（人の生命又は身体を害する不法行為による損害賠償請求権の消滅時効）", "score": 0.685 /* … */ },
+    { "article_num": "719", "caption": "（共同不法行為者の責任）", "score": 0.677 /* … */ }
   ],
   "freshness": {
-    "last_sync_date": "2026-09-07",
-    "last_full_dl_at": "2026-09-07T04:53:21.112Z",
+    "last_sync_date": "2026-10-04",
+    "last_full_dl_at": "2026-10-03T19:19:36.391Z",
     "staleness": "fresh",
     "days_since_sync": 0
   },
   "filters": {
     "law_type": null,
-    "domain": { "requested": null, "applied": false, "note": "domain 絞り込みは v0.5.0 では未実効です (…)" }
+    "domain": { "requested": null, "applied": false, "note": "分野での絞り込みはしていません（domain の引数は 0.18.0 で外しました）" }
   },
   "law_scope": [{ "token": "民法", "law_title": "民法", "law_id": "129AC0000000089" }]
 }
@@ -647,6 +667,8 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 - `law_scope` は、キーワードの中で法令名として認識した語です。ここに入った法令の条だけを検索しています
 - `chapter_path` に編・章が入るので、`get_toc` を呼ばなくても位置が分かります
 - 「民法 第709条」のように法令名と条番号だけを渡すと、検索せずにその条を直接返します
+- `filters.domain` は 0.18.0 で `domain` の引数を外した後も応答に残っていて、`requested` は常に `null` です。`domain` を渡すと `INVALID_ARGUMENT`（`path: "domain"`）になります
+- この例は法令名と語をそのまま検索したので `expanded_keywords` がありません。略称（「労基法」など）は正式名称にも広げて検索し、通称（「インボイス」など）は元の語で条が 1 件も当たらなかったときだけ正式名称で探し直します（v0.18.0 から）。広げたときは、何に広げたかが `expanded_keywords` に入ります
 - `freshness.staleness` が `fresh` 以外なら、`--bulk-download-everything` の再実行を検討してください
 :::
 
@@ -661,7 +683,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 | `abbr` | string (minLength 1) | **必須** |  | 略称。例: "消法", "所法", "労基法", "民" |
 
 ::: details 呼び出し例 — 「消基通 は何の略で、どのサーバーが担当か」
-- 実測: v0.5.3（2026-09-08）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要（辞書は houki-abbreviations に内蔵）
 
 **引数**
@@ -682,13 +704,14 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
     "domain": "tax",
     "category": "kihon-tsutatsu",
     "source_mcp_hint": "houki-nta",
-    "aliases": ["消費税法基本通達"],
     "note": "国税庁長官が発する消費税法の解釈通達。実務の主要参照"
-  }
+  },
+  "in_scope": false,
+  "hint": "このエントリは houki-nta の管轄です。houki-nta-mcp で取得してください。"
 }
 ```
 
-`source_mcp_hint` が `"houki-nta"` なので、この略称の本文は houki-egov-mcp ではなく houki-nta-mcp（`nta_get_tsutatsu`）で取ります。通達は e-Gov に載っていないため `law_id` は `null` です。法律の略称（「消法」「個情法」）なら `law_id` に e-Gov の ID が入り、`source_mcp_hint` は `"houki-egov"` になります。
+`in_scope: false` と `hint`、`source_mcp_hint: "houki-nta"` のとおり、この略称の本文は houki-egov-mcp ではなく houki-nta-mcp（`nta_get_tsutatsu`）で取ります（`in_scope` と `hint` は v0.16.0 から）。`resolved.aliases` は、通称があるエントリにだけ付きます（houki-abbreviations 0.7.0 から、`formal` と同じ値は入れていません）。通達は e-Gov に載っていないため `law_id` は `null` です。法律の略称（「消法」「個情法」）なら `law_id` に e-Gov の ID が入り、`source_mcp_hint` は `"houki-egov"` になります。
 :::
 
 ## get_law_revisions
@@ -703,7 +726,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 | `latest` | integer (≥ 1) | 任意 |  | 最新N件のみ返却（1 以上の整数。省略時は全件）。例: 5 |
 
 ::: details 呼び出し例 — 「消費税法の直近の改正と施行日」
-- 実測: v0.5.3（2026-09-08）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -720,8 +743,9 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
     "law_id": "363AC0000000108",
     "title": "消費税法",
     "law_num": "昭和六十三年法律第百八号",
-    "retrieved_at": "2026-09-07T20:14:07.925Z",
-    "url": "https://laws.e-gov.go.jp/law/363AC0000000108"
+    "retrieved_at": "2026-10-04T01:18:59.503Z",
+    "url": "https://laws.e-gov.go.jp/law/363AC0000000108",
+    "at": null
   },
   "total": 65,
   "revisions": [
@@ -749,7 +773,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 }
 ```
 
-`current_revision_status` が `UnEnforced` のものは公布済みで未施行です。`amendment_enforcement_comment` に「政令で定める日」とあるときは、`amendment_enforcement_date` は上限の見込みで、確定日ではありません。`total` は全改正数で、`latest` を省略すると全件が返ります。
+`current_revision_status` が `UnEnforced` のものは公布済みで未施行です。`amendment_enforcement_comment` に「政令で定める日」とあるときは、`amendment_enforcement_date` は上限の見込みで、確定日ではありません。`total` は全改正数で、`latest` を省略すると全件が返ります。並びは施行日の新しい順です。
 :::
 
 ## explain_law_type
@@ -763,7 +787,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 | `name` | string (minLength 1) | **必須** |  | 法令種別の名前。例: "法律", "政令", "省令", "規則", "条例", "告示", "通達", "訓令", "憲法"。aliases と e-Gov の法令種別コードも解決します（例: "施行令" → 政令、"施行規則" → 省令、"Act" → 法律、"Constitution" → 憲法、"Rule" → 規則） |
 
 ::: details 呼び出し例 — 「通達は守らなくてよいのか」
-- 実測: v0.5.3（2026-09-08）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要（サーバー内蔵の知識）
 
 **引数**
@@ -780,7 +804,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
   "found": true,
   "info": {
     "name": "通達",
-    "aliases": ["通知", "基本通達", "取扱通達"],
+    "aliases": ["基本通達", "取扱通達"],
     "enacting_body": "上級行政機関（各省庁・国税庁・最高裁等）",
     "hierarchy_rank": 99,
     "level": "agency-internal",
@@ -800,11 +824,11 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
     ]
   },
   "related_tools": ["search_law", "get_law", "get_toc"],
-  "see_also": "docs/LAW-HIERARCHY.md"
+  "see_also": "https://github.com/shuji-bonji/houki-egov-mcp/blob/main/docs/LAW-HIERARCHY.md"
 }
 ```
 
-`binds_citizens: false` が、通達が国民を拘束しないことを表します。「施行令」「施行規則」「Act」のような別名も `name` に渡せます。
+`binds_citizens: false` が、通達が国民を拘束しないことを表します。「施行令」「施行規則」「Act」のような別名も `name` に渡せます。`see_also` は法令の階層をまとめた文書の URL です。
 :::
 
 ## get_related_laws
@@ -818,7 +842,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 | `law_name` | string (minLength 1) | **必須** |  | 法令名または略称。例: "所得税法", "所法", "所得税法施行令" |
 
 ::: details 呼び出し例 — 「所得税法の施行令と施行規則」
-- 実測: v0.10.0（2026-09-19）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -876,12 +900,13 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
     }
   ],
   "meta": {
-    "retrieved_at": "2026-09-19T12:28:50.927Z"
+    "retrieved_at": "2026-10-04T01:18:57.103Z",
+    "at": null
   }
 }
 ```
 
-`related[]` は、法令名の末尾に「施行令」「施行規則」を付けた候補を e-Gov に問い合わせ、`law_title` が完全一致した 1 件だけです。無かった候補は `not_found[]` に残ります（民法なら `related` が空で `not_found` に 2 件）。`abbr` は略称辞書にあるときだけ付きます。施行令を渡すと `relation: "parent_act"` で親の法律と、兄弟の施行規則が返ります。「…の施行に関する省令」のような別の名前の下位法令は返らないので、`note` を citation に添えてください。
+`related[]` は、法令名の末尾に「施行令」「施行規則」を付けた候補を e-Gov に問い合わせ、`law_title` が完全一致した 1 件だけです。無かった候補は `not_found[]` に残ります（民法なら `related` が空で `not_found` に 2 件）。`abbr` は略称辞書にあるときだけ付きます。施行令を渡すと `relation: "parent_act"` で親の法律と、兄弟の施行規則が返ります。「…の施行に関する省令」のような別の名前の下位法令は返らないので、`note` を citation に添えてください。法律でも施行令・施行規則でもない法令（省令・政令・規則など）を渡すと、候補を作らずに `related: []`・`not_found: []` を返し、`note` に理由を書きます（v0.18.0 から）。`meta.at` はこのツールが時点を受け取らないため常に `null` です。
 :::
 
 ## get_article_references
@@ -898,7 +923,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 | `at` | string | 任意 |  | 時点指定。YYYY-MM-DD 形式（get_law と同じ） |
 
 ::: details 呼び出し例 — 「所得税法 57 条の 2 第 2 項が引いている法令」
-- 実測: v0.10.0（2026-09-19）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要（`next_actions` の `search_fulltext` を実行するときだけ必要）
 
 **引数**
@@ -915,8 +940,9 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
     "law_id": "340AC0000000033",
     "title": "所得税法",
     "law_num": "昭和四十年法律第三十三号",
-    "retrieved_at": "2026-09-19T12:28:54.305Z",
+    "retrieved_at": "2026-10-04T01:18:54.747Z",
     "url": "https://laws.e-gov.go.jp/law/340AC0000000033",
+    "at": null,
     "article": "57の2",
     "paragraph": 2
   },
@@ -1087,7 +1113,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 }
 ```
 
-`kind` は 3 つです。`external` は他法令への参照で、`law_name`（法令番号）の形なら法令番号で、法令番号が無ければ候補名の完全一致で `law_id` を解決します（職業能力開発促進法がその例）。解決できなければ `resolved: false` のまま `law_name` に候補が入ります。`internal` は同一法令内の参照で、条も項も無い「第N号」にはその文が属する項の番号が付きます。`relative`（「前項」「同法第三十一条の十」「同号」）は解決しません。`delegations[]` の `target_law` は法令単位で、どの条が受けているかは `next_actions` の `search_fulltext`（ローカル DB）か `get_toc` で探します。`next_actions[].example` はそのまま `get_law` の引数になります。
+`kind` は 4 つです。`external` は他法令への参照で、`law_name`（法令番号）の形なら法令番号で、法令番号が無ければ候補名の完全一致で `law_id` を解決します（職業能力開発促進法がその例）。解決できなければ `resolved: false` のまま `law_name` に候補が入ります。`internal` は同一法令内の参照で、条も項も無い「第N号」にはその文が属する項の番号が付きます。`relative`（「前項」「同法第三十一条の十」「同号」）は解決しません。`suppl` は本文の「附則第N条」で、どの附則の条かは特定せず `resolved: false` で返します（v0.18.0 から。それまでは本則の条を指す `internal` にしていました）。この条の本文には附則への参照が無いので、例には出てきません。`delegations[]` の `target_law` は法令単位で、委任先が無いときや確かでないときは `null` です（省令・府令は、施行規則を定めた命令の名前が委任の文言と合うときだけ付きます。この例の施行規則の法令番号は `昭和四十年大蔵省令第十一号` で、`大蔵省令` は `財務省令` と同じ省に当たるものとして扱うので付いています）。どの条が受けているかは `next_actions` の `search_fulltext`（ローカル DB）か `get_toc` で探します。`next_actions[].example` はそのまま `get_law` の引数になります。
 :::
 
 ## verify_citations
@@ -1113,7 +1139,7 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
 :::
 
 ::: details 呼び出し例 — 「書こうとしている引用 5 件をまとめて確かめる」
-- 実測: v0.14.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -1148,7 +1174,7 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
         "url": "https://laws.e-gov.go.jp/law/363AC0000000108"
       },
       "resolved_by": "abbreviation",          // 略称辞書で「消法」→「消費税法」
-      "article": { "num": "30", "label": "第30条", "caption": "（仕入れに係る消費税額の控除）" },
+      "article": { "num": "30", "label": "第30条", "caption": "（仕入れに係る消費税額の控除）", "suppl_index": null },
       "paragraph": 1
     },
     {
@@ -1163,13 +1189,14 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
         "url": "https://laws.e-gov.go.jp/law/410AC0000000025"
       },
       "resolved_by": "exact_title",
-      "article": { "num": "7", "label": "第7条", "caption": "（電子取引の取引情報に係る電磁的記録の保存）" }
+      "article": { "num": "7", "label": "第7条", "caption": "（電子取引の取引情報に係る電磁的記録の保存）", "suppl_index": null }
     },
     {
       "index": 2,
       "input": { "law_name": "民法", "article": "9999", "label": "民法第9999条" },
       "status": "not_found",
       "law": { "law_id": "129AC0000000089", "title": "民法", "law_num": "明治二十九年法律第八十九号", "law_type": "Act", "url": "https://laws.e-gov.go.jp/law/129AC0000000089" },
+      "resolved_by": "abbreviation",
       "code": "ARTICLE_NOT_FOUND",
       "reason": "民法に第9999条はありません",
       "next_actions": [
@@ -1180,7 +1207,9 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
       "index": 3,
       "input": { "law_name": "所得税法", "article": "2", "item": 8, "label": "所法2条8号" },
       "status": "ambiguous",
-      "article": { "num": "2", "label": "第2条", "caption": "（定義）" },
+      "law": { "law_id": "340AC0000000033", "title": "所得税法", "law_num": "昭和四十年法律第三十三号", "law_type": "Act", "url": "https://laws.e-gov.go.jp/law/340AC0000000033" },
+      "resolved_by": "abbreviation",
+      "article": { "num": "2", "label": "第2条", "caption": "（定義）", "suppl_index": null },
       "code": "INVALID_ARGUMENT",
       "reason": "所得税法第2条は項が 2 個あるため、号だけではどの項の号か決まりません",
       "next_actions": [
@@ -1194,13 +1223,16 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
       "status": "found",
       "law": { "law_id": "340M50000040011", "title": "所得税法施行規則", "law_num": "昭和四十年大蔵省令第十一号", "law_type": "MinisterialOrdinance", "url": "https://laws.e-gov.go.jp/law/340M50000040011" },
       "resolved_by": "exact_title",
-      "article": { "num": "36_4", "label": "第36条の4", "caption": "（青色専従者給与に関する届出書の記載事項等）" }
+      "article": { "num": "36_4", "label": "第36条の4", "caption": "（青色専従者給与に関する届出書の記載事項等）", "suppl_index": null }
     }
   ],
   "method": "per_citation_lookup",
-  "note": "各件について「その条（指定があれば項・号）が e-Gov の法令にあるか」だけを確かめています。引用した条文が主張を支えるかどうかは判定していません。…"
+  "note": "各件について「その条（指定があれば項・号）が e-Gov の法令にあるか」だけを確かめています。引用した条文が主張を支えるかどうかは判定していません。…",
+  "meta": { "retrieved_at": "2026-10-04T01:20:26.615Z", "at": null }
 }
 ```
+
+`resolved_by` は法令名をどう決めたか（`abbreviation` は略称辞書、`exact_title` は e-Gov の題名の完全一致）です。「民法」「所得税法」は辞書に載っているので `abbreviation` になります。`article.suppl_index` は本則の条では `null` で、附則の条を `suppl_index` で指したときに附則の番号が入ります（v0.18.0 から）。本則に無く附則にだけある条番号は、本則の条として扱わず `not_found`（`ARTICLE_NOT_FOUND`）になります。
 
 `label` は判定に使わず、そのまま `results[].input` に返るので、書きかけの原稿の表記と突き合わせられます。`not_found` の件は citation から外し、`next_actions` の `get_toc` で条番号を引き直します。`ambiguous` の件は、`candidates[]`（法令名が複数当たった場合）か `next_actions`（項を足す場合）を見て指定を直します。
 
@@ -1223,7 +1255,7 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
 :::
 
 ::: details 呼び出し例 — 「国旗国歌法の日章旗の寸法図はどこにあるか」
-- 実測: v0.15.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -1241,8 +1273,9 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
     "title": "国旗及び国歌に関する法律",
     "law_num": "平成十一年法律第百二十七号",
     "law_revision_id": "411AC0000000127_19990813_000000000000000",   // 添付ファイルはこの履歴に付く
-    "retrieved_at": "2026-09-20T13:49:27.274Z",
-    "url": "https://laws.e-gov.go.jp/law/411AC0000000127"
+    "retrieved_at": "2026-10-04T01:20:03.664Z",
+    "url": "https://laws.e-gov.go.jp/law/411AC0000000127",
+    "at": null
   },
   "count": 2,
   "attachments": [
@@ -1281,7 +1314,7 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
 :::
 
 ::: details 呼び出し例 — 「戸籍法施行規則の様式（届書の書式）を一覧で」
-- 実測: v0.15.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -1294,7 +1327,7 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
 
 ```jsonc
 {
-  "meta": { "law_id": "322M40000010094", "title": "戸籍法施行規則", "law_revision_id": "322M40000010094_20260626_508M60000010043", "…": "…" },
+  "meta": { "law_id": "322M40000010094", "title": "戸籍法施行規則", "law_revision_id": "322M40000010094_20260626_508M60000010043", "at": null, "…": "…" },
   "count": 42,
   "attachments": [
     {
@@ -1314,7 +1347,7 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
       "src": "./pict/2FH00000076885.pdf", "file_type": "pdf", "content_type": "application/pdf",
       "url": "https://laws.e-gov.go.jp/api/2/attachment/322M40000010094_20260626_508M60000010043?src=.%2Fpict%2F2FH00000076885.pdf",
       "location": { "tag": "AppdxStyle", "title": "附録第十一号様式", "related_article": "出生の届書（日本産業規格Ａ列四番）（第五十九条関係）" },
-      "updated": "2026-07-15T10:10:24+09:00"
+      "updated": "2026-07-15T10:10:26+09:00"
     }
     // … pdf 35 件（別表 7・様式 22・書式 13）
   ],
@@ -1347,7 +1380,7 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
 :::
 
 ::: details 呼び出し例 — 「日章旗の寸法図をディスクに置く」
-- 実測: v0.15.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -1360,7 +1393,7 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
 
 ```jsonc
 {
-  "meta": { "law_id": "411AC0000000127", "title": "国旗及び国歌に関する法律", "law_revision_id": "411AC0000000127_19990813_000000000000000", "…": "…" },
+  "meta": { "law_id": "411AC0000000127", "title": "国旗及び国歌に関する法律", "law_revision_id": "411AC0000000127_19990813_000000000000000", "at": null, "…": "…" },
   "kind": "file",                                   // src を省くと "zip"
   "src": "./pict/H11HO127-001.jpg",
   "file_name": "H11HO127-001.jpg",
@@ -1370,19 +1403,19 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
   "location": { "tag": "AppdxNote", "title": "別記第一", "related_article": "（第一条関係）" },
   "updated": "2024-07-25T00:20:13+09:00",
   "saved": {
-    "path": "/Users/you/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/H11HO127-001.jpg",
+    "path": "~/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/H11HO127-001.jpg",
     "bytes": 12614,
     "response_content_type": "image/jpeg"           // e-Gov の応答ヘッダー。pdf は application/octet-stream で返る
   },
-  "note": "H11HO127-001.jpg（12.3 KB）を /Users/you/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/H11HO127-001.jpg に保存しました。"
+  "note": "H11HO127-001.jpg（12.3 KB）を ~/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/H11HO127-001.jpg に保存しました。"
 }
 ```
 
-`src` はファイル名だけ（`"H11HO127-001.jpg"`）でも引けます。pdf を保存したときは `next_actions` に pdf-reader-mcp の `read_text`（`path` 付き）が入ります。
+`saved.path` は実際には利用者のホームからの絶対パスで返ります（例ではホームを `~` にしました）。`src` はファイル名だけ（`"H11HO127-001.jpg"`）でも引けます。`meta.at` は時点を渡していないので `null` です。pdf を保存したときは `next_actions` に pdf-reader-mcp の `read_text`（`path` 付き）が入ります。
 :::
 
 ::: details 呼び出し例 — 一覧に無い `src` を渡したとき（`ATTACHMENT_NOT_FOUND`）
-- 実測: v0.15.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -1425,7 +1458,7 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
 :::
 
 ::: details 呼び出し例 — 「民法の全文を Word で」（URL だけ）
-- 実測: v0.15.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -1442,13 +1475,14 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
     "law_id": "129AC0000000089",
     "title": "民法",
     "law_num": "明治二十九年法律第八十九号",
-    "retrieved_at": "2026-09-20T13:49:48.560Z",
-    "url": "https://laws.e-gov.go.jp/law/129AC0000000089"
+    "retrieved_at": "2026-10-04T01:20:09.399Z",
+    "url": "https://laws.e-gov.go.jp/law/129AC0000000089",
+    "at": null
   },
   "file_type": "docx",
   "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "url": "https://laws.e-gov.go.jp/api/2/law_file/docx/129AC0000000089",     // 認証なしで開ける
-  "note": "民法 の本文を docx で取る URL です。認証なしで開けます（現時点で最新の履歴）。ファイルをディスクに置くには save: true を付けてください（/Users/you/.cache/houki-egov-mcp/files 以下に保存します）。"
+  "note": "民法 の本文を docx で取る URL です。認証なしで開けます（現時点で最新の履歴）。ファイルをディスクに置くには save: true を付けてください（~/.cache/houki-egov-mcp/files 以下に保存します）。"
 }
 ```
 
@@ -1456,7 +1490,7 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
 :::
 
 ::: details 呼び出し例 — 「2020 年 4 月 1 日時点の国旗国歌法を HTML で保存」
-- 実測: v0.15.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -1474,7 +1508,7 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
   "content_type": "text/html",
   "url": "https://laws.e-gov.go.jp/api/2/law_file/html/411AC0000000127?asof=2020-04-01",
   "saved": {
-    "path": "/Users/you/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/411AC0000000127_19990813_000000000000000.html",
+    "path": "~/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/411AC0000000127_19990813_000000000000000.html",
     "bytes": 38537,
     "file_name": "411AC0000000127_19990813_000000000000000.html",   // e-Gov の Content-Disposition のまま
     "law_revision_id": "411AC0000000127_19990813_000000000000000"    // ファイル名から分かる「どの履歴の本文か」
@@ -1483,5 +1517,5 @@ LLM が組み立てた法令の引用リストを、1 回の呼び出しでま�
 }
 ```
 
-保存すると e-Gov のファイル名から法令履歴 ID が取れます（URL だけのときは分かりません）。実測では民法の docx が 182 KB、消費税法の rtf が 1.8 MB でした。1 ファイル 50 MB を超えるときは保存せず `INVALID_ARGUMENT` を返します。
+保存すると e-Gov のファイル名から法令履歴 ID が取れます（URL だけのときは分かりません）。実測では民法の docx が 182 KB、消費税法の rtf が 1.8 MB でした。1 ファイル 50 MB（52,428,800 バイト）を超えるときは保存せず、`FILE_TOO_LARGE`（`retryable: false`、`detail.bytes` に大きさ）を返します。Content-Length で分かるときは本文を読みません（v0.16.0 から。v0.15.x では `INVALID_ARGUMENT` でした）。
 :::

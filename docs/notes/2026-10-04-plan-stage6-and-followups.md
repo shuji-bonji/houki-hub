@@ -366,7 +366,7 @@ Q4（T6）の勧める案:
 | 指示 | 段階 | 内容 | 置き場所 | 状態 |
 | --- | --- | --- | --- | --- |
 | Q | 1 | egov 0.19.1 の仕様 PR（#107） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #112、main `c88a3c9`。差分 `20261004-ingest-redistributed-revisions`、ADDED 6・MODIFIED 4） |
-| R | 1 | egov 0.19.1 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #113、main `3ca848e`）。タグと publish は未 |
+| R | 1 | egov 0.19.1 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #113、main `3ca848e`、v0.19.1 を publish） |
 | S | 2 | 契約の確認（C）と呼び出し例の取り直し（6a） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
 | T | 3 | egov 0.20.0 の仕様 PR（#108・#110） | T6 の決定の後に作る（前の計画の `2026-10-03-stage5-spec-instructions.md` の H の形） | 未 |
 | U | 3 | nta 0.25.0 の仕様 PR（#138・#137） | T と同じ時期 | 未 |
@@ -395,4 +395,4 @@ Q4（T6）の勧める案:
 | 仕様 PR | 済（2026-10-04 JST、PR #112、main `c88a3c9`）。Q3 の勧める案に加えて、033（全件の取り込みで、全件の CSV に無い未施行の版を前の版にする）を入れた。`[WARN]` の比べる日は計画書の「今日以前」から `last_sync_date` より前に変えた（proposal.md の「人が判断すること」3・4） |
 | 実装 PR | 済（2026-10-04 JST、PR #113、main `3ca848e`。#107 は閉じた）。houki-hub の site（`site/docs/mcp/houki-egov.md`）の追随も main に入った（`bb9b7b0`、マージ `65dc62d`） |
 | publish の前の確認 | 未（proposal.md の「publish の前の確認」1〜7、shuji の Mac） |
-| publish | 未（2026-10-04 JST に確認: タグ `v0.19.1` は無く、npm の latest は 0.19.0。目標 2026-10-15） |
+| publish | 済。タグ `v0.19.1`（`3ca848e`）、npm の latest 0.19.1（2026-10-04 10:07 JST）、MCP Registry にも登録（shuji の `mcp-publisher publish` の出力で確認）。plugin（`.claude-plugin/plugin.json`）と claude-plugins の追随、houki-hub の `stack.json` の作り直し（`node scripts/generate-stack.mjs --readme`）は未確認 |
