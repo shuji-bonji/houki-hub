@@ -385,13 +385,14 @@ Q4（T6）の勧める案:
 | 指示 | 段階 | 内容 | 置き場所 | 状態 |
 | --- | --- | --- | --- | --- |
 | Q | 1 | egov 0.19.1 の仕様 PR（#107） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #112、main `c88a3c9`。差分 `20261004-ingest-redistributed-revisions`、ADDED 6・MODIFIED 4） |
-| QN | 1b | nta 0.24.1 の仕様 PR（#139） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
-| RN | 1b | nta 0.24.1 の実装 PR（#139） | QN のマージ後に作る（R の形） | 未 |
+| QN | 1b | nta 0.24.1 の仕様 PR（#139） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #140、main `c29cd3c`。017 を MODIFIED 1。セッション `cse_01Psjfdj6qFSsBbpi3GUXzWr`） |
+| RN | 1b | nta 0.24.1 の実装 PR（#139） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
 | R | 1 | egov 0.19.1 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #113、main `3ca848e`、v0.19.1 を publish） |
 | S | 2 | 契約の確認（C）と呼び出し例の取り直し（6a） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #38・#39。下の「段階 2 の進捗」） |
-| T | 3 | egov 0.20.0 の仕様 PR（#108・#110） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04、T6 の決定の後） |
+| T | 3 | egov 0.20.0 の仕様 PR（#108・#110） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #114、main `5847995`。セッション `cse_01Kqe2S8it6WECxbsm9ggtiX`） |
 | U | 3 | nta 0.25.0 の仕様 PR（#138・#137） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04）。T の仕様 PR の承認の後に始める |
-| V・W | 3 | egov 0.20.0 / nta 0.25.0 の実装 PR | T・U のマージ後 | 未 |
+| V | 3 | egov 0.20.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04） |
+| W | 3 | nta 0.25.0 の実装 PR | U のマージ後に作る | 未 |
 | X | 3 | Skill の追随と 7 ファイルの取り直し | V・W の publish の日 | 未 |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
@@ -405,9 +406,9 @@ Q4（T6）の勧める案:
 | 0-a hub#5 ①③ | 済（2026-10-04 JST、PR #39、main `92a076a`〜`c977a82`）。`feat/5-change-detection`（`5c7237a`）を main `4f7f4ed` の上に載せ直し、段階 2 の会話で決めた 2 点（直接起動の判定を `realpathSync` で揃えて比べる `73fc4fe`、取り直せない例を「- 版の照合: しない（理由）」で照合から外す `c977a82`）を足した。テスト 19 件通過。マージ後の `stack-check` は push（run 37179856214）と `workflow_dispatch`（run 37180037156）の 2 回とも success、`stack-drift` の Issue は 0 件 |
 | 0-b site の DB の節 | 済（main `88cb609`） |
 | 0-c 計画書のコミット | 済（`5a48edc`・`fab2210`） |
-| 0-d egov #105 | 確認済み（1.3 の 5）。コメントと close は未 |
-| 0-e abbr #35 | e-Gov は 200 を返す（2026-10-04）。再実行と close は未。cron を毎月 2 日にずらすブランチ `ci/20261004-verify-law-ids-cron` を houki-abbreviations に作った（未署名・未 push） |
-| 0-f hub #26 | Q9 は勧める案（閉じる）に決まった。投稿は未 |
+| 0-d egov #105 | 済（2026-10-04、コメントして閉じた。`posted.tsv`） |
+| 0-e abbr #35 | cron を毎月 2 日にずらす変更は main に入った（`50bd63b`）。`workflow_dispatch` の実行は success（2026-10-04 14:47 JST、run 37180905129）。#35 は open のまま（スクリプトを流した時点で実行が終わっていなかったため飛ばされたと見られる。スクリプトをもう一度流せば #35 だけが投稿される） |
+| 0-f hub #26 | 済（2026-10-04、コメントして閉じた）。nta #116 には計画の外にする理由をコメントした。T6 の決定は egov #108・#110・nta #138 に、方針は nta #137・#139 にコメントし、egov #111 は閉じた |
 
 ### 段階 1 の進捗
 
