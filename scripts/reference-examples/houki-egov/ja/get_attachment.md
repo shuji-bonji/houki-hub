@@ -3,7 +3,7 @@
 :::
 
 ::: details 呼び出し例 — 「日章旗の寸法図をディスクに置く」
-- 実測: v0.15.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
@@ -16,7 +16,7 @@
 
 ```jsonc
 {
-  "meta": { "law_id": "411AC0000000127", "title": "国旗及び国歌に関する法律", "law_revision_id": "411AC0000000127_19990813_000000000000000", "…": "…" },
+  "meta": { "law_id": "411AC0000000127", "title": "国旗及び国歌に関する法律", "law_revision_id": "411AC0000000127_19990813_000000000000000", "at": null, "…": "…" },
   "kind": "file",                                   // src を省くと "zip"
   "src": "./pict/H11HO127-001.jpg",
   "file_name": "H11HO127-001.jpg",
@@ -26,19 +26,19 @@
   "location": { "tag": "AppdxNote", "title": "別記第一", "related_article": "（第一条関係）" },
   "updated": "2024-07-25T00:20:13+09:00",
   "saved": {
-    "path": "/Users/you/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/H11HO127-001.jpg",
+    "path": "~/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/H11HO127-001.jpg",
     "bytes": 12614,
     "response_content_type": "image/jpeg"           // e-Gov の応答ヘッダー。pdf は application/octet-stream で返る
   },
-  "note": "H11HO127-001.jpg（12.3 KB）を /Users/you/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/H11HO127-001.jpg に保存しました。"
+  "note": "H11HO127-001.jpg（12.3 KB）を ~/.cache/houki-egov-mcp/files/411AC0000000127_19990813_000000000000000/H11HO127-001.jpg に保存しました。"
 }
 ```
 
-`src` はファイル名だけ（`"H11HO127-001.jpg"`）でも引けます。pdf を保存したときは `next_actions` に pdf-reader-mcp の `read_text`（`path` 付き）が入ります。
+`saved.path` は実際には利用者のホームからの絶対パスで返ります（例ではホームを `~` にしました）。`src` はファイル名だけ（`"H11HO127-001.jpg"`）でも引けます。`meta.at` は時点を渡していないので `null` です。pdf を保存したときは `next_actions` に pdf-reader-mcp の `read_text`（`path` 付き）が入ります。
 :::
 
 ::: details 呼び出し例 — 一覧に無い `src` を渡したとき（`ATTACHMENT_NOT_FOUND`）
-- 実測: v0.15.0（2026-09-20）
+- 実測: v0.19.1（2026-10-04）
 - ローカル DB: 不要
 
 **引数**
