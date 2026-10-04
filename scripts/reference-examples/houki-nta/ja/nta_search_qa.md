@@ -1,5 +1,5 @@
 ::: details 呼び出し例 — 「テレワークに関係する質疑応答事例」
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -33,7 +33,8 @@
     "oldest_fetched_at": "2026-10-04T03:51:26.746Z",
     "newest_fetched_at": "2026-10-04T04:26:15.744Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   },
   "legal_status": {
     "binds_citizens": false,
@@ -48,7 +49,7 @@
 :::
 
 ::: details 呼び出し例 — 税目（topic）で絞る
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -82,7 +83,8 @@
     "oldest_fetched_at": "2026-10-04T04:15:37.962Z",
     "newest_fetched_at": "2026-10-04T04:20:45.581Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   }
   // legal_status は上の例と同じ
 }
@@ -93,7 +95,7 @@
 :::
 
 ::: details 呼び出し例 — キーワードに合う文書が無いとき
-- 実測: v0.24.0（2026-10-04）
+- 実測: v0.25.0（2026-10-05）
 - ローカル DB: あり（質疑応答事例 1,841 件）
 
 **引数**
@@ -113,12 +115,13 @@
     "oldest_fetched_at": "2026-10-04T03:51:26.746Z",
     "newest_fetched_at": "2026-10-04T04:26:15.744Z",
     "staleness": "fresh",
-    "days_since_oldest": 0
+    "days_since_oldest": 0,
+    "db_path": "~/.cache/houki-nta-mcp/cache.db"
   }
   // legal_status は上の例と同じ
 }
 ```
 
 この語はページ下部の注記の文言で、v0.12.0 から注記は本文から外しているので 0 件になります。`hint` の件数で、DB に質疑応答事例が入っていることが分かります。
-質疑応答事例が DB に 1 件も無いときは、`results: []` ではなくエラー `DOC_NOT_FOUND` が返ります。`hint` に MCP サーバーが開いている DB ファイルのパスが、`next_actions` に `houki-nta-mcp --bulk-download-qa` が入ります。
+質疑応答事例が DB に 1 件も無いときは、`results: []` ではなくエラー `DOC_NOT_FOUND` が返ります。`hint` は DB の状態ごとに先頭の文が変わり、どれも開こうとした DB のパス（ホームは `~`）を含みます（v0.25.0 から）。DB のファイルが無いときは「ローカル DB（~/.cache/houki-nta-mcp/cache.db）がありません。…」、質疑応答事例だけが無いときは「ローカル DB（~/.cache/houki-nta-mcp/cache.db）に質疑応答事例（doc_type="qa-jirei"）が入っていません。…」で始まります。`next_actions` の `example.command` は `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-qa` です。
 :::
