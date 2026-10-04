@@ -7,10 +7,11 @@
 | Q | 1 | houki-egov-mcp 0.19.1 の仕様 PR（#107） | 済（PR #112） |
 | R | 1 | houki-egov-mcp 0.19.1 の実装 PR（#107） | 済（PR #113、v0.19.1 を 2026-10-04 に publish） |
 | QN | 1b | houki-nta-mcp 0.24.1 の仕様 PR（#139） | 済（PR #140、main `c29cd3c`） |
-| RN | 1b | houki-nta-mcp 0.24.1 の実装 PR（#139） | すぐ（2026-10-08 06:06 JST に No.2882 の行が 30 日に達する） |
+| RN | 1b | houki-nta-mcp 0.24.1 の実装 PR（#139） | 済（v0.24.1 を 2026-10-04 に publish） |
 | T | 3 | houki-egov-mcp 0.20.0 の仕様 PR（#108・#110） | 済（PR #114、main `5847995`） |
-| U | 3 | houki-nta-mcp 0.25.0 の仕様 PR（#138・#137） | 始められる（T のマージ済み）。RN と同じ作業コピーを使うので、RN のコミットが終わってから。0.24.1 が main に入っていればその上から切る |
-| V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 始められる（T のマージ済み。egov の作業コピーは今ほかの会話が使っていない） |
+| U | 3 | houki-nta-mcp 0.25.0 の仕様 PR（#138・#137） | 済（PR #142、main `8f98023`、承認日 2026-10-05） |
+| W | 3 | houki-nta-mcp 0.25.0 の実装 PR（#138・#137） | すぐ（実装の側で判断してよい範囲を指示に書いた） |
+| V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
 ---
@@ -477,4 +478,91 @@ proposal.md の「実装の変更」「実装 PR で直す文書」「互換性�
 - 契約の確認で変わる例（houki-hub の scripts/reference-examples/houki-egov/ja/search_fulltext.md の freshness.db_path など）
 - houki-research-skill で直す箇所（api-fallback の note の文・案内のコマンドを引用している箇所を grep）
 - PR 本文の草案（Closes #108 #110、仕様 PR #114 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 W: houki-nta-mcp 0.25.0 の実装 PR（T6: #138、#137）
+
+仕様 PR #142（差分 `20261004-db-location`、main `8f98023`、承認日 2026-10-05）のマージの後に、新しい会話に貼ります。2026-10-05 JST に origin の main が `8f98023` であることを `git ls-remote` で確かめました。差分は ADDED 15・MODIFIED 23、触る dir は 16（`cli_status` は新しい spec.md）です。
+
+shuji の方針（2026-10-05）: 「人が判断すること」1〜19 はほぼ勧める案（A）で承認した。そのうえで、実装の側でも判断してよい。この指示では、判断してよい範囲と、止めて聞く範囲を分けて書きます。AGENTS.md の「Coder は振る舞いの許し方を決めない」は変えず、仕様に書かれていない細部を実装で決め、決めたことを報告に残す、という形にします。
+
+```text
+houki-nta-mcp 0.25.0（T6 ローカル DB の場所の見え方の nta 版 #138 と、#137）の実装 PR を作ってください。この会話の役は Test Designer → Coder → Spec Publisher です（AGENTS.md の「役割」）。仕様 PR #142 は承認・マージ済みです。
+
+## 場所と版
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-nta-mcp（Cowork の device_bash では $HOME/mnt/houki-hub/mcp/houki-nta-mcp）
+- 起点: main の 8f98023。作業の前に git ls-remote https://github.com/shuji-bonji/houki-nta-mcp refs/heads/main で origin と同じか確かめ、specs/changes/ に 20261004-db-location だけがあることを確かめる
+- ブランチ: feat/<作業日の yyyymmdd>-0.25.0
+- 版: 0.24.1 → 0.25.0（minor）。DB のスキーマの版は 12 のまま
+- この PR で閉じる Issue: #138・#137
+
+## 最初に読むもの（この順）
+
+1. AGENTS.md と CONTRIBUTING.md
+2. houki-hub の docs/DECISIONS.md の 2026-10-04 の「T6」「#137」の行と、2026-10-05 の「nta の --status は版 3〜11 の DB を移行しない」の行
+3. specs/changes/20261004-db-location/proposal.md と specs/*/spec.md の 16 個。とくに「実装の変更」「実装 PR で直す文書」「互換性」「publish の前の確認」「取り込みのとき」「人が判断すること」
+4. 写す元の houki-egov-mcp 0.20.0: houki-hub/mcp/houki-egov-mcp の specs/releases/v0.20.0/20261004-db-location/ と、src/ の同じ役目の関数（パスの ~ への置き換え、シェル用のパス、案内のコマンドの組み立て、--status の [WARN]）。読んで参考にするが、共有ライブラリには出さず、nta の中に独自に書く（family の方針）
+5. 差分が参照する specs/current/<dir>/spec.md の仕様 ID と、proposal.md の「実装の変更」に挙がった src/ のファイル
+
+## 実装の側で判断してよいこと（決めたら報告の「実装で決めたこと」に書く）
+
+仕様の本文と例に書かれていない細部は、この会話で決めてよい。止めて聞かなくてよい。
+
+- 関数・型・ファイルの分け方、名前（proposal.md の「例:」の名前は案。変えてよい）
+- 仕様が形だけを決めていて値の作り方を決めていない箇所の作り方（例: `cache*.db` の一覧の並び順、`readdirSync` で読めないフォルダーのときの扱い、ログの `meta` に入れる値の型）。ただし応答・CLI の出力・終了コードに出るものは、仕様の文と例に必ず合わせる
+- テストの組み立て（fixture、HOME と環境変数の差し替え方、一時フォルダー）。利用者のホームのパスはテストに書かない
+- 既存のテストが MODIFIED の ID で期待値を変えるときの書き換え方（ID を名前に入れる）
+- 「人が判断すること」13・17（この差分の外）の Issue の下書きを書くこと。投稿は shuji が行う
+- 仕様のとおりに書くと実装が不自然・危険になる箇所で、応答・出力・終了コードを変えずに済む回り道（例: 読み取り専用で開けない環境での --status の開き方）
+
+## 止めて聞くこと（実装で決めない）
+
+- 応答のフィールド・`code`・`hint` と `note` の文・案内のコマンド・CLI の出力の行・終了コードを、仕様の文と例から変えること
+- 仕様の文どうしが食い違う、または仕様どおりにすると既存の約束（specs/current の別の ID）を破る箇所
+- 「人が判断すること」の勧める案（A）と違う形にしたくなったとき
+
+聞くときは、案を 2〜3 並べて勧める案を 1 つ書く。私の答えが仕様の変更になるときは、この PR とは別の specs/changes が要ることを書く（この会話では specs/changes を書かない）。
+
+## 守ること
+
+- specs/changes/ は書き換えない。specs/current/ は最後の取り込みのコミットでだけ書く
+- テストは仕様の本文と「例:」から書き、実装を見て期待値を足さない。it の名前の先頭に仕様 ID を入れる。テストを消して GREEN にしない
+- 応答のフィールドを消す・名前を変える変更はしない（T4）
+- --status は DB を書き換えない（CLI-STATUS-008）。読み取り専用で開く
+- TS のコードで文字列を + でつながない（テンプレートリテラル）。公開文書の文は「〜します」「〜です」
+- コミットを作るところまで。署名・push・PR の作成・マージ・タグは私が行う
+
+## コミットの順（案。差分の構成と合わないときは理由を書いて変えてよい）
+
+1. test: → feat: DB の場所の決め方・応答用とシェル用のパス・案内のコマンドの組み立て（db_schema 026〜029、021・025 の文、common_errors 017）
+2. test: → feat: 検索 6 ツールの freshness（db_path を常に置く、範囲が空なら取得日時を null）と warning のコマンド（search_rules 022・017、search_tsutatsu 003・004、各検索ツールの 001 など）
+3. test: → feat: DB が無い・版の記録が無いときの hint（取得 3 ツール・nta_inspect_pdf_meta・検索の 0 件）
+4. test: → feat: 起動時のログ（cli_entry 009）と --status（cli_status 001〜008、cli_entry 002・004・007）
+5. test: → fix: タックスアンサーの索引の読み書きの失敗をログに出す（#137。nta_get_tax_answer 018、db_schema 025）
+6. docs: proposal.md の「実装 PR で直す文書」（README・llms.txt・--help・CONTRIBUTING.md の「ローカル DB を使う開発」の節など）
+7. chore: v0.25.0 — package.json・package-lock.json・server.json の版と CHANGELOG（「互換性」の表）。.claude-plugin/plugin.json の扱いは 0.24.x の慣習に合わせる
+8. spec: 差分を specs/current/ に取り込み、specs/releases/v0.25.0/ へ移す（最後のコミット。承認日は proposal.md の「- 承認日: 2026-10-05（PR #142）」を写す）
+
+## 検証
+
+- npm run build・npm test・npm run check（biome）・npx tsc --noEmit・npx spec-ids check は私の Mac か CI で通す。結果を貼るので、落ちたら直す。VM では $HOME/tmp/nta に複製して回せることがある
+- npx spec-ids check と BASE_REF=main HEAD_REF=<ブランチ> node .github/scripts/check-pr-scope.mjs を通す
+- proposal.md の「publish の前の確認」1〜7 は私が Mac で行う。手順をそのまま報告に写し、この PR で変わったコマンド名や出力の文があれば直して書く
+- Cowork の VM の注意は、この文書の「共通: Cowork の VM で作業するときの注意」と同じ
+
+## 終わったら報告すること
+
+- コミットの一覧（ハッシュと件名）
+- 新しく足したテストと書き換えたテストの数、仕様 ID ごとの対応
+- spec-ids check と pr-scope の結果
+- 実装で決めたこと（上の「判断してよいこと」で決めたもの。応答や出力に出るものは、仕様のどの文に合わせたか）
+- 止めて聞いたことと、その答え
+- 「人が判断すること」13・17 の Issue の下書き（docs/ ではなく報告の本文に。置き場所は私が決める）
+- publish の前の確認の手順
+- 契約の確認で変わる例（houki-hub の scripts/reference-examples/houki-nta/ja/nta_search_*.md の freshness.db_path、nta_search_tsutatsu.md の「DB が古いとき」の warning の文、nta_search_tax_answer.md 60 行目からの説明など）
+- houki-research-skill で直す箇所（ERROR-HANDLING.md の「MCP サーバーが開いている DB」の見分けの文、freshness の有無で判断している箇所など。grep し直す）
+- PR 本文の草案（Closes #138 #137、仕様 PR #142 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```

@@ -390,9 +390,9 @@ Q4（T6）の勧める案:
 | R | 1 | egov 0.19.1 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #113、main `3ca848e`、v0.19.1 を publish） |
 | S | 2 | 契約の確認（C）と呼び出し例の取り直し（6a） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #38・#39。下の「段階 2 の進捗」） |
 | T | 3 | egov 0.20.0 の仕様 PR（#108・#110） | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、PR #114、main `5847995`。セッション `cse_01Kqe2S8it6WECxbsm9ggtiX`） |
-| U | 3 | nta 0.25.0 の仕様 PR（#138・#137） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-04）。T の仕様 PR の承認の後に始める |
+| U | 3 | nta 0.25.0 の仕様 PR（#138・#137） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #142、main `8f98023`。ADDED 15・MODIFIED 23） |
 | V | 3 | egov 0.20.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、main・タグ `v0.20.0` `326006f`、npm 0.20.0 は 15:48 JST、MCP Registry 登録済み。#108・#110 は閉じた） |
-| W | 3 | nta 0.25.0 の実装 PR | U のマージ後に作る | 未 |
+| W | 3 | nta 0.25.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-05）。shuji の方針で、仕様に無い細部は実装の側で決めて報告に残す範囲を指示に書いた |
 | X | 3 | Skill の追随と 7 ファイルの取り直し | V・W の publish の日 | 未 |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
@@ -438,7 +438,7 @@ Q4（T6）の勧める案:
 | --- | --- |
 | nta 0.24.1（#139） | 済。仕様 PR #140、実装は main `09ed4de`（タグ `v0.24.1`）。npm と MCP Registry に 0.24.1。No.2882 の行が 30 日に達する 2026-10-08 06:06 JST より前に出せた |
 | egov 0.20.0（T6: #108・#110） | 済。仕様 PR #114、実装は main `326006f`（タグ `v0.20.0`）。npm と MCP Registry に 0.20.0 |
-| nta 0.25.0（T6: #138、#137） | 未。指示 U（仕様 PR）から。起点は `09ed4de` |
+| nta 0.25.0（T6: #138、#137） | 仕様 PR は済（PR #142、2026-10-05）。「人が判断すること」7（`--status` は移行しない）を DECISIONS.md に 2026-10-05 の行で足した。実装は指示 W |
 | 7 ファイルの取り直し・Skill の追随（指示 X） | 未。egov `search_fulltext.md` は 0.20.0 で、nta の検索 6 ファイルは 0.25.0 の後にまとめて行う（nta の `freshness` は 0.24.1 で値が、0.25.0 で `db_path` が変わるため、2 回に分けない） |
 | houki-hub の追随 | `stack.json` は nta 0.24.1 まで（main `af30aa4`）。egov 0.20.0 の `node scripts/generate-stack.mjs --readme` は未確認 |
 | abbr #35 | open のまま（2026-10-04 15:50 頃 JST に確認）。`./scripts/close-issues-2026-10-04-plan-stage6.sh` をもう一度流す |
