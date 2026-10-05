@@ -393,7 +393,11 @@ Q4（T6）の勧める案:
 | U | 3 | nta 0.25.0 の仕様 PR（#138・#137） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #142、main `8f98023`。ADDED 15・MODIFIED 23） |
 | V | 3 | egov 0.20.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-04、main・タグ `v0.20.0` `326006f`、npm 0.20.0 は 15:48 JST、MCP Registry 登録済み。#108・#110 は閉じた） |
 | W | 3 | nta 0.25.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-05）。shuji の方針で、仕様に無い細部は実装の側で決めて報告に残す範囲を指示に書いた |
-| X | 3 | Skill の追随と 7 ファイルの取り直し | V・W の publish の日 | 未 |
+| X | 3 | 呼び出し例の取り直しと契約の確認 | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、hub PR #40、main `854880c`。記録 `2026-10-05-regression-check-egov-0.20.0-nta-0.25.0.md`。劣化 1（`nta_get_tax_answer`、国税庁のページの変更による。#147）） |
+| XS | 3 | houki-research-skill の追随 | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、Skill PR #27、main `0889824` = 0.19.0。claude-plugins も更新済み（shuji）） |
+| Q146 | 3b | nta #146 の仕様 PR（実装の変更: 不要） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #148、main `156acfd`。`specs/current` は直し済み。差分のフォルダーは 0.25.1 の実装 PR の取り込みで `specs/releases/v0.25.1/` へ移す） |
+| QH | 3c | nta 0.25.1 の仕様 PR（#147、h3） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #149、main `94fbaec`。案 B: `sections` の要素に `level` を足す。小見出しの欠けは標本の 9 割近い記事で以前から起きていた。取り込み済みの行は `--bulk-download-tax-answer --refresh` を案内） |
+| RH | 3c | nta 0.25.1 の実装 PR（#147） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #151、main・タグ `v0.25.1` `c029602`、npm 0.25.1 は 14:31 JST、MCP Registry 登録済み、plugin 更新済み。#146・#147 は閉じた。publish の前の確認は `cache.dev.db` で行い、`--refresh` で 749 件を入れ直して sections の合計が 2685 → 4372。公開版の `cache.db` も 2026-10-05 14:34〜14:49 JST に `--refresh` で入れ直し済み（plugin の markdown で `### ` を確認）。houki-hub の呼び出し例 `nta_get_tax_answer.md`（No.1222 の例を追加）・`nta_search_tax_answer.md` の取り直しはブランチ `docs/20261005-nta-0.25.1-examples`（`1bbd5da`・`e4eb8aa`）。リファレンスのページの作り直しは未） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 
@@ -459,3 +463,18 @@ Q4（T6）の勧める案:
 | --- | --- | --- | --- |
 | Q14 | ③ の照合の規則 | (A) 今のまま / (B) 「確かめた版」の行を足す / (C) minor が同じなら現行 | **B**（X の会話の比較のとおり） |
 | Q15 | `nta_get_tax_answer` の h3 の劣化 | (A) nta 0.25.1 で先に直す / (B) 0.26.0 に #144〜146 とまとめる | **A** |
+
+### 残りの順序（2026-10-05 JST、spec-ids#5 を足して決め直した）
+
+spec-ids#5（承認の記録を proposal.md の front matter に移し、current の `- 承認日:` の行を手で書き足さない。`spec-ids history` を足す）は、CI を止める不具合ではない。Issue 自身が「houki-hub シリーズの Issue をある程度片付けてから着手」と書いている。
+
+| 順 | 作業 | 理由 |
+| --- | --- | --- |
+| 1 | nta 0.25.1（`nta_get_tax_answer` の h3 の劣化、段階 3c） | 今も小見出しの欠けた内容を返している。応答の形を変えない修正なので patch |
+| 1' | nta #146（仕様の文だけ、「実装の変更: 不要」） | 1 と並行してよい |
+| 2 | nta 0.26.0（#144・#145、段階 3b） | 期限なし・害が小さい |
+| 3 | spec-ids#5（spec-ids の仕様 PR → 実装 → egov・nta・abbr の変換） | 1・2 の仕様 PR が今の形（`- 承認日:` の行）で進んでいる間に形を変えると、取り込みの手順が途中で 2 通りになる。1・2 が終わってから変える。変換は current の行を読んで proposal.md の front matter に移すので、1・2 で行が増えても変換の手間は変わらない |
+| 4 | #27 の仕様書ページと scope-by-audience（段階 4） | ページは `specs/current` から生成し、承認の履歴も載せる見込み。3 の後なら、生成スクリプトは 687 バイトの行を切り出さずに `spec-ids history` の出力を使える。3 の前に作ると、3 の変換で生成スクリプトの読み方を作り直すことになる |
+| 5 | hub#5 ②（段階 4） | #27 のページも同じ CI で生成し直すため |
+
+いつ挟んでもよいもの: abbr #35（スクリプトをもう一度流す）、Q14（③ の照合の規則、勧めは B）、egov の余分な DB のファイルの削除。

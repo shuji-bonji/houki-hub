@@ -10,7 +10,12 @@
 | RN | 1b | houki-nta-mcp 0.24.1 の実装 PR（#139） | 済（v0.24.1 を 2026-10-04 に publish） |
 | T | 3 | houki-egov-mcp 0.20.0 の仕様 PR（#108・#110） | 済（PR #114、main `5847995`） |
 | U | 3 | houki-nta-mcp 0.25.0 の仕様 PR（#138・#137） | 済（PR #142、main `8f98023`、承認日 2026-10-05） |
-| W | 3 | houki-nta-mcp 0.25.0 の実装 PR（#138・#137） | すぐ（実装の側で判断してよい範囲を指示に書いた） |
+| W | 3 | houki-nta-mcp 0.25.0 の実装 PR（#138・#137） | 済（PR #143、v0.25.0 を 2026-10-05 に publish） |
+| X | 3 | 呼び出し例の取り直しと契約の確認（egov 0.20.0 / nta 0.25.0、全 46 例） | 済（hub PR #40、劣化 1） |
+| XS | 3 | houki-research-skill の追随（egov 0.20.0 / nta 0.25.0） | 済（Skill PR #27、0.19.0） |
+| Q146 | 3b | houki-nta-mcp #146 の仕様 PR（実装の変更: 不要） | 済（PR #148、main `156acfd`。差分は次の実装 PR の取り込みで releases へ移す） |
+| QH | 3c | houki-nta-mcp 0.25.1 の仕様 PR（#147、h3） | 済（PR #149、main `94fbaec`。案 B（level を足す）で承認） |
+| RH | 3c | houki-nta-mcp 0.25.1 の実装 PR（#147） | すぐ |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -565,4 +570,161 @@ houki-nta-mcp 0.25.0（T6 ローカル DB の場所の見え方の nta 版 #138 
 - 契約の確認で変わる例（houki-hub の scripts/reference-examples/houki-nta/ja/nta_search_*.md の freshness.db_path、nta_search_tsutatsu.md の「DB が古いとき」の warning の文、nta_search_tax_answer.md 60 行目からの説明など）
 - houki-research-skill で直す箇所（ERROR-HANDLING.md の「MCP サーバーが開いている DB」の見分けの文、freshness の有無で判断している箇所など。grep し直す）
 - PR 本文の草案（Closes #138 #137、仕様 PR #142 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 Q146 と QH の順
+
+2 つとも houki-nta-mcp の同じ作業コピーを使い、同じ `specs/current/nta_get_tax_answer/spec.md` に関わります（Q146 は 018 を `specs/current` で直接直し、QH は `specs/changes` に 007・008 などの差分を置く）。触る仕様 ID は重なりませんが、同じチェックアウトで同時には動かせません。**Q146 を先に（小さく、すぐマージできる）、マージ後の main から QH を切る**順にします。1 つの会話で続けて行ってもかまいません（ブランチを分けること）。
+
+2026-10-05 JST に origin の main が `b246079`（v0.25.0）で、`specs/changes/` が空であることを確かめました。
+
+---
+
+## 指示 Q146: houki-nta-mcp #146 の仕様 PR（実装の変更: 不要）
+
+```text
+houki-nta-mcp #146（SPEC-NTA-GET-TAX-ANSWER-018 の例の「同じ DB でもう一度呼ぶと」が前提を書き落としている）の仕様 PR を書いてください。この会話の役は Spec Steward です。仕様の文だけを直し、実装・テストは変えません。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-nta-mcp（device_bash では $HOME/mnt/houki-hub/mcp/houki-nta-mcp）
+- 起点: main の b246079（v0.25.0）。git ls-remote https://github.com/shuji-bonji/houki-nta-mcp refs/heads/main で origin と同じか確かめ、specs/changes/ が空であることを確かめる
+- ブランチ: spec/<作業日の yyyymmdd>-tax-answer-018-example
+
+## 最初に読むもの
+
+1. AGENTS.md の「PR の種類」（proposal.md が「- 実装の変更: 不要」のときは、仕様 PR で specs/current/ も書いてよい）
+2. Issue #146 の本文（curl https://api.github.com/repos/shuji-bonji/houki-nta-mcp/issues/146）
+3. specs/current/nta_get_tax_answer/spec.md の SPEC-NTA-GET-TAX-ANSWER-016・018
+4. 手本: specs/releases/v0.24.0/20261003-specs-current-catchup/（実装の変更: 不要の差分で current を直した前例）
+5. 0.25.0 の受入テスト src/tools/spec-20261004-db-location.test.ts の 018 の it（2 回目の前に document の 6101 の行を消している）
+
+## 書くもの
+
+- specs/changes/<yyyymmdd>-tax-answer-018-example/proposal.md（「- 実装の変更: 不要」。なぜ・直す箇所・変わらない振る舞い・人が判断すること・承認日は空欄）
+- specs/current/nta_get_tax_answer/spec.md の 018 の「例（壊れた表の DB）」の最後の箇条書きを、Issue の「直し方（案）」の文にする。016 との関係（同じ番号の 2 回目は DB の経路で返り、索引を引かない）を書く。018 の見出しの題と本文のほかの行は変えない
+- MODIFIED の扱いは前例（catchup）に合わせる。specs/changes/ の下に差分の spec.md を置くかどうかも前例どおり
+- 承認日の行（current の spec.md の「- 承認日:」）に足す文は、前例の書き方に合わせる（spec-ids#5 で承認の記録の形を変える予定だが、それまでは今の形のまま）
+
+## 守ること・報告すること
+
+- テストと src/ は触らない。テスト名の文（「記事の行を消してから呼ぶ」）もそのまま
+- npx spec-ids check と BASE_REF=main HEAD_REF=<ブランチ> node .github/scripts/check-pr-scope.mjs を通す（承認日の空欄以外の指摘が無いこと）
+- コミットを作るところまで。署名・push・PR・マージは私が行う。VM の注意は、この文書の「共通: Cowork の VM で作業するときの注意」と同じ
+- 報告: ブランチ・コミット、直した文の前後、spec-ids check と pr-scope の結果、PR 本文の草案（「実装の変更: 不要」なので Closes #146 を仕様 PR に書いてよいかを、前例 catchup の PR #132 の本文で確かめて書く。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 QH: houki-nta-mcp 0.25.1 の仕様 PR（#147、タックスアンサーの小見出し h3）
+
+```text
+houki-nta-mcp #147（nta_get_tax_answer の sections が、国税庁のページの小見出し h3 を落とし、「概要」の 1 節にまとめてしまう）の仕様 PR を書いてください。この会話の役は Spec Steward です（AGENTS.md の「役割」）。実装・テストは書きません。版は 0.25.1（patch）の案です。今も小見出しの欠けた内容を返しているので、できるだけ早く出します。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-nta-mcp（device_bash では $HOME/mnt/houki-hub/mcp/houki-nta-mcp）
+- 起点: #146 の仕様 PR（指示 Q146）がマージされた後の main。git ls-remote https://github.com/shuji-bonji/houki-nta-mcp refs/heads/main で origin と同じか確かめ、specs/changes/ に #146 の差分（実装の変更: 不要。次の取り込みで releases へ移す）だけがあることを確かめる
+- ブランチ: spec/<作業日の yyyymmdd>-tax-answer-h3-sections
+
+## 最初に読むもの（この順）
+
+1. AGENTS.md と CONTRIBUTING.md
+2. Issue #147 の本文（curl https://api.github.com/repos/shuji-bonji/houki-nta-mcp/issues/147）と、元の記録 houki-hub docs/notes/2026-10-05-regression-check-egov-0.20.0-nta-0.25.0.md の「見つかったこと」1
+3. houki-hub の docs/notes/2026-10-04-plan-stage6-and-followups.md の「段階 3 の契約の確認の結果」と「残りの順序」
+4. specs/current/nta_get_tax_answer/spec.md（007 markdown の節、008 json の sections、010 節の構造を持たない行の取り直し、006 書き戻し）、specs/current/nta_search_tax_answer/spec.md と search_rules（full_text の検索）、cli_bulk_download と cli_refresh（タックスアンサーの投入と取り直し）、db_schema
+5. src/services/tax-answer-parser.ts（extractSections は h2 だけで節を切り、h3 を集めない。buildTaxAnswerFullText は sections から full_text を作る）、src/services/tax-answer-bulk-downloader.ts（内容が変わったかの判定と、304 のときに解析し直すか）、src/services/health-check.ts（タックスアンサーの parse を確かめる canary）
+6. 手本: specs/releases/v0.24.1/20261004-freshness-orphaned/proposal.md（patch の差分の形）
+
+## 出発点（勧める案。proposal.md の「人が判断すること」に書いて承認を受ける）
+
+- 直し方: Issue の案 A。h3 も節の区切りにし、sections は平らな配列のまま `{ heading: "<h3 の文字列>", paragraphs: [...] }` を並べる。応答のフィールドは変えない。h2 の直後に h3 が続き、h2 自身の段落が 0 件のときに h2 の節を作るか（今は paragraphs が 0 件の節は作らない）を例で決める。案 B（sections[].level を足す）・案 C（paragraphs に見出しの行を入れる）は「人が判断すること」に並べる
+- 007 の markdown: h3 の節を `## ` にするか `### ` にするか（案 A なら json が平らなので `## ` に揃える案）。今の 007 の例「`## 課税のしくみ`」と合うかを確かめる
+- full_text と検索: buildTaxAnswerFullText は sections から作るので、直すと `【<小見出し>】` が full_text に戻る。nta_search_tax_answer の snippet・score が変わりうる。これは「変わる振る舞い」に書く（仕様 ID を MODIFIED するかは、search 側の仕様が full_text の作り方を約束しているかで決める）
+- 取り込み済みの DB の行: 0.25.0 以前に h3 のページを取り込んだ行は、小見出しを落とした sections と full_text のまま。直し方を決める。案は (A) 利用者に `--bulk-download-tax-answer` の取り直しを案内する（ただし、304 で内容を解析し直さない作りなら直らないので、src を読んで確かめる。直らないなら `--refresh` の類のフラグを案内する） / (B) 解析の版を DB に記録し、古い版で作った行を 010 と同じく取り直す（スキーマの版を上げることになるので patch では重い） / (C) nta_get_tax_answer が DB の行を返すときに h3 を落とした形かを見分けて取り直す。shuji の DB で何件が当たるかは、Issue の「確かめ方」の SQL（full_text に「消費税の負担者」が無いか）を shuji に実行してもらい、「確かめた値」に書く
+- health-check の canary: タックスアンサーの parse の確かめ方に、h3 の節を数える項目を足すかを決める（ページの形の変化を次から早く見つけるため）
+- 実データ: 2026-10-05 JST の国税庁の No.6101 のページの見出しの並び（Issue の本文）を例に写す。VM から nta.go.jp に届けば、curl でページを取り、h2・h3 の並びを確かめて「確かめた値」に書く。届かなければ「確かめていない」と書く
+
+## 守ること・報告すること
+
+- specs/changes/<yyyymmdd-slug>/ の下だけを書く。新しい仕様 ID は npx spec-ids next <dir>。proposal.md の「- 承認日:」は空欄
+- proposal.md の節は、v0.24.1 の proposal.md と同じ並び（今の動き・変えた後の動き・変わる仕様 ID・変わらない振る舞い・互換性・実装 PR で直す文書・実装の変更・publish の前の確認・取り込みのとき・人が判断すること・確かめた値・確かめていない点）
+- publish の前の確認に、houki-hub の scripts/reference-examples/houki-nta/ja/nta_get_tax_answer.md の例（No.6101、v0.24.0 の実測のまま保留中）を 0.25.1 で流し、sections が 7 つ（概要・消費税の負担者・課税のしくみ・申告・納付・納税事務の負担軽減措置等・根拠法令等・関連リンク）に戻ることを確かめる手順を書く。nta_search_tax_answer の例も流す
+- 取り込みのとき（Publisher）には、#146 の差分（実装の変更: 不要）も同じ実装 PR で specs/releases/v0.25.1/ へ移すことを書く
+- 応答のフィールドを消す・名前を変える変更はしない（T4）。code は変えない
+- コミットを作るところまで。署名・push・PR・マージは私が行う。VM の注意は、この文書の「共通」と同じ
+- 報告: ブランチ・コミット、ADDED / MODIFIED / REMOVED の数と触った dir、spec-ids check と pr-scope の結果、「人が判断すること」の一覧（勧める案つき）、shuji に Mac で実行してもらう SQL、PR 本文の草案（Refs #147。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）、実装 PR に渡すこと
+```
+
+---
+
+## 指示 RH: houki-nta-mcp 0.25.1 の実装 PR（#147、タックスアンサーの小見出し h3）
+
+仕様 PR #149（差分 `20261005-tax-answer-h3-sections`、main `94fbaec`、承認日 2026-10-05）のマージの後に、新しい会話に貼ります。2026-10-05 JST に origin の main が `94fbaec` で、`specs/changes/` に `20261005-tax-answer-018-example`（#146、実装の変更: 不要）と `20261005-tax-answer-h3-sections` の 2 つがあることを確かめました。
+
+承認された案は、指示 QH の出発点（Issue の案 A）から変わっています: **案 B（`sections` の要素に `level`（2 / 3）を足す）**、h2 の直後に h3 が続くときは h2 の節を `paragraphs: []` で作る、markdown の h3 の節は `### `、取り込み済みの行は `--bulk-download-tax-answer --refresh` を案内する。新しい仕様 ID は SPEC-NTA-GET-TAX-ANSWER-019、MODIFIED は 007・008 です。仕様 PR の調べで、小見出しの欠けは No.6101 だけでなく、標本の 9 割近い記事で以前から起きていたことが分かっています。
+
+```text
+houki-nta-mcp 0.25.1（#147、nta_get_tax_answer の sections で国税庁のページの小見出し h3 も節にし、節ごとに level を返す）の実装 PR を作ってください。この会話の役は Test Designer → Coder → Spec Publisher です（AGENTS.md の「役割」）。仕様 PR #149 は承認・マージ済みで、この会話では仕様の意図を変えません。今も小見出しの欠けた内容を返しているので、できるだけ早く出します。
+
+## 場所と版
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-nta-mcp（Cowork の device_bash では $HOME/mnt/houki-hub/mcp/houki-nta-mcp）
+- 起点: main の 94fbaec。作業の前に git ls-remote https://github.com/shuji-bonji/houki-nta-mcp refs/heads/main で origin と同じか確かめ、specs/changes/ に 20261005-tax-answer-018-example と 20261005-tax-answer-h3-sections の 2 つがあることを確かめる
+- ブランチ: fix/<作業日の yyyymmdd>-0.25.1
+- 版: 0.25.0 → 0.25.1（patch）。DB のスキーマの版は 12 のまま
+- この PR で閉じる Issue: #147（と、まだ open なら #146）
+
+## 最初に読むもの（この順）
+
+1. AGENTS.md と CONTRIBUTING.md（「ローカル DB を使う開発」「コーディング規約」）
+2. specs/changes/20261005-tax-answer-h3-sections/proposal.md と specs/nta_get_tax_answer/spec.md（007・008 の MODIFIED、019 の ADDED と例 1〜4）。とくに「実装の変更」「実装 PR で直す文書」「互換性」「publish の前の確認」「取り込みのとき（Publisher）」
+3. specs/changes/20261005-tax-answer-018-example/proposal.md（#146。実装の変更: 不要。取り込みのときに releases へ移すだけ）
+4. specs/current/nta_get_tax_answer/spec.md の 006・010（書き戻しと、節の構造を持たない行）
+5. src/services/tax-answer-parser.ts（extractSections・buildTaxAnswerFullText）、src/services/tax-answer-render.ts（renderTaxAnswerMarkdown）、src/types/tax-answer.ts、src/tools/handlers.ts（structured_json を読む箇所）、src/services/tax-answer-bulk-downloader.ts（304 と updateDocumentMetaOnly の経路）
+6. 手本: specs/releases/v0.24.1/（patch の実装 PR の形）と CHANGELOG.md の 0.24.1
+
+proposal.md の「人が判断すること」1〜10 は書かれている側で承認済みです（案 B の level、空の h2 の節、### 、--refresh の案内、検索の仕様 ID は変えない、health-check は変えない、0.25.1、019 を立てる、level は 2 / 3）。仕様に書かれていない細部（関数の分け方、fixture の取り方など）はこの会話で決めてよく、決めたことは報告の「実装で決めたこと」に書く。応答のフィールド・markdown の行・CLI の出力を仕様の文と例から変えたくなったら、止めて私に聞く（案を並べ、勧める案を 1 つ書く）。
+
+## 守ること
+
+- specs/changes/ は書き換えない。specs/current/ は最後の取り込みのコミットでだけ書く
+- テストは 019 の本文と例 1〜4、007・008 の sections の行から書き、実装を見て期待値を足さない。it の名前の先頭に仕様 ID を入れる。テストを消して GREEN にしない
+- fixture は proposal.md の案（2026-10-05 の No.6101（h3 あり）と No.1222（h2 の直後に h3）を新しく保存、既存の h2 だけの 6101 は例 3 に残す）を出発点にする。VM から nta.go.jp に届かなければ、私が Mac で保存するコマンドを報告に書く
+- DB から返す経路で level の無い節に 2 を補う（019 の例 4）。補うのは読んだ直後の 1 か所にし、json と markdown の両方がその値を使う
+- buildTaxAnswerFullText と health-check は変えない
+- 応答のフィールドを消す・名前を変える変更はしない（T4）。code は変えない
+- TS のコードで文字列を + でつながない（テンプレートリテラル）。公開文書の文は「〜します」「〜です」
+- コミットを作るところまで。署名・push・PR の作成・マージ・タグは私が行う
+
+## コミットの順
+
+1. test: 019 の受入テスト（例 1〜4）と 007・008 の sections の行、fixture
+2. fix: extractSections で h2・h3 を節にし level を入れる。空の h2 の節（#147）
+3. fix: DB から返す経路で level を補う、markdown で level 3 を ### にする（#147）
+4. docs: proposal.md の「実装 PR で直す文書」（CHANGELOG の「互換性」と --refresh の案内、README など）
+5. chore: v0.25.1 — package.json・package-lock.json・server.json の版と CHANGELOG（Fixed に #147、Added に level）。.claude-plugin/plugin.json は 0.24.x・0.25.0 の慣習に合わせる
+6. spec: 2 つの差分を specs/releases/v0.25.1/ へ移す（最後のコミット）。h3-sections は specs/current/ に取り込み、承認日は「2026-10-05（PR #149）」。018-example は current への反映が済んでいるので、移して proposal.md の「状態」を直すだけ（その proposal.md の「取り込みのとき」のとおり）。取り込みの後、specs/changes/ に .gitkeep だけが残ることを確かめる
+
+test: のコミットでは新しいテストが落ち、次の fix: で通ることを確かめる。
+
+## 検証
+
+- npm run build・npm test・npm run check（biome）・npx tsc --noEmit・npx spec-ids check は私の Mac か CI で通す。結果を貼るので、落ちたら直す。VM では $HOME/tmp/nta に複製して回せることがある
+- npx spec-ids check と BASE_REF=main HEAD_REF=<ブランチ> node .github/scripts/check-pr-scope.mjs を通す
+- proposal.md の「publish の前の確認」1〜10 は私が Mac で行う（公開版の cache.db ではなく cache.dev.db で、--bulk-download-tax-answer --refresh を含む）。手順をそのまま報告に写し、この PR で変わったコマンド名や出力の文があれば直して書く
+- Cowork の VM の注意は、この文書の「共通: Cowork の VM で作業するときの注意」と同じ
+
+## 終わったら報告すること
+
+- コミットの一覧（ハッシュと件名）
+- 新しく足したテストと書き換えたテストの数、仕様 ID ごとの対応
+- spec-ids check と pr-scope の結果
+- 実装で決めたこと、止めて聞いたことと答え
+- publish の前の確認の手順
+- houki-hub で直すもの: scripts/reference-examples/houki-nta/ja/nta_get_tax_answer.md（v0.24.0 の実測のまま保留中。0.25.1 と入れ直した DB で取り直し、level を足す）、nta_search_tax_answer.md（full_text が変わるので score・snippet）。proposal.md の「この差分の外で見つけたこと」の、h3 を以前から持つ記事（No.4102 か No.1222）の例を足す案も
+- houki-research-skill で直す箇所（sections の形・level を引用している箇所を grep。無ければ無いと書く）
+- PR 本文の草案（Closes #147、#146 が open なら Closes #146、仕様 PR #148・#149 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```
