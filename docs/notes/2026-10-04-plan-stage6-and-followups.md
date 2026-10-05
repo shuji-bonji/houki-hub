@@ -248,7 +248,7 @@ T6 の版（段階 3）の後で取り直しになる例は、`freshness` を載
 | 6c-2 scope-by-audience | `2026-09-29-scope-by-audience.md` の 2 節・4 節の表と図を利用者向けに書き直し、`site/docs/guide/` に 1 ページ。`overview.md` と `disclaimer.md` からリンク。3 節は載せない（同ファイル 6 章の決定） | 6c-1 と同時（仕様 ID と層の対応をリンクで結ぶため） |
 | 6c-3 公開 | 段階 3 の publish の後に生成し直して site に載せる | 段階 3 の publish |
 | 6e hub#5 ② | `REGISTRY` の `command`/`args` を環境変数で `npx -y @shuji-bonji/<pkg>@latest` に切り替えられるようにし、CI で生成して差分があれば PR を開く。最初に CI の上で `npx -y` の起動と `tools/list` が通るか（nta の better-sqlite3 の prebuilt）を確かめる | 6c-3 の後（仕様書ページも同じ CI で生成し直せるようにするため） |
-| 6f 呼び出し例の照合のスクリプト | 呼び出し例を同じ引数で流し、例の JSON と部分一致で比べて、一致・データ側の差分・形の違いに分ける。一致の例に `- 確かめた版:` を書き戻し、`check-example-versions.mjs` と `stack-check.yml` の Issue がそれを読む（Q14 の案 B を含む）。Issue 草案は `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md` | 6e と同時（`REGISTRY` と stdio の起動の仕組みを共有するため。2026-10-06 JST に shuji が決めた） |
+| 6f 呼び出し例の照合のスクリプト | 呼び出し例を同じ引数で流し、例の JSON と部分一致で比べて、一致・データ側の差分・形の違いに分ける。一致の例に `- 確かめた版:` を書き戻し、`check-example-versions.mjs` と `stack-check.yml` の Issue がそれを読む（Q14 の案 B を含む）。houki-hub#44。Issue 草案は `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md` | 6e と同時（`REGISTRY` と stdio の起動の仕組みを共有するため。2026-10-06 JST に shuji が決めた） |
 
 ## 5. 劣化を起こさないための決まり（前の計画の 5 章に足すもの）
 
@@ -401,7 +401,7 @@ Q4（T6）の勧める案:
 | RH | 3c | nta 0.25.1 の実装 PR（#147） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #151、main・タグ `v0.25.1` `c029602`、npm 0.25.1 は 14:31 JST、MCP Registry 登録済み、plugin 更新済み。#146・#147 は閉じた。publish の前の確認は `cache.dev.db` で行い、`--refresh` で 749 件を入れ直して sections の合計が 2685 → 4372。公開版の `cache.db` も 2026-10-05 14:34〜14:49 JST に `--refresh` で入れ直し済み（plugin の markdown で `### ` を確認）。houki-hub の呼び出し例 `nta_get_tax_answer.md`（No.1222 の例を追加）・`nta_search_tax_answer.md` の取り直しはブランチ `docs/20261005-nta-0.25.1-examples`（`1bbd5da`・`e4eb8aa`）。リファレンスのページの作り直しも済（main `47151ba`）） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
-| ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（Issue 草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
+| ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
 
 指示の形は前の計画と同じです: 「場所（起点のコミットと origin の確認）」「最初に読むもの（順番つき）」「Issue ごとの出発点（勧める案）」「守ること（VM の git の注意を含む）」「終わったら報告すること（PR 本文の草案を含む）」。
 
