@@ -15,7 +15,8 @@
 | XS | 3 | houki-research-skill の追随（egov 0.20.0 / nta 0.25.0） | 済（Skill PR #27、0.19.0） |
 | Q146 | 3b | houki-nta-mcp #146 の仕様 PR（実装の変更: 不要） | 済（PR #148、main `156acfd`。差分は次の実装 PR の取り込みで releases へ移す） |
 | QH | 3c | houki-nta-mcp 0.25.1 の仕様 PR（#147、h3） | 済（PR #149、main `94fbaec`。案 B（level を足す）で承認） |
-| RH | 3c | houki-nta-mcp 0.25.1 の実装 PR（#147） | すぐ |
+| RH | 3c | houki-nta-mcp 0.25.1 の実装 PR（#147） | 済（v0.25.1 を 2026-10-05 に publish） |
+| Q26 | 3b | houki-nta-mcp 0.26.0 の仕様 PR（#144・#145） | すぐ（2026-10-06 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -727,4 +728,62 @@ test: のコミットでは新しいテストが落ち、次の fix: で通る�
 - houki-hub で直すもの: scripts/reference-examples/houki-nta/ja/nta_get_tax_answer.md（v0.24.0 の実測のまま保留中。0.25.1 と入れ直した DB で取り直し、level を足す）、nta_search_tax_answer.md（full_text が変わるので score・snippet）。proposal.md の「この差分の外で見つけたこと」の、h3 を以前から持つ記事（No.4102 か No.1222）の例を足す案も
 - houki-research-skill で直す箇所（sections の形・level を引用している箇所を grep。無ければ無いと書く）
 - PR 本文の草案（Closes #147、#146 が open なら Closes #146、仕様 PR #148・#149 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 Q26: houki-nta-mcp 0.26.0 の仕様 PR（#144・#145）
+
+計画書の「残りの順序」の 2（段階 3b）です。#144・#145 は 0.25.0 の実装 PR で差分 `20261004-db-location` の外として残した 2 件（同 proposal.md の「人が判断すること」13・17）で、どちらも「ローカル DB が使えないときに、利用者がどのファイルが原因かを知れるようにする」ための変更です。期限は無く、害は小さいので patch ではなく 0.26.0（#144 で `code` が変わるため minor）にします。
+
+2026-10-06 JST に、origin の main が `c029602`（v0.25.1）で、`specs/changes/` が `.gitkeep` だけであることを確かめました。
+
+```text
+houki-nta-mcp 0.26.0（#144 開けないローカル DB の読むだけのツールの応答、#145 --bulk-download-tax-answer が索引を保存できないときの終わり方）の仕様 PR を書いてください。この会話の役は Spec Steward です（AGENTS.md の「役割」）。実装・テストは書きません。2 件は同じ差分（specs/changes/ のフォルダー 1 つ）にまとめます。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-nta-mcp（device_bash では $HOME/mnt/houki-hub/mcp/houki-nta-mcp）
+- 起点: main の c029602（v0.25.1）。作業の前に git ls-remote https://github.com/shuji-bonji/houki-nta-mcp refs/heads/main で origin と同じか確かめ、specs/changes/ が .gitkeep だけであることを確かめる
+- ブランチ: spec/<作業日の yyyymmdd>-db-failure-paths
+
+## 最初に読むもの（この順）
+
+1. AGENTS.md と CONTRIBUTING.md
+2. Issue #144・#145 の本文（curl https://api.github.com/repos/shuji-bonji/houki-nta-mcp/issues/144 と /145）
+3. specs/releases/v0.25.0/20261004-db-location/proposal.md の「人が判断すること」13・17 と「houki-egov-mcp と文を変えた箇所」
+4. houki-hub の docs/DECISIONS.md の 2026-10-04 の行（T6 の a〜f、#137）と 2026-10-05 の行（--status は移行しない）
+5. specs/current の common_errors（SPEC-NTA-COMMON-ERRORS-006 の INTERNAL_ERROR の意味）、db_schema（021 とその注 1・注 2、025、029）、cli_status（007）、cli_bulk_download（013 と、記事ごとの失敗・種別ごとの失敗のときの終了コードの決まり）、nta_get_tax_answer（016・018）、DB だけを引く 3 ツールと検索 6 ツール・nta_inspect_pdf_meta の「DB に 1 件も無い」ときの応答
+6. 比べるために houki-egov-mcp の specs/current/search_fulltext/spec.md の SPEC-EGOV-SEARCH-FULLTEXT-027・044（開けない DB で search_law に切り替え、note にパスを入れる）
+7. src/db/index.ts（DB を開く所と例外）、src/tools/handlers.ts（例外を INTERNAL_ERROR にしている所）、src/services/tax-answer-bulk-downloader.ts 137 行目付近（saveTaxAnswerIndex の呼び出し）、src/cli.ts（--bulk-download-everything の種別ごとの失敗の受け取り方と process.exitCode）
+8. 手本: specs/releases/v0.25.0/20261004-db-location/proposal.md（minor の差分の形）
+
+## 出発点（勧める案。proposal.md の「人が判断すること」に書いて承認を受ける）
+
+#144（開けない DB。対象は、SQLite でないファイル・フォルダー・パスの途中が普通のファイル・権限が無い、の 4 つ）:
+
+- 決めること 1（code）: 案 A。DOC_NOT_FOUND（基本通達は TSUTATSU_NOT_FOUND）にし、SPEC-NTA-DB-SCHEMA-029 の表（DB の状態ごとの hint）に「開けない」の行を足す。理由: 「DB に 1 件も無い」ときの応答と同じ形になり、family の code の一覧（houki-research-skill の docs/ERROR-CODES.md）と houki-egov-mcp に影響しない。INTERNAL_ERROR は「不具合の報告を求める」意味（006）で、利用者のファイルの状態とは合わない。案 B（INTERNAL_ERROR のまま hint だけ変える）・案 C（新しい code）は並べる
+- 決めること 2（hint）: Issue の例の文を出発点にし、パスは T6 の (a) のとおりホームを ~ に置き換え、案内のコマンドは T6 の (c) の形（npx -y @shuji-bonji/houki-nta-mcp@latest --status、環境変数で決めたときは同じ変数を前に付ける）にする。SQLite の文（file is not a database など）は hint に入れるか detail.cause に残すかを例で決める
+- 決めること 3（retryable）: false
+- 決めること 4（next_actions）: cli_bulk_download は入れない（ファイルを直さないと投入も失敗する）。--status を next_actions に入れられる形が今の next_actions にあるかを src で確かめ、無ければ hint の文だけで案内する
+- 決めること 5（書き戻す 3 ツール: nta_get_tsutatsu・nta_get_qa・nta_get_tax_answer）: 同じ差分で決める。まず今の動き（開けない DB で国税庁サイトから取った内容を返すか、例外になるか）を src とテストで確かめて「今の動き」に書く。勧める案は、国税庁サイトから取れた内容は返し、DB に書けないことを logger.warn に DB のパスと一緒に出す（DECISIONS.md の #137 と SPEC-NTA-GET-TAX-ANSWER-018 と同じ考え方）。サイトからも取れないときは、上の 1〜4 の応答にする
+- CLI（[ERROR] DB を開けません と終了コード 1）は変えない
+- houki-egov-mcp と違う点（egov は search_law に切り替える。nta には切り替える先が無い）を proposal.md の「houki-egov-mcp と文を変えた箇所」に書く
+
+#145（--bulk-download-tax-answer が索引を保存できないとき）:
+
+- 決めること 1: 案 A。記事の取り込みを続け、保存の失敗は標準エラー出力に [WARN] の行（表の名前と DB のパス）で出す。理由: 記事の URL は取った索引で決まり、保存した索引は nta_get_tax_answer が索引を取り直さずに済むための写しなので、保存できなくても取り込みの目的は果たせる（#137・018 と同じ考え方）
+- 決めること 2（終了コード）: cli_bulk_download の今の決まりのうち、「記事ごとの失敗」があったときの終了コードに揃える。決まりが無ければ、その旨を「今の動き」に書き、0 と 1 の 2 案を並べる（勧める案は、記事を取り込めたなら 0。[WARN] の行で気付ける）
+- 決めること 3（--bulk-download-everything）: 案 A なら、タックスアンサーの段は失敗しないので次の種別へ進む。今の「種別ごとの失敗を受け取って次へ進む」作りは変えない
+- 決めること 4: 受入テストを書く（壊れた表の DB。018 の受入テスト src/tools/spec-20261004-db-location.test.ts の作り方を写す）。Issue が「確かめていない」とした今の動き（fatal error で終了コード 1、everything ではタックスアンサーを飛ばす）は、コードを読んだ結果として「今の動き」に書き、実行して確かめたかどうかを分けて書く
+
+## 守ること・報告すること
+
+- specs/changes/<yyyymmdd-slug>/ の下だけを書く。新しい仕様 ID は npx spec-ids next <dir>。proposal.md の「- 承認日:」は空欄（spec-ids#5 で承認の記録の形を変える予定だが、この差分は今の形のまま）
+- proposal.md の節は v0.25.0 の proposal.md と同じ並び（なぜ変えるか・今の動き・変えた後の動き・変わる仕様 ID・変わらない振る舞い・互換性・呼び出し例への影響・houki-egov-mcp と文を変えた箇所・実装 PR で直す文書・実装の変更・publish の前の確認・取り込みのとき・人が判断すること・確かめた値・確かめていない点）
+- 互換性: #144 は code が INTERNAL_ERROR から変わるので、CHANGELOG の「互換性」に書く文を用意する。応答のフィールドは消さない・名前を変えない（T4）
+- 実装 PR で直す文書: houki-research-skill（$HOME/mnt/skills/houki-research-skill）の docs/ERROR-CODES.md・docs/ERROR-HANDLING.md などで、nta の開けない DB を INTERNAL_ERROR と書いている箇所を grep して列挙する。houki-hub の呼び出し例（scripts/reference-examples/houki-nta/ja/）に開けない DB の例があるかを確かめ、無ければ「影響なし」と書く
+- publish の前の確認: 4 つの開けない DB（SQLite でないファイル・フォルダー・パスの途中が普通のファイル・権限が無い）を HOUKI_NTA_DB_PATH で指して、読むだけのツール・書き戻す 3 ツール・--status の 3 つで応答を確かめる手順を書く。shuji の Mac の公開版の DB（~/.cache/houki-nta-mcp/cache.db）には触らない手順にする
+- コミットを作るところまで。署名・push・PR・マージは私が行う。VM の注意は、この文書の「共通: Cowork の VM で作業するときの注意」と同じ
+- 報告: ブランチ・コミット、ADDED / MODIFIED / REMOVED の数と触った dir、spec-ids check と BASE_REF=main HEAD_REF=<ブランチ> node .github/scripts/check-pr-scope.mjs の結果、「人が判断すること」の一覧（勧める案つき）、PR 本文の草案（Refs #144 #145。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）、実装 PR に渡すこと
 ```
