@@ -342,7 +342,7 @@ publish は MCP 4 回（nta 0.24.1 を 2026-10-04 に足した）、Skill 1 回�
 | Q6〜Q9（nta #116 は計画の外、abbr #35 は再実行して閉じ cron を毎月 2 日に、egov #105 を閉じる、hub #26 を閉じる） | 勧める案のとおり。投稿は `scripts/close-issues-2026-10-04-plan-stage6.sh` |
 | Q10 | 勧める案のとおり（hub#5 ①③ は PR #39 で main に入った） |
 | nta #139（段階 2 で見つかった。下の 2.3 の表） | nta 0.24.1（patch）で、T6 を待たずに先に直す。出発点は #139 の案 A（`orphaned_at` の付いた行を `freshness` の範囲から外す）。`docs/DECISIONS.md` に「期限や日付で害が増える不具合は patch で先に出す」として書いた |
-
+| 2026-10-06: nta 0.26.0（#144・#145、指示 Q26） | 「残りの順序」の 2 として今始め、spec-ids#5 はその後にする。仕様 PR の出発点は指示 Q26 の勧める案のとおり（#144 は `DOC_NOT_FOUND`／`TSUTATSU_NOT_FOUND` に寄せ、`hint` にパスと `--status`、`retryable: false`、`cli_bulk_download` を `next_actions` に入れない。書き戻す 3 ツールはサイトから取れた内容を返して `logger.warn`。#145 は取り込みを続けて `[WARN]`、終了コードは記事ごとの失敗の決まりに揃える）。最終の承認は仕様 PR の「人が判断すること」で行う |
 
 ### 8.2 人が判断すること
 

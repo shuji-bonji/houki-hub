@@ -736,6 +736,8 @@ test: のコミットでは新しいテストが落ち、次の fix: で通る�
 
 計画書の「残りの順序」の 2（段階 3b）です。#144・#145 は 0.25.0 の実装 PR で差分 `20261004-db-location` の外として残した 2 件（同 proposal.md の「人が判断すること」13・17）で、どちらも「ローカル DB が使えないときに、利用者がどのファイルが原因かを知れるようにする」ための変更です。期限は無く、害は小さいので patch ではなく 0.26.0（#144 で `code` が変わるため minor）にします。
 
+2026-10-06 JST に shuji が、下の「出発点」の勧める案で進めると決めました（計画書 8.1）。
+
 2026-10-06 JST に、origin の main が `c029602`（v0.25.1）で、`specs/changes/` が `.gitkeep` だけであることを確かめました。
 
 ```text
@@ -758,7 +760,7 @@ houki-nta-mcp 0.26.0（#144 開けないローカル DB の読むだけのツー
 7. src/db/index.ts（DB を開く所と例外）、src/tools/handlers.ts（例外を INTERNAL_ERROR にしている所）、src/services/tax-answer-bulk-downloader.ts 137 行目付近（saveTaxAnswerIndex の呼び出し）、src/cli.ts（--bulk-download-everything の種別ごとの失敗の受け取り方と process.exitCode）
 8. 手本: specs/releases/v0.25.0/20261004-db-location/proposal.md（minor の差分の形）
 
-## 出発点（勧める案。proposal.md の「人が判断すること」に書いて承認を受ける）
+## 出発点（2026-10-06 JST に shuji がこの案で進めると決めた。proposal.md の「人が判断すること」にも並べ、仕様 PR で最終の承認を受ける）
 
 #144（開けない DB。対象は、SQLite でないファイル・フォルダー・パスの途中が普通のファイル・権限が無い、の 4 つ）:
 
