@@ -1,6 +1,6 @@
 ---
 title: "houki-nta-mcp — ツールリファレンス"
-description: "houki-nta-mcp v0.25.0 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
+description: "houki-nta-mcp v0.25.1 の全 14 ツールの引数・型・既定値（tools/list から自動生成）と実測の呼び出し例"
 ---
 
 # houki-nta-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-nta-mcp v0.25.0 の全 14 ツールの引数・型・既定�
 <!-- GENERATED FILE — 手で編集しない。引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/ から。 -->
 
 ::: info
-**v0.25.0** の `tools/list` から自動生成しました（14 ツール・2026-10-05）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.25.1** の `tools/list` から自動生成しました（14 ツール・2026-10-05）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスです。** 全ツールの引数の名前・型・必須・既定値・説明を、動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。責務や使いどころの説明は[解説ページ](/mcp/houki-nta)にあります。呼び出し例の応答 JSON は実測で、版を添えています。
@@ -487,7 +487,7 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 | `hasPdf` | boolean | 任意 |  | 添付 PDF の有無で絞り込む（true=PDF 付き / false=PDF 無し / 未指定=絞らない）。様式・別表系の説明など PDF 添付がある重要トピックを抽出したい時に true を指定 |
 
 ::: details 呼び出し例 — 「医療費控除のタックスアンサー」
-- 実測: v0.25.0（2026-10-05）
+- 実測: v0.25.1（2026-10-05。タックスアンサーを `--bulk-download-tax-answer --refresh` で入れ直した DB）
 - ローカル DB: あり（`staleness: "fresh"`。国税庁の索引から消えた記事が 1 件ある DB）
 
 **引数**
@@ -511,23 +511,24 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
       "basisDate": "2026-04-01",
       "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1131.htm",
       "snippet": " … ルフメディケーション税制と通常の<b>医療費控除</b>との選択適用\n\n[令和8年4月1 … ",
-      "score": 0.253,
+      "score": 0.2529,
       "scoreReasons": ["doc_type=tax-answer weight 0.60"],
       "index_status": null,
       "orphaned_at": null
     },
     {
       "docType": "tax-answer",
-      "docId": "1128",
+      "docId": "1127",
       "taxonomy": "shotoku",
-      "title": "医療費控除の対象となる歯の治療費の具体例",
-      "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1128.htm",
-      "score": 0.250 /* … */
+      "title": "医療費控除の対象となる介護保険制度下での居宅サービス等の対価",
+      "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1127.htm",
+      "snippet": "<b>医療費控除</b>の対象となる介護保険制度下での居 … ",
+      "score": 0.2510 /* … */
     }
   ],
   "freshness": {
-    "oldest_fetched_at": "2026-10-04T03:37:08.048Z",
-    "newest_fetched_at": "2026-10-04T03:51:17.445Z",
+    "oldest_fetched_at": "2026-10-05T05:34:49.324Z",
+    "newest_fetched_at": "2026-10-05T05:49:00.545Z",
     "staleness": "fresh",
     "days_since_oldest": 0,
     "db_path": "~/.cache/houki-nta-mcp/cache.db"
@@ -544,7 +545,7 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 }
 ```
 
-`docId` がタックスアンサー番号です。そのまま `nta_get_tax_answer` の `no` に渡します。`next_actions` に先頭の記事を読む呼び出しが入っています（v0.23.0 から）。`basisDate` は記事の「令和8年4月1日現在法令等」を `YYYY-MM-DD` にしたもので、取得日ではありません。2 件目以降は score がほぼ同じ（0.2495 前後）なので、DB を取り込み直すと順が入れ替わることがあります。
+`docId` がタックスアンサー番号です。そのまま `nta_get_tax_answer` の `no` に渡します。`next_actions` に先頭の記事を読む呼び出しが入っています（v0.23.0 から）。`basisDate` は記事の「令和8年4月1日現在法令等」を `YYYY-MM-DD` にしたもので、取得日ではありません。2 件目以降は score がほぼ同じ（0.25 前後）なので、DB を取り込み直すと順が入れ替わることがあります。v0.25.1 で入れ直す前の DB では、2 件目は No.1128（医療費控除の対象となる歯の治療費の具体例、score 0.2495）でした。v0.25.1 から本文に小見出し（h3）の文字列が `【<小見出し>】` として入り、記事の本文の長さが変わって score が少し動いたためです。小見出しの語（例: `消費税の負担者`）でも記事が当たるようになりました。
 
 `freshness` は、国税庁の索引にある記事だけの取得日時の範囲です（v0.24.1 から）。索引から消えた記事（`orphaned_at` が付いた行）は投入で取り直されないので、範囲から外しています。この DB では No.2882 が 2026-10-04 に索引から消え、2026-09-07 の取得日時のまま残っていますが、`oldest_fetched_at` はその日時にならず、`staleness` は `fresh` です。v0.24.0 までは、この記事の日時が `oldest_fetched_at` になり、投入をやり直しても `stale` のままでした（[houki-nta-mcp#139](https://github.com/shuji-bonji/houki-nta-mcp/issues/139)）。`freshness.db_path` は引いた DB のパスで、ホームディレクトリの部分は `~` に置き換えてあります（v0.25.0 から）。`legal_status.binds_tax_office` も `false` で、通達と違い税務職員も拘束しない参考資料です。
 :::
@@ -565,8 +566,8 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 :::
 
 ::: details 呼び出し例 — 「No.6101 消費税の基本的なしくみ」
-- 実測: v0.24.0（2026-10-04）
-- ローカル DB: 不要。ただし DB に構造があればそこから返る（この例は 2 回目の呼び出しで `source: "db"`）
+- 実測: v0.25.1（2026-10-05）
+- ローカル DB: 不要。ただし DB に構造があればそこから返る（この例は `--bulk-download-tax-answer --refresh` で入れ直した DB から返した `source: "db"`）
 
 **引数**
 
@@ -581,20 +582,20 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
   "taxAnswer": {
     "no": "6101",
     "title": "消費税の基本的なしくみ",
-    "effectiveDate": "令和7年4月1日現在法令等",
-    "basisDate": "2025-04-01",
+    "effectiveDate": "令和8年4月1日現在法令等",
+    "basisDate": "2026-04-01",
     "taxCategory": "消費税",
     "sections": [
-      { "heading": "概要", "paragraphs": ["消費税は、特定の物品やサービスに課税する個別消費税（酒税・たばこ税等）とは異なり、消費一般に広く公平に課税する間接税です。…", "…"] },
-      { "heading": "消費税の負担者", "paragraphs": ["…"] },
-      { "heading": "課税のしくみ", "paragraphs": ["…", "令和５年10月１日から開始した「適格請求書等保存方式（インボイス制度）」では、…"] },
-      { "heading": "申告・納付", "paragraphs": ["…"] },
-      { "heading": "納税事務の負担軽減措置等", "paragraphs": ["1 事業者免税点制度", "…", "3 ２割特例（経過措置）", "…"] },
-      { "heading": "根拠法令等", "paragraphs": ["消費税法など"] },
-      { "heading": "関連リンク", "paragraphs": ["…"] }
+      { "heading": "概要", "paragraphs": ["消費税は、特定の物品やサービスに課税する個別消費税（酒税・たばこ税等）とは異なり、消費一般に広く公平に課税する間接税です。…", "…"], "level": 2 },
+      { "heading": "消費税の負担者", "paragraphs": ["消費税は、事業者に負担を求めるものではありません。…"], "level": 3 },
+      { "heading": "課税のしくみ", "paragraphs": ["…", "令和5年10月1日から開始した「適格請求書等保存方式（インボイス制度）」では、…", "…"], "level": 3 },
+      { "heading": "申告・納付", "paragraphs": ["…"], "level": 3 },
+      { "heading": "納税事務の負担軽減措置等", "paragraphs": ["…", "1 事業者免税点制度", "…", "3 2割特例・3割特例（経過措置）", "…"], "level": 3 },
+      { "heading": "根拠法令等", "paragraphs": ["消費税法など"], "level": 2 },
+      { "heading": "関連リンク", "paragraphs": ["…"], "level": 2 }
     ],
     "sourceUrl": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6101.htm",
-    "fetchedAt": "2026-09-12T20:05:55.721Z"
+    "fetchedAt": "2026-10-05T05:45:26.899Z"
   },
   "source": "db",
   "index_status": null,
@@ -609,11 +610,79 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 }
 ```
 
-`effectiveDate` は国税庁がページに書いている「何年何月何日現在の法令等に基づくか」で、取得日ではありません。同じ日付を `YYYY-MM-DD` にしたものが `basisDate` です。`index_status`・`orphaned_at`・`notice` は国税庁の索引から記事が消えたときに値が入り、この例では `null` です。`sections[].heading` が「根拠法令等」の節に法令名が入るので、そこから houki-egov-mcp の `get_law` につなげられます。
+`sections` はページの見出し（h2）と小見出し（h3）ごとの節で、ページの順に 1 つの配列に並びます。`level` は見出しの段で、h2 の節が `2`、h3 の節が `3` です（v0.25.1 から）。h3 の節がどの見出しの下にあるかは、その前にある最も近い `level: 2` の節で分かります。この例では「消費税の負担者」から「納税事務の負担軽減措置等」までの 4 つが「概要」の下の小見出しです。`format` を省いた markdown の応答では、h2 の節を `## `、h3 の節を `### ` で書きます。
 
-`source` はローカル DB（`"db"`）と国税庁サイト（`"live"`）のどちらから返したかです（v0.16.0 から）。上と同じ呼び出しの 1 回目は `"live"` で、`fetchedAt` は取得した時刻（`2026-09-12T20:05:55.721Z`）でした。その結果が DB に書き戻されるので、2 回目は `"db"` になり `fetchedAt` は 1 回目の値のまま変わりません。**`"db"` の `fetchedAt` は呼び出した時刻ではなく、DB に取り込んだ日時です。** 引用するときはその値をそのまま書きます。
+v0.25.0 までは小見出しの文字列が落ち、その段落が上の見出しの節に続けて入っていました。この記事では `sections` が「概要」（26 段落）・「根拠法令等」・「関連リンク」の 3 つでした（[houki-nta-mcp#147](https://github.com/shuji-bonji/houki-nta-mcp/issues/147)）。v0.25.0 以前に取り込んだ DB の行は、`--bulk-download-tax-answer --refresh` で入れ直すまで以前の分け方のまま返り、`level` はすべて `2` になります。
+
+`effectiveDate` は国税庁がページに書いている「何年何月何日現在の法令等に基づくか」で、取得日ではありません。同じ日付を `YYYY-MM-DD` にしたものが `basisDate` です。`index_status`・`orphaned_at`・`notice` は国税庁の索引から記事が消えたときに値が入り、この例では `null` です。「根拠法令等」の節に法令名が入るので、そこから houki-egov-mcp の `get_law` につなげられます。
+
+`source` はローカル DB（`"db"`）と国税庁サイト（`"live"`）のどちらから返したかです（v0.16.0 から）。DB に無い記事は国税庁サイトから取り（`"live"`、`fetchedAt` は取得した時刻）、その結果を DB に書き戻すので、同じ番号の 2 回目からは `"db"` になり `fetchedAt` は 1 回目の値のまま変わりません。この例の `fetchedAt` は `--bulk-download-tax-answer` で取り込んだ日時です。**`"db"` の `fetchedAt` は呼び出した時刻ではなく、DB に取り込んだ日時です。** 引用するときはその値をそのまま書きます。
 
 v0.15.0 までは DB を引かずに毎回国税庁サイトから取得していたため、`fetchedAt` は常に呼び出し時刻でした（[houki-nta-mcp #29](https://github.com/shuji-bonji/houki-nta-mcp/issues/29)）。
+:::
+
+::: details 呼び出し例 — 「No.1222 耐震改修工事をした場合（住宅耐震改修特別控除）」（見出しの直後に小見出しが続く記事）
+- 実測: v0.25.1（2026-10-05）
+- ローカル DB: 不要（この例は `--bulk-download-tax-answer --refresh` で入れ直した DB から返した `source: "db"`）
+
+**引数**
+
+```jsonc
+{ "no": "1222", "format": "json" }
+```
+
+**返る JSON の `taxAnswer.sections`（見出しと `level` と段落の数）**
+
+```jsonc
+[
+  { "heading": "概要", "level": 2 /* 段落 4 */ },
+  { "heading": "対象者または対象物", "paragraphs": [], "level": 2 },
+  { "heading": "対象者", "level": 3 /* 段落 1 */ },
+  { "heading": "控除の適用を受けるための要件", "level": 3 /* 段落 2 */ },
+  { "heading": "計算方法・計算式", "paragraphs": [], "level": 2 },
+  { "heading": "住宅耐震改修特別控除の控除額の計算方法", "level": 3 /* 段落 26 */ },
+  { "heading": "手続き", "paragraphs": [], "level": 2 },
+  { "heading": "申告等の方法", "level": 3 /* 段落 2 */ },
+  { "heading": "申告先等", "level": 3 /* 段落 1 */ },
+  { "heading": "提出書類等", "level": 2 /* 段落 4 */ },
+  { "heading": "根拠法令等", "level": 2 /* 段落 1 */ },
+  { "heading": "関連リンク", "level": 2 /* 段落 8 */ }
+]
+```
+
+**`format` を省いた markdown の応答（見出しの行の部分）**
+
+```markdown
+## 対象者または対象物
+
+### 対象者
+
+マイホームについて住宅耐震改修を行った方
+
+### 控除の適用を受けるための要件
+
+…
+
+## 計算方法・計算式
+
+### 住宅耐震改修特別控除の控除額の計算方法
+
+…
+
+## 手続き
+
+### 申告等の方法
+
+…
+
+### 申告先等
+
+所轄税務署
+```
+
+見出し（h2）の直後に段落が無く、すぐ小見出し（h3）が続くときは、その見出しの節を `paragraphs: []` で返します。「手続き」のような見出しの文字列を残すためで、markdown では `## 手続き` の行だけになります。段落が空になるのはこの場合だけです。
+
+`申告先等` が何についての話かは、その前にある最も近い `level: 2` の節（「手続き」）で分かります。v0.25.0 では、この記事の `sections` は 7 つで、小見出しの文字列はどこにも入らず、「手続き」の節に「申告等の方法」と「申告先等」の段落が続けて入っていました。
 :::
 
 ## nta_search_kaisei_tsutatsu
