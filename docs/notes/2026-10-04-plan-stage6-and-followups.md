@@ -399,7 +399,8 @@ Q4（T6）の勧める案:
 | Q146 | 3b | nta #146 の仕様 PR（実装の変更: 不要） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #148、main `156acfd`。`specs/current` は直し済み。差分のフォルダーは 0.25.1 の実装 PR の取り込みで `specs/releases/v0.25.1/` へ移す） |
 | QH | 3c | nta 0.25.1 の仕様 PR（#147、h3） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #149、main `94fbaec`。案 B: `sections` の要素に `level` を足す。小見出しの欠けは標本の 9 割近い記事で以前から起きていた。取り込み済みの行は `--bulk-download-tax-answer --refresh` を案内） |
 | RH | 3c | nta 0.25.1 の実装 PR（#147） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #151、main・タグ `v0.25.1` `c029602`、npm 0.25.1 は 14:31 JST、MCP Registry 登録済み、plugin 更新済み。#146・#147 は閉じた。publish の前の確認は `cache.dev.db` で行い、`--refresh` で 749 件を入れ直して sections の合計が 2685 → 4372。公開版の `cache.db` も 2026-10-05 14:34〜14:49 JST に `--refresh` で入れ直し済み（plugin の markdown で `### ` を確認）。houki-hub の呼び出し例 `nta_get_tax_answer.md`（No.1222 の例を追加）・`nta_search_tax_answer.md` の取り直しはブランチ `docs/20261005-nta-0.25.1-examples`（`1bbd5da`・`e4eb8aa`）。リファレンスのページの作り直しも済（main `47151ba`）） |
-| Q26 | 3b | nta 0.26.0 の仕様 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-06） |
+| Q26 | 3b | nta 0.26.0 の仕様 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 済（2026-10-06、PR #152、main `c696f4a`。差分 `20261006-db-failure-paths`、ADDED 2・MODIFIED 17。「人が判断すること」16 項目を勧める案で承認。出発点から変えたのは 7（サイトから取れないときに開けない DB の応答にするのは GET-TSUTATSU-007 だけ）と 10（フォルダーに入る権限が無いときは別の Issue）） |
+| R26 | 3b | nta 0.26.0 の実装 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-06） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |

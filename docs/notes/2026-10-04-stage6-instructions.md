@@ -16,7 +16,8 @@
 | Q146 | 3b | houki-nta-mcp #146 の仕様 PR（実装の変更: 不要） | 済（PR #148、main `156acfd`。差分は次の実装 PR の取り込みで releases へ移す） |
 | QH | 3c | houki-nta-mcp 0.25.1 の仕様 PR（#147、h3） | 済（PR #149、main `94fbaec`。案 B（level を足す）で承認） |
 | RH | 3c | houki-nta-mcp 0.25.1 の実装 PR（#147） | 済（v0.25.1 を 2026-10-05 に publish） |
-| Q26 | 3b | houki-nta-mcp 0.26.0 の仕様 PR（#144・#145） | すぐ（2026-10-06 に追加） |
+| Q26 | 3b | houki-nta-mcp 0.26.0 の仕様 PR（#144・#145） | 済（PR #152、main `c696f4a`、承認日 2026-10-06） |
+| R26 | 3b | houki-nta-mcp 0.26.0 の実装 PR（#144・#145） | すぐ（2026-10-06 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -788,4 +789,79 @@ houki-nta-mcp 0.26.0（#144 開けないローカル DB の読むだけのツー
 - publish の前の確認: 4 つの開けない DB（SQLite でないファイル・フォルダー・パスの途中が普通のファイル・権限が無い）を HOUKI_NTA_DB_PATH で指して、読むだけのツール・書き戻す 3 ツール・--status の 3 つで応答を確かめる手順を書く。shuji の Mac の公開版の DB（~/.cache/houki-nta-mcp/cache.db）には触らない手順にする
 - コミットを作るところまで。署名・push・PR・マージは私が行う。VM の注意は、この文書の「共通: Cowork の VM で作業するときの注意」と同じ
 - 報告: ブランチ・コミット、ADDED / MODIFIED / REMOVED の数と触った dir、spec-ids check と BASE_REF=main HEAD_REF=<ブランチ> node .github/scripts/check-pr-scope.mjs の結果、「人が判断すること」の一覧（勧める案つき）、PR 本文の草案（Refs #144 #145。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）、実装 PR に渡すこと
+```
+
+---
+
+## 指示 R26: houki-nta-mcp 0.26.0 の実装 PR（#144・#145）
+
+仕様 PR #152（差分 `20261006-db-failure-paths`、main `c696f4a`、承認日 2026-10-06）のマージの後に、新しい会話に貼ります。2026-10-06 JST に origin の main が `c696f4a` で、`specs/changes/` に `20261006-db-failure-paths` だけがあることを確かめました。差分は ADDED 2（SPEC-NTA-DB-SCHEMA-030、SPEC-NTA-CLI-BULK-DOWNLOAD-014）・MODIFIED 17、触る dir は 14 です。
+
+承認された案は、指示 Q26 の出発点から 2 か所が変わっています。
+
+- 「人が判断すること」7: 書き戻す 3 ツールで国税庁サイトからも取れないときに、開けない DB の応答にするのは、取りに行く先の無い通達（SPEC-NTA-GET-TSUTATSU-007）だけにしました。通信の失敗（`SOURCE_*`）・404・解析の失敗・条項が無いときは今までの応答のままで、`next_actions` から `cli_bulk_download` だけを外します。`SOURCE_*` の `retryable: true` と、原因を示す `hint` を残すためです
+- 「人が判断すること」10: 置き場所のフォルダーに入る権限が無いときは、この差分では変えず、別の Issue にします
+
+```text
+houki-nta-mcp 0.26.0（#144 ローカル DB を開けないときの読むだけのツールと書き戻すツールの応答、#145 --bulk-download-tax-answer が索引を保存できないときの終わり方）の実装 PR を作ってください。この会話の役は Test Designer → Coder → Spec Publisher です（AGENTS.md の「役割」）。仕様 PR #152 は承認・マージ済みで、この会話では仕様の意図を変えません。
+
+## 場所と版
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-nta-mcp（Cowork の device_bash では $HOME/mnt/houki-hub/mcp/houki-nta-mcp）
+- 起点: main の c696f4a。作業の前に git ls-remote https://github.com/shuji-bonji/houki-nta-mcp refs/heads/main で origin と同じか確かめ、specs/changes/ に 20261006-db-failure-paths だけがあることを確かめる
+- ブランチ: feat/<作業日の yyyymmdd>-0.26.0
+- 版: 0.25.1 → 0.26.0（minor）。DB のスキーマの版は 12 のまま
+- この PR で閉じる Issue: #144・#145
+
+## 最初に読むもの（この順）
+
+1. AGENTS.md と CONTRIBUTING.md（「ローカル DB を使う開発」「コーディング規約」）
+2. specs/changes/20261006-db-failure-paths/proposal.md と specs/*/spec.md の 14 個。とくに「実装の変更」「実装 PR で直す文書」「互換性」「publish の前の確認」「取り込みのとき（Publisher）」「人が判断すること」
+3. houki-hub の docs/DECISIONS.md の 2026-10-04 の「T6」「#137」の行
+4. proposal.md の「実装の変更」に挙がった src/ のファイル: src/db/index.ts（openReadDb・openWriteBackDb・probeDbState）、src/db/location.ts（displayDbPath・guideCommand）、src/tools/handlers.ts（explainDbState、getTsutatsu・getQa・getTaxAnswer、renderLiveResult）、src/services/tax-answer-bulk-downloader.ts（saveTaxAnswerIndex の呼び出しと TaxAnswerIndexDbError）、src/cli.ts（runBulkDownloadTaxAnswer と --bulk-download-everything の種別ごとの失敗）
+5. 受入テストの手本: src/tools/spec-20261004-db-location.test.ts（makeBrokenIndexDb・siteRecordingIndexHeaders・captureWarns）と src/spec-20261004-db-location.test.ts（vi.mock の作り）
+6. 手本: specs/releases/v0.25.0/（minor の実装 PR の形）と CHANGELOG.md の 0.25.0
+
+proposal.md の「人が判断すること」1〜16 は、書かれている勧める案で承認済みです。仕様に書かれていない細部（関数の分け方、fixture の取り方、テストの組み立てなど）はこの会話で決めてよく、決めたことは報告の「実装で決めたこと」に書く。応答の code・hint・retryable・detail・next_actions、warn の行の scope と meta、CLI の [WARN] の行、終了コードを仕様の文と例から変えたくなったら、止めて私に聞く（案を並べ、勧める案を 1 つ書く）。私の答えが仕様の変更になるときは、この PR とは別の specs/changes が要ることを書く（この会話では specs/changes を書かない）。
+
+## 守ること
+
+- specs/changes/ は書き換えない。specs/current/ は最後の取り込みのコミットでだけ書く
+- テストは仕様の本文と「例:」から書き、実装を見て期待値を足さない。it の名前の先頭に仕様 ID を入れる。テストを消して GREEN にしない
+- 開けない DB のファイルの大きさと中身を変えない（読むだけのツール・書き戻すツールの両方。受入テストで確かめる）
+- chmod 000 のテストは、root で走るときに飛ばす（proposal.md の「実装の変更」の受入テストの項）。利用者のホームのパスはテストに書かない。HOME は一時フォルダーに差し替える
+- 「人が判断すること」7 のとおり、書き戻す 3 ツールで国税庁サイトから取れなかったときの code と retryable は、取りに行く先の無い通達（GET-TSUTATSU-007）を除いて今までのまま
+- 応答のフィールドを消す・名前を変える変更はしない（T4）
+- TS のコードで文字列を + でつながない（テンプレートリテラル）。公開文書の文は「〜します」「〜です」
+- コミットを作るところまで。署名・push・PR の作成・マージ・タグは私が行う
+
+## コミットの順（案。差分の構成と合わないときは理由を書いて変えてよい）
+
+1. test: → feat: 開けない DB で読むだけのツールが DOC_NOT_FOUND / TSUTATSU_NOT_FOUND と開けないときの hint を返す（db_schema 021・029、common_errors 006、検索 6 ツール・DB だけを引く 3 ツール・nta_inspect_pdf_meta の ID）。文の中のホームを ~ にする関数も
+2. test: → feat: 書き戻す 3 ツールが開けない DB で国税庁サイトから取り、warn を出す（db_schema 030、nta_get_tsutatsu 007・010）
+3. test: → fix: --bulk-download-tax-answer が索引を保存できなくても記事の取り込みを続ける（cli_bulk_download 014、db_schema 025）
+4. docs: proposal.md の「実装 PR で直す文書」1〜5（README・docs/DATABASE.md）
+5. chore: v0.26.0 — package.json・package-lock.json・server.json の版と CHANGELOG（「互換性」の文、Changed に #144、Fixed に #145）。.claude-plugin/plugin.json は 0.25.x の慣習に合わせる
+6. spec: 差分を specs/current/ に取り込み、specs/releases/v0.26.0/ へ移す（最後のコミット。承認日は「2026-10-06（PR #152）」）。取り込みの後、specs/changes/ に .gitkeep だけが残ることを確かめる
+
+test: のコミットでは新しいテストが落ち、次の feat: / fix: で通ることを確かめる。
+
+## 検証
+
+- npm run build・npm test・npm run check（biome）・npx tsc --noEmit・npx spec-ids check は私の Mac か CI で通す。結果を貼るので、落ちたら直す。VM では $HOME/tmp/nta に複製して回せることがある
+- npx spec-ids check と BASE_REF=main HEAD_REF=<ブランチ> node .github/scripts/check-pr-scope.mjs を通す
+- proposal.md の「publish の前の確認」1〜9 は私が Mac で行う（公開版の cache.db には触らず、/tmp/nta-026/ の下だけを使う）。手順をそのまま報告に写し、この PR で変わったコマンド名や出力の文があれば直して書く。proposal.md の「確かめていない点」3（別のプロセスとして起動したときの今の動き）と 6（call.sh が応答を返すか）は、この PR の作業の中で確かめられれば確かめて報告に書く
+- Cowork の VM の注意は、この文書の「共通: Cowork の VM で作業するときの注意」と同じ
+
+## 終わったら報告すること
+
+- コミットの一覧（ハッシュと件名）
+- 新しく足したテストと書き換えたテストの数、仕様 ID ごとの対応
+- spec-ids check と pr-scope の結果
+- 実装で決めたこと、止めて聞いたことと答え
+- publish の前の確認の手順
+- proposal.md の「この差分の外で見つけたこと」1（置き場所のフォルダーに入る権限が無いときの判定）と 2（GET-TSUTATSU-007 の案内のコマンドが --tsutatsu で受け付けられない）の Issue の下書き（docs/ ではなく報告の本文に。置き場所と投稿は私が決める）
+- houki-research-skill で直す箇所（proposal.md の「互換性」の Skill の表の 5 か所を、main で grep し直して確かめる）
+- houki-hub で直すもの（呼び出し例は proposal.md では影響なし。site の local-database.md・mcp/houki-nta.md に開けない DB の扱いを足すかの案）
+- PR 本文の草案（Closes #144 #145、仕様 PR #152 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```
