@@ -513,3 +513,14 @@ nta 0.26.0 の実装の会話が、次の 3 件を起票した（2026-10-07 JST�
 
 2026-10-07 JST に shuji が決めたこと: Q16 は案 A（#156 と Skill の追随を今行い、#154・#155 は spec-ids#5 の後に nta 0.27.0 にまとめる）。指示は Q156・XS26。Q17 は案 A で、publish の前の確認の結果を GitHub のコメントに残した。ただし、コメントの置き場所は PR #153 ではなく houki-nta-mcp #156（issuecomment-6030236122、2026-10-07 12:23 JST）で、中身は「publish の前の確認」の 2〜4（公開版の `cache.db` の `shasum` と一覧、4 つの開けない DB の作成、`--status` の 4 つの結果）。4 つとも `[ERROR] DB を開けません: <文>` と `exit=1` で仕様のとおり。macOS の文は VM の Linux と同じ（フォルダーは `disk I/O error`、読む権限の無いファイルは `unable to open database file`）で、v0.26.0 の proposal.md の「確かめていない点」2 は解けた。5〜8（MCP サーバーを stdio で起動して読むだけのツールと書き戻す 3 ツールを呼ぶ、#145 の `[WARN]` と終了コード 0、公開版の `cache.db` が変わっていないこと）の結果はコメントに無い
 
+nta 0.26.0 の「publish の前の確認」5・6 の結果（2026-10-07 12:40〜12:42 JST、shuji の Mac、作業コピーの `dist/index.js`。会話に貼られた出力から写した）:
+
+| 手順 | 結果 | 仕様との比較 |
+| --- | --- | --- |
+| `call.sh`（stdio で `initialize` → `tools/call`） | `resolve_abbreviation` が応答を返した。待ちは 20 秒でなく `WAIT=5`（書き戻す 3 ツールは `WAIT=12`）で足りた | v0.26.0 の proposal.md の「確かめていない点」6 は解けた |
+| 5. 読むだけのツール 4 つ × 開けない DB 4 つ（16 通り） | すべて `isError: true`、`retryable: false`、`next_actions` 無し、`detail.cause` は `--status` と同じ文。`code` は `nta_search_tsutatsu` だけ `TSUTATSU_NOT_FOUND`、ほかは `DOC_NOT_FOUND`。`hint` は `ローカル DB（/tmp/nta-026/<名前>）を開けません。` で始まり、`--status` のコマンドは `HOUKI_NTA_DB_PATH='/tmp/nta-026/text.db' npx -y @shuji-bonji/houki-nta-mcp@latest --status` | SPEC-NTA-DB-SCHEMA-029 のとおり。パスは `/private/tmp/…` にならず、`HOUKI_NTA_DB_PATH` の値のまま。`nta_inspect_pdf_meta` は #156 のため `qa-jirei` ではなく `{"docType":"kaisei","docId":"0026003-067"}` で流した |
+| 6. 書き戻す 3 ツール × 開けない DB 2 つ（SQLite でないファイル・読む権限の無いファイル） | `nta_get_tax_answer`・`nta_get_qa`・`nta_get_tsutatsu`（消基通 1-4-1）は `source: "live"` で返り、呼び出しごとに `"level":"warn"` の行が 1 行。`scope` はツール名、`msg` は `ローカル DB を開けないため、DB を使わずに国税庁サイトから取ります。取った内容は DB に書きません（DB: <パス>）`、`meta` は `db_path` と `cause`。`電帳法取通` 4-1 は `TSUTATSU_NOT_FOUND`・`retryable: false`・開けないときの `hint`・`next_actions` 無しで、`warn` の行も出た | SPEC-NTA-DB-SCHEMA-030・GET-TSUTATSU-007、「人が判断すること」7・8 のとおり |
+| 6. DB のファイルが変わらないこと | `text.db` の `shasum` は `2b77fa69…` で、作ったときと同じ内容（同じ `printf` の `shasum`）と一致。`perm.db` は `b5a988cd…`（呼ぶ前の値は控えていない） | `text.db` は変わっていない。`perm.db` は比べる値が無い |
+
+まだ結果が無いもの: 7（#145。壊れた表の DB で `--bulk-download-tax-answer --refresh` の `[WARN]` の行と `exit=0`、`tax_answer_index_page.fetched_at` が変わらないこと）と 8（公開版の `cache.db` の `shasum` が手順 2 の `048c196c…` と同じこと、`/tmp/nta-026` の片付け）。
+
