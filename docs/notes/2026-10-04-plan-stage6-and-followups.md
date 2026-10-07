@@ -400,7 +400,7 @@ Q4（T6）の勧める案:
 | QH | 3c | nta 0.25.1 の仕様 PR（#147、h3） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #149、main `94fbaec`。案 B: `sections` の要素に `level` を足す。小見出しの欠けは標本の 9 割近い記事で以前から起きていた。取り込み済みの行は `--bulk-download-tax-answer --refresh` を案内） |
 | RH | 3c | nta 0.25.1 の実装 PR（#147） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #151、main・タグ `v0.25.1` `c029602`、npm 0.25.1 は 14:31 JST、MCP Registry 登録済み、plugin 更新済み。#146・#147 は閉じた。publish の前の確認は `cache.dev.db` で行い、`--refresh` で 749 件を入れ直して sections の合計が 2685 → 4372。公開版の `cache.db` も 2026-10-05 14:34〜14:49 JST に `--refresh` で入れ直し済み（plugin の markdown で `### ` を確認）。houki-hub の呼び出し例 `nta_get_tax_answer.md`（No.1222 の例を追加）・`nta_search_tax_answer.md` の取り直しはブランチ `docs/20261005-nta-0.25.1-examples`（`1bbd5da`・`e4eb8aa`）。リファレンスのページの作り直しも済（main `47151ba`）） |
 | Q26 | 3b | nta 0.26.0 の仕様 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 済（2026-10-06、PR #152、main `c696f4a`。差分 `20261006-db-failure-paths`、ADDED 2・MODIFIED 17。「人が判断すること」16 項目を勧める案で承認。出発点から変えたのは 7（サイトから取れないときに開けない DB の応答にするのは GET-TSUTATSU-007 だけ）と 10（フォルダーに入る権限が無いときは別の Issue）） |
-| R26 | 3b | nta 0.26.0 の実装 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-06） |
+| R26 | 3b | nta 0.26.0 の実装 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 済（2026-10-07、PR #153、main・タグ `v0.26.0` `c5bbb43`、npm 0.26.0 は 10:09 JST、MCP Registry 登録済み、plugin 更新済み（shuji）。#144・#145 は閉じた。PR 本文の「publish の前の確認」の欄は空のまま。実装の会話が起票した #154・#155・#156 は下の「2026-10-07 JST の状態」） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -484,3 +484,28 @@ spec-ids#5（承認の記録を proposal.md の front matter に移し、current
 いつ挟んでもよいもの: abbr #35（スクリプトをもう一度流す）、egov の余分な DB のファイルの削除。Q14（③ の照合の規則）は、2026-10-06 JST に 5 の照合のスクリプト（6f）と一緒に入れることにした。
 
 2026-10-06 JST に shuji が決めたこと: 呼び出し例を e2e のテストケースとして流す契約の確認をスクリプトにする（6f）。置き場所は段階 4 の hub#5 ② の近く。きっかけは houki-hub#43 で、`stack.json` と npm が一致して閉じたときに、0.25.0 で測ったままの例 20 件が確かめられないまま残ったこと（追記の文は `docs/notes/issues-2026-10-06-hub43/comment-example-versions.md`）。
+
+### 2026-10-07 JST の状態（nta 0.26.0 の後）
+
+nta 0.26.0 の実装の会話が、次の 3 件を起票した（2026-10-07 JST）。
+
+| Issue | 内容 | 出典 | 害 | 種類 |
+| --- | --- | --- | --- | --- |
+| houki-nta-mcp #154 | 置き場所のフォルダーに入る権限が無いと、`probeDbState` が「ファイルが無い」と判定し、読むだけのツール・`--status`（終了コード 0）・投入のフラグ（終了コード 1）で扱いが食い違う | v0.26.0 の proposal.md の「人が判断すること」10 | 低（起きる場面が少ない） | A。`--status` の終了コードが変わるので minor |
+| houki-nta-mcp #155 | SPEC-NTA-GET-TSUTATSU-007 が案内する `--bulk-download --tsutatsu="<正式名>"` は、基本通達 4 種以外では終了コード 2 で止まる | 同「この差分の外で見つけたこと」2 | 低（案内のとおりに実行すると、すぐ引数の誤りで止まる） | A。案 A（案内を外す）なら `hint` の文だけの変更 |
+| houki-nta-mcp #156 | `nta_inspect_pdf_meta` の inputSchema の `docType` は `qa-jirei` を受け付けないのに、SPEC-NTA-DB-SCHEMA-029 の表と SPEC-NTA-INSPECT-PDF-META-001 の例が `qa-jirei` を使っている | 実装の会話で新しく見つけた | 低（仕様の文の誤り。応答は inputSchema のとおり） | 仕様の文だけ（実装の変更: 不要の見込み。#146 と同じ形） |
+
+0.26.0 の追随で残っているもの:
+
+| 作業 | 状態 |
+| --- | --- |
+| houki-hub の `stack.json`・README・site の版 | 作業ツリーに未コミットの変更がある（`stack.json` の `generatedAt` は 2026-10-07T01:06:32Z で npm の 0.26.0（01:09:11Z）より前のため、`consistency` が `drift`（npm 0.25.1 ≠ local 0.26.0））。`node scripts/generate-stack.mjs --readme` をやり直してからコミットする |
+| houki-research-skill の追随 | 未。v0.26.0 の proposal.md の「互換性」の Skill の表の 5 か所（`ERROR-HANDLING.md` 71・84〜92・206〜214 行目、`ERROR-CODES.md` 78・79 行目、`README.md` 156 行目） |
+| 呼び出し例 | 影響なし（proposal.md の「呼び出し例への影響」）。③ の照合では nta の例が古い版の扱いになるかを `check-example-versions.mjs` で確かめる |
+| PR #153 の「publish の前の確認」の結果 | 本文の欄が空。shuji の Mac での結果を PR のコメントか記録に残すか（Q17） |
+
+| # | 何を | 案 | 勧める案 |
+| --- | --- | --- | --- |
+| Q16 | #154・#155・#156 と spec-ids#5 の順 | (A) #156（仕様の文だけ）と Skill の追随を今行い、spec-ids#5 の後に #154・#155 を nta 0.27.0 にまとめる / (B) #154・#155・#156 を nta 0.27.0 で先に出し、その後に spec-ids#5 / (C) #155 だけ 0.26.1 で先に出す | **A**。3 件とも害が低く、#156 は実装の変更が要らない見込みで承認の記録の形に影響しない。#154・#155 を先にすると spec-ids#5 の前に仕様 PR が 1 往復増える |
+| Q17 | PR #153 の「publish の前の確認」の結果 | (A) PR にコメントで結果を足す / (B) 記録しない | **A**。0.19.1 の回と同じく、確かめたことを後から辿れるようにする |
+

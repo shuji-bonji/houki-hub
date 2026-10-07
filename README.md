@@ -125,12 +125,12 @@ graph LR
 
 <!-- stack:begin — scripts/generate-stack.mjs が生成。手で編集しない -->
 
-> 版は実測（2026-10-05 時点の `npm view`）。
+> 版は実測（2026-10-07 時点の `npm view`）。
 
 | リポジトリ | 役割 | 配布形態 | 状態 | 版 | npm |
 | --- | --- | --- | --- | --- | --- |
 | [houki-egov-mcp](https://github.com/shuji-bonji/houki-egov-mcp) | source | mcp-server | 公開済み | 0.20.0 | `@shuji-bonji/houki-egov-mcp` |
-| [houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp) | source | mcp-server | 公開済み | 0.25.1 | `@shuji-bonji/houki-nta-mcp` |
+| [houki-nta-mcp](https://github.com/shuji-bonji/houki-nta-mcp) | source | mcp-server | 公開済み | 0.26.0 | `@shuji-bonji/houki-nta-mcp` |
 | [houki-abbreviations](https://github.com/shuji-bonji/houki-abbreviations) | dictionary | library | 公開済み | 0.7.0 | `@shuji-bonji/houki-abbreviations` |
 | [houki-research-skill](https://github.com/shuji-bonji/houki-research-skill) | procedure | skill | 公開済み | 0.19.0 | — |
 | houki-metadata-mcp | source | mcp-server | 予定 | — | — |
