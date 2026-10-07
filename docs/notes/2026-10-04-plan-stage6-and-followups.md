@@ -401,6 +401,8 @@ Q4（T6）の勧める案:
 | RH | 3c | nta 0.25.1 の実装 PR（#147） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #151、main・タグ `v0.25.1` `c029602`、npm 0.25.1 は 14:31 JST、MCP Registry 登録済み、plugin 更新済み。#146・#147 は閉じた。publish の前の確認は `cache.dev.db` で行い、`--refresh` で 749 件を入れ直して sections の合計が 2685 → 4372。公開版の `cache.db` も 2026-10-05 14:34〜14:49 JST に `--refresh` で入れ直し済み（plugin の markdown で `### ` を確認）。houki-hub の呼び出し例 `nta_get_tax_answer.md`（No.1222 の例を追加）・`nta_search_tax_answer.md` の取り直しはブランチ `docs/20261005-nta-0.25.1-examples`（`1bbd5da`・`e4eb8aa`）。リファレンスのページの作り直しも済（main `47151ba`）） |
 | Q26 | 3b | nta 0.26.0 の仕様 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 済（2026-10-06、PR #152、main `c696f4a`。差分 `20261006-db-failure-paths`、ADDED 2・MODIFIED 17。「人が判断すること」16 項目を勧める案で承認。出発点から変えたのは 7（サイトから取れないときに開けない DB の応答にするのは GET-TSUTATSU-007 だけ）と 10（フォルダーに入る権限が無いときは別の Issue）） |
 | R26 | 3b | nta 0.26.0 の実装 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 済（2026-10-07、PR #153、main・タグ `v0.26.0` `c5bbb43`、npm 0.26.0 は 10:09 JST、MCP Registry 登録済み、plugin 更新済み（shuji）。#144・#145 は閉じた。PR 本文の「publish の前の確認」の欄は空のまま。実装の会話が起票した #154・#155・#156 は下の「2026-10-07 JST の状態」） |
+| Q156 | 3b | nta #156 の仕様 PR（仕様の文だけ） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-07） |
+| XS26 | 3b | houki-research-skill の nta 0.26.0 への追随 | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-07） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -508,4 +510,6 @@ nta 0.26.0 の実装の会話が、次の 3 件を起票した（2026-10-07 JST�
 | --- | --- | --- | --- |
 | Q16 | #154・#155・#156 と spec-ids#5 の順 | (A) #156（仕様の文だけ）と Skill の追随を今行い、spec-ids#5 の後に #154・#155 を nta 0.27.0 にまとめる / (B) #154・#155・#156 を nta 0.27.0 で先に出し、その後に spec-ids#5 / (C) #155 だけ 0.26.1 で先に出す | **A**。3 件とも害が低く、#156 は実装の変更が要らない見込みで承認の記録の形に影響しない。#154・#155 を先にすると spec-ids#5 の前に仕様 PR が 1 往復増える |
 | Q17 | PR #153 の「publish の前の確認」の結果 | (A) PR にコメントで結果を足す / (B) 記録しない | **A**。0.19.1 の回と同じく、確かめたことを後から辿れるようにする |
+
+2026-10-07 JST に shuji が決めたこと: Q16 は案 A（#156 と Skill の追随を今行い、#154・#155 は spec-ids#5 の後に nta 0.27.0 にまとめる）。指示は Q156・XS26。Q17 は案 A で、publish の前の確認の結果を GitHub のコメントに残した。ただし、コメントの置き場所は PR #153 ではなく houki-nta-mcp #156（issuecomment-6030236122、2026-10-07 12:23 JST）で、中身は「publish の前の確認」の 2〜4（公開版の `cache.db` の `shasum` と一覧、4 つの開けない DB の作成、`--status` の 4 つの結果）。4 つとも `[ERROR] DB を開けません: <文>` と `exit=1` で仕様のとおり。macOS の文は VM の Linux と同じ（フォルダーは `disk I/O error`、読む権限の無いファイルは `unable to open database file`）で、v0.26.0 の proposal.md の「確かめていない点」2 は解けた。5〜8（MCP サーバーを stdio で起動して読むだけのツールと書き戻す 3 ツールを呼ぶ、#145 の `[WARN]` と終了コード 0、公開版の `cache.db` が変わっていないこと）の結果はコメントに無い
 

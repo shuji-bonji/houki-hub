@@ -17,7 +17,9 @@
 | QH | 3c | houki-nta-mcp 0.25.1 の仕様 PR（#147、h3） | 済（PR #149、main `94fbaec`。案 B（level を足す）で承認） |
 | RH | 3c | houki-nta-mcp 0.25.1 の実装 PR（#147） | 済（v0.25.1 を 2026-10-05 に publish） |
 | Q26 | 3b | houki-nta-mcp 0.26.0 の仕様 PR（#144・#145） | 済（PR #152、main `c696f4a`、承認日 2026-10-06） |
-| R26 | 3b | houki-nta-mcp 0.26.0 の実装 PR（#144・#145） | すぐ（2026-10-06 に追加） |
+| R26 | 3b | houki-nta-mcp 0.26.0 の実装 PR（#144・#145） | 済（PR #153、v0.26.0 を 2026-10-07 に publish） |
+| Q156 | 3b | houki-nta-mcp #156 の仕様 PR（実装の変更: 不要の見込み） | すぐ（2026-10-07 に追加） |
+| XS26 | 3b | houki-research-skill の nta 0.26.0 への追随 | すぐ（2026-10-07 に追加。Q156 と並行してよい） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -864,4 +866,102 @@ test: のコミットでは新しいテストが落ち、次の feat: / fix: で
 - houki-research-skill で直す箇所（proposal.md の「互換性」の Skill の表の 5 か所を、main で grep し直して確かめる）
 - houki-hub で直すもの（呼び出し例は proposal.md では影響なし。site の local-database.md・mcp/houki-nta.md に開けない DB の扱いを足すかの案）
 - PR 本文の草案（Closes #144 #145、仕様 PR #152 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 Q156 と XS26（2026-10-07 に追加）
+
+2026-10-07 JST に shuji が計画書の Q16 を案 A に決めました。#156（仕様の文だけ）と houki-research-skill の 0.26.0 への追随を今行い、#154・#155 は spec-ids#5 の後に nta 0.27.0 にまとめます。Q156 は houki-nta-mcp、XS26 は houki-research-skill で、別のリポジトリなので並行できます。
+
+2026-10-07 JST に、houki-nta-mcp の origin の main が `c5bbb43`（v0.26.0）で `specs/changes/` が `.gitkeep` だけであること、houki-research-skill の origin の main が `0889824`（v0.19.0）であることを確かめました。
+
+---
+
+## 指示 Q156: houki-nta-mcp #156 の仕様 PR（実装の変更: 不要の見込み）
+
+```text
+houki-nta-mcp #156（nta_inspect_pdf_meta の inputSchema は docType: "qa-jirei" を受け付けないのに、仕様の表と例が qa-jirei を使っている）の仕様 PR を書いてください。この会話の役は Spec Steward です（AGENTS.md の「役割」）。仕様の文だけを直し、実装・テストは変えない見込みです。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-nta-mcp（device_bash では $HOME/mnt/houki-hub/mcp/houki-nta-mcp）
+- 起点: main の c5bbb43（v0.26.0）。git ls-remote https://github.com/shuji-bonji/houki-nta-mcp refs/heads/main で origin と同じか確かめ、specs/changes/ が .gitkeep だけであることを確かめる
+- ブランチ: spec/<作業日の yyyymmdd>-inspect-pdf-meta-qa-jirei
+
+## 最初に読むもの
+
+1. AGENTS.md の「PR の種類」（proposal.md が「- 実装の変更: 不要」のときは、仕様 PR で specs/current/ も書いてよい）
+2. Issue #156 の本文（curl https://api.github.com/repos/shuji-bonji/houki-nta-mcp/issues/156）
+3. specs/current/nta_inspect_pdf_meta/spec.md（19 行目の引数の表は「質疑応答事例（qa-jirei）は PDF を持たないので選べない」と書き、67・68・70 行目は qa-jirei を使っている）と specs/current/db_schema/spec.md の 391 行目（029 の下の表の nta_inspect_pdf_meta の行）と 414 行目（例）
+4. src/tools/definitions.ts 395 行目（docType の enum が 4 つ）と、src/tools/handlers.ts・src/services/pdf-meta.ts の docType の扱い（qa-jirei の枝があるか）
+5. 手本: specs/releases/v0.25.1/20261005-tax-answer-018-example/（実装の変更: 不要の差分で current を直した前例、#146）と specs/releases/v0.24.0/20261003-specs-current-catchup/
+6. 0.26.0 の差分 specs/releases/v0.26.0/20261006-db-failure-paths/proposal.md の「publish の前の確認」5（qa-jirei を使っている）
+
+## 出発点（勧める案。proposal.md の「人が判断すること」に書いて承認を受ける）
+
+- 直し方: Issue の案のとおり、仕様から qa-jirei の行と例を外し、inputSchema（4 つ）に合わせる。nta_inspect_pdf_meta の 67・68・70 行目、db_schema の 391・414 行目。19 行目の「選べない」の文は残す
+- 外した例の代わりが要るところは、tax-answer か kaisei の例にする（例の値は、今ある別の例か、確かめられる値を使う）
+- 実装の変更: 不要。ただし src に qa-jirei の枝が残っている場合は、「実装の変更: 不要」のまま「この差分の外で見つけたこと」に書く（届かない枝を消すかは別に決める）。inputSchema を広げて qa-jirei を受け付ける案（質疑応答事例は PDF を持たないので意味が無い）は「人が判断すること」に並べるだけにする
+- 0.26.0 の proposal.md（releases の下）は取り込み済みの記録なので書き換えない。「publish の前の確認」5 の誤りは、この差分の proposal.md に書く
+- 受入テストがハンドラーを直接呼ぶため inputSchema の検査を通らない、という Issue の指摘は、この差分では扱わない。「この差分の外で見つけたこと」に、tools/list の inputSchema と仕様の例を突き合わせる確かめ方（たとえば呼び出し例の照合のスクリプト houki-hub#44 で扱えるか）を書く
+
+## 守ること・報告すること
+
+- テストと src/ は触らない
+- specs/changes/<yyyymmdd>-inspect-pdf-meta-qa-jirei/proposal.md（「- 実装の変更: 不要」。なぜ・直す箇所・変わらない振る舞い・人が判断すること・この差分の外で見つけたこと・承認日は空欄）と、直した specs/current の 2 ファイル。MODIFIED の扱いと承認日の行の足し方は、前例（#146 の差分）に合わせる（spec-ids#5 で形を変える予定だが、それまでは今の形のまま）
+- npx spec-ids check と BASE_REF=main HEAD_REF=<ブランチ> node .github/scripts/check-pr-scope.mjs を通す（承認日の空欄以外の指摘が無いこと）
+- コミットを作るところまで。署名・push・PR・マージは私が行う。VM の注意は、この文書の「共通: Cowork の VM で作業するときの注意」と同じ
+- 報告: ブランチ・コミット、直した文の前後、spec-ids check と pr-scope の結果、src の qa-jirei の枝の有無、PR 本文の草案（Closes #156 を仕様 PR に書いてよいかを、前例の #146 の PR #148 の本文で確かめて書く。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）、取り込みのとき（次の実装 PR で releases へ移す版）
+```
+
+---
+
+## 指示 XS26: houki-research-skill の houki-nta-mcp 0.26.0 への追随
+
+```text
+houki-research-skill を houki-nta-mcp 0.26.0（#144 開けないローカル DB の応答、#145 --bulk-download-tax-answer の [WARN]）に追随させてください。この会話の役は、Skill の文書を直す作業者です。MCP のリポジトリは触りません。
+
+## 場所と版
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/skills/houki-research-skill（device_bash では $HOME/mnt/skills/houki-research-skill）
+- 起点: main の 0889824（v0.19.0）。作業の前に git ls-remote https://github.com/shuji-bonji/houki-research-skill refs/heads/main で origin と同じか確かめる
+- ブランチ: docs/<作業日の yyyymmdd>-nta-0.26.0
+- 版: 0.19.0 → 0.19.1 を勧める（文書の表と説明を直すだけで、手順を足さないため。0.18.1 の前例「文の引用を直すだけなら patch」）。手順を足すことになったら 0.20.0 にし、理由を報告に書く
+
+## 最初に読むもの（この順）
+
+1. README と CHANGELOG の 0.19.0（直し方と書き方の手本）
+2. houki-nta-mcp の specs/releases/v0.26.0/20261006-db-failure-paths/proposal.md（$HOME/mnt/houki-hub/mcp/houki-nta-mcp の下）の「互換性」、とくに末尾の「houki-research-skill で関係する箇所」の表（5 か所）
+3. houki-nta-mcp の specs/current/db_schema/spec.md の SPEC-NTA-DB-SCHEMA-029（開けないときの行）・030、specs/current/cli_bulk_download/spec.md の SPEC-NTA-CLI-BULK-DOWNLOAD-014、specs/current/common_errors/spec.md の 006
+4. houki-nta-mcp の CHANGELOG の 0.26.0
+
+## 直すこと
+
+proposal.md の表の 5 か所を出発点にし、main で grep し直して行番号と文を確かめる（表は 2026-10-06 の v0.19.0 の行番号）。
+
+1. skills/houki-research/docs/ERROR-HANDLING.md の houki-nta-mcp の hint の先頭の表（84〜92 行目付近）: 「ローカル DB（<パス>）を開けません」の行（DB を開けない。next_actions は無い。--status で理由を確かめ、パス・権限・ファイルを直す。retryable: false）を足す
+2. 同 71 行目付近の「いずれも next_actions の action が cli_bulk_download」: 投入で直る場面に限る文にする
+3. 同 206〜214 行目付近（INTERNAL_ERROR）: houki-nta-mcp 0.25.x 以前では、DB を開けないときも INTERNAL_ERROR（detail.cause が file is not a database など）で、不具合ではないことを、214 行目の例外に足すかを決める。勧める案は足す（0.25.x 以前のサーバーを使っている利用者が、不具合として報告しないため）
+4. skills/houki-research/docs/ERROR-CODES.md の TSUTATSU_NOT_FOUND・DOC_NOT_FOUND（78・79 行目付近）: 「ローカル DB を開けないときも（houki-nta-mcp v0.26.0 以上）」を足す
+5. README の推奨最小バージョンの表（156 行目付近）: houki-nta-mcp v0.26.0 の 3 つの変更（開けない DB の DOC_NOT_FOUND / TSUTATSU_NOT_FOUND、書き戻す 3 ツールの国税庁サイトからの取得と warn、--bulk-download-tax-answer の [WARN]）を足す
+6. scripts/mcp-refs.config.json の houki-nta-mcp の版を 0.25.0 → 0.26.0 にし、node scripts/update-mcp-snapshots.mjs で mcp-snapshots/houki-nta.json を作り直す（VM から npm の registry に届かないときは、$HOME/mnt/houki-hub/mcp/houki-nta-mcp の dist を使えるか確かめ、使えなければ私が Mac で実行するコマンドを報告に書く）
+
+上の 5 か所のほかに、0.26.0 で古くなった文が無いかを、「開けな」「INTERNAL_ERROR」「cli_bulk_download」「bulk-download-tax-answer」「索引」で grep し直す（CHANGELOG を除く）。版を書いた実測の記録（examples/ の v0.22.0 の実測など）は書き換えず、そのまま残す。
+
+## 守ること
+
+- Skill の文書の文は「〜します」「〜です」。houki-nta-mcp の仕様 ID を引用し、仕様の文を言い換えて意味を変えない
+- 0.25.x 以前と 0.26.0 で違う箇所は、版を書いて両方が分かるようにする（0.19.0 の「v0.24.x の文として残し」と同じ扱い）
+- node scripts/check-mcp-refs.mjs と node --test 'scripts/test/*.test.mjs' を通す
+- コミットを作るところまで。署名・push・PR・マージ・タグは私が行う。VM の注意は、この文書の「共通: Cowork の VM で作業するときの注意」と同じ（git を使う前に skills フォルダーの削除の許可を取る）
+
+## 終わったら報告すること
+
+- ブランチ・コミット（ハッシュと件名）
+- 直した箇所の一覧（ファイル・行・前後の文）と、grep し直して足した箇所・足さなかった箇所の理由
+- check-mcp-refs と test の結果、mcp-snapshots の差分（または Mac で実行するコマンド）
+- CHANGELOG 0.19.1（または 0.20.0）の文
+- PR 本文の草案（houki-nta-mcp 0.26.0・#144・#145 への言及。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+- claude-plugins の追随が要るか
 ```
