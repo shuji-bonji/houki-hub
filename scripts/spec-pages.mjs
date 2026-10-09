@@ -695,6 +695,31 @@ function renderSkillIndex(ctx, cfg, workflows, pages) {
   return L.join('\n');
 }
 
+/* ---------------- リファレンスからのリンク ---------------- */
+
+/**
+ * 生成済みの仕様書ページから、名前（ツール名・関数名・定数名）→ ページの URL の表を作る。
+ * generate-reference.mjs が、リファレンスの各ツール・各記号から同じ機能の仕様書ページへリンクを張るために使う（2026-10-09、Y2）。
+ * 元の specs/ ではなく site/docs/specs/ の生成済みのページを読むので、作業コピーが無い CI でも同じ表になる。
+ * - ページの題（front matter の title の「<名前> — 」）の名前 → そのページ
+ * - 本文の `### \`NAME\`` の見出し（公開定数のページの各定数）→ そのページの見出し
+ */
+export function specPageIndex(site) {
+  const map = new Map();
+  const dir = join(SITE, 'specs', site);
+  if (!existsSync(dir)) return map;
+  for (const file of readdirSync(dir).filter((f) => f.endsWith('.md') && f !== 'index.md')) {
+    const text = readFileSync(join(dir, file), 'utf8');
+    const base = `/specs/${site}/${file.replace(/\.md$/, '')}`;
+    const title = text.match(/^title: "(.+?) — /m)?.[1];
+    if (title) map.set(title, base);
+    for (const m of text.matchAll(/^### `([A-Za-z_$][\w$]*)`\s*$/gm)) {
+      if (!map.has(m[1])) map.set(m[1], `${base}#${m[1].toLowerCase().replace(/_/g, '-')}`);
+    }
+  }
+  return map;
+}
+
 /* ---------------- main ---------------- */
 
 function write(rel, text) {

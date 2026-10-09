@@ -99,6 +99,8 @@ import { resolveAbbreviation } from '@shuji-bonji/houki-abbreviations';
 
 *定数 ・ v0.1.0 で追加 ・ family では未使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/abbreviation_entries)にあります。
+
 ```ts
 const abbreviationEntries: readonly AbbreviationEntry[];
 ```
@@ -133,6 +135,8 @@ interface AbbreviationStats {
 
 *関数 ・ v0.1.0 で追加 ・ family では未使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/get_abbreviation_stats)にあります。
+
 ```ts
 function getAbbreviationStats(): AbbreviationStats;
 ```
@@ -144,6 +148,8 @@ function getAbbreviationStats(): AbbreviationStats;
 ### listByCategory
 
 *関数 ・ v0.1.0 で追加 ・ family では未使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/list_by_category)にあります。
 
 ```ts
 function listByCategory(category: Category): AbbreviationEntry[];
@@ -162,6 +168,8 @@ listByCategory('constitution')   // → 日本国憲法 1件
 
 *関数 ・ v0.1.0 で追加 ・ family では未使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/list_by_domain)にあります。
+
 ```ts
 function listByDomain(domain: Domain): AbbreviationEntry[];
 ```
@@ -177,6 +185,8 @@ listByDomain('tax')  // → 35 件の税法系エントリ
 ### listBySourceMcpHint
 
 *関数 ・ v0.1.0 で追加 ・ houki-egov-mcp が使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/list_by_source_mcp_hint)にあります。
 
 ```ts
 function listBySourceMcpHint(hint: SourceMcpHint): AbbreviationEntry[];
@@ -198,6 +208,8 @@ listBySourceMcpHint('houki-nta')   // → 国税庁管轄 9 件
 ### resolveAbbreviation
 
 *関数 ・ v0.1.0 で追加 ・ houki-egov-mcp / houki-nta-mcp が使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/resolve_abbreviation)にあります。
 
 ```ts
 function resolveAbbreviation(name: string, options?: ResolveAbbreviationOptions): AbbreviationEntry | null;
@@ -267,6 +279,8 @@ interface ResolveAbbreviationOptions {
 
 *関数 ・ v0.6.0 で追加 ・ family では未使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/kanji_to_number)にあります。
+
 ```ts
 function kanjiToNumber(input: string): number | null;
 ```
@@ -310,6 +324,8 @@ kanjiToNumber('25');       // null（算用数字は対象外）
 
 *関数 ・ v0.3.0 で追加 ・ houki-egov-mcp / houki-nta-mcp が使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/normalize_jp_text)にあります。
+
 ```ts
 function normalizeJpText(input: string): string;
 ```
@@ -347,6 +363,8 @@ normalizeJpText('消　法');         // '消 法'（全角スペース → 半�
 ### normalizeLawNum
 
 *関数 ・ v0.6.0 で追加 ・ family では未使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/normalize_law_num)にあります。
 
 ```ts
 function normalizeLawNum(input: string): string;
@@ -399,6 +417,8 @@ normalizeLawNum('昭和二十一年憲法');             // '昭和21年憲法'
 
 *関数 ・ v0.3.0 で追加 ・ houki-egov-mcp / houki-nta-mcp が使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/normalize_search_query)にあります。
+
 ```ts
 function normalizeSearchQuery(input: string): string;
 ```
@@ -441,6 +461,8 @@ normalizeSearchQuery('１８３－２');     // '183-2'
 ### findSimilar
 
 *関数 ・ v0.4.0 で追加 ・ family では未使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/find_similar)にあります。
 
 ```ts
 function findSimilar(query: string, options?: _FuzzyOptions): _FuzzyMatch[];
@@ -513,6 +535,8 @@ findSimilar のオプション
 
 *関数 ・ v0.4.0 で追加 ・ family では未使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/levenshtein)にあります。
+
 ```ts
 function levenshtein(a: string, b: string): number;
 ```
@@ -530,6 +554,8 @@ Levenshtein 距離 (動的計画法、O(m*n) 時間 / O(min(m,n)) 空間)。
 ### searchByName
 
 *関数 ・ v0.4.0 で追加 ・ family では未使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/search_by_name)にあります。
 
 ```ts
 function searchByName(query: string, options?: _SearchOptions): AbbreviationEntry[];
@@ -604,6 +630,8 @@ searchByName のオプション
 
 *関数 ・ v0.4.0 で追加 ・ family では未使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/suggest_correction)にあります。
+
 ```ts
 function suggestCorrection(query: string, limit?: number): string[];
 ```
@@ -628,6 +656,8 @@ suggestCorrection('民法');
 ### getAllNames
 
 *関数 ・ v0.5.0 で追加 ・ family では未使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/get_all_names)にあります。
 
 ```ts
 function getAllNames(name: string, options?: GetAllNamesOptions): string[];
@@ -684,6 +714,8 @@ interface GetAllNamesOptions {
 
 *関数 ・ v0.5.0 で追加 ・ family では未使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/lookup_by_law_id)にあります。
+
 ```ts
 function lookupByLawId(law_id: string, options?: LookupByLawIdOptions): AbbreviationEntry | null;
 ```
@@ -733,6 +765,8 @@ interface LookupByLawIdOptions {
 
 *関数 ・ v0.5.0 で追加 ・ family では未使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/lookup_by_law_num)にあります。
+
 ```ts
 function lookupByLawNum(law_num: string): AbbreviationEntry | null;
 ```
@@ -760,6 +794,8 @@ lookupByLawNum('昭和63年法律第108号')?.formal;        // '消費税法'�
 
 *関数 ・ v0.4.1 で追加 ・ houki-egov-mcp / houki-nta-mcp が使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/compute_days_since)にあります。
+
 ```ts
 function computeDaysSince(fetchedAt: string, nowMs?: number): number;
 ```
@@ -784,6 +820,8 @@ function computeDaysSince(fetchedAt: string, nowMs?: number): number;
 ### judgeStaleness
 
 *関数 ・ v0.4.1 で追加 ・ houki-egov-mcp / houki-nta-mcp が使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/judge_staleness)にあります。
 
 ```ts
 function judgeStaleness(daysSince: number): StalenessLevel;
@@ -817,6 +855,8 @@ judgeStaleness(30);  // 'outdated' (境界: stale_days はちょうどで outdat
 ### STALENESS_THRESHOLDS
 
 *定数 ・ v0.4.1 で追加 ・ houki-egov-mcp / houki-nta-mcp が使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/public_constants#staleness-thresholds)にあります。
 
 ```ts
 const STALENESS_THRESHOLDS: Readonly<{
@@ -860,6 +900,8 @@ staleness の判定レベル。
 ### extractLawNames
 
 *関数 ・ v0.5.0 で追加 ・ family では未使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/extract_law_names)にあります。
 
 ```ts
 function extractLawNames(text: string, options?: _ExtractOptions): _LawNameMatch[];
@@ -938,6 +980,8 @@ interface ExtractOptions {
 
 *関数 ・ v0.5.0 で追加 ・ family では未使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/is_valid_law_id)にあります。
+
 ```ts
 function isValidLawId(law_id: string): boolean;
 ```
@@ -1013,6 +1057,8 @@ interface LawNameMatch {
 ### validateAllEntries
 
 *関数 ・ v0.5.0 で追加 ・ family では未使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/validate_all_entries)にあります。
 
 ```ts
 function validateAllEntries(): _ValidationReport;
@@ -1147,6 +1193,8 @@ interface AbbreviationEntry {
 
 *定数 ・ v0.1.0 で追加 ・ houki-nta-mcp が使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/public_constants#categories)にあります。
+
 ```ts
 const CATEGORIES: readonly ["constitution", "law", "cabinet-order", "imperial-ordinance", "ministerial-ordinance", "rule", "kokuji", "kihon-tsutatsu", "kobetsu-tsutatsu", "qa-jirei", "tax-answer", "hanrei", "saiketsu"];
 ```
@@ -1188,6 +1236,8 @@ type Domain = (typeof DOMAINS)[number];
 
 *定数 ・ v0.1.0 で追加 ・ houki-egov-mcp / houki-nta-mcp が使用*
 
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/public_constants#domains)にあります。
+
 ```ts
 const DOMAINS: readonly ["tax", "labor", "accounting", "commercial", "civil", "administrative"];
 ```
@@ -1199,6 +1249,8 @@ const DOMAINS: readonly ["tax", "labor", "accounting", "commercial", "civil", "a
 ### LAW_TYPE_CODES
 
 *定数 ・ v0.1.0 で追加 ・ houki-egov-mcp が使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/public_constants#law-type-codes)にあります。
 
 ```ts
 const LAW_TYPE_CODES: Readonly<{
@@ -1227,6 +1279,8 @@ type LawTypeCode = keyof typeof LAW_TYPE_CODES;
 ### SOURCE_MCP_HINTS
 
 *定数 ・ v0.1.0 で追加 ・ houki-nta-mcp が使用*
+
+この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-abbreviations/public_constants#source-mcp-hints)にあります。
 
 ```ts
 const SOURCE_MCP_HINTS: readonly ["houki-egov", "houki-nta", "houki-mhlw", "houki-jaish", "houki-court", "houki-saiketsu"];

@@ -38,6 +38,8 @@ description: "houki-nta-mcp v0.27.0 の全 14 ツールの引数・型・既定�
 
 国税庁の基本通達（消基通・所基通・法基通・相基通の 4 通達）を FTS5 でキーワード検索する。事前に `--bulk-download-all` で DB 投入が必要。結果に現れた通達ごとに、解釈の対象になる法律の対応表（base_laws_by_tsutatsu）と、houki-egov-mcp の get_law を案内する next_actions を付ける。
 
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_search_tsutatsu)にあります。
+
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
@@ -152,6 +154,8 @@ description: "houki-nta-mcp v0.27.0 の全 14 ツールの引数・型・既定�
 
 基本通達の本文を取得する。略称（消基通・所基通・法基通・相基通）対応、条項指定可能。DB に条項があれば DB から返す。無ければ、bulk download（`--bulk-download-all`）済みの通達はエラー ARTICLE_NOT_FOUND、それ以外は国税庁サイトの目次から候補ページを選んで取る（1 回の呼び出しで 10 ページまで。取ったページは DB に書き戻す）。応答に解釈の対象になる法律（base_laws）を付け、next_actions で houki-egov-mcp の get_law を案内する。
 
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_get_tsutatsu)にあります。
+
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
@@ -217,6 +221,8 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 ## nta_search_qa
 
 国税庁の質疑応答事例（9 税目: 所得税/源泉所得税/譲渡所得/相続税・贈与税/財産の評価/法人税/消費税/印紙税/法定調書）を FTS5 でキーワード検索する。事前に `--bulk-download-qa` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
+
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_search_qa)にあります。
 
 ### 引数
 
@@ -359,6 +365,8 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 
 国税庁の質疑応答事例 1 件を取得する。URL 形式: /law/shitsugi/{topic}/{category}/{id}.htm。国税庁サイトにそのページが無いときはエラー DOC_NOT_FOUND を返し、nta_search_qa を案内する。format=json では【関係法令通達】を法令（related_laws）と通達（related_tsutatsu）に分け、next_actions で houki-egov-mcp の get_law と nta_get_tsutatsu を案内する。
 
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_get_qa)にあります。
+
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
@@ -478,6 +486,8 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 
 タックスアンサー（一般納税者向け解説、約 750 件）を FTS5 でキーワード検索する。事前に `--bulk-download-tax-answer` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
 
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_search_tax_answer)にあります。
+
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
@@ -553,6 +563,8 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 ## nta_get_tax_answer
 
 国税庁のタックスアンサー（よくある税の質問）本文を番号で取得する。国税庁の索引で番号から記事の URL を決める。8xxx（災害）も取れる。例: 6101 → 消費税の基本的なしくみ。国税庁の索引に番号が無いとき、または国税庁サイトにそのページが無いときはエラー DOC_NOT_FOUND を返し、nta_search_tax_answer を案内する
+
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_get_tax_answer)にあります。
 
 ### 引数
 
@@ -689,6 +701,8 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 
 改正通達（一部改正通達）を FTS5 でキーワード検索する。事前に `--bulk-download-kaisei` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
 
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_search_kaisei_tsutatsu)にあります。
+
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
@@ -769,6 +783,8 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 ## nta_get_kaisei_tsutatsu
 
 改正通達の本文を docId で取得する（DB 経由）。本文 + 添付 PDF URL（pdf-reader-mcp で読み取り推奨）を返す。
+
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_get_kaisei_tsutatsu)にあります。
 
 ### 引数
 
@@ -867,6 +883,8 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 
 事務運営指針（jimu-unei）を FTS5 でキーワード検索する。事前に `--bulk-download-jimu-unei` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
 
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_search_jimu_unei)にあります。
+
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
@@ -939,6 +957,8 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 
 事務運営指針の本文を docId で取得する（DB 経由）。本文 + 添付 PDF URL（pdf-reader-mcp で読み取り推奨）を返す。
 
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_get_jimu_unei)にあります。
+
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
@@ -997,6 +1017,8 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 ## nta_search_bunshokaitou
 
 文書回答事例（bunshokaitou）を FTS5 でキーワード検索する。事前に `--bulk-download-bunshokaitou` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
+
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_search_bunshokaitou)にあります。
 
 ### 引数
 
@@ -1149,6 +1171,8 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 
 文書回答事例の本文を docId で取得する（DB 経由）。本庁系は "shotoku/250416"、国税局系は "tokyo/shotoku/260218" のような形式。
 
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_get_bunshokaitou)にあります。
+
 ### 引数
 
 | 引数 | 型 | 必須 | 既定値 | 説明 |
@@ -1250,6 +1274,8 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 ## nta_inspect_pdf_meta
 
 指定した文書の添付 PDF の一覧を返す。本文は読まない。各 PDF に kind（comparison=新旧対照表 / attachment=別紙・別表 / qa-pdf / related / notice / unknown）と、読み方（read_strategy: tables=表として取る / text=本文として読む / sample=先頭を見て決める、layout_note: 紙面の組み方）を付ける。save: true のときだけ PDF をサーバー側の保存先（既定は XDG_CACHE_HOME か ~/.cache の下の houki-nta-mcp/files/。環境変数 HOUKI_NTA_FILES_DIR で変更）に取得し、saved[] に絶対パスを返す。next_actions に pdf-reader-mcp の呼び出し例（保存済みなら extract_tables / read_text に file_path、未保存なら read_url に url）と、他の PDF 読み取りツール向けの汎用の 1 件を置く。読み手は固定しない。`nta_get_*` で全文を取得すると重い場合や、PDF だけを確認したい時に使う。
+
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/nta_inspect_pdf_meta)にあります。
 
 ### 引数
 
@@ -1387,6 +1413,8 @@ v0.18.3 までは `next_actions` の代わりに `reader_hints` が付いてい�
 ## resolve_abbreviation
 
 略称・通称から houki-abbreviations 経由でエントリを解決する。houki-nta-mcp 管轄外（法令系等）の場合は「他 MCP に誘導」のヒントを返す。
+
+このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](/specs/houki-nta/resolve_abbreviation)にあります。
 
 ### 引数
 

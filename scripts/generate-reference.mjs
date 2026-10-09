@@ -41,7 +41,7 @@ import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { writeGenerated } from './lib/generated-page.mjs';
-import { SPEC_TARGETS, generateSpecPages } from './spec-pages.mjs';
+import { SPEC_TARGETS, generateSpecPages, specPageIndex } from './spec-pages.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = join(ROOT, 'site/docs');
@@ -84,6 +84,8 @@ const T = {
     '動いているサーバーの `tools/list` から写しています（正典はサーバー自身です）。' +
     `責務や使いどころの説明は[解説ページ](${guide})にあります。呼び出し例の応答 JSON は実測で、版を添えています。`,
   toc: 'ツール一覧',
+  /** 仕様書ページ（houki-hub#27）へのリンクの文。仕様書ページからリファレンスへのリンクと対にする */
+  specLink: (url) => `このツールが何をするか（処理の流れと、仕様 ID ごとの約束）は[仕様書ページ](${url})にあります。`,
   tool: 'ツール',
   summary: '概要',
   params: '引数',
@@ -216,6 +218,7 @@ function firstSentence(prose) {
 }
 
 function renderPage(server, cfg, info, tools) {
+  const specs = specPageIndex(server);
   // 日付は JST（サイトの読者と同じ時計で書く）
   const date = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
   const displayName = info.name.replace(/^@[^/]+\//, '');
@@ -254,6 +257,11 @@ function renderPage(server, cfg, info, tools) {
     if (tool.title) L.push(`**${tool.title}**`);
     L.push(proseSafe(tool.description ?? ''));
     L.push('');
+    const spec = specs.get(tool.name);
+    if (spec) {
+      L.push(T.specLink(spec));
+      L.push('');
+    }
     L.push(`### ${T.params}`);
     L.push('');
     const rows = paramRows(tool.inputSchema ?? {});
@@ -411,6 +419,7 @@ const LIB_T = {
     '**このページは自動生成の API リファレンスです。** 公開されている記号の名前・シグネチャ・説明・例を、' +
     'パッケージの型定義（`dist/index.d.ts`）から写しています（正典は型定義です）。' +
     `辞書の中身や設計上の約束は[解説ページ](${guide})にあります。`,
+  specLink: (url) => `この記号が何をするか（仕様 ID ごとの約束）は[仕様書ページ](${url})にあります。`,
   kind: {
     function: '関数',
     interface: 'インターフェース',
@@ -577,7 +586,7 @@ function docToMarkdown(text, srcPath, repoUrl) {
 /** VitePress の見出しアンカー。MCP 側と同じ規則（小文字化 + `_` → `-`）。 */
 const anchorOf = (name) => `#${name.toLowerCase().replace(/_/g, '-')}`;
 
-function renderLibPage(cfg, pkg, items, family) {
+function renderLibPage(cfg, pkg, items, family, specs = new Map()) {
   const date = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
   const displayName = pkg.name.replace(/^@[^/]+\//, '');
   const countOf = (kind) => items.filter((i) => i.kind === kind).length;
@@ -682,6 +691,11 @@ function renderLibPage(cfg, pkg, items, family) {
       if (servers !== null) badges.push(servers.length ? `${servers.join(' / ')} が使用` : 'family では未使用');
       L.push(`*${badges.join(' ・ ')}*`);
       L.push('');
+      const spec = specs.get(item.name);
+      if (spec) {
+        L.push(LIB_T.specLink(spec));
+        L.push('');
+      }
       if (item.deprecated) {
         L.push('::: warning 非推奨');
         L.push(proseSafe(item.deprecated));
@@ -752,7 +766,7 @@ async function generateLib(name) {
 
   const outPath = join(SITE, cfg.out);
   mkdirSync(dirname(outPath), { recursive: true });
-  const { text, counts } = renderLibPage(cfg, pkg, items, family);
+  const { text, counts } = renderLibPage(cfg, pkg, items, family, specPageIndex(name));
   const w = writeGenerated(outPath, text);
   console.log(
     w.written
@@ -812,12 +826,13 @@ for (const unknown of names.filter((n) => !known.includes(n))) {
   console.error(`unknown target: ${unknown} (known: ${known.join(', ')})`);
   process.exit(1);
 }
+// 仕様書ページ（houki-hub#27）。サーバーを起動しないので、MCP のハンドシェイクより先に回す。
+// リファレンスが仕様書ページへのリンクを生成済みのページから引くので、ライブラリのリファレンスよりも先に回す
+const specNames = names.includes('specs') ? SPEC_TARGETS : names.filter((n) => n.startsWith('specs:')).map((n) => n.slice(6));
+if (specNames.length) await generateSpecPages(specNames);
 for (const name of names.filter((n) => n in LIB_REGISTRY)) {
   await generateLib(name);
 }
-// 仕様書ページ（houki-hub#27）。サーバーを起動しないので、MCP のハンドシェイクより先に回す
-const specNames = names.includes('specs') ? SPEC_TARGETS : names.filter((n) => n.startsWith('specs:')).map((n) => n.slice(6));
-if (specNames.length) await generateSpecPages(specNames);
 for (const name of names.filter((n) => n in REGISTRY)) {
   const cfg = REGISTRY[name];
   // mcp/ は追跡外の作業コピー。CI と fresh clone には dist が無いのでスキップし、
