@@ -415,7 +415,8 @@ Q4（T6）の勧める案:
 | XS27 | 残りの順序 2 | houki-research-skill の nta 0.27.0 への追随 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、Skill PR #29、main・タグ `v0.20.0` `9d2a83c`。`SKILL.md` の鉄則 5 の表に「今は取り込めません」の行を足したので minor。`ERROR-HANDLING.md` の `hint` の表と `--status` の節に EACCES の場面。check-mcp-refs・test 19 件・snapshots とも通過） |
 | Y1 | 段階 4 | #27 の仕様書ページと scope-by-audience（設計と試作） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、hub PR #46、main `690ac1e`。`scripts/spec-pages.mjs`（`generate-reference.mjs specs` から呼ぶ）、`scripts/lib/generated-page.mjs`、試作 4 ページ（nta_get_tsutatsu・search_fulltext・resolve_abbreviation・tax-research）と一覧 4 枚・読み方のページ、人が書く「使いどころ」1 つ、`guide/scope-by-audience.md`、nav の「仕様」と sidebar。main に入ったので GitHub Pages にも公開された（`site/**` の push で deploy）） |
 | Y2 | 段階 4 | #27 の仕様書ページの全部の生成と公開 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、hub PR #47、main `eff9bd9`、GitHub Pages に公開済み。Q26' は A。67 ページ（egov 20・nta 22・abbr 23・Skill 2）と一覧 4 枚。生成スクリプトで Mermaid の書き方の誤り 3 か所・日本語の名前の書式・同じ題・workflow 間のリンクを直した。リファレンスの各ツール・各記号から仕様書ページへリンク。残りは下の「Y2 の後」） |
-| Y3 | 段階 4 | ツールごとのページ（#27 の続き） | 未作成 | Q27'・Q28' を待つ。Issue 草案 `docs/notes/issues-2026-10-09-hub27-tool-pages/issue-tool-pages.md`、見本 `sample-get_law.md` |
+| Y3 | 段階 4 | ツールごとのページ（#27 の続き。リファレンスを分ける） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Q27' は B。Issue 草案 `docs/notes/issues-2026-10-09-hub27-tool-pages/issue-tool-pages.md`、見本 `sample-get_law.md` |
+| Y4 | 段階 4 | 人が書くページのコンテナと図、壊れたリンク 2 つ | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Q28' は A。Y3 の後 |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 2026-10-09 に Y1（設計と試作）と Y2（全部の生成と公開）に分けた。下の表の Y1 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -670,4 +671,16 @@ Y2 の後、人が読むページの構成を検討した（2026-10-09 JST）。
 | --- | --- | --- | --- |
 | Q27' | 人が読むツールの説明の置き場所 | (A) 今の 3 層のまま、橋だけを足す（解説のツール表を「一言・リファレンス・仕様」の 3 列にする。リファレンスの各ツールの錨に spec.md の「使う人と受け取るもの」「処理の流れ」「できないこと」を写す。仕様書ページの先頭を h1 の一言とリンクだけにする）。リファレンスは 1 ページのまま / (B) A の橋に加えて、リファレンスを `/reference/mcp/<server>/<tool>` のツールごとのページに分ける。人が書くのは「使いどころ」とツールの地図だけ。`/specs` は今のまま残す / (C) `/mcp/<server>` の下にツールごとの説明を人が書く | **B**。A のまま spec.md の 3 節と図を写すと、リファレンスは 1 ページで 14 ツール分の図と節が並び、今の 1,551 行より大きく伸びる。見出しも「引数」と同じ名前が 3 種類増える。分けるのは A の 2 つ目を入れるときに 1 回で済む。C は 28 ツール＋23 関数を手で書き、実装とのずれに気付けない。見本（`get_law`）で 1 ページにまとまることを確かめた |
 | Q28' | カスタムコンテナと図の使い分け | (A) コンテナの種類ごとに意味を 1 つに決める（tip＝使いどころ、info＝前提と版の条件、warning＝間違えやすいことと業法の線、danger＝取り消せない操作、details＝長い例と経緯と spec.md の図）。人向けの図はノード 10 個ほどまでの手書きにし、spec.md の処理の流れの図は畳む / (B) 決まりを作らず、ページごとに判断する | **A**。今は人が書く 14 ページでコンテナが 2 個しかなく、足すなら最初に意味を決めないと目立たなくなる。見本では spec.md の `get_law` の図がページの 3 割（約 1,800px）を占め、文字が小さかった |
+
+2026-10-09 JST に shuji が決めたこと:
+
+- Q27' は案 B。3 層は残し、リファレンスを `/reference/mcp/<server>/<tool>` のツールごとのページに分ける。Issue 草案の「決めること」1〜3 も勧める案（`/reference/` の下、約束の見出しの一覧を畳んで載せる、経緯の文は出す）。指示 Y3
+- Q28' は案 A。コンテナの種類ごとに意味を 1 つに決め、人向けの図はノード 10 個ほどまでの手書きにし、spec.md の処理の流れの図は畳む。人が書くページへの適用と壊れたリンク 2 つは指示 Y4（Y3 の後）
+
+これで、段階 4 の残りの順は次のとおり。
+
+1. Y3: ツールごとのページ
+2. Y4: 人が書くページのコンテナと図（壊れたリンク 2 つを含む）
+3. hub#5 ②（CI での生成し直しと、版のずれの検出）と呼び出し例の照合のスクリプト（houki-hub#44）。Y3 でリファレンスが分かれるので、#44 は分かれた後の形で作る
+4. houki-nta-mcp の spec.md の Mermaid 3 か所は、nta の次の仕様 PR で ID の無い節（処理の流れ）の直しとして入れる（Q24' の A の形）
 

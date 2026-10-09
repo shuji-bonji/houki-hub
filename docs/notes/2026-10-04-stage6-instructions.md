@@ -31,7 +31,9 @@
 | D5b | 残りの順序 3 | spec-ids の docs の PR（operations.md 5 章、ID の無い節の書き方） | 済（spec-ids PR #11） |
 | XS27 | 残りの順序 2 | houki-research-skill の nta 0.27.0 への追随 | 済（Skill PR #29、v0.20.0） |
 | Y1 | 段階 4 | #27 の仕様書ページと scope-by-audience（設計と試作） | 済（hub PR #46、main `690ac1e`） |
-| Y2 | 段階 4 | #27 の仕様書ページの全部の生成と公開 | Q26' を決めてから（2026-10-09 に追加） |
+| Y2 | 段階 4 | #27 の仕様書ページの全部の生成と公開 | 済（hub PR #47、main `eff9bd9`） |
+| Y3 | 段階 4 | ツールごとのページ（リファレンスを分ける。Q27' の B） | 今始めてよい（2026-10-09 に追加） |
+| Y4 | 段階 4 | 人が書くページのコンテナと図（Q28' の A） | Y3 の後（2026-10-09 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1597,3 +1599,116 @@ houki-hub#27 の仕様書ページを、試作（Y1、PR #46）の形のまま�
 - コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る（この文書の「共通」と同じ）
 - 報告: ブランチ・コミット、生成したページの数（リポジトリごと）、VitePress の組み立ての結果、生成スクリプトで直した崩れの一覧、spec.md 側で直すとよいものの一覧（リポジトリ・機能・何が崩れるか）、リファレンスからのリンクの扱い、hub#5 ②（CI での生成し直し）に渡すこと（作業コピーに頼っている入力と、CI で用意するもの）、PR 本文の草案（Refs #27。#27 を閉じるかは私が決める。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```
+
+---
+
+## 指示 Y3: ツールごとのページ（#27 の続き、リファレンスを分ける）
+
+Y2 は houki-hub PR #47 で main に入り（`eff9bd9`、2026-10-09）、公開しました。仕様書ページは spec.md の写しで、契約とテストの索引です。人がツールを理解するための文書にはなっていません。2026-10-09 JST に shuji が計画書の Q27' を案 B、Q28' を案 A に決めました。
+
+決まったこと（Q27' の B と、Issue 草案の「決めること」1〜3 の勧める案）:
+
+| # | 決めたこと |
+| --- | --- |
+| 1 | 3 層（解説 `/mcp/<server>`・リファレンス・仕様 `/specs/`）は残す。仕様 ID は契約とテストの索引のままにし、人が読む本文は仕様書ページに寄せない |
+| 2 | リファレンスをツールごとのページに分ける: `/reference/mcp/<server>/<tool>`、ライブラリは `/reference/lib/houki-abbreviations/<関数の dir>`。人が読む単位はこのページ |
+| 3 | ツールのページに載せるもの: 使いどころ（人が書く）、spec.md の「使う人と受け取るもの」「処理の流れ」「できないこと」の写し、`tools/list` の引数（ライブラリは `.d.ts` のシグネチャ）、実測の呼び出し例、約束の見出しの一覧（畳む。各行は仕様書ページの ID へリンク） |
+| 4 | spec.md の経緯の文（「v0.26.x では…」）は言い換えないために出す。経緯の多い節は畳んでよい |
+| 5 | 今の 1 ページのリファレンス（`/reference/mcp/<server>`）は、ツールの一覧と共通の前置きだけにする。今の錨（`#get-law` など）から新しいページへ移す |
+| 6 | 仕様書ページの先頭は、spec.md の h1 の一言とツールのページへのリンクにする。「使いどころ」はツールのページへ移す（仕様書ページには出さない） |
+| 7 | 図とコンテナは Q28' の A: spec.md の処理の流れの図は畳む。人向けの小さな図（ノード 10 個ほどまで）は人が書く節に置ける形にする（Y3 では枠だけ。書くのは Y4 以降） |
+
+見本: `docs/notes/issues-2026-10-09-hub27-tool-pages/sample-get_law.md`（作り方は同じフォルダーの `sample-build.py`）。Issue の草案は同じフォルダーの `issue-tool-pages.md`（起票は shuji。番号が付いたらこの指示の Refs に足す）。
+
+```text
+houki-hub のリファレンスを、ツール（関数）ごとのページに分けてください。人が「このツールは何をして、どう使い、何を返すか」を 1 ページで読めるようにします。この会話の役は、生成スクリプトと文書の作業者です。各リポジトリの specs/ と、サーバーの tools/list は読むだけで、変えません。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub（Cowork の device_bash では $HOME/mnt/houki-hub）
+- 起点: main。作業の前に git ls-remote https://github.com/shuji-bonji/houki-hub refs/heads/main で origin と同じか確かめる。mcp/houki-egov-mcp・mcp/houki-nta-mcp・lib/houki-abbreviations・skill/houki-research-skill の作業コピーが、それぞれの origin の main と同じかも確かめる。違うときは、生成の元（specs/・package.json の版・SKILL.md・workflows/・dist）に差があるかを見て、差があれば止めて私に聞く（差が README などだけなら、進めて報告に書く）
+- ブランチ: docs/<作業日の yyyymmdd>-tool-pages（site/ を変えるので PR にする）
+
+## 最初に読むもの（この順）
+
+1. docs/notes/issues-2026-10-09-hub27-tool-pages/issue-tool-pages.md（Issue の草案）と、同じフォルダーの sample-get_law.md（見本）
+2. docs/notes/2026-10-04-stage6-instructions.md の「指示 Y3」の前の表（決まったこと 1〜7）と、計画書の Q27'・Q28' と「Y2 の後」
+3. scripts/generate-reference.mjs（renderPage・renderLibPage・REGISTRY・LIB_REGISTRY）、scripts/spec-pages.mjs（readSpecFeature・transformMarkdown・mermaidSafe・specPageIndex・renderSpecPage）、scripts/lib/generated-page.mjs
+4. site/docs/.vitepress/config.ts（sidebar・nav、cleanUrls、markdown の設定）と site/README.md の「書き方」
+
+## やること
+
+1. ツールのページを生成する。generate-reference.mjs から、MCP は tools/list、ライブラリは .d.ts、spec.md の 3 節は spec-pages.mjs の読み込みと変換を使い回す（生成済みの仕様書ページから写さない。見本では節の目的の一文が重なった）。spec.md の中の仕様 ID のリンクは、仕様書ページの ID（/specs/<site>/<dir>#spec-…）へ向ける
+2. ページの並び: 一言（tools/list の description）→ 使いどころ（人が書く節。あれば）→ 使う人と受け取るもの → 引数 → 呼び出し例 → できないこと → 処理の流れ（spec.md の図。::: details に畳む）→ 約束の見出しの一覧（畳む）→ 関連ページ。見本と違い、処理の流れを後ろに回して畳む（Q28' の A）。畳んだ中で Mermaid が描けるか（幅 0 で描かれない・開いたときに描かれる）をブラウザで確かめ、描けなければ畳まずに末尾の節にして報告する
+3. 人が書く節のファイルは scripts/spec-pages/<site>/<dir>.md をそのまま使い、ツールのページに差し込む。仕様書ページからは外す（決まったこと 6）。人向けの小さな図を置く場所（同じファイルの中の節）を決め、置き方を site/README.md の「書き方」に 1〜2 文で書く。Y3 で新しく書く人の節は無い
+4. 1 ページのリファレンス（/reference/mcp/<server>、/reference/lib/houki-abbreviations）を、ツールの一覧（一言・ツールのページ・仕様書ページの 3 列）と共通の前置きだけにする。今の錨（#get-law など）で開かれたときに新しいページへ移す仕組みを置く（生成するページの中の小さなスクリプトか theme の側。どちらにしたかを報告する）
+5. 仕様書ページの先頭を、spec.md の h1 の一言・ツールのページへのリンク・最後に仕様が変わった変更の 1 文にする（今の info と承認の履歴は残す）。spec-pages.mjs の referenceLink と specPageIndex の行き先も、新しいツールのページに合わせる
+6. sidebar: /reference/ の下にサーバーごとのツールのページを並べる（config.ts の sidebar を生成した JSON から読む形にするかは任せる。specs-sidebar.json と同じ形が望ましい）
+7. 呼び出し例のファイル（scripts/reference-examples/）と、例を読むスクリプト（check-example-versions.mjs など）が、ページが分かれても今どおり動くかを確かめる
+
+## 確かめること
+
+- VitePress で組めること。組み立ては作業コピーの node_modules（Mac 用）を使わず、site/ を VM のホームの下（mnt/ の外）に写して npm ci してから行う。houki-hub の node_modules で npm install・npm rebuild はしない
+- 壊れたリンクとアンカー: 生成した HTML の id と href を突き合わせる。VitePress は濁点を含む見出しの id を NFD で作るので、NFC で書いた錨は合わない（Y2 で見つかった。比べるときは NFC/NFD の違いも見る）
+- Mermaid: 全部の図を mermaid 11 で parse する（jsdom で足りる）。ブラウザでの描画は、dist を tar にして houki-hub に一時的に置き、cloud のコンテナに stage して Playwright で見る（使い終わった tar は消す）
+- もう一度生成して、書き換わるファイルが無いこと
+
+## 守ること・報告すること
+
+- 生成したページは手で直さない。仕様書の本文と tools/list の説明を言い換えない。公開文書の文は「〜します」「〜です」
+- scope-by-audience と、人が書くページ（guide/・mcp/・lib/・skills/ の解説）は変えない（Y4 で扱う）。ただし、ツールのページへのリンクの行き先が変わって壊れる箇所があれば、その行き先だけを直してよい（直した箇所を報告に挙げる）
+- コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る（この文書の「共通」と同じ）
+- 報告: ブランチ・コミット、生成したページの数（サーバー・ライブラリごと）、ページの並びの最終形と見本からの違い、畳んだ Mermaid の描画の結果、今の錨の移し方、組み立てと確認の結果、生成スクリプトで直した崩れ、spec.md や tools/list の説明の側で直すとよいもの、hub#5 ② に渡すこと（Y2 の報告からの増減）、PR 本文の草案（Refs #27 と Issue の番号。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+## 指示 Y4: 人が書くページのコンテナと図（Q28' の A）
+
+Y3 の後に始めます。人が書く 14 ページ（guide/・mcp/・lib/・skills/ の解説と index.md）は、2026-10-09 時点でコンテナが 2 個（tip 1・warning 1）、図が 9 個です。Q28' の A で、コンテナの種類ごとに意味を 1 つに決め、人向けの図はノード 10 個ほどまでの手書きにしました。業法の線を書く文が入るので、文の確認は shuji が行います。
+
+決まったこと（Q28' の A）:
+
+| コンテナ | 意味 | 例 |
+| --- | --- | --- |
+| `tip` | 使いどころ・近道 | 番号が分からないときは先に `nta_search_tsutatsu` |
+| `info` | 前提・版の条件 | v0.19.0 以上、ローカル DB が要る |
+| `warning` | 間違えやすいこと・業法の線 | 通達は納税者を拘束しない。結論は返さない |
+| `danger` | 取り消せない操作 | 0.18.x 以前で新しい DB を開くと全テーブルが消える |
+| `details` | 長い例・経緯・spec.md の図 | 呼び出し例の応答 JSON |
+
+```text
+houki-hub の人が書くページに、決まった使い分けでカスタムコンテナと図を足してください。この会話の役は、文書の作業者です。生成したページ（reference/・specs/）と scope-by-audience は変えません。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub（Cowork の device_bash では $HOME/mnt/houki-hub）
+- 起点: main（Y3 が入った後）。作業の前に git ls-remote https://github.com/shuji-bonji/houki-hub refs/heads/main で origin と同じか確かめる
+- ブランチ: docs/<作業日の yyyymmdd>-containers-diagrams（site/ を変えるので PR にする）
+
+## 最初に読むもの（この順）
+
+1. docs/notes/2026-10-04-stage6-instructions.md の「指示 Y4」の前の表（コンテナの使い分け）と、docs/notes/issues-2026-10-09-hub27-tool-pages/issue-tool-pages.md の「コンテナと図の使い分け」
+2. 計画書の「Y2 の後」の表（壊れたリンク 2 つ）
+3. site/README.md と、対象のページ: index.md、guide/overview.md・architecture.md・getting-started.md・local-database.md・disclaimer.md・document-types.md・roadmap.md、mcp/index.md・houki-egov.md・houki-nta.md、lib/houki-abbreviations.md、skills/houki-research.md
+
+## やること
+
+1. コンテナの使い分けを site/README.md の「書き方」に表で書く
+2. 対象のページで、今ある文のうち使い分けに当たるもの（前提・版の条件、取り消せない操作、業法の線、長い例）をコンテナに入れる。文は変えずに入れるのを基本にし、文を変えるときは報告に前後を挙げる。新しい注意書きは足さない
+3. 図を足す（ノード 10 個ほどまで。1 ページに 1〜2 個まで）:
+   - guide/overview.md・architecture.md: 構成図（クライアント → Skill → MCP 群 → e-Gov API・国税庁サイト・ローカル DB）。architecture.md の今の図と重なるなら、重ならない方をどちらかに置く
+   - mcp/houki-egov.md・houki-nta.md: 外の API とローカル DB のどちらを引くかの図と、DB を作る・最新にする・作り直す流れ
+   - guide/local-database.md: 版をまたぐときの判断のフロー
+   - skills/houki-research.md: workflow でツールを呼ぶ順のシーケンス（tax-research と feasibility-check。Y3 のツールのページへリンク）
+4. mcp/houki-egov.md・houki-nta.md のツール表を「一言・ツールのページ・仕様書ページ」の 3 列にする（Y3 の URL。仕様 ID は出さない）
+5. 壊れたリンク 2 つの直し方を決める。勧める案: config.ts の markdown.anchor の slugify で見出しの id を NFC にそろえる（サイト全体の id が NFC になり、手で書いた錨がそのまま合う）。変えた後に全ページのリンクとアンカーを確かめる。scope-by-audience の 93 行目は、slugify で直るなら本文は変えない
+6. houki-nta.md の `--tsutatsu` の説明（186・198・201 行目あたり。受け付けるのが基本通達 4 種だけであることを書いていない）は、直す案を報告に挙げるだけにする（site は都度確認）
+
+## 守ること・報告すること
+
+- 公開文書の文は「〜します」「〜です」。比喩を使わず、何が起きるかを書く
+- 業法の線（warning に入れる文）は、今ある文を動かすだけにする。言い回しを変える必要があれば、報告に挙げて私が決める
+- 確かめること（組み立て・リンクとアンカー・Mermaid の parse とブラウザでの描画）は指示 Y3 と同じ方法で行う。幅 390 でも図が読めるかを見る
+- コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る
+- 報告: ブランチ・コミット、ページごとに足したコンテナと図、文を変えた箇所の前後、slugify を変えた影響（id が変わったページの数、外から張られているかもしれない錨）、組み立てと確認の結果、houki-nta.md の `--tsutatsu` の直す案、PR 本文の草案（Refs #27。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
