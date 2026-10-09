@@ -29,7 +29,8 @@
 | Q27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の仕様 PR（#154・#155） | 済（nta PR #160、main `a2a9e5f`） |
 | R27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の実装 PR（#154・#155、#156 を閉じる） | 済（nta PR #161、v0.27.0 を 2026-10-09 に publish） |
 | D5b | 残りの順序 3 | spec-ids の docs の PR（operations.md 5 章、ID の無い節の書き方） | 済（spec-ids PR #11） |
-| XS27 | 残りの順序 2 | houki-research-skill の nta 0.27.0 への追随 | すぐ（2026-10-09 に追加） |
+| XS27 | 残りの順序 2 | houki-research-skill の nta 0.27.0 への追随 | 済（Skill PR #29、v0.20.0） |
+| Y1 | 段階 4 | #27 の仕様書ページと scope-by-audience（設計と試作） | すぐ（2026-10-09 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1497,4 +1498,54 @@ proposal.md の表の 5 行を出発点にし、main で grep し直して行番
 - check-mcp-refs・test・snapshots の結果
 - PR 本文の草案（houki-nta-mcp 0.27.0・#154・#155 への言及。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 - claude-plugins の追随が要るか
+```
+
+---
+
+## 指示 Y1: #27 の仕様書ページと scope-by-audience のページ（設計と試作）
+
+段階 4 の最初です（計画書の 6c-1・6c-2）。#27 の仕様書ページは、各リポジトリの `specs/current/<dir>/spec.md`（egov・nta・abbr）と Skill の `workflows/*.md` から生成します。承認の記録は spec-ids 0.3.0 の front matter と `spec-ids history` で読めるようになりました（spec-ids#5、2026-10-09 に 3 リポジトリとも変換済み）。
+
+ページの作りに決めることが多いので、最初の会話は「設計と試作」に分けます。全部のページの生成と公開（Y2）は、私が試作を見て決めた後に別の会話で行います。2026-10-09 JST に、houki-hub の origin の main が `8733173`（Skill 0.20.0 の追随）であることを確かめました。
+
+```text
+houki-hub#27（houki-hub シリーズの仕様書の提供）の仕様書ページと、scope-by-audience のページの設計と試作をしてください。この会話では、生成スクリプトの試作と、試作のページを数枚作るところまでを行い、全部のページの生成と公開は行いません。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub（Cowork の device_bash では $HOME/mnt/houki-hub）
+- 起点: main。作業の前に git ls-remote https://github.com/shuji-bonji/houki-hub refs/heads/main で origin と同じか確かめる
+- ブランチ: docs/<作業日の yyyymmdd>-spec-pages-prototype（site/ と scripts/ を変えるので main 直接にしない）
+- 読む材料（読むだけ）: mcp/houki-egov-mcp・mcp/houki-nta-mcp・lib/houki-abbreviations の specs/current/<dir>/spec.md と specs/releases/*/*/proposal.md、/Users/bonji/workspace/shuji-bonji/skills/houki-research-skill の SKILL.md と workflows/*.md
+
+## 最初に読むもの（この順）
+
+1. houki-hub#27 の本文とコメント（curl https://api.github.com/repos/shuji-bonji/houki-hub/issues/27 と /comments）。コメント 2026-09-27「Skill のページは spec.md ではなく SKILL.md と workflows/ から作る」（docs/notes/2026-09-28-comment-hub-27-skill-pages.md も同じ内容）
+2. docs/notes/2026-10-04-plan-stage6-and-followups.md の 4 章の段階 4（6c-1・6c-2・6c-3・6e・6f）と 8.3（URL とサイドバーは 6c-1 の会話で決める）、末尾の「この後の順」
+3. docs/notes/2026-09-29-scope-by-audience.md（2 節・4 節を利用者向けに書き直す。3 節は載せない。6 章「公開への切り出し」）
+4. scripts/generate-reference.mjs（今のリファレンスの生成。#27 の生成は同じ 1 本に入力を足す方針）と site/docs/.vitepress/config.ts（nav・sidebar）、site/docs/reference/ と site/docs/guide/ の今のページ
+5. spec-ids の README の front matter の表と history（$HOME/mnt/spec-ids）。各リポジトリで npx spec-ids history <dir> --json を実行すると承認の履歴が JSON で出る（node_modules の 0.3.0）
+
+## 決めること（案を並べて勧める案を書き、試作はその案で作る）
+
+1. ページの URL と sidebar（計画書 8.3）。出発点: /specs/<repo>/<dir>（Skill は /specs/houki-research-skill/<workflow>）、sidebar はリポジトリごとの節
+2. ページに何を載せるか。#27 の本文は「目的・使い方・処理の流れが中心、コードの詳細は避ける（必要ならリファレンス）」。spec.md は実装者向けの文（仕様 ID ごとの約束と例）なので、そのまま載せると #27 の狙いより細かい。案: (A) spec.md の節を見出し単位でそのまま載せる（ID・本文・例） / (B) spec.md の冒頭（目的・入力・できないこと・処理の流れ）を前に出し、ID ごとの約束は折りたたみや 2 段目にする / (C) 人が書く利用者向けの要約と、spec.md の生成部分を分ける。試作は勧める案で作り、他の案との違いを報告に書く
+3. 承認の履歴（spec-ids history の出力）をページに載せるか、どの形で載せるか
+4. 生成スクリプトの置き場所（generate-reference.mjs に入力を足すか、別のスクリプトにして共通部分を分けるか。計画書は同じ 1 本の方針）と、CI で生成し直すとき（hub#5 ②、6e）に必要なもの（各リポジトリの specs/ をどこから読むか: 作業コピーか、npm のパッケージか、GitHub か）
+5. scope-by-audience のページの置き場所（計画書の案: site/docs/guide/ に 1 ページ、overview.md と disclaimer.md からリンク）と、仕様書ページとの結び方（利用者別の線のページから、関係する仕様 ID のページへのリンク）
+
+## 試作するもの
+
+- 生成スクリプトの試作（決めること 4 の案で）
+- 試作のページ: houki-nta-mcp の 1 ツール（nta_get_tsutatsu を勧める。0.27.0 で変わった 007 があり、履歴の例にもなる）、houki-egov-mcp の 1 ツール（search_fulltext を勧める）、houki-abbreviations の 1 機能、Skill の workflow 1 つ（tax-research）
+- scope-by-audience のページの草案（2 節・4 節。3 節は載せない。利用者向けの公開文書の文体: 「〜します」「〜です」、内部の関数名・変数名を避ける）
+- config.ts の sidebar の試作（試作のページだけ）
+- 手元で VitePress を動かせれば npm run docs:build（site/ の package.json のスクリプト名を確かめる）で通ることを確かめる。動かせなければ私が Mac で回すコマンドを書く
+
+## 守ること・報告すること
+
+- site/ の公開文書は「〜します」「〜です」で、利用者が何を受け取るかを文で書く。体言止めや開発メモの文体を持ち込まない。見出しの節には目的の一文を付ける
+- 生成したページは、元の spec.md・workflows の文を言い換えて意味を変えない（生成部分は写すだけにし、人が書く部分と分ける）
+- 公開（main への取り込み）はしない。コミットはブランチに作るところまで。署名・push・PR は私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る（この文書の「共通」と同じ）
+- 報告: ブランチ・コミット、決めること 1〜5 の案と勧める案（試作に使った案）、試作のページのパスと見どころ、生成スクリプトの入力と出力、全部のページを生成すると何ページになるか（リポジトリごとの数）、Y2（全部の生成と公開）と hub#5 ②（CI での生成し直し）に渡すこと
 ```

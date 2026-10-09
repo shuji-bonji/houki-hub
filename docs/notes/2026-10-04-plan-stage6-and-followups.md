@@ -412,8 +412,9 @@ Q4（T6）の勧める案:
 | Q27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の仕様 PR（#154・#155） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、nta PR #160、main `a2a9e5f`。front matter の形の最初の仕様 PR（`approved: 2026-10-09`・`pr: 160`、targets 5 つ）。MODIFIED 9。ID の無い節（db_schema の「処理の流れ」、nta_get_tsutatsu の「できないこと」）は差分の spec.md に節として書いた（Q24' の案 A の形）。「人が判断すること」1〜14 を勧める案で承認。11（007 は DB の状態によらず同じ応答）は仕様 PR で足した点。`--status` に加えて `--refresh-stale=<日数>` の終了コードも 0 → 1） |
 | R27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の実装 PR（#154・#155、#156 を閉じる） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、nta PR #161、main・タグ `v0.27.0` `c728de5`、npm 0.27.0 は 21:19 JST、MCP Registry 登録済み。#154・#155・#156 を閉じた。受入テスト 96 件を追加、007 の変更で既存テスト 7 件の期待値を直した。`qa-jirei` で `nta_inspect_pdf_meta` を呼んでいた 4 か所（計画書では 3 か所と見ていた）を `tax-answer` の `6101` に置き換えた。2 つの差分を `specs/releases/v0.27.0/` へ移し、`specs/changes/` は `.gitkeep` だけ（spec-ids 0.3.0 の形での最初の取り込み）。PR 本文の「publish の前の確認」1〜8 は `<結果を記入>` のまま） |
 | D5b | 残りの順序 3 | spec-ids の docs の PR（operations.md 5 章） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #11、main `12b3448`。5 章を決まった書き方に、6 章の Steward・Publisher の指示文に 1 文ずつ、10 章から行を外した） |
-| XS27 | 残りの順序 2 | houki-research-skill の nta 0.27.0 への追随 | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09） |
-| Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
+| XS27 | 残りの順序 2 | houki-research-skill の nta 0.27.0 への追随 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、Skill PR #29、main・タグ `v0.20.0` `9d2a83c`。`SKILL.md` の鉄則 5 の表に「今は取り込めません」の行を足したので minor。`ERROR-HANDLING.md` の `hint` の表と `--status` の節に EACCES の場面。check-mcp-refs・test 19 件・snapshots とも通過） |
+| Y1 | 段階 4 | #27 の仕様書ページと scope-by-audience（設計と試作） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Y の「生成と公開」は Y2 として、試作を見てから書く |
+| Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 2026-10-09 に Y1（設計と試作）と Y2（全部の生成と公開）に分けた。下の表の Y1 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
 
