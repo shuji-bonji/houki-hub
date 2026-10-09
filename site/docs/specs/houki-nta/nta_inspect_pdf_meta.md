@@ -8,11 +8,12 @@ description: "houki-nta-mcp の nta_inspect_pdf_meta（文書の添付 PDF の�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/nta_inspect_pdf_meta/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/nta_inspect_pdf_meta/spec.md` から自動生成しました（仕様 ID 20 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/nta_inspect_pdf_meta/spec.md` から自動生成しました（仕様 ID 20 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp のツール「nta_inspect_pdf_meta（文書の添付 PDF の一覧と読み方を返す）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-nta#nta-inspect-pdf-meta)にあります。
+文書の添付 PDF の一覧と読み方を返す
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-nta/nta_inspect_pdf_meta)にあります。
 
 最後に仕様が変わったのは v0.27.0 の「nta_inspect_pdf_meta の仕様から、inputSchema が受け付けない docType "qa-jirei" の行と例を外す（#156）」（2026-10-09 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -368,5 +369,5 @@ DB にある文書の添付 PDF の記録が JSON として読めないときは
 
 - [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
 - [houki-nta-mcp の解説](/mcp/houki-nta)
-- [リファレンスの nta_inspect_pdf_meta](/reference/mcp/houki-nta#nta-inspect-pdf-meta)
+- [nta_inspect_pdf_meta のツールのページ（リファレンス）](/reference/mcp/houki-nta/nta_inspect_pdf_meta)
 - [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/nta_inspect_pdf_meta/spec.md)

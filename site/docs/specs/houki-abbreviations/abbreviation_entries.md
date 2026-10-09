@@ -8,10 +8,12 @@ description: "houki-abbreviations の abbreviationEntries（全分野の略称�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/abbreviation_entries/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.0** の `specs/current/abbreviation_entries/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.0** の `specs/current/abbreviation_entries/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-abbreviations の値「abbreviationEntries（全分野の略称辞書のエントリを 1 つの配列で渡す）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+全分野の略称辞書のエントリを 1 つの配列で渡す
+
+使いどころ・引数・実測の呼び出し例は、[値のページ](/reference/lib/houki-abbreviations/abbreviation_entries)にあります。
 
 最後に仕様が変わったのは v0.7.0 の「辞書のエントリと公開定数を凍結する」（2026-09-30 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -339,4 +341,5 @@ flowchart TD
 
 - [houki-abbreviations の仕様の一覧](/specs/houki-abbreviations/)
 - [houki-abbreviations の解説](/lib/houki-abbreviations)
+- [abbreviationEntries の値のページ（リファレンス）](/reference/lib/houki-abbreviations/abbreviation_entries)
 - [元の仕様書（GitHub、v0.7.0）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.0/specs/current/abbreviation_entries/spec.md)

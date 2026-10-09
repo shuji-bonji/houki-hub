@@ -8,10 +8,10 @@ description: "houki-nta-mcp の全 22 機能の仕様の一覧（specs/current �
 <!-- GENERATED FILE — 手で編集しない。houki-nta-mcp の specs/current/ から生成。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/` から自動生成しました（22 機能・仕様 ID 276 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/` から自動生成しました（22 機能・仕様 ID 276 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-houki-nta-mcp が何をするかを、機能ごとに 1 ページで説明します。全体の使い方は[解説](/mcp/houki-nta)に、引数の一覧は[リファレンス](/reference/mcp/houki-nta)にあります。
+houki-nta-mcp が何をするかを、機能ごとに 1 ページで説明します。全体の使い方は[解説](/mcp/houki-nta)に、引数の一覧は[リファレンス](/reference/mcp/houki-nta/)にあります。
 
 ## ツール
 

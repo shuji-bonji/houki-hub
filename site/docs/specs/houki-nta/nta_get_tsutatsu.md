@@ -8,25 +8,14 @@ description: "houki-nta-mcp の nta_get_tsutatsu（基本通達の条項を 1 �
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/nta_get_tsutatsu/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/nta_get_tsutatsu/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/nta_get_tsutatsu/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp のツール「nta_get_tsutatsu（基本通達の条項を 1 つ取得する）」の仕様です。「使いどころ」の節は人が書いた補足で、それ以外は「承認の履歴」の前まで、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-nta#nta-get-tsutatsu)にあります。
+基本通達の条項を 1 つ取得する
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-nta/nta_get_tsutatsu)にあります。
 
 最後に仕様が変わったのは v0.27.0 の「置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）」（2026-10-09 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
-
-<!-- ここから人が書いた節: scripts/spec-pages/houki-nta/nta_get_tsutatsu.md -->
-
-## 使いどころ
-
-この節は、このツールをどんな場面で使うかを、仕様書の外から補うためのものです。
-
-国税庁の基本通達（消費税法基本通達・所得税基本通達・法人税基本通達・相続税法基本通達）の条項を、番号を指定して 1 つ読むときに使います。番号が分からないときは、先に `nta_search_tsutatsu` でキーワードから探します。
-
-通達は税務署の職員を拘束しますが、納税者と裁判所は拘束しません（[文書の種類と拘束力](/guide/document-types)）。そのため応答には、その通達が解釈している法律の名前と、houki-egov-mcp で法律の本文を読みに戻るための案内が付きます（[SPEC-NTA-GET-TSUTATSU-013](#spec-nta-get-tsutatsu-013)）。houki-research Skill の [tax-research](/specs/houki-research/tax-research) では、ステップ ④ でこのツールを呼び、そのあと法律の本文へ戻ります。
-
-<!-- ここまで人が書いた節 -->
 
 ## 使う人と受け取るもの
 
@@ -365,5 +354,5 @@ DB に保存してあった目次を使った呼び出しで次のどれかが�
 
 - [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
 - [houki-nta-mcp の解説](/mcp/houki-nta)
-- [リファレンスの nta_get_tsutatsu](/reference/mcp/houki-nta#nta-get-tsutatsu)
+- [nta_get_tsutatsu のツールのページ（リファレンス）](/reference/mcp/houki-nta/nta_get_tsutatsu)
 - [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/nta_get_tsutatsu/spec.md)

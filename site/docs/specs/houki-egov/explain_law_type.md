@@ -8,11 +8,12 @@ description: "houki-egov-mcp の explain_law_type（法令種別の制定主体�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/explain_law_type/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `specs/current/explain_law_type/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.0** の `specs/current/explain_law_type/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-egov-mcp のツール「explain_law_type（法令種別の制定主体・階層・拘束力を解説する）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-egov#explain-law-type)にあります。
+法令種別の制定主体・階層・拘束力を解説する
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-egov/explain_law_type)にあります。
 
 最後に仕様が変わったのは v0.18.0 の「検索の件数・0 件の案内・通称の展開・管轄外の略称、法令種別の解説、附則の別表の図の置き場所（段階 5 検索と解説と添付）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -343,5 +344,5 @@ e-Gov の `law_type` の値（2026-10-03 10:18 JST に `/laws?law_type=<値>&lim
 
 - [houki-egov-mcp の仕様の一覧](/specs/houki-egov/)
 - [houki-egov-mcp の解説](/mcp/houki-egov)
-- [リファレンスの explain_law_type](/reference/mcp/houki-egov#explain-law-type)
+- [explain_law_type のツールのページ（リファレンス）](/reference/mcp/houki-egov/explain_law_type)
 - [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/explain_law_type/spec.md)

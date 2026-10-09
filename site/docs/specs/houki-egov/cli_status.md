@@ -8,10 +8,10 @@ description: "houki-egov-mcp の cli_status（ローカル DB の同期の状態
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/cli_status/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `specs/current/cli_status/spec.md` から自動生成しました（仕様 ID 14 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.0** の `specs/current/cli_status/spec.md` から自動生成しました（仕様 ID 14 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-egov-mcp のコマンドライン「cli_status（ローカル DB の同期の状態と件数を表示する）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+ローカル DB の同期の状態と件数を表示する
 
 最後に仕様が変わったのは v0.20.0 の「ローカル DB の場所を、応答・起動時のログ・`--status` で確かめられるようにする（egov #108・#110、T6）」（2026-10-04 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 

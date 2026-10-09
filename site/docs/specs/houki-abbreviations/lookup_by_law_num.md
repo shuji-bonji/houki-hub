@@ -8,11 +8,12 @@ description: "houki-abbreviations の lookupByLawNum（法令番号から辞書�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/lookup_by_law_num/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.0** の `specs/current/lookup_by_law_num/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.0** の `specs/current/lookup_by_law_num/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-abbreviations の関数「lookupByLawNum（法令番号から辞書のエントリを 1 件引く）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/lib/houki-abbreviations#lookupbylawnum)にあります。
+法令番号から辞書のエントリを 1 件引く
+
+使いどころ・引数・実測の呼び出し例は、[関数のページ](/reference/lib/houki-abbreviations/lookup_by_law_num)にあります。
 
 最後に仕様が変わったのは v0.6.1 の「テストが無いだけの振る舞いに仕様 ID を振る」（2026-09-27 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -196,5 +197,5 @@ flowchart TD
 
 - [houki-abbreviations の仕様の一覧](/specs/houki-abbreviations/)
 - [houki-abbreviations の解説](/lib/houki-abbreviations)
-- [リファレンスの lookupByLawNum](/reference/lib/houki-abbreviations#lookupbylawnum)
+- [lookupByLawNum の関数のページ（リファレンス）](/reference/lib/houki-abbreviations/lookup_by_law_num)
 - [元の仕様書（GitHub、v0.7.0）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.0/specs/current/lookup_by_law_num/spec.md)

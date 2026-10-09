@@ -8,11 +8,12 @@ description: "houki-egov-mcp の get_article_references（条文本文が引用�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/get_article_references/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `specs/current/get_article_references/spec.md` から自動生成しました（仕様 ID 52 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.0** の `specs/current/get_article_references/spec.md` から自動生成しました（仕様 ID 52 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-egov-mcp のツール「get_article_references（条文本文が引用している参照と委任を取り出す）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-egov#get-article-references)にあります。
+条文本文が引用している参照と委任を取り出す
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-egov/get_article_references)にあります。
 
 最後に仕様が変わったのは v0.18.0 の「law_type の勅令の値を e-Gov に揃え、条の無い参照から get_toc を案内する（段階 5 追加分）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -710,5 +711,5 @@ tools/list の inputSchema の `paragraph` は `type: "integer"`、`minimum: 1` 
 
 - [houki-egov-mcp の仕様の一覧](/specs/houki-egov/)
 - [houki-egov-mcp の解説](/mcp/houki-egov)
-- [リファレンスの get_article_references](/reference/mcp/houki-egov#get-article-references)
+- [get_article_references のツールのページ（リファレンス）](/reference/mcp/houki-egov/get_article_references)
 - [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/get_article_references/spec.md)

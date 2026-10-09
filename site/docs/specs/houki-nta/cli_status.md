@@ -8,10 +8,10 @@ description: "houki-nta-mcp の cli_status（`--status` で DB の場所と中�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/cli_status/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/cli_status/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/cli_status/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp のコマンドライン「cli_status（`--status` で DB の場所と中身を確かめる）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+`--status` で DB の場所と中身を確かめる
 
 最後に仕様が変わったのは v0.27.0 の「置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）」（2026-10-09 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 

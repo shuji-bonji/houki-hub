@@ -8,11 +8,12 @@ description: "houki-abbreviations の extractLawNames（テキストの中から
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/extract_law_names/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.0** の `specs/current/extract_law_names/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.0** の `specs/current/extract_law_names/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-abbreviations の関数「extractLawNames（テキストの中から辞書にある法令名・略称・別名を位置付きで抜き出す）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/lib/houki-abbreviations#extractlawnames)にあります。
+テキストの中から辞書にある法令名・略称・別名を位置付きで抜き出す
+
+使いどころ・引数・実測の呼び出し例は、[関数のページ](/reference/lib/houki-abbreviations/extract_law_names)にあります。
 
 最後に仕様が変わったのは v0.7.0 の「辞書の約束（名前の重なり・別名・告示）と、件数・近さの決め方」（2026-09-30 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -320,5 +321,5 @@ v0.6.0 の同梱辞書には、別のエントリどうしで同じキーが無�
 
 - [houki-abbreviations の仕様の一覧](/specs/houki-abbreviations/)
 - [houki-abbreviations の解説](/lib/houki-abbreviations)
-- [リファレンスの extractLawNames](/reference/lib/houki-abbreviations#extractlawnames)
+- [extractLawNames の関数のページ（リファレンス）](/reference/lib/houki-abbreviations/extract_law_names)
 - [元の仕様書（GitHub、v0.7.0）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.0/specs/current/extract_law_names/spec.md)

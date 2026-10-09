@@ -8,10 +8,10 @@ description: "houki-nta-mcp の search_rules（検索系ツールに共通する
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/search_rules/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/search_rules/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/search_rules/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp の共通の規則「search_rules（検索系ツールに共通するキーワードの扱いと結果の付記）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+検索系ツールに共通するキーワードの扱いと結果の付記
 
 最後に仕様が変わったのは v0.27.0 の「置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）」（2026-10-09 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 

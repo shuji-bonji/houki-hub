@@ -8,7 +8,7 @@ description: "houki-research Skill の workflow「実装する前に、その仕
 <!-- GENERATED FILE — 手で編集しない。本文は houki-research-skill の skills/houki-research/workflows/feasibility-check.md の写し。 -->
 
 ::: info
-houki-research Skill **v0.20.0** の `skills/houki-research/workflows/feasibility-check.md` から自動生成しました（ステップ 7 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-research Skill **v0.20.0** の `skills/houki-research/workflows/feasibility-check.md` から自動生成しました（ステップ 7 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 このページは、houki-research Skill の workflow（問いの形ごとの手順）「実装する前に、その仕様が法令のどこに触れるかを条文で確かめる」の説明です。Skill を読み込んだ LLM は、この順で MCP のツールを呼びます。「関連ページ」の前までは、workflow の本文を言い換えずに写しています。
@@ -290,22 +290,22 @@ houki-nta-mcp v0.18.x の基本通達は消基通・所基通・法基通・相�
 
 ## この手順で使うツール
 
-上のステップに出てくる houki-hub family のツールと、その仕様のページです。houki-hub の外のツール（pdf-reader-mcp など）は載せていません。
+上のステップに出てくる houki-hub family のツールと、そのツールのページ・仕様のページです。houki-hub の外のツール（pdf-reader-mcp など）は載せていません。
 
-| ツール | MCP サーバー | 仕様 |
-|---|---|---|
-| `resolve_abbreviation` | houki-egov-mcp | [resolve_abbreviation の仕様](/specs/houki-egov/resolve_abbreviation) |
-| `resolve_abbreviation` | houki-nta-mcp | [resolve_abbreviation の仕様](/specs/houki-nta/resolve_abbreviation) |
-| `search_fulltext` | houki-egov-mcp | [search_fulltext の仕様](/specs/houki-egov/search_fulltext) |
-| `search_law` | houki-egov-mcp | [search_law の仕様](/specs/houki-egov/search_law) |
-| `get_toc` | houki-egov-mcp | [get_toc の仕様](/specs/houki-egov/get_toc) |
-| `get_law` | houki-egov-mcp | [get_law の仕様](/specs/houki-egov/get_law) |
-| `get_law_range` | houki-egov-mcp | [get_law_range の仕様](/specs/houki-egov/get_law_range) |
-| `get_related_laws` | houki-egov-mcp | [get_related_laws の仕様](/specs/houki-egov/get_related_laws) |
-| `get_article_references` | houki-egov-mcp | [get_article_references の仕様](/specs/houki-egov/get_article_references) |
-| `list_attachments` | houki-egov-mcp | [list_attachments の仕様](/specs/houki-egov/list_attachments) |
-| `nta_get_tsutatsu` | houki-nta-mcp | [nta_get_tsutatsu の仕様](/specs/houki-nta/nta_get_tsutatsu) |
-| `get_law_revisions` | houki-egov-mcp | [get_law_revisions の仕様](/specs/houki-egov/get_law_revisions) |
+| ツール | MCP サーバー | ツールのページ | 仕様 |
+|---|---|---|---|
+| `resolve_abbreviation` | houki-egov-mcp | [resolve_abbreviation](/reference/mcp/houki-egov/resolve_abbreviation) | [resolve_abbreviation の仕様](/specs/houki-egov/resolve_abbreviation) |
+| `resolve_abbreviation` | houki-nta-mcp | [resolve_abbreviation](/reference/mcp/houki-nta/resolve_abbreviation) | [resolve_abbreviation の仕様](/specs/houki-nta/resolve_abbreviation) |
+| `search_fulltext` | houki-egov-mcp | [search_fulltext](/reference/mcp/houki-egov/search_fulltext) | [search_fulltext の仕様](/specs/houki-egov/search_fulltext) |
+| `search_law` | houki-egov-mcp | [search_law](/reference/mcp/houki-egov/search_law) | [search_law の仕様](/specs/houki-egov/search_law) |
+| `get_toc` | houki-egov-mcp | [get_toc](/reference/mcp/houki-egov/get_toc) | [get_toc の仕様](/specs/houki-egov/get_toc) |
+| `get_law` | houki-egov-mcp | [get_law](/reference/mcp/houki-egov/get_law) | [get_law の仕様](/specs/houki-egov/get_law) |
+| `get_law_range` | houki-egov-mcp | [get_law_range](/reference/mcp/houki-egov/get_law_range) | [get_law_range の仕様](/specs/houki-egov/get_law_range) |
+| `get_related_laws` | houki-egov-mcp | [get_related_laws](/reference/mcp/houki-egov/get_related_laws) | [get_related_laws の仕様](/specs/houki-egov/get_related_laws) |
+| `get_article_references` | houki-egov-mcp | [get_article_references](/reference/mcp/houki-egov/get_article_references) | [get_article_references の仕様](/specs/houki-egov/get_article_references) |
+| `list_attachments` | houki-egov-mcp | [list_attachments](/reference/mcp/houki-egov/list_attachments) | [list_attachments の仕様](/specs/houki-egov/list_attachments) |
+| `nta_get_tsutatsu` | houki-nta-mcp | [nta_get_tsutatsu](/reference/mcp/houki-nta/nta_get_tsutatsu) | [nta_get_tsutatsu の仕様](/specs/houki-nta/nta_get_tsutatsu) |
+| `get_law_revisions` | houki-egov-mcp | [get_law_revisions](/reference/mcp/houki-egov/get_law_revisions) | [get_law_revisions の仕様](/specs/houki-egov/get_law_revisions) |
 
 ## 例
 

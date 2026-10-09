@@ -8,10 +8,10 @@ description: "houki-egov-mcp の db_schema（全文検索に使うローカル S
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/db_schema/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `specs/current/db_schema/spec.md` から自動生成しました（仕様 ID 28 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.0** の `specs/current/db_schema/spec.md` から自動生成しました（仕様 ID 28 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-egov-mcp のローカル DB「db_schema（全文検索に使うローカル SQLite DB の置き場所とテーブル）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+全文検索に使うローカル SQLite DB の置き場所とテーブル
 
 最後に仕様が変わったのは v0.20.0 の「ローカル DB の場所を、応答・起動時のログ・`--status` で確かめられるようにする（egov #108・#110、T6）」（2026-10-04 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 

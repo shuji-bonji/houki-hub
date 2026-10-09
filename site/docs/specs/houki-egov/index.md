@@ -8,10 +8,10 @@ description: "houki-egov-mcp の全 20 機能の仕様の一覧（specs/current 
 <!-- GENERATED FILE — 手で編集しない。houki-egov-mcp の specs/current/ から生成。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `specs/current/` から自動生成しました（20 機能・仕様 ID 559 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.0** の `specs/current/` から自動生成しました（20 機能・仕様 ID 559 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-houki-egov-mcp が何をするかを、機能ごとに 1 ページで説明します。全体の使い方は[解説](/mcp/houki-egov)に、引数の一覧は[リファレンス](/reference/mcp/houki-egov)にあります。
+houki-egov-mcp が何をするかを、機能ごとに 1 ページで説明します。全体の使い方は[解説](/mcp/houki-egov)に、引数の一覧は[リファレンス](/reference/mcp/houki-egov/)にあります。
 
 ## ツール
 

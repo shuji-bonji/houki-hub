@@ -8,11 +8,12 @@ description: "houki-nta-mcp の resolve_abbreviation（略称・通称から辞�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/resolve_abbreviation/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/resolve_abbreviation/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/resolve_abbreviation/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp のツール「resolve_abbreviation（略称・通称から辞書のエントリを 1 件解決する）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-nta#resolve-abbreviation)にあります。
+略称・通称から辞書のエントリを 1 件解決する
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-nta/resolve_abbreviation)にあります。
 
 最後に仕様が変わったのは v0.24.0 の「0.22.0 の取り込みで直し漏れた specs/current の文を、取り込んだ本文に合わせる（#123）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -204,5 +205,5 @@ v0.21.3 では空文字・空白だけの `abbr` に `resolved: null` と `note`
 
 - [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
 - [houki-nta-mcp の解説](/mcp/houki-nta)
-- [リファレンスの resolve_abbreviation](/reference/mcp/houki-nta#resolve-abbreviation)
+- [resolve_abbreviation のツールのページ（リファレンス）](/reference/mcp/houki-nta/resolve_abbreviation)
 - [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/resolve_abbreviation/spec.md)

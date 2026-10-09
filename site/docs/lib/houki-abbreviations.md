@@ -11,7 +11,7 @@ MCP サーバーではなく、開発者のコードが import するライブ�
 - npm: [`@shuji-bonji/houki-abbreviations`](https://www.npmjs.com/package/@shuji-bonji/houki-abbreviations)（最新 0.7.0。houki-egov-mcp 0.6.0 と houki-nta-mcp 0.17.0 が取り込んでいるのは 0.4.1）
 - リポジトリ: [shuji-bonji/houki-abbreviations](https://github.com/shuji-bonji/houki-abbreviations)
 - 動作環境: Node.js 20 以上。依存パッケージなし
-- 関数と型の一覧: [API リファレンス](/reference/lib/houki-abbreviations)（型定義から自動生成）
+- 関数と型の一覧: [API リファレンス](/reference/lib/houki-abbreviations/)（型定義から自動生成）
 
 ## 辞書の中身
 
@@ -37,7 +37,7 @@ houki-egov-mcp と houki-nta-mcp の `package.json` は `^0.4.1` を指定して
 辞書の中身も 0.4.1 から変わっていないので、動作上の差はありません。
 
 両 MCP が実際に読み込んでいるのは、公開している 42 記号のうち 16 記号（関数 5・定数 5・型 6）です。
-どれを使っているかは、[API リファレンス](/reference/lib/houki-abbreviations)の一覧にある「family での使用」列で確かめられます。
+どれを使っているかは、[API リファレンス](/reference/lib/houki-abbreviations/)の一覧にある「family での使用」列で確かめられます。
 
 このパッケージを minor で上げたときは、MCP 側の依存範囲も上げて publish し直す必要があります（次は 0.6.0 の略称展開を houki-nta-mcp が使うとき）。
 

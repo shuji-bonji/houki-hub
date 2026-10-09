@@ -14,7 +14,7 @@ houki-hub family の MCP サーバー・ライブラリ・Skill が「何をす�
 | 知りたいこと | 読むページ |
 | --- | --- |
 | ツールが何のためのものか、どの順に処理するか、どんなときに何を返すか | 仕様書（このページから辿るページ） |
-| 引数の型・既定値の一覧と、実測の呼び出し例 | リファレンス（[houki-egov-mcp](/reference/mcp/houki-egov)・[houki-nta-mcp](/reference/mcp/houki-nta)・[houki-abbreviations](/reference/lib/houki-abbreviations)） |
+| 引数の型・既定値の一覧と、実測の呼び出し例 | リファレンス（[houki-egov-mcp](/reference/mcp/houki-egov/)・[houki-nta-mcp](/reference/mcp/houki-nta/)・[houki-abbreviations](/reference/lib/houki-abbreviations/)） |
 | 導入の手順と、部品ごとの全体の使い方 | [ガイド](/guide/overview) と、[MCP サーバー](/mcp/)・[ライブラリ](/lib/houki-abbreviations)・[Skill](/skills/houki-research) の解説 |
 | 自分の立場で何に使えて何に使えないか | [利用者ごとにできることとできないこと](/guide/scope-by-audience) |
 
@@ -49,7 +49,7 @@ houki-hub family の MCP サーバー・ライブラリ・Skill が「何をす�
 
 元の仕様書では、「仕様 ID ごとの約束」の節の見出しは「できること」、「まだ決めていないこと」の節の見出しは「未決」です。本文は言い換えずに写しているので、本文の中で「「できること」の仕様 ID」「未決 1」のように書かれているときは、このページのそれぞれの節を指します。
 
-自動生成の側で足しているのは、節の目的の一文、承認の履歴の表、関連ページの一覧だけです。「使いどころ」の節があるページでは、その節だけを人が書いて補っています。
+自動生成の側で足しているのは、節の目的の一文、承認の履歴の表、関連ページの一覧だけです。人が書いて補う「使いどころ」の節は、仕様書ページではなく、リファレンスのツールのページに載せています。
 
 Skill には実行するコードが無く、SKILL.md の文章そのものが仕様です。そのため Skill のページには仕様 ID と承認の履歴が無く、問いの形（workflow）ごとに、SKILL.md と workflow の本文を写しています。
 

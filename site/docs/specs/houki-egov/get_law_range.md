@@ -8,11 +8,12 @@ description: "houki-egov-mcp の get_law_range（編・章・節、または附�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/get_law_range/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `specs/current/get_law_range/spec.md` から自動生成しました（仕様 ID 35 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.0** の `specs/current/get_law_range/spec.md` から自動生成しました（仕様 ID 35 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-egov-mcp のツール「get_law_range（編・章・節、または附則 1 本を範囲にして、条を本文ごと返す）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-egov#get-law-range)にあります。
+編・章・節、または附則 1 本を範囲にして、条を本文ごと返す
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-egov/get_law_range)にあります。
 
 最後に仕様が変わったのは v0.18.0 の「法令名・条・委任先を、確かなときだけ 1 つに決める（段階 5 法令の引き当て）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -526,5 +527,5 @@ tools/list の inputSchema の `suppl_index` は `type: "integer"`、`minimum: 1
 
 - [houki-egov-mcp の仕様の一覧](/specs/houki-egov/)
 - [houki-egov-mcp の解説](/mcp/houki-egov)
-- [リファレンスの get_law_range](/reference/mcp/houki-egov#get-law-range)
+- [get_law_range のツールのページ（リファレンス）](/reference/mcp/houki-egov/get_law_range)
 - [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/get_law_range/spec.md)

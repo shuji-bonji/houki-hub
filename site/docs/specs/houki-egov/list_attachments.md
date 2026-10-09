@@ -8,11 +8,12 @@ description: "houki-egov-mcp の list_attachments（法令の添付ファイル�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/list_attachments/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `specs/current/list_attachments/spec.md` から自動生成しました（仕様 ID 25 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.0** の `specs/current/list_attachments/spec.md` から自動生成しました（仕様 ID 25 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-egov-mcp のツール「list_attachments（法令の添付ファイルの一覧を返す）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-egov#list-attachments)にあります。
+法令の添付ファイルの一覧を返す
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-egov/list_attachments)にあります。
 
 最後に仕様が変わったのは v0.18.0 の「検索の件数・0 件の案内・通称の展開・管轄外の略称、法令種別の解説、附則の別表の図の置き場所（段階 5 検索と解説と添付）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -400,5 +401,5 @@ e-Gov の法令本文の取得（`https://laws.e-gov.go.jp/api/2/law_data/<law_i
 
 - [houki-egov-mcp の仕様の一覧](/specs/houki-egov/)
 - [houki-egov-mcp の解説](/mcp/houki-egov)
-- [リファレンスの list_attachments](/reference/mcp/houki-egov#list-attachments)
+- [list_attachments のツールのページ（リファレンス）](/reference/mcp/houki-egov/list_attachments)
 - [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/list_attachments/spec.md)

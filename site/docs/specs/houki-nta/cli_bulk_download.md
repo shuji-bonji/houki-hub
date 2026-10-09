@@ -8,10 +8,10 @@ description: "houki-nta-mcp の cli_bulk_download（国税庁サイトから通�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/cli_bulk_download/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/cli_bulk_download/spec.md` から自動生成しました（仕様 ID 14 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/cli_bulk_download/spec.md` から自動生成しました（仕様 ID 14 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp のコマンドライン「cli_bulk_download（国税庁サイトから通達と文書を取得してローカル DB に入れる）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+国税庁サイトから通達と文書を取得してローカル DB に入れる
 
 最後に仕様が変わったのは v0.26.0 の「ローカル DB を開けないときの読むだけのツールと書き戻すツールの応答、`--bulk-download-tax-answer` が索引を保存できないときの終わり方（nta #144・#145）」（2026-10-06 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 

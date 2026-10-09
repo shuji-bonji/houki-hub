@@ -8,11 +8,12 @@ description: "houki-abbreviations の normalizeLawNum（法令番号の数字の
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/normalize_law_num/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.0** の `specs/current/normalize_law_num/spec.md` から自動生成しました（仕様 ID 16 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.0** の `specs/current/normalize_law_num/spec.md` から自動生成しました（仕様 ID 16 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-abbreviations の関数「normalizeLawNum（法令番号の数字の書き方を算用数字に揃える）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/lib/houki-abbreviations#normalizelawnum)にあります。
+法令番号の数字の書き方を算用数字に揃える
+
+使いどころ・引数・実測の呼び出し例は、[関数のページ](/reference/lib/houki-abbreviations/normalize_law_num)にあります。
 
 最後に仕様が変わったのは v0.7.0 の「関数ごとの全角・ダッシュ類・大文字の扱いを揃える（T3 正規化）」（2026-09-30 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -274,5 +275,5 @@ flowchart TD
 
 - [houki-abbreviations の仕様の一覧](/specs/houki-abbreviations/)
 - [houki-abbreviations の解説](/lib/houki-abbreviations)
-- [リファレンスの normalizeLawNum](/reference/lib/houki-abbreviations#normalizelawnum)
+- [normalizeLawNum の関数のページ（リファレンス）](/reference/lib/houki-abbreviations/normalize_law_num)
 - [元の仕様書（GitHub、v0.7.0）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.0/specs/current/normalize_law_num/spec.md)

@@ -8,11 +8,12 @@ description: "houki-nta-mcp の nta_get_qa（質疑応答事例を 1 件取得�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/nta_get_qa/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/nta_get_qa/spec.md` から自動生成しました（仕様 ID 16 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/nta_get_qa/spec.md` から自動生成しました（仕様 ID 16 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp のツール「nta_get_qa（質疑応答事例を 1 件取得する）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-nta#nta-get-qa)にあります。
+質疑応答事例を 1 件取得する
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-nta/nta_get_qa)にあります。
 
 最後に仕様が変わったのは v0.24.0 の「国税庁サイトから取る経路（通信の失敗の code・タックスアンサーの URL と 8xxx 帯）と、事務運営指針の legal_status.note（段階 5）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -304,5 +305,5 @@ DB にその事例の行があっても、段落の構造（照会要旨・回�
 
 - [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
 - [houki-nta-mcp の解説](/mcp/houki-nta)
-- [リファレンスの nta_get_qa](/reference/mcp/houki-nta#nta-get-qa)
+- [nta_get_qa のツールのページ（リファレンス）](/reference/mcp/houki-nta/nta_get_qa)
 - [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/nta_get_qa/spec.md)

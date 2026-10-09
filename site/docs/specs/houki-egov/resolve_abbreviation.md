@@ -8,11 +8,12 @@ description: "houki-egov-mcp の resolve_abbreviation（略称から略称辞書
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/resolve_abbreviation/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `specs/current/resolve_abbreviation/spec.md` から自動生成しました（仕様 ID 13 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.0** の `specs/current/resolve_abbreviation/spec.md` から自動生成しました（仕様 ID 13 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-egov-mcp のツール「resolve_abbreviation（略称から略称辞書のエントリを引く）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-egov#resolve-abbreviation)にあります。
+略称から略称辞書のエントリを引く
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-egov/resolve_abbreviation)にあります。
 
 最後に仕様が変わったのは v0.16.0 の「全角・半角・ダッシュ類の揃え方を houki-abbreviations 0.7.0 に一本化する（T3）」（2026-10-01 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -226,5 +227,5 @@ v0.15.4 では `abbr: ""` に `resolved: null` と `example: { keyword: "" }` �
 
 - [houki-egov-mcp の仕様の一覧](/specs/houki-egov/)
 - [houki-egov-mcp の解説](/mcp/houki-egov)
-- [リファレンスの resolve_abbreviation](/reference/mcp/houki-egov#resolve-abbreviation)
+- [resolve_abbreviation のツールのページ（リファレンス）](/reference/mcp/houki-egov/resolve_abbreviation)
 - [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/resolve_abbreviation/spec.md)

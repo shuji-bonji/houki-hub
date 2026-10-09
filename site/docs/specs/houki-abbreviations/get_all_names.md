@@ -8,11 +8,12 @@ description: "houki-abbreviations の getAllNames（略称・正式名称・別�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/get_all_names/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.0** の `specs/current/get_all_names/spec.md` から自動生成しました（仕様 ID 10 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.0** の `specs/current/get_all_names/spec.md` から自動生成しました（仕様 ID 10 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-abbreviations の関数「getAllNames（略称・正式名称・別名のどれかから、そのエントリの名前をすべて返す）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/lib/houki-abbreviations#getallnames)にあります。
+略称・正式名称・別名のどれかから、そのエントリの名前をすべて返す
+
+使いどころ・引数・実測の呼び出し例は、[関数のページ](/reference/lib/houki-abbreviations/get_all_names)にあります。
 
 最後に仕様が変わったのは v0.7.0 の「辞書の約束（名前の重なり・別名・告示）と、件数・近さの決め方」（2026-09-30 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -208,5 +209,5 @@ flowchart TD
 
 - [houki-abbreviations の仕様の一覧](/specs/houki-abbreviations/)
 - [houki-abbreviations の解説](/lib/houki-abbreviations)
-- [リファレンスの getAllNames](/reference/lib/houki-abbreviations#getallnames)
+- [getAllNames の関数のページ（リファレンス）](/reference/lib/houki-abbreviations/get_all_names)
 - [元の仕様書（GitHub、v0.7.0）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.0/specs/current/get_all_names/spec.md)

@@ -8,11 +8,12 @@ description: "houki-nta-mcp の nta_get_tax_answer（タックスアンサーを
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/nta_get_tax_answer/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/nta_get_tax_answer/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/nta_get_tax_answer/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp のツール「nta_get_tax_answer（タックスアンサーを番号で 1 件取得する）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-nta#nta-get-tax-answer)にあります。
+タックスアンサーを番号で 1 件取得する
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-nta/nta_get_tax_answer)にあります。
 
 最後に仕様が変わったのは v0.25.1 の「`nta_get_tax_answer` の `sections` で、ページの小見出し h3 も節にし、節ごとに見出しの段（`level`）を返す（nta #147）」（2026-10-05 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -452,5 +453,5 @@ v0.25.0 では `概要`（4）・`対象者または対象物`（3）・`計算�
 
 - [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
 - [houki-nta-mcp の解説](/mcp/houki-nta)
-- [リファレンスの nta_get_tax_answer](/reference/mcp/houki-nta#nta-get-tax-answer)
+- [nta_get_tax_answer のツールのページ（リファレンス）](/reference/mcp/houki-nta/nta_get_tax_answer)
 - [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/nta_get_tax_answer/spec.md)

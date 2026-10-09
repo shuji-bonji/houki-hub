@@ -34,10 +34,12 @@ docs/
     └── houki-research.md
 ```
 
-`docs/reference/mcp/*.md` は `scripts/generate-reference.mjs` が MCP サーバーを起動して `tools/list` から生成します（`npm run build` の先頭で走ります）。
-`mcp/` の clone が無い環境（CI）では生成を飛ばし、コミット済みのページを使います。呼び出し例は `scripts/reference-examples/<server>/ja/<tool>.md` に手で書き、生成時に各ツールの末尾へ付きます。
+`docs/reference/` は `scripts/generate-reference.mjs` が生成します（`npm run build` の先頭で走ります）。ツール（関数）ごとに 1 ページで、MCP は `docs/reference/mcp/<server>/<tool>.md`、ライブラリは `docs/reference/lib/houki-abbreviations/<仕様書の dir>.md` です。各サーバーとライブラリの `index.md` はツールの一覧と共通の前置きです。
+引数は MCP サーバーを起動して `tools/list` から、ライブラリのシグネチャは `dist/index.d.ts` から、「使う人と受け取るもの」「できないこと」「処理の流れ」「約束の一覧」は各リポジトリの `specs/current/<dir>/spec.md` から写します。
+`mcp/` の clone が無い環境（CI）では生成を飛ばし、コミット済みのページを使います。呼び出し例は `scripts/reference-examples/<server>/ja/<tool>.md` に手で書き、生成時にツールのページの「呼び出し例」の節に入ります（最初の `::: details` より前に書いた注意は「引数」の節の末尾に入ります）。
 
 ## 書き方
 
 公開文書なので「〜します」「〜です」で書き、利用者が何を受け取るかを文で示します。
 内部の関数名・変数名は載せず、ツール名・フィールド名・エラーコードのように実行すれば目に見える名前で書きます。
+ツールのページの「使いどころ」は、`scripts/spec-pages/<site>/<dir>.md` に `## 使いどころ` の節として人が書きます（仕様書ページには出しません）。人向けの小さな図（Mermaid、ノード 10 個ほどまで）は、同じファイルの `## 使いどころ` の後に `## 呼び出しの流れ` の節を作って置きます。この 2 つ以外の見出しを書くと、生成のときに警告が出ます。

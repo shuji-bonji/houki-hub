@@ -8,11 +8,12 @@ description: "houki-egov-mcp の search_law（法令をタイトルのキーワ�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/search_law/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `specs/current/search_law/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.0** の `specs/current/search_law/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-egov-mcp のツール「search_law（法令をタイトルのキーワード・略称で検索する）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-egov#search-law)にあります。
+法令をタイトルのキーワード・略称で検索する
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-egov/search_law)にあります。
 
 最後に仕様が変わったのは v0.18.0 の「law_type の勅令の値を e-Gov に揃え、条の無い参照から get_toc を案内する（段階 5 追加分）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -313,5 +314,5 @@ tools/list の `search_law` の inputSchema の `law_type` は、`enum: ["Consti
 
 - [houki-egov-mcp の仕様の一覧](/specs/houki-egov/)
 - [houki-egov-mcp の解説](/mcp/houki-egov)
-- [リファレンスの search_law](/reference/mcp/houki-egov#search-law)
+- [search_law のツールのページ（リファレンス）](/reference/mcp/houki-egov/search_law)
 - [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/search_law/spec.md)

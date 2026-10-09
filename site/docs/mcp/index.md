@@ -29,8 +29,8 @@ description: houki-hub family の MCP サーバーと、それぞれが束ねる
 
 ツールごとの引数（名前・型・必須・既定値）は、各サーバーを起動して `tools/list` から自動生成したページにあります。実測した呼び出し例と応答も、各ツールの下に付けています。
 
-- [houki-egov-mcp のツールリファレンス](/reference/mcp/houki-egov)
-- [houki-nta-mcp のツールリファレンス](/reference/mcp/houki-nta)
+- [houki-egov-mcp のツールリファレンス](/reference/mcp/houki-egov/)
+- [houki-nta-mcp のツールリファレンス](/reference/mcp/houki-nta/)
 
 ## 免責事項
 

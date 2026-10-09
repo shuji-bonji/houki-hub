@@ -8,10 +8,10 @@ description: "houki-nta-mcp の cli_refresh（取り込み済みの通達と文�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/cli_refresh/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/cli_refresh/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/cli_refresh/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp のコマンドライン「cli_refresh（取り込み済みの通達と文書の取り直し）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+取り込み済みの通達と文書の取り直し
 
 最後に仕様が変わったのは v0.24.0 の「ローカル DB の版の扱い・作る入口・doc_type の制約・タックスアンサーの索引の保存と、CLI の引数の検査（段階 5 DB と CLI）」（2026-10-04 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -46,7 +46,7 @@ houki-nta-mcp **v0.27.0** の `specs/current/cli_refresh/spec.md` から自動�
 
 ```mermaid
 flowchart TD
-  subgraph sg4["投入の 1 節・1 文書"]
+  subgraph sg1["投入の 1 節・1 文書"]
     A["節・文書を取りに行く"] --> B{"--refresh があるか（001〜003）"}
     B -- ある --> F["条件を付けずに取得し、内容を入れ直す"]
     B -- ない --> C{"DB に前回の last_modified / etag があるか"}
@@ -57,7 +57,7 @@ flowchart TD
     E -- "200 で内容が前回と同じ" --> H["fetched_at・last_modified・etag だけ更新する（未決 1）"]
     E -- "200 で内容が変わった" --> F
   end
-  subgraph sg5["--refresh-stale"]
+  subgraph sg2["--refresh-stale"]
     R["--refresh-stale=<日数>"] --> S{"日数は 0 以上の整数か（006）"}
     S -- いいえ --> S2["値のエラーを出して exit 2（006）"]
     S -- はい --> DB{"DB の状態（SPEC-NTA-DB-SCHEMA-021）"}

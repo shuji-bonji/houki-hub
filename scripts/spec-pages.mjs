@@ -7,7 +7,8 @@
  *     （承認の履歴。spec-ids 0.3.0 の `history()` で集める）
  *   - houki-research-skill の `skills/houki-research/SKILL.md` と `workflows/*.md`
  *     （Skill には specs/ を置かない。#27 のコメント 2026-09-27）
- *   - 人が書く節（任意）: `scripts/spec-pages/<site>/<dir>.md`
+ *   - 人が書く節（任意）: `scripts/spec-pages/<site>/<dir>.md`。Y3（2026-10-10）から仕様書ページには出さず、
+ *     リファレンスのツールのページ（generate-reference.mjs）に差し込む
  *
  * 出力（site/docs/ の下）:
  *   - specs/<site>/<dir>.md        機能ごと（Skill は workflow ごと）に 1 ページ
@@ -55,7 +56,7 @@ export const SPEC_REGISTRY = {
     dir: 'mcp/houki-egov-mcp',
     defaultKind: 'tool',
     guide: '/mcp/houki-egov',
-    reference: '/reference/mcp/houki-egov',
+    reference: '/reference/mcp/houki-egov/',
   },
   'houki-nta': {
     type: 'specs',
@@ -63,7 +64,7 @@ export const SPEC_REGISTRY = {
     dir: 'mcp/houki-nta-mcp',
     defaultKind: 'tool',
     guide: '/mcp/houki-nta',
-    reference: '/reference/mcp/houki-nta',
+    reference: '/reference/mcp/houki-nta/',
   },
   'houki-abbreviations': {
     type: 'specs',
@@ -71,7 +72,7 @@ export const SPEC_REGISTRY = {
     dir: 'lib/houki-abbreviations',
     defaultKind: 'function',
     guide: '/lib/houki-abbreviations',
-    reference: '/reference/lib/houki-abbreviations',
+    reference: '/reference/lib/houki-abbreviations/',
   },
   'houki-research': {
     type: 'skill',
@@ -166,7 +167,7 @@ function splitFrontMatter(text) {
 }
 
 /** 指定の深さ（## なら 2）の見出しで分ける。コードブロックの中の見出しは見出しとして扱わない */
-function splitSections(body, level) {
+export function splitSections(body, level) {
   const mark = `${'#'.repeat(level)} `;
   const pre = [];
   const sections = [];
@@ -212,7 +213,7 @@ function transformPlain(s, ctx) {
 }
 
 /** 行内コード（` の連なり）の外だけを変換する */
-function transformLine(line, ctx) {
+export function transformLine(line, ctx) {
   let out = '';
   let i = 0;
   while (i < line.length) {
@@ -235,7 +236,7 @@ function transformLine(line, ctx) {
 }
 
 /** Markdown の塊を変換する。コードブロックの中はそのまま */
-function transformMarkdown(md, ctx) {
+export function transformMarkdown(md, ctx) {
   let fence = null;
   let mermaid = false;
   return md
@@ -246,6 +247,7 @@ function transformMarkdown(md, ctx) {
         if (!fence) {
           fence = f[1];
           mermaid = f[2].trim() === 'mermaid';
+          if (mermaid) subgraphSeq = 0;
         } else if (line.trim().startsWith(fence)) {
           fence = null;
           mermaid = false;
@@ -260,6 +262,8 @@ function transformMarkdown(md, ctx) {
 
 /**
  * Mermaid の図の 1 行の書き方の誤りを、図に出る文字を変えずに直す（2026-10-09、Y2）。
+ * `sg<n>` の番号は図ごとに 1 から振る（2026-10-10、Y3）。同じ図を仕様書ページとツールのページの両方に写すので、
+ * 通し番号だと、どちらを先に生成したかで番号が変わり、生成し直すたびに差分が出るため。
  * 仕様書の図のうち、mermaid 11 で描けずにエラーの図になるものがあったため。元の spec.md も直す（報告済み）。
  * - `subgraph` の名前に空白・記号があるとき（`subgraph --check-baseline-drift`・`subgraph 投入の 1 節・1 文書`）は、
  *   `subgraph sg<n>["名前"]` にする。表示される名前は同じ
@@ -277,7 +281,7 @@ function mermaidSafe(line) {
 }
 
 /** VitePress のコンテナ（::: details）の中に入れる。本文に ::: があると閉じてしまうので、外側のコロンを増やす */
-function details(title, body) {
+export function details(title, body) {
   const colons = /^:::/m.test(body) ? '::::' : ':::';
   return `${colons} details ${title}\n${body}\n${colons}`;
 }
@@ -315,9 +319,13 @@ const nameCode = (name) => (isIdent(name) ? `\`${name}\`` : name);
 /** 「<名前> の仕様」。日本語の名前には空白を入れない */
 const specTitle = (name) => (isIdent(name) ? `${name} の仕様` : `${name}の仕様`);
 
+/**
+ * 同じ機能のリファレンスのページ（ツール・関数・値ごとのページ。Y3、2026-10-10）。
+ * ページの名前は仕様書の dir と同じにしている（generate-reference.mjs の toolPageDir）。
+ */
 function referenceLink(cfg, f) {
-  if (f.kind === 'tool') return `${cfg.reference}#${f.name.replace(/_/g, '-')}`;
-  if (f.kind === 'function') return `${cfg.reference}#${f.name.toLowerCase().replace(/_/g, '-')}`;
+  if (!cfg.reference) return null;
+  if (['tool', 'function', 'const'].includes(f.kind)) return `${cfg.reference}${f.dir}`;
   return null;
 }
 
@@ -361,17 +369,17 @@ function renderSpecPage(ctx, cfg, f) {
   );
   L.push(':::');
   L.push('');
-  const overlay = join(ROOT, 'scripts/spec-pages', site, `${f.dir}.md`);
-  const hasOverlay = existsSync(overlay);
-  L.push(
-    `このページは、${cfg.repo} の${kindOf(f.kind).label}「${transformLine(f.h1, {})}」の仕様です。` +
-      (hasOverlay
-        ? '「使いどころ」の節は人が書いた補足で、それ以外は「承認の履歴」の前まで、仕様書の本文を言い換えずに写しています。'
-        : '「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。')
-  );
+  // 先頭は、spec.md の h1 の一言・ツールのページへのリンク・最後に仕様が変わった変更の 1 文（Y3、2026-10-10）。
+  // 人が書く節（使いどころ）は、ツールのページにだけ出す（scripts/spec-pages/<site>/<dir>.md）
+  if (f.summary) {
+    L.push(transformLine(f.summary, {}));
+    L.push('');
+  }
   const ref = referenceLink(cfg, f);
-  if (ref) L.push(`引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](${ref})にあります。`);
-  L.push('');
+  if (ref) {
+    L.push(`使いどころ・引数・実測の呼び出し例は、[${kindOf(f.kind).label}のページ](${ref})にあります。`);
+    L.push('');
+  }
 
   const rows = historyRows(ctx.specIds, src, f.dir);
   const changes = rows?.filter((r) => r.kind === 'change' && r.version !== 'changes') ?? [];
@@ -381,16 +389,6 @@ function renderSpecPage(ctx, cfg, f) {
       `最後に仕様が変わったのは ${last.version} の「${transformLine(proposalTitle(src, last), {})}」（${last.approved} 承認）です。` +
         'それまでの経緯は[承認の履歴](#承認の履歴)にあります。'
     );
-    L.push('');
-  }
-
-  // 人が書く節（任意）
-  if (hasOverlay) {
-    L.push(`<!-- ここから人が書いた節: scripts/spec-pages/${site}/${f.dir}.md -->`);
-    L.push('');
-    L.push(readFileSync(overlay, 'utf8').trim());
-    L.push('');
-    L.push('<!-- ここまで人が書いた節 -->');
     L.push('');
   }
 
@@ -462,7 +460,7 @@ function renderSpecPage(ctx, cfg, f) {
   L.push('');
   L.push(`- [${cfg.repo} の仕様の一覧](/specs/${site}/)`);
   L.push(`- [${cfg.repo} の解説](${cfg.guide})`);
-  if (ref) L.push(`- [リファレンスの ${f.name}](${ref})`);
+  if (ref) L.push(`- [${f.name} の${kindOf(f.kind).label}のページ（リファレンス）](${ref})`);
   L.push(`- [元の仕様書（GitHub、v${version}）](${specUrl})`);
   L.push('');
   return L.join('\n');
@@ -603,13 +601,13 @@ function renderWorkflowPage(ctx, cfg, w) {
       const tools = toolsInWorkflow(w.text, ctx.toolIndex);
       if (tools.length) {
         L.push('## この手順で使うツール', '');
-        L.push('上のステップに出てくる houki-hub family のツールと、その仕様のページです。houki-hub の外のツール（pdf-reader-mcp など）は載せていません。', '');
-        L.push('| ツール | MCP サーバー | 仕様 |', '|---|---|---|');
+        L.push('上のステップに出てくる houki-hub family のツールと、そのツールのページ・仕様のページです。houki-hub の外のツール（pdf-reader-mcp など）は載せていません。', '');
+        L.push('| ツール | MCP サーバー | ツールのページ | 仕様 |', '|---|---|---|---|');
         for (const t of tools) {
           for (const owner of ctx.toolIndex.get(t)) {
             const page = ctx.pageOf(owner.site, t);
-            const spec = page ? `[${t} の仕様](${page})` : `[リファレンス](${owner.reference}#${t.replace(/_/g, '-')})`;
-            L.push(`| \`${t}\` | ${owner.repo} | ${spec} |`);
+            const spec = page ? `[${t} の仕様](${page})` : '—';
+            L.push(`| \`${t}\` | ${owner.repo} | [${t}](${owner.reference}${t}) | ${spec} |`);
           }
         }
         L.push('');
@@ -729,8 +727,17 @@ function write(rel, text) {
   console.log(w.written ? `  wrote site/docs/${rel}` : `  unchanged site/docs/${rel}（日付 ${w.date} のまま）`);
 }
 
-export async function generateSpecPages(names = SPEC_TARGETS) {
-  // 1. 読めるリポジトリを集める（仕様 ID の行き先と、ツールの持ち主を全リポジトリで引けるようにする）
+/**
+ * 読めるリポジトリの仕様書を全部読む（仕様 ID の行き先と、ツールの持ち主を全リポジトリで引けるようにする）。
+ * 仕様書ページと、リファレンスのツールのページ（generate-reference.mjs、Y3）の両方が使うので、1 回だけ読む。
+ */
+let sourcesPromise = null;
+export function loadSpecSources() {
+  sourcesPromise ??= readSpecSources();
+  return sourcesPromise;
+}
+
+async function readSpecSources() {
   const loaded = [];
   for (const site of SPEC_TARGETS) {
     const cfg = SPEC_REGISTRY[site];
@@ -774,10 +781,83 @@ export async function generateSpecPages(names = SPEC_TARGETS) {
     if (!p || !p.hasPage) return null;
     return p.site === site && p.dir === dir ? `#${anchorOfId(id)}` : `/specs/${p.site}/${p.dir}#${anchorOfId(id)}`;
   };
+  /** 仕様書ページの外（ツールのページ）から仕様 ID を指すリンク。同じ機能の ID も仕様書ページへ向ける */
+  const linkIdFromOutside = (id) => {
+    const p = idPage.get(id);
+    return p?.hasPage ? `/specs/${p.site}/${p.dir}#${anchorOfId(id)}` : null;
+  };
   const pageOf = (site, dir) => {
     const e = loaded.find((x) => x.ctx.site === site);
     return e?.ctx.pages.has(dir) ? `/specs/${site}/${dir}` : null;
   };
+  return { loaded, linkId, linkIdFromOutside, toolIndex, pageOf };
+}
+
+/**
+ * リファレンスのツールのページに写す、仕様書の節（Y3、2026-10-10）。
+ *
+ * 仕様書ページと同じ読み込み（readSpecFeature）と変換（transformMarkdown）を使い、生成済みの仕様書ページからは写さない
+ * （仕様書ページが足した節の目的の一文が、ツールのページの一文と重なるため）。仕様 ID のリンクは仕様書ページの ID へ向ける。
+ *
+ * 返すもの（読めないリポジトリ・仕様書の無い名前は null）:
+ *   - features: 名前（ツール名・関数名）→ 機能。公開定数のように 1 つの仕様書に複数の名前があるときは、
+ *     「値」の節の `### \`NAME\`` の見出しの名前も同じ機能に向ける
+ *   - sectionOf(f, src): spec.md の ## 節を、変換して返す（無ければ null）
+ *   - promises(f): 仕様 ID ごとの約束の見出し [{ id, heading, url }]
+ *   - overlay(f): 人が書く節（scripts/spec-pages/<site>/<dir>.md）。無ければ null。
+ *     ページの中の仕様 ID の錨（`](#spec-…)`）は、仕様書ページの ID へ向け直す
+ */
+export async function specSourceFor(site) {
+  const { loaded, linkIdFromOutside } = await loadSpecSources();
+  const entry = loaded.find((x) => x.ctx.site === site);
+  if (!entry || entry.cfg.type !== 'specs') return null;
+  const { cfg, ctx } = entry;
+  const tctx = { linkId: (id) => linkIdFromOutside(id) };
+  const features = new Map();
+  for (const f of ctx.features) {
+    if (!features.has(f.name)) features.set(f.name, f);
+    const values = f.sections.find((x) => x.heading === '値');
+    if (values) {
+      for (const sub of splitSections(values.text, 3).sections) {
+        const m = sub.heading.match(/^`([A-Za-z_$][\w$]*)`$/);
+        if (m && !features.has(m[1])) features.set(m[1], f);
+      }
+    }
+  }
+  return {
+    repo: cfg.repo,
+    version: ctx.version,
+    tag: ctx.tag,
+    features,
+    specPage: (f) => (ctx.pages.has(f.dir) ? `/specs/${site}/${f.dir}` : null),
+    specUrl: (f) => `${GITHUB}/${cfg.repo}/blob/${ctx.tag}/specs/current/${f.dir}/spec.md`,
+    sectionOf: (f, heading) => {
+      const sec = f.sections.find((x) => x.heading === heading);
+      return sec ? transformMarkdown(sec.text, tctx) : null;
+    },
+    promises: (f) => {
+      const sec = f.sections.find((x) => x.heading === 'できること');
+      if (!sec) return [];
+      return splitSections(sec.text, 3)
+        .sections.map((item) => {
+          const id = item.heading.match(SPEC_ID)?.[0];
+          if (!id) return null;
+          return { id, heading: transformLine(item.heading.replace(id, '').trim(), {}), url: linkIdFromOutside(id) };
+        })
+        .filter(Boolean);
+    },
+    overlay: (f) => {
+      const p = join(ROOT, 'scripts/spec-pages', site, `${f.dir}.md`);
+      if (!existsSync(p)) return null;
+      const page = ctx.pages.has(f.dir) ? `/specs/${site}/${f.dir}` : null;
+      const text = readFileSync(p, 'utf8').trim();
+      return page ? text.replace(/\]\(#(spec-[a-z0-9-]+)\)/g, `](${page}#$1)`) : text;
+    },
+  };
+}
+
+export async function generateSpecPages(names = SPEC_TARGETS) {
+  const { loaded, linkId, toolIndex, pageOf } = await loadSpecSources();
 
   // 2. ページを書く
   for (const { cfg, ctx } of loaded) {

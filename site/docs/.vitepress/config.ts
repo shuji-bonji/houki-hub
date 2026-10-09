@@ -1,6 +1,8 @@
 import { defineConfig } from 'vitepress';
 import llmstxt from 'vitepress-plugin-llms';
 import { withMermaid } from 'vitepress-plugin-mermaid';
+// リファレンス（ツールごとのページ、houki-hub#48）の sidebar は scripts/generate-reference.mjs が生成する
+import referenceSidebar from './reference-sidebar.json';
 // 仕様書ページ（houki-hub#27）の sidebar は scripts/spec-pages.mjs が生成する
 import specsSidebar from './specs-sidebar.json';
 
@@ -19,7 +21,7 @@ const nav = [
   { text: 'MCP', link: '/mcp/' },
   { text: 'ライブラリ', link: '/lib/houki-abbreviations' },
   { text: 'Skill', link: '/skills/houki-research' },
-  { text: 'リファレンス', link: '/reference/mcp/houki-egov' },
+  { text: 'リファレンス', link: '/reference/mcp/houki-egov/' },
   { text: '仕様', link: '/specs/' },
   { text: 'ロードマップ', link: '/guide/roadmap' }
 ];
@@ -55,7 +57,7 @@ const sidebar = {
       text: 'ライブラリ',
       items: [
         { text: 'houki-abbreviations', link: '/lib/houki-abbreviations' },
-        { text: 'API リファレンス', link: '/reference/lib/houki-abbreviations' }
+        { text: 'API リファレンス', link: '/reference/lib/houki-abbreviations/' }
       ]
     }
   ],
@@ -65,19 +67,7 @@ const sidebar = {
       items: [{ text: 'houki-research', link: '/skills/houki-research' }]
     }
   ],
-  '/reference/': [
-    {
-      text: 'MCP ツール',
-      items: [
-        { text: 'houki-egov-mcp', link: '/reference/mcp/houki-egov' },
-        { text: 'houki-nta-mcp', link: '/reference/mcp/houki-nta' }
-      ]
-    },
-    {
-      text: 'ライブラリ API',
-      items: [{ text: 'houki-abbreviations', link: '/reference/lib/houki-abbreviations' }]
-    }
-  ],
+  ...referenceSidebar,
   ...specsSidebar
 };
 

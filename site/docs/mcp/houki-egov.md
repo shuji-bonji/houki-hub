@@ -14,7 +14,7 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 
 ## ツール
 
-引数の詳細と実測の呼び出し例は[ツールリファレンス](/reference/mcp/houki-egov)にあります。
+引数の詳細と実測の呼び出し例は[ツールリファレンス](/reference/mcp/houki-egov/)にあります。
 
 | ツール | 用途 |
 | --- | --- |

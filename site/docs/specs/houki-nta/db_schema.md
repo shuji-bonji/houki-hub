@@ -8,10 +8,10 @@ description: "houki-nta-mcp の db_schema（通達と文書を持つローカル
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/db_schema/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/db_schema/spec.md` から自動生成しました（仕様 ID 30 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/db_schema/spec.md` から自動生成しました（仕様 ID 30 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp のローカル DB「db_schema（通達と文書を持つローカル SQLite DB の版・移行・書き戻し）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+通達と文書を持つローカル SQLite DB の版・移行・書き戻し
 
 最後に仕様が変わったのは v0.27.0 の「置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）」（2026-10-09 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 

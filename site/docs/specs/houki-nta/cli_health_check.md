@@ -8,10 +8,10 @@ description: "houki-nta-mcp の cli_health_check（国税庁サイトの代表�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/cli_health_check/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/cli_health_check/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/cli_health_check/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp のコマンドライン「cli_health_check（国税庁サイトの代表ページの確認と、基準（baseline）との比較）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+国税庁サイトの代表ページの確認と、基準（baseline）との比較
 
 最後に仕様が変わったのは v0.24.0 の「ローカル DB の版の扱い・作る入口・doc_type の制約・タックスアンサーの索引の保存と、CLI の引数の検査（段階 5 DB と CLI）」（2026-10-04 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 

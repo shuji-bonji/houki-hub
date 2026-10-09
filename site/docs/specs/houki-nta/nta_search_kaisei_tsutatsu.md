@@ -8,11 +8,12 @@ description: "houki-nta-mcp の nta_search_kaisei_tsutatsu（改正通達をキ�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/nta_search_kaisei_tsutatsu/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/nta_search_kaisei_tsutatsu/spec.md` から自動生成しました（仕様 ID 6 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/nta_search_kaisei_tsutatsu/spec.md` から自動生成しました（仕様 ID 6 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-nta-mcp のツール「nta_search_kaisei_tsutatsu（改正通達をキーワードで検索する）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
-引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-nta#nta-search-kaisei-tsutatsu)にあります。
+改正通達をキーワードで検索する
+
+使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-nta/nta_search_kaisei_tsutatsu)にあります。
 
 最後に仕様が変わったのは v0.26.0 の「ローカル DB を開けないときの読むだけのツールと書き戻すツールの応答、`--bulk-download-tax-answer` が索引を保存できないときの終わり方（nta #144・#145）」（2026-10-06 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -198,5 +199,5 @@ v0.21.3 では空の `keyword` に `results: []` と「該当なし」の `hint`
 
 - [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
 - [houki-nta-mcp の解説](/mcp/houki-nta)
-- [リファレンスの nta_search_kaisei_tsutatsu](/reference/mcp/houki-nta#nta-search-kaisei-tsutatsu)
+- [nta_search_kaisei_tsutatsu のツールのページ（リファレンス）](/reference/mcp/houki-nta/nta_search_kaisei_tsutatsu)
 - [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/nta_search_kaisei_tsutatsu/spec.md)

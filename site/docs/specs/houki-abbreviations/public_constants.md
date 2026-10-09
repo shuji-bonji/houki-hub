@@ -8,10 +8,12 @@ description: "houki-abbreviations の公開定数（CATEGORIES / DOMAINS / LAW_T
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/public_constants/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.0** の `specs/current/public_constants/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.0** の `specs/current/public_constants/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
-このページは、houki-abbreviations の値「公開定数（CATEGORIES / DOMAINS / LAW_TYPE_CODES / SOURCE_MCP_HINTS / STALENESS_THRESHOLDS）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+CATEGORIES / DOMAINS / LAW_TYPE_CODES / SOURCE_MCP_HINTS / STALENESS_THRESHOLDS
+
+使いどころ・引数・実測の呼び出し例は、[値のページ](/reference/lib/houki-abbreviations/public_constants)にあります。
 
 最後に仕様が変わったのは v0.7.0 の「辞書のエントリと公開定数を凍結する」（2026-09-30 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
@@ -256,4 +258,5 @@ flowchart TD
 
 - [houki-abbreviations の仕様の一覧](/specs/houki-abbreviations/)
 - [houki-abbreviations の解説](/lib/houki-abbreviations)
+- [公開定数 の値のページ（リファレンス）](/reference/lib/houki-abbreviations/public_constants)
 - [元の仕様書（GitHub、v0.7.0）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.0/specs/current/public_constants/spec.md)
