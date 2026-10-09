@@ -401,8 +401,8 @@ Q4（T6）の勧める案:
 | RH | 3c | nta 0.25.1 の実装 PR（#147） | `2026-10-04-stage6-instructions.md` | 済（2026-10-05、PR #151、main・タグ `v0.25.1` `c029602`、npm 0.25.1 は 14:31 JST、MCP Registry 登録済み、plugin 更新済み。#146・#147 は閉じた。publish の前の確認は `cache.dev.db` で行い、`--refresh` で 749 件を入れ直して sections の合計が 2685 → 4372。公開版の `cache.db` も 2026-10-05 14:34〜14:49 JST に `--refresh` で入れ直し済み（plugin の markdown で `### ` を確認）。houki-hub の呼び出し例 `nta_get_tax_answer.md`（No.1222 の例を追加）・`nta_search_tax_answer.md` の取り直しはブランチ `docs/20261005-nta-0.25.1-examples`（`1bbd5da`・`e4eb8aa`）。リファレンスのページの作り直しも済（main `47151ba`）） |
 | Q26 | 3b | nta 0.26.0 の仕様 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 済（2026-10-06、PR #152、main `c696f4a`。差分 `20261006-db-failure-paths`、ADDED 2・MODIFIED 17。「人が判断すること」16 項目を勧める案で承認。出発点から変えたのは 7（サイトから取れないときに開けない DB の応答にするのは GET-TSUTATSU-007 だけ）と 10（フォルダーに入る権限が無いときは別の Issue）） |
 | R26 | 3b | nta 0.26.0 の実装 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 済（2026-10-07、PR #153、main・タグ `v0.26.0` `c5bbb43`、npm 0.26.0 は 10:09 JST、MCP Registry 登録済み、plugin 更新済み（shuji）。#144・#145 は閉じた。PR 本文の「publish の前の確認」の欄は空のまま。実装の会話が起票した #154・#155・#156 は下の「2026-10-07 JST の状態」） |
-| Q156 | 3b | nta #156 の仕様 PR（仕様の文だけ） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-07） |
-| XS26 | 3b | houki-research-skill の nta 0.26.0 への追随 | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-07） |
+| Q156 | 3b | nta #156 の仕様 PR（仕様の文だけ） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、PR #157、main `c75e86a`。差分 `20261009-inspect-pdf-meta-qa-jirei`、実装の変更: 不要、`specs/current` は直し済み。外した例の代わりは `tax-answer` の `6101`。差分のフォルダーは次の nta の実装 PR（0.27.0）の最後のコミットで releases へ移し、その PR で `Closes #156`（#146 の前例）。#156 は open のまま） |
+| XS26 | 3b | houki-research-skill の nta 0.26.0 への追随 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、Skill PR #28、main・タグ `v0.19.1` `4c549d8`、リリース 11:18 JST。claude-plugins の追随は未確認） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -532,4 +532,21 @@ nta 0.26.0 の「publish の前の確認」5・6 の結果（2026-10-07 12:40〜
 | 8. 片付け | `chmod 600 /tmp/nta-026/perm.db && rm -rf /tmp/nta-026` は、`perm.db` がもう無かったため `chmod` で止まり、`rm -rf` は実行されていない。`/tmp/nta-026/` に `ta.db` と `run1.*`・`run2.*` が残っている | `rm -rf /tmp/nta-026` を実行すれば片付く |
 
 これで nta 0.26.0 の「publish の前の確認」1〜8 はすべて結果がそろい、仕様と食い違う点は無かった（9「結果を実装 PR の本文に書く」は、2〜4 を #156 の issuecomment-6030236122 に、5〜8 をこの会話に残した。PR #153 の本文の欄は空のまま）。
+
+### 2026-10-09 JST の状態（Q156・XS26 の後）
+
+Q16 の案 A の「今行うもの」は終わった。nta #156 の差分の「この差分の外で見つけたこと」（PR #157）から、0.27.0（#154・#155）の実装 PR に渡すものは次の 2 つ。
+
+1. 受入テスト 3 か所（`src/tools/spec-20261004-db-location.test.ts` の 2 か所、`src/tools/spec-20261006-db-failure-paths.test.ts` の 1 か所）が `nta_inspect_pdf_meta` を `docType: 'qa-jirei'` で直接呼んでいる。テスト名の文が仕様と合わなくなった。`qa-jirei` の行を外すか 4 つの値に置き換えるかを Test Designer が決める
+2. `LEGAL_STATUS_BY_DOCTYPE` の `qa-jirei` の項と `handleNtaInspectPdfMetaInner` のコメントは、MCP 経由では届かない。消すかを決める
+
+別の差分にするもの（起票するかは未定）: `specs/current/search_rules/spec.md` の `docId` の説明が「`nta_inspect_pdf_meta` にそのまま渡せる。例: 質疑応答事例は `shohi/02/19`」と書いている（`nta_inspect_pdf_meta` には渡せない）。仕様の例の引数を `tools/list` の `inputSchema` で検査する確かめ方は、houki-hub#44 の照合のスクリプトに足すか、受入テストの呼び出しを `inputSchema` の検査を通す形に寄せるか（PR #157 の proposal.md の「この差分の外で見つけたこと」3）。
+
+次は「残りの順序」の 3（spec-ids#5）。spec-ids のリポジトリ（`shuji-bonji/spec-ids`、origin の main `6e3964c`）は、この会話の接続フォルダーに無い。
+
+| # | 何を | 案 | 勧める案 |
+| --- | --- | --- | --- |
+| Q18 | spec-ids#5 の「人が判断すること」1: front matter のキー名 | (A) Issue の案のまま（proposal.md は `approved`・`pr`・`implementation`・`targets`、current は `spec_id`・`kind`・`approved`・`pr`） / (B) 変える | **A**。`specs/spec-ids.json` の設定と同じく英語のキーにそろい、`implementation` の値（`required` / `none` など）だけを仕様 PR で決めればよい |
+| Q19 | 同 2: current に `approvals:` の配列を生成して置くか | (A) 置かない。`spec-ids history` の出力だけにする / (B) `history --write` で生成して置く | **A**。同じ事実を 2 か所に置かないことが #5 の目的で、生成物でも current に置くと差分ごとに 14 本の spec.md が変わる（nta 0.26.0 の差分は 14 の dir に触れた）。#27 の仕様書ページは `history` の出力を使う |
+| Q20 | 同 3: `check-pr-scope.mjs` を spec-ids に取り込むか | (A) 取り込む（`spec-ids pr-scope`）。ただし #5 の front matter・`history` の後の版で行う / (B) #5 と同じ版で取り込む / (C) 取り込まず、3 リポジトリのコピーの判定だけを直す | **A**。2026-09-22 の決定（`scripts/` のコピーは版がずれるのでパッケージにする）と同じ理由で取り込む。#5 の版で同時に行うと、3 リポジトリの変換と CI の差し替えが重なり、どちらで止まったかが分かりにくい |
 
