@@ -27,8 +27,9 @@
 | CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | 済（abbr PR #38、Closes #37） |
 | D5 | 残りの順序 3 | spec-ids の docs の PR（operations.md）と Issue 草案 2 件、#5 を閉じる | 済（spec-ids PR #10、#5 を閉じた。Issue #8・#9） |
 | Q27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の仕様 PR（#154・#155） | 済（nta PR #160、main `a2a9e5f`） |
-| R27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の実装 PR（#154・#155、#156 を閉じる） | すぐ（2026-10-09 に追加） |
-| D5b | 残りの順序 3 | spec-ids の docs の PR（operations.md 5 章、ID の無い節の書き方） | すぐ（2026-10-09 に追加。R27 と並行してよい） |
+| R27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の実装 PR（#154・#155、#156 を閉じる） | 済（nta PR #161、v0.27.0 を 2026-10-09 に publish） |
+| D5b | 残りの順序 3 | spec-ids の docs の PR（operations.md 5 章、ID の無い節の書き方） | 済（spec-ids PR #11） |
+| XS27 | 残りの順序 2 | houki-research-skill の nta 0.27.0 への追随 | すぐ（2026-10-09 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1444,4 +1445,56 @@ spec-ids の docs/operations.md の 5 章（差分の書き方）と 10 章（�
 - docs/operations.md だけを変える。文は「〜します」「〜です」
 - コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に spec-ids フォルダーの削除の許可を取る。VM の git の名前とメールは houki-hub の指示書の「共通」と同じ
 - 報告: ブランチ・コミット、直した箇所の前後の文、PR 本文の草案（spec-ids PR #10 の D1 を決めたこと、houki-nta-mcp PR #160 への言及。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 XS27: houki-research-skill の houki-nta-mcp 0.27.0 への追随
+
+houki-nta-mcp 0.27.0（PR #161、main・タグ `v0.27.0` `c728de5`、npm 0.27.0 は 2026-10-09 21:19 JST、MCP Registry 登録済み）の publish の後に、新しい会話に貼ります。2026-10-09 JST に、houki-research-skill の origin の main が `4c549d8`（v0.19.1）であることを確かめました。
+
+```text
+houki-research-skill を houki-nta-mcp 0.27.0（#154 置き場所のフォルダーに入る権限が無い DB を「開けない」と判定、#155 取り込めない通達に投入を案内しない）に追随させてください。この会話の役は、Skill の文書を直す作業者です。MCP のリポジトリは触りません。
+
+## 場所と版
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/skills/houki-research-skill（device_bash では $HOME/mnt/skills/houki-research-skill）
+- 起点: main の 4c549d8（v0.19.1）。作業の前に git ls-remote https://github.com/shuji-bonji/houki-research-skill refs/heads/main で origin と同じか確かめる
+- ブランチ: docs/<作業日の yyyymmdd>-nta-0.27.0
+- 版: 文書の表と説明を直すだけなら 0.19.2。SKILL.md の手順（エラーの見分け方の表）に行を足して LLM の動きを変えるなら 0.20.0。勧める案は下の 4 を足して 0.20.0（取り込めない通達で、投入を勧めずに通達なしで部分回答する、という動きの変更になるため）。どちらにしたかと理由を報告に書く
+
+## 最初に読むもの（この順）
+
+1. README と CHANGELOG の 0.19.1・0.19.0（直し方と書き方の手本）
+2. houki-nta-mcp の specs/releases/v0.27.0/20261009-db-folder-access-and-tsutatsu-guide/proposal.md（$HOME/mnt/houki-hub/mcp/houki-nta-mcp の下）の「互換性」、とくに末尾の「houki-research-skill で関係する箇所」の表（5 行）
+3. houki-nta-mcp の specs/current の db_schema（021・029）、cli_status（004・007）、nta_get_tsutatsu（007）と CHANGELOG の 0.27.0
+
+## 直すこと
+
+proposal.md の表の 5 行を出発点にし、main で grep し直して行番号と文を確かめる（表は 2026-10-09 の v0.19.1 の行番号）。
+
+1. skills/houki-research/docs/ERROR-HANDLING.md の hint の先頭の表の「ローカル DB（<パス>）を開けません」の行（93 行目付近）: 開けない場面の列挙に「置き場所のフォルダー（またはパスの途中のフォルダー）に入る権限が無い（houki-nta-mcp v0.27.0 以上）」を足す
+2. 同 140 行目付近（--status の開けないとき）: v0.26.x 以前では、置き場所のフォルダーに入る権限が無いと「DB がまだありません」で終了コード 0 になることを足す（勧める案: 足す。v0.26.x 以前を使っている利用者が、投入しても直らない理由に気付けるため）
+3. 同 69〜75 行目付近と skills/houki-research/docs/ERROR-CODES.md 78 行目付近: proposal.md のとおり古くならないことを確かめる。直さない
+4. skills/houki-research/SKILL.md 260・261 行目付近のエラーの見分け方の表: TSUTATSU_NOT_FOUND で hint が「この通達（…）は、今は取り込めません」で始まるときの行を足す（houki-nta-mcp では基本通達 4 種以外の通達は取れない。投入を勧めず、通達なしで条文と国税庁サイトの案内までで部分回答する。houki-nta-mcp v0.26.x 以前は同じ場面で実行できない --bulk-download --tsutatsu=… を案内していたので、それを実行させない）
+5. README の推奨最小バージョンの表: houki-nta-mcp v0.27.0 の 2 つの変更を足す
+6. scripts/mcp-refs.config.json の houki-nta-mcp の版を 0.26.0 → 0.27.0 にし、node scripts/update-mcp-snapshots.mjs で mcp-snapshots/houki-nta.json を作り直す（VM から npm の registry に届かないときは、$HOME/mnt/houki-hub/mcp/houki-nta-mcp の dist を使えるか確かめ、使えなければ私が Mac で実行するコマンドを報告に書く）
+
+上のほかに、0.27.0 で古くなった文が無いかを「開けな」「EACCES」「TSUTATSU_NOT_FOUND」「--tsutatsu」「電帳法」で grep し直す（CHANGELOG を除く）。版を書いた実測の記録は書き換えない。
+
+## 守ること
+
+- 文は「〜します」「〜です」。houki-nta-mcp の仕様 ID を引用し、仕様の文を言い換えて意味を変えない
+- 0.26.x 以前と 0.27.0 で違う箇所は、版を書いて両方が分かるようにする
+- node scripts/check-mcp-refs.mjs と node --test 'scripts/test/*.test.mjs' と node scripts/update-mcp-snapshots.mjs --check を通す
+- コミットを作るところまで。署名・push・PR・マージ・タグは私が行う。git を使う前に skills フォルダーの削除の許可を取る（houki-hub の指示書の「共通」と同じ。VM の git の名前とメールも同じ）
+
+## 終わったら報告すること
+
+- ブランチ・コミット（ハッシュと件名）
+- 直した箇所の一覧（ファイル・行・前後の文）と、grep し直して足した箇所・足さなかった箇所の理由
+- 版（0.19.2 か 0.20.0）と理由、CHANGELOG の文
+- check-mcp-refs・test・snapshots の結果
+- PR 本文の草案（houki-nta-mcp 0.27.0・#154・#155 への言及。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+- claude-plugins の追随が要るか
 ```

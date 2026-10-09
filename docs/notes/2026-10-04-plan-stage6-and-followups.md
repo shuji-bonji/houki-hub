@@ -410,8 +410,9 @@ Q4（T6）の勧める案:
 | CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、abbr PR #38、main `2b3bbe1`、Issue #37 を閉じた。前直しの前の食い違い 2 件が前直しで 0 件、29 files を変換。pr-scope のテスト 16 → 20 件、Q23' の例外は入れていない。3 つのコピーの違い（`onlyIdsAdded` の判定、`.gitkeep` の除外、取り込み済み差分の `specs/changes/` の残りを消すこと、Q23' の例外、テストの件数）は PR #38 の本文の表。そろえるのは Q20 のとき） |
 | D5 | 残りの順序 3 | spec-ids の docs の PR（operations.md）と Issue 草案 2 件、#5 を閉じる | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #10、main `0b626cc`、#5 を閉じた。`docs/operations.md` の 11 か所を直した。Issue #8（spec-ids 自身の `specs/`、Q21 の A'）と #9（`spec-ids pr-scope`、Q20）を立てた） |
 | Q27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の仕様 PR（#154・#155） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、nta PR #160、main `a2a9e5f`。front matter の形の最初の仕様 PR（`approved: 2026-10-09`・`pr: 160`、targets 5 つ）。MODIFIED 9。ID の無い節（db_schema の「処理の流れ」、nta_get_tsutatsu の「できないこと」）は差分の spec.md に節として書いた（Q24' の案 A の形）。「人が判断すること」1〜14 を勧める案で承認。11（007 は DB の状態によらず同じ応答）は仕様 PR で足した点。`--status` に加えて `--refresh-stale=<日数>` の終了コードも 0 → 1） |
-| R27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の実装 PR（#154・#155、#156 を閉じる） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09） |
-| D5b | 残りの順序 3 | spec-ids の docs の PR（operations.md 5 章） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09） |
+| R27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の実装 PR（#154・#155、#156 を閉じる） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、nta PR #161、main・タグ `v0.27.0` `c728de5`、npm 0.27.0 は 21:19 JST、MCP Registry 登録済み。#154・#155・#156 を閉じた。受入テスト 96 件を追加、007 の変更で既存テスト 7 件の期待値を直した。`qa-jirei` で `nta_inspect_pdf_meta` を呼んでいた 4 か所（計画書では 3 か所と見ていた）を `tax-answer` の `6101` に置き換えた。2 つの差分を `specs/releases/v0.27.0/` へ移し、`specs/changes/` は `.gitkeep` だけ（spec-ids 0.3.0 の形での最初の取り込み）。PR 本文の「publish の前の確認」1〜8 は `<結果を記入>` のまま） |
+| D5b | 残りの順序 3 | spec-ids の docs の PR（operations.md 5 章） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #11、main `12b3448`。5 章を決まった書き方に、6 章の Steward・Publisher の指示文に 1 文ずつ、10 章から行を外した） |
+| XS27 | 残りの順序 2 | houki-research-skill の nta 0.27.0 への追随 | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -630,4 +631,14 @@ nta の変換で当たる規則（2026-10-09 JST に nta の `check-pr-scope.mjs
 4. 段階 4: hub#5 ② と呼び出し例の照合のスクリプト（houki-hub#44）
 5. spec-ids#9（`pr-scope` の取り込み。nta の Q23' の例外と 3 つのコピーの違いをここで片付ける。`migrate` を外す 0.4.0 と同じ版にするかは #9 の中で決める）
 6. spec-ids#8（spec-ids 自身の `specs/`）
+
+nta 0.27.0 の追随で残っているもの（2026-10-09 JST）:
+
+| 作業 | 状態 |
+| --- | --- |
+| houki-research-skill | 指示 XS27 |
+| houki-hub の `stack.json`・README・site の版 | 済（main `6152224`「fix: houki-nta-mcp v0.27.0 に追随」、shuji） |
+| houki-hub の site の `--tsutatsu` の説明 | `site/docs/mcp/houki-nta.md` の 186・198・201 行目は `--tsutatsu=<正式名>` と書くが、受け付けるのが基本通達 4 種だけであることを書いていない（v0.27.0 の proposal.md の「実装 PR で直す文書」8）。直すかは shuji が決める（site は都度確認） |
+| 変えたツールの契約の確認 | 呼び出し例への影響は無い（proposal.md の「呼び出し例への影響」）。変えたのは開けない DB と `電帳法取通` の場面だけで、呼び出し例にこれらの例は無いので、例を流す確認は省いてよい |
+| PR #161 の「publish の前の確認」1〜8 | 本文の欄が `<結果を記入>` のまま。0.26.0 と同じく、結果をコメントに残すか（Q17 と同じ扱い） |
 
