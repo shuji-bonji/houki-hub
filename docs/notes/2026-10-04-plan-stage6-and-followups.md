@@ -554,3 +554,13 @@ Q16 の案 A の「今行うもの」は終わった。nta #156 の差分の「�
 
 spec-ids の作業コピーは `/Users/bonji/workspace/shuji-bonji/spec-ids`（2026-10-09 JST にこの会話の接続フォルダーに足した）。origin の main は `6e3964c`。未追跡の `Claude outputs/issue-approval-front-matter.md` がある。
 
+2026-10-09 JST に shuji が決めたこと: Q18〜Q20 は勧める案（A）のとおり。Q21 について、spec-ids 自身に `specs/` を置くべきではないか、という問いが出た（自分の仕様を自分で突き合わせることの循環は気になる、とも）。考えたことと案:
+
+- 置く理由: spec-ids の振る舞い（`check` の検査・出力・終了コード、`next` の採番）は、houki 系 3 リポジトリと family の外（pdf 系、e-shiwake）の CI が頼る約束で、0.2.0 でも互換性の無い変更をした。仕様 ID とテストで守る価値がある。#5 の形（front matter と `history`）を 4 つ目のリポジトリで試すことにもなる
+- 循環への手当て: spec-ids の `spec-gate` では、作業ツリーの `bin/` ではなく、1 つ前に publish した版（`npx -y @shuji-bonji/spec-ids@<前の版> check`）で自分の `specs/` を突き合わせる。コンパイラーを 1 つ前の安定版で作るのと同じ考え方で、作業中の `check` の不具合が自分の検査を素通りさせることを防ぐ。`check` の正しさそのものは、今までどおり `test/*.test.mjs`（fixture に対して関数を呼ぶ、`check` を使わないテスト）で守る
+- 時期: #5 の前に置くと、初版起こしを今の形（`- 承認日:` の行）で書き、#5 で変換し直すことになる。#5 の後に置けば、spec-ids の `specs/` は最初から新しい形で生まれ、変換が要らない
+
+| # | 何を | 案 | 勧める案 |
+| --- | --- | --- | --- |
+| Q21（改） | spec-ids 自身の `specs/` | (A) #5 は設計の文書（`docs/proposals/`）で進め、spec-ids の `specs/` は置かない / (A') A で #5 を進め、#5 の publish の後に spec-ids の `specs/` を初版起こしする（新しい形で、別の Issue。`spec-gate` は 1 つ前の publish 版で回す） / (B) #5 の前に `specs/` を初版起こしし、#5 をその最初の差分にする | **A'**。置く価値はあるが、#5 の前に置くと初版起こしと変換が二度手間になる |
+
