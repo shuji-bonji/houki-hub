@@ -20,7 +20,8 @@
 | R26 | 3b | houki-nta-mcp 0.26.0 の実装 PR（#144・#145） | 済（PR #153、v0.26.0 を 2026-10-07 に publish） |
 | Q156 | 3b | houki-nta-mcp #156 の仕様 PR（実装の変更: 不要の見込み） | 済（PR #157） |
 | XS26 | 3b | houki-research-skill の nta 0.26.0 への追随 | 済（Skill PR #28、v0.19.1、claude-plugins も更新済み） |
-| S5 | 残りの順序 3 | spec-ids#5 の設計 PR | Q18〜Q21 を決めてから（2026-10-09 に追加） |
+| S5 | 残りの順序 3 | spec-ids#5 の設計 PR | 済（spec-ids PR #6、main `d0ce8b7`） |
+| R5 | 残りの順序 3 | spec-ids 0.3.0 の実装 PR | すぐ（2026-10-09 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1013,4 +1014,65 @@ spec-ids#5（承認の記録を proposal.md の front matter に移し、current
 - 例は実在の差分 ID と PR 番号で書く（egov の 20261002-t1-followups の PR 番号など、releases の proposal.md から写す）
 - コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に spec-ids フォルダーの削除の許可を取る（houki-hub の指示書の「共通: Cowork の VM で作業するときの注意」と同じ。VM の git には GIT_AUTHOR_NAME="shuji narumi" GIT_AUTHOR_EMAIL="71716610+shuji-bonji@users.noreply.github.com"、COMMITTER も同じ）
 - 報告: ブランチ・コミット、文書の要約（変わる振る舞い 3〜5 行）、「人が判断すること」の一覧と勧める案、3 リポジトリで数えた食い違いの件数、PR 本文の草案（Refs #5。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）、実装 PR に渡すこと
+```
+
+---
+
+## 指示 R5: spec-ids 0.3.0 の実装 PR（#5）
+
+設計 PR #6（`docs/proposals/20261009-approval-front-matter.md`、main `d0ce8b7`、承認日 2026-10-09）のマージの後に、新しい会話に貼ります。設計の「人が判断すること」Q18〜Q31 は勧める案で承認済みです。2026-10-09 JST に、spec-ids の origin の main が `d0ce8b7` であることを確かめました。
+
+```text
+spec-ids 0.3.0（#5 承認の記録を proposal.md の front matter に移す）の実装 PR を作ってください。この会話の役は Test Designer → Coder です（spec-ids の docs/operations.md 1.3）。設計 PR #6 は承認・マージ済みで、この会話では設計の意図を変えません。
+
+## 場所と版
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/spec-ids（Cowork の device_bash では $HOME/mnt/spec-ids）
+- 起点: main の d0ce8b7。作業の前に git ls-remote https://github.com/shuji-bonji/spec-ids refs/heads/main で origin と同じか確かめる
+- ブランチ: feat/<作業日の yyyymmdd>-0.3.0
+- 版: 0.2.0 → 0.3.0
+- この PR で閉じる Issue: #5 は閉じない（3 リポジトリの変換が終わるまで open。PR 本文は Refs #5）
+- 未追跡の「Claude outputs/」は触らない
+
+## 最初に読むもの（この順）
+
+1. docs/proposals/20261009-approval-front-matter.md の全文。とくに「変えた後の動き」（front matter の表、history の出力、check の検査 5〜7、front matter の読み方）、「変わらない振る舞い」、「互換性」、「変換の手順」の migrate の表と読み取りの規則、「実装 PR で直す文書」の spec-ids の部分、「人が判断すること」Q18〜Q31
+2. README・CHANGELOG・docs/operations.md
+3. src/*.mjs・bin/spec-ids.mjs・test/*.test.mjs・test/helpers.mjs（fixture の作り方）
+4. migrate の読み取りの規則の元になる、利用側の今の形（読むだけ）: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-egov-mcp と houki-nta-mcp の specs/current/*/spec.md の冒頭の行、specs/releases/*/*/proposal.md の冒頭の行。houki-abbreviations の作業コピーの同じもの（場所が分からなければ私に聞く）
+
+## 実装するもの
+
+- src/ に front matter の読み取り（設計の「front matter の読み方」の書式だけ。依存パッケージは足さない）と、Node の API の readFrontMatter
+- spec-ids check に検査 5〜7。出力の 2 行目に proposals: の行。check() の戻り値に changesProposals・releasesProposals・frontMatter[]・missingTargets[]・legacyLines[] を足し、既存のキーは変えない
+- spec-ids history <dir>（--json・--all）。出力の形は設計の get_toc の例のとおり
+- spec-ids migrate（なし・--json・--write）。読み取りの規則と、食い違いがあれば exit 1・--write は食い違いが無いときだけ書く、のとおり。0.4.0 で外す旨をコードのコメントと CHANGELOG に書く
+- bin の USAGE、README（「実装 PR で直す文書」の README の行）、CHANGELOG 0.3.0（「互換性」の節）、package.json の版
+- templates/agents-section.md は変えない（Q30）。docs/operations.md も変えない（後の docs の PR）
+
+## 守ること
+
+- テストは設計の表と例から先に書き（test: のコミット）、落ちることを確かめてから実装する（feat: のコミット）。テストの名前に設計の節か検査の番号を入れる（spec-ids には仕様 ID が無いので、たとえば「検査 6 targets の漏れ: …」）
+- fixture は test/helpers.mjs の作り方で一時ディレクトリに書く。利用側のリポジトリのファイルをテストから読まない
+- 0.2.0 の 4 つの検査の結果と出力の行が変わらないことを、既存のテストで確かめる（既存のテストの期待値を変えるのは、出力の行が 1 行増える箇所だけ）
+- 依存パッケージを足さない。Biome（npm run lint・npm run format:check）を通す
+- 設計の文と例から外れたくなったら、止めて私に聞く（案を並べ、勧める案を 1 つ書く）。設計に書いていない細部（関数の分け方、エラーの文の言い回し、JSON のキーの並び）は決めてよく、報告の「実装で決めたこと」に書く
+- コミットを作るところまで。署名・push・PR・マージ・タグ・publish は私が行う。git を使う前に spec-ids フォルダーの削除の許可を取る。VM の git には GIT_AUTHOR_NAME="shuji narumi" GIT_AUTHOR_EMAIL="71716610+shuji-bonji@users.noreply.github.com"（COMMITTER も同じ）。npm install・npm rebuild はしない（node_modules は Mac と共有）
+
+## 検証
+
+- npm test（node:test）、npm run lint、npm run format:check を VM で回せれば回し、回せなければ私が Mac で回すコマンドを書く
+- 実データでの確かめ（書き換えない）: houki-egov-mcp の作業コピーで node <spec-ids の作業コピー>/bin/spec-ids.mjs migrate と migrate --json を実行し、食い違いが 0 件で、設計の「確かめた値」の件数（egov は current 20 本・proposal.md 16 本）と合うことを確かめる。--write はしない。houki-nta-mcp と houki-abbreviations でも migrate（なし）を実行し、設計の前直し F1〜F4 だけが食い違いとして出ることを確かめる。nta では specs/changes/20261009-inspect-pdf-meta-qa-jirei/ も食い違い（targets が空）として出る見込み（設計の「変換の時期」）
+- 結果を報告に貼る
+
+## 終わったら報告すること
+
+- コミットの一覧（ハッシュと件名）
+- 足したテストの数と、設計の節・検査ごとの対応
+- npm test・lint・format:check の結果（または Mac で回すコマンド）
+- 実データでの migrate の結果（3 リポジトリ）
+- 実装で決めたこと、止めて聞いたことと答え
+- CHANGELOG 0.3.0 の文
+- PR 本文の草案（Refs #5、設計 PR #6 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+- 3 リポジトリの変換の PR に渡すこと（とくに設計の「確かめていない点」1・4）
 ```
