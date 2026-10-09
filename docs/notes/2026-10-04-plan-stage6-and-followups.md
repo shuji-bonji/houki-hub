@@ -522,5 +522,14 @@ nta 0.26.0 の「publish の前の確認」5・6 の結果（2026-10-07 12:40〜
 | 6. 書き戻す 3 ツール × 開けない DB 2 つ（SQLite でないファイル・読む権限の無いファイル） | `nta_get_tax_answer`・`nta_get_qa`・`nta_get_tsutatsu`（消基通 1-4-1）は `source: "live"` で返り、呼び出しごとに `"level":"warn"` の行が 1 行。`scope` はツール名、`msg` は `ローカル DB を開けないため、DB を使わずに国税庁サイトから取ります。取った内容は DB に書きません（DB: <パス>）`、`meta` は `db_path` と `cause`。`電帳法取通` 4-1 は `TSUTATSU_NOT_FOUND`・`retryable: false`・開けないときの `hint`・`next_actions` 無しで、`warn` の行も出た | SPEC-NTA-DB-SCHEMA-030・GET-TSUTATSU-007、「人が判断すること」7・8 のとおり |
 | 6. DB のファイルが変わらないこと | `text.db` の `shasum` は `2b77fa69…` で、作ったときと同じ内容（同じ `printf` の `shasum`）と一致。`perm.db` は `b5a988cd…`（呼ぶ前の値は控えていない） | `text.db` は変わっていない。`perm.db` は比べる値が無い |
 
-まだ結果が無いもの: 7（#145。壊れた表の DB で `--bulk-download-tax-answer --refresh` の `[WARN]` の行と `exit=0`、`tax_answer_index_page.fetched_at` が変わらないこと）と 8（公開版の `cache.db` の `shasum` が手順 2 の `048c196c…` と同じこと、`/tmp/nta-026` の片付け）。
+7・8 の結果（2026-10-09 JST、shuji の Mac、作業コピーの `dist/index.js`。会話に貼られた出力から写した）:
+
+| 手順 | 結果 | 仕様との比較 |
+| --- | --- | --- |
+| 7. 1 回目（`HOUKI_NTA_DB_PATH=/tmp/nta-026/ta.db`、`--bulk-download-tax-answer --tax-answer-taxonomy=saigai`） | `exit=0`、`[done] 完了: 16/16 docs (304: 0, 同内容: 0, 更新: 16) 17.2s`。`tax_answer_index_page.fetched_at` は `2026-10-09T01:08:30.049Z`、`document` のタックスアンサーは 16 行 | 前提の DB ができた。v0.26.0 の proposal.md の「確かめていない点」7（`saigai` の件数と所要時間）は 16 件・17.2 秒 |
+| 7. 表を壊して 2 回目（`--refresh`） | `[WARN] タックスアンサーの索引を DB に保存できませんでした（表: tax_answer_index、DB: /tmp/nta-026/ta.db）: table tax_answer_index has no column named url。記事の取り込みは続けます` の後に `[done] 完了: 16/16 docs (304: 0, 同内容: 0, 更新: 16) 53.3s`、`exit=0`、`documentsFetched: 16`。`tax_answer_index_page.fetched_at` は 1 回目の値のまま、タックスアンサーは 16 行 | SPEC-NTA-CLI-BULK-DOWNLOAD-014 と「人が判断すること」12〜15 のとおり。`[WARN]` の行は proposal.md の文と 1 字も違わない |
+| 8. 公開版の DB | `shasum ~/.cache/houki-nta-mcp/cache.db` は手順 2 と同じ `048c196c92864d4cb28bdcb95af6a524661c0370`。`ls -l ~/.cache/houki-nta-mcp/` も手順 2 と同じ（`cache.db` は 130359296 バイト・Oct 5 14:49） | 公開版の DB は確認の間に変わっていない |
+| 8. 片付け | `chmod 600 /tmp/nta-026/perm.db && rm -rf /tmp/nta-026` は、`perm.db` がもう無かったため `chmod` で止まり、`rm -rf` は実行されていない。`/tmp/nta-026/` に `ta.db` と `run1.*`・`run2.*` が残っている | `rm -rf /tmp/nta-026` を実行すれば片付く |
+
+これで nta 0.26.0 の「publish の前の確認」1〜8 はすべて結果がそろい、仕様と食い違う点は無かった（9「結果を実装 PR の本文に書く」は、2〜4 を #156 の issuecomment-6030236122 に、5〜8 をこの会話に残した。PR #153 の本文の欄は空のまま）。
 
