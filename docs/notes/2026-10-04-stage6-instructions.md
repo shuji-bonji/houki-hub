@@ -22,7 +22,9 @@
 | XS26 | 3b | houki-research-skill の nta 0.26.0 への追随 | 済（Skill PR #28、v0.19.1、claude-plugins も更新済み） |
 | S5 | 残りの順序 3 | spec-ids#5 の設計 PR | 済（spec-ids PR #6、main `d0ce8b7`） |
 | R5 | 残りの順序 3 | spec-ids 0.3.0 の実装 PR | 済（spec-ids PR #7、v0.3.0 を 2026-10-09 に publish） |
-| CE | 残りの順序 3 | houki-egov-mcp の変換の PR | すぐ（2026-10-09 に追加） |
+| CE | 残りの順序 3 | houki-egov-mcp の変換の PR | 済（egov PR #117、Closes #116） |
+| CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | Q23' を決めてから（2026-10-09 に追加） |
+| CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | CN の報告の後（2026-10-09 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1133,4 +1135,116 @@ houki-egov-mcp の specs/ を spec-ids 0.3.0 の形（承認の記録を front m
 - 設計の「確かめていない点」3・4 で分かったこと
 - houki-nta-mcp・houki-abbreviations の変換に渡すこと（egov で手順を回して分かった落とし穴）
 - Issue の草案（houki-egov-mcp に立てる。題: 「specs/ の承認の記録を spec-ids 0.3.0 の front matter に移す」。本文に spec-ids#5・設計 PR #6・実装 PR #7 へのリンク）と、PR 本文の草案（Closes <その Issue>、Refs shuji-bonji/spec-ids#5。前後の比較のスクリプトと出力を含む。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 CN と CA の前に: egov の変換（指示 CE）で分かったこと
+
+houki-egov-mcp の変換は PR #117（main `0cadfe8`、Closes #116）で済みました。nta・abbr に渡すことは次のとおりです。
+
+1. `check-pr-scope.mjs` が `readFrontMatter` を import するので、`ci.yml` の `pr-scope` ジョブに `npm ci` が要る。nta・abbr の `pr-scope` ジョブにも `npm ci` が無い（2026-10-09 JST に `ci.yml` を読んで確かめた）
+2. 前後の一致は 2 通りで比べる。A: `migrate --json` と `history --all --json`、B: 変換の前のコミットの本文（`git show`）と releases の `specs/<dir>/` を migrate を通さずに読んだ値と `history --all --json`。比べるスクリプト `compare-approvals.mjs` は egov の PR #117 の本文にある
+3. `package-lock.json` は Mac で `npm install -D @shuji-bonji/spec-ids@^0.3.0` を実行して足す
+4. egov では Biome の対象が `src` だけで、specs/ は検査の外だった。nta の `biome.json` も `src/**` などで同じ形。abbr は eslint・prettier で、npm scripts は `src` だけ
+
+nta に固有の点: **nta の変換の PR は、今の `pr-scope` の規則に当たる。** `specs/changes/20261009-inspect-pdf-meta-qa-jirei/proposal.md` が残っていて（計画書の Q22' の案 A）、`migrate --write` はこの proposal.md も書き換える。nta の `check-pr-scope.mjs` は、実装 PR（`spec/`・`spec-init/` 以外のブランチ）で `specs/changes/` を変えることを、`specs/releases/` への移動を除いて止める（「仕様 PR の外で specs/changes/ を変えています」）。扱いは計画書の Q23' で決める。
+
+---
+
+## 指示 CN: houki-nta-mcp の変換の PR（前直し F1・F2・F5）
+
+計画書の Q23' を決めてから貼ります。下の文は Q23' が勧める案 A（`pr-scope` に変換の書き換えだけを通す例外を足す）のときの形です。
+
+2026-10-09 JST に、houki-nta-mcp の origin の main が `c75e86a` で、`specs/changes/` に `20261009-inspect-pdf-meta-qa-jirei/` があることを確かめました。
+
+```text
+houki-nta-mcp の specs/ を spec-ids 0.3.0 の形（承認の記録を front matter に書く）に変換する PR を作ってください。この会話の役は、変換を行う作業者です。仕様の意図（ID の付いた本文）は変えません。houki-egov-mcp で同じ変換を済ませています（PR #117）。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-nta-mcp（Cowork の device_bash では $HOME/mnt/houki-hub/mcp/houki-nta-mcp）
+- 起点: main の c75e86a。作業の前に git ls-remote https://github.com/shuji-bonji/houki-nta-mcp refs/heads/main で origin と同じか確かめ、specs/changes/ に 20261009-inspect-pdf-meta-qa-jirei/ だけがあることを確かめる
+- ブランチ: chore/<作業日の yyyymmdd>-approval-front-matter
+- 使う spec-ids: /Users/bonji/workspace/shuji-bonji/spec-ids の作業コピー（$HOME/mnt/spec-ids。タグ v0.3.0 であることを確かめる）の bin/spec-ids.mjs
+- 版: 上げず、publish もしない
+
+## 最初に読むもの（この順）
+
+1. spec-ids の docs/proposals/20261009-approval-front-matter.md。とくに「変換の手順」の前直しの表（F1・F2）と「変換の時期」
+2. houki-egov-mcp の PR #117 の本文（curl https://api.github.com/repos/shuji-bonji/houki-egov-mcp/pulls/117）。コミットの分け方、比べるスクリプト compare-approvals.mjs、pr-scope の変更、ci.yml の npm ci
+3. houki-egov-mcp の main の .github/scripts/check-pr-scope.mjs と check-pr-scope.test.mjs（$HOME/mnt/houki-hub/mcp/houki-egov-mcp。変換後の形の手本）
+4. houki-hub の docs/notes/2026-10-04-plan-stage6-and-followups.md の Q22'（F5）と Q23'
+5. houki-nta-mcp の AGENTS.md・CONTRIBUTING.md、.github/workflows/ci.yml、.github/scripts/check-pr-scope.mjs と test
+
+## コミットの順（1 本の PR）
+
+1. docs(specs): 前直し F1・F2・F5（古い形のまま、手で直す。1 件 1 コミットでもよい）
+   - F1: 差分 20260930-cli-db-undecided-to-issues（PR #114）を、db_schema・cli_entry・cli_bulk_download・cli_refresh・cli_health_check の 5 本の current の「- 承認日:」の行に「差分 `20260930-cli-db-undecided-to-issues` は 2026-09-30（PR #114）」として足す（設計の F1。コミット 099b6ce が変えた 5 本と同じことを git show で確かめる）
+   - F2: specs/releases の 20260924-tsutatsu-clause-forms/proposal.md に「- 承認日: 2026-09-24（PR #53）」と「- 実装の変更: 要」を足す（設計の F2）
+   - F5: 差分 20261009-inspect-pdf-meta-qa-jirei（PR #157）を、specs/current/nta_inspect_pdf_meta/spec.md と specs/current/db_schema/spec.md の「- 承認日:」の行に「差分 `20261009-inspect-pdf-meta-qa-jirei` は 2026-10-09（PR #157）」として足す（計画書の Q22'）。差分のフォルダーは specs/changes/ に残す
+   - 前直しの後に node $HOME/mnt/spec-ids/bin/spec-ids.mjs migrate を実行し、食い違いが 0 件になることを確かめる。残れば止めて私に聞く
+2. chore: package.json の @shuji-bonji/spec-ids を ^0.3.0 にする（package-lock.json は私が Mac で足す）
+3. chore: specs/ を migrate --write で変換する。egov と同じく、変換の前のコミットを控え、compare-approvals.mjs の A・B の 2 通りで前後の一致を確かめ、spec-ids check を通す
+4. ci: check-pr-scope.mjs を egov と同じ形で front matter の判定に替え、テストを直し、ci.yml の pr-scope ジョブに npm ci を足す。加えて Q23' の案 A の例外を足す: 実装 PR で specs/changes/<id>/proposal.md を変えていても、その差分が「先頭に front matter の行を足す」「「- 承認日:」「- 実装の変更:」で始まる行を消す」「「- 実装の変更の補足:」で始まる行を足す」だけなら止めない（変換の書き換え）。それ以外の行の変更は今までどおり止める。テストに、通る場合と止める場合（本文の行を変えた proposal.md）を足す。コードのコメントに「spec-ids migrate の変換のための例外。pr-scope を spec-ids に取り込むとき（spec-ids#5 の後の版）に外す」と書く
+5. docs: AGENTS.md（31 行目付近の承認日の文と Spec Publisher の手順）を egov の PR #117 と同じ形に直す。CONTRIBUTING.md などほかに「承認日」があれば同じく直す（specs/ と node_modules を除いて grep）
+
+## 守ること
+
+- specs/ の書き換えは、前直し（手で、古い形のまま）と migrate --write だけで行う。変換の後の specs/ を手で直さない
+- ID の付いた見出しと本文、テスト（.github/scripts の pr-scope のテストを除く）、src/ は変えない
+- このブランチを新しい pr-scope に通し（BASE_REF=main HEAD_REF=<ブランチ> node .github/scripts/check-pr-scope.mjs）、OK になることを確かめる
+- 比べるスクリプトと出力は PR 本文に貼る
+- 設計の Q23'（pr-scope の例外）が私の答えと違っていたら、4 の例外の部分はその答えに合わせる
+- コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る（この文書の「共通」と同じ）。npm install・npm rebuild はしない
+
+## 終わったら報告すること
+
+- コミットの一覧、私が Mac で足すコミット（package-lock.json）のコマンド
+- 前直しの前後の migrate の結果、変換の結果、前後の一致（A・B）、spec-ids check の出力
+- pr-scope の変更点（例外を含む）とテストの結果、このブランチを通した結果
+- AGENTS.md などで直した箇所
+- houki-abbreviations の変換に渡すこと
+- Issue の草案（houki-nta-mcp に立てる。題と本文は egov の #116 と同じ形）と PR 本文の草案（Closes <その Issue>、Refs shuji-bonji/spec-ids#5、Refs #156（F5 で current の行に足したこと。#156 は 0.27.0 で閉じる）。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 CA: houki-abbreviations の変換の PR（前直し F3・F4）
+
+CN の報告を受けてから貼ります（nta で分かったことを足すため）。下の文はその前の形です。2026-10-09 JST に、houki-abbreviations の origin の main が `50bd63b` で `specs/changes/` が `.gitkeep` だけであることを確かめました。abbr は `specs/changes/` が空なので、Q23' の例外には当たりません。
+
+```text
+houki-abbreviations の specs/ を spec-ids 0.3.0 の形（承認の記録を front matter に書く）に変換する PR を作ってください。この会話の役は、変換を行う作業者です。仕様の意図（ID の付いた本文）は変えません。houki-egov-mcp（PR #117）と houki-nta-mcp で同じ変換を済ませています。
+
+## 場所
+
+- リポジトリ: houki-hub の lib/houki-abbreviations（/Users/bonji/workspace/shuji-bonji/houki-hub/lib/houki-abbreviations、Cowork の device_bash では $HOME/mnt/houki-hub/lib/houki-abbreviations）
+- 起点: main の 50bd63b。作業の前に git ls-remote https://github.com/shuji-bonji/houki-abbreviations refs/heads/main で origin と同じか確かめ、specs/changes/ が .gitkeep だけであることを確かめる
+- ブランチ: chore/<作業日の yyyymmdd>-approval-front-matter
+- 使う spec-ids: $HOME/mnt/spec-ids の作業コピー（v0.3.0）の bin/spec-ids.mjs
+- 版: 上げず、publish もしない
+
+## 最初に読むもの（この順）
+
+1. spec-ids の docs/proposals/20261009-approval-front-matter.md の「変換の手順」の前直しの表（F3・F4）
+2. houki-egov-mcp の PR #117 と、houki-nta-mcp の変換の PR の本文
+3. houki-egov-mcp の main の .github/scripts/check-pr-scope.mjs と test（手本）
+4. houki-abbreviations の AGENTS.md・CONTRIBUTING.md、.github/workflows/ci.yml と spec-gate.yml、.github/scripts/check-pr-scope.mjs と test
+
+## コミットの順（1 本の PR）
+
+1. docs(specs): 前直し F3・F4（古い形のまま）
+   - F3: 差分 20260927-untested-behaviors の PR 番号を、current の 22 本の行で #28 から #27 に直す（設計の Q28。#27 が仕様 PR、#28 は受入テストの PR）
+   - F4: current の 23 本の初版を「2026-09-27（PR #10）」に戻し、「差分 `20260927-undecided-to-issues` は 2026-09-27（PR #26）」を足す（設計の Q29。コミット 151d255 が初版の PR 番号を書き換えていたことを git show で確かめる）
+   - 前直しの後に migrate を実行し、食い違いが 0 件になることを確かめる
+2. chore: package.json の @shuji-bonji/spec-ids を ^0.3.0 にする（package-lock.json は私が Mac で足す）
+3. chore: migrate --write で変換し、A・B の 2 通りで前後の一致を確かめ、spec-ids check を通す
+4. ci: check-pr-scope.mjs を egov・nta と同じ形にし、テストを直し、ci.yml の pr-scope ジョブに npm ci を足す（nta で足した例外は、nta の形に合わせて入れるか、abbr では不要として入れないかを報告に書く。勧める案は、3 つのコピーを同じにするために入れる）
+5. docs: AGENTS.md（32 行目付近）と、ほかに「承認日」を書いている文書を直す
+
+## 守ること・報告すること
+
+- 指示 CN と同じ（specs/ の書き換えは前直しと migrate --write だけ、ID の付いた本文・テスト・src/ は変えない、このブランチを新しい pr-scope に通す、比べるスクリプトと出力は PR 本文に、コミットまで、VM の注意）
+- 報告: コミットの一覧と Mac で足すコマンド、前直しの前後の migrate、変換の結果、前後の一致、spec-ids check、pr-scope の変更とテスト、Issue の草案（houki-abbreviations に立てる）と PR 本文の草案（Closes <その Issue>、Refs shuji-bonji/spec-ids#5。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）、spec-ids の docs の PR（docs/operations.md）に渡すこと
 ```
