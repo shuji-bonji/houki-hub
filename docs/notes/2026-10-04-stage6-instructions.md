@@ -24,7 +24,8 @@
 | R5 | 残りの順序 3 | spec-ids 0.3.0 の実装 PR | 済（spec-ids PR #7、v0.3.0 を 2026-10-09 に publish） |
 | CE | 残りの順序 3 | houki-egov-mcp の変換の PR | 済（egov PR #117、Closes #116） |
 | CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | 済（nta PR #159、Closes #158） |
-| CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | すぐ（2026-10-09 に nta の結果を入れて直した） |
+| CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | 済（abbr PR #38、Closes #37） |
+| D5 | 残りの順序 3 | spec-ids の docs の PR（operations.md）と Issue 草案 2 件、#5 を閉じる | すぐ（2026-10-09 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1247,4 +1248,47 @@ houki-abbreviations の specs/ を spec-ids 0.3.0 の形（承認の記録を fr
 
 - 指示 CN と同じ（specs/ の書き換えは前直しと migrate --write だけ、ID の付いた本文・テスト・src/ は変えない、このブランチを新しい pr-scope に通す、比べるスクリプトと出力は PR 本文に、コミットまで、VM の注意）
 - 報告: コミットの一覧と Mac で足すコマンド、前直しの前後の migrate、変換の結果、前後の一致、spec-ids check、pr-scope の変更とテスト、Issue の草案（houki-abbreviations に立てる）と PR 本文の草案（Closes <その Issue>、Refs shuji-bonji/spec-ids#5。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）、spec-ids の docs の PR（docs/operations.md）に渡すこと
+```
+
+---
+
+## 指示 D5: spec-ids の docs の PR（docs/operations.md）と、次の 2 件の Issue の草案
+
+3 リポジトリの変換（egov PR #117・nta PR #159・abbr PR #38）が済んだ後に、新しい会話に貼ります。設計 `docs/proposals/20261009-approval-front-matter.md` の「実装 PR で直す文書」のうち「実装 PR の後の docs の PR で直すもの」を行い、spec-ids#5 を閉じます。あわせて、#5 の後に回した 2 件（spec-ids 自身の `specs/`、`pr-scope` の取り込み）の Issue の草案を書きます。2026-10-09 JST に、spec-ids の origin の main が `c82c0b4`（v0.3.0）であることを確かめました。
+
+```text
+spec-ids の docs/operations.md を 0.3.0（承認の記録を front matter に書く）に合わせる docs の PR を作ってください。あわせて、spec-ids に立てる Issue 2 件の草案を書きます。この会話の役は、文書を直す作業者です。src/・test/ は変えません。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/spec-ids（Cowork の device_bash では $HOME/mnt/spec-ids）
+- 起点: main の c82c0b4（v0.3.0）。作業の前に git ls-remote https://github.com/shuji-bonji/spec-ids refs/heads/main で origin と同じか確かめる
+- ブランチ: docs/<作業日の yyyymmdd>-operations-front-matter
+- 版: 上げない（文書だけ）。未追跡の「Claude outputs/」は触らない
+
+## 最初に読むもの（この順）
+
+1. docs/proposals/20261009-approval-front-matter.md の「実装 PR で直す文書」の「実装 PR の後の docs の PR で直すもの」の表（1.2・2.1・2.2・3・3.2・4・6 章 Steward・6 章 Publisher・7 章・9 章・10 章）と「この差分の外で見つけたこと」
+2. docs/operations.md の全文、README、CHANGELOG 0.3.0
+3. 3 リポジトリの変換の PR の本文（curl で読む）: https://api.github.com/repos/shuji-bonji/houki-egov-mcp/pulls/117、.../houki-nta-mcp/pulls/159、.../houki-abbreviations/pulls/38。とくに abbr の PR #38 の「3 つのコピーの違い」の表と、nta の PR #159 の Q23' の例外
+4. 変換後の利用側の AGENTS.md（読むだけ）: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-egov-mcp/AGENTS.md ほか。operations.md の文と食い違わないようにする
+
+## 直すこと
+
+- 設計の表のとおりに docs/operations.md を直す。7 章（起きたこと）には、abbr の 151d255 の一括書き換え（設計の「この差分の外で見つけたこと」2 つ目）と、変換で見つかった食い違い（50 件中 20 件、前直し F1〜F5）を 1〜2 行で足す。F5 は houki-hub の計画書の Q22'（nta の #156 の差分を current の行に足してから変換した）
+- 5 章（差分の書き方）と実際の書き方の食い違い（ID の無い節の直しを proposal.md の「取り込みのとき」に文章で書く書き方が nta 9 件・egov 2 件ある。設計の「この差分の外で見つけたこと」1 つ目）は、targets がどちらも受け付けることを書き足すにとどめ、どちらに寄せるかは「人が判断すること」として PR 本文に並べる（勧める案を 1 つ書く）
+- 9 章（導入）と 10 章: pr-scope は今は 3 リポジトリのコピーで、readFrontMatter を import するので pr-scope ジョブに npm ci が要ることを書く。spec-ids に取り込む予定（下の Issue 草案 2）を書く
+- README に、変換が 3 リポジトリで済んだことを書く必要があるかを確かめ、要るなら直す（migrate を 0.4.0 で外す予定の文はそのまま）
+
+## Issue の草案（docs/ ではなく報告の本文に書く。投稿は私が行う）
+
+1. 「spec-ids 自身の仕様を specs/ に置く（初版起こし）」: houki-hub の計画書の Q21 の案 A'。最初から front matter の形で書く。spec-gate は作業ツリーの bin ではなく、1 つ前に publish した版（npx -y @shuji-bonji/spec-ids@<前の版> check）で回す理由（自分の check の不具合が自分の検査を素通りさせない）。check の正しさは今までどおり test/*.test.mjs（check を使わない fixture のテスト）で守る。対象の機能の候補（check・next・init・history・migrate・format・config・frontmatter など、dir の切り方は Issue の「決めること」にする）
+2. 「pr-scope を spec-ids のサブコマンドとして取り込む（spec-ids pr-scope）」: 設計の Q20。3 つのコピーの違い（abbr の PR #38 の表: onlyIdsAdded の判定、.gitkeep の除外、取り込み済み差分の specs/changes/ の残りを消すこと、nta の変換の例外、テストの件数）をどちらにそろえるかを「決めること」に並べる。nta の変換の例外（Q23'）はこのときに外す。migrate を外す 0.4.0 と同じ版にするかも「決めること」にする
+
+## 守ること・報告すること
+
+- docs/operations.md と（要れば）README だけを変える。docs/proposals/ の設計の文書は書き換えない（承認済みの記録）
+- 文は「〜します」「〜です」。実在の PR 番号・コミット・件数で書く
+- コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に spec-ids フォルダーの削除の許可を取る。VM の git の名前とメールは houki-hub の指示書の「共通」と同じ
+- 報告: ブランチ・コミット、直した節の一覧、PR 本文の草案（Closes #5。3 リポジトリの変換の PR へのリンク、「人が判断すること」（5 章の書き方）。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）、Issue の草案 2 件
 ```

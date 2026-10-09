@@ -407,7 +407,8 @@ Q4（T6）の勧める案:
 | R5 | 残りの順序 3 | spec-ids 0.3.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #7、main・タグ `v0.3.0` `c82c0b4`、npm の latest 0.3.0 は 14:49 JST。テスト 95 件。実データの `migrate`（書き換えなし）で egov は食い違い 0 件、nta は F1・F2 と #156 の差分、abbr は F3・F4 だけ。前直しを当てた写しで変換前後の承認の集合が一致（egov 160 行・nta 224 行・abbr 92 行）） |
 | CE | 残りの順序 3 | houki-egov-mcp の変換の PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、egov PR #117、main `0cadfe8`、Issue #116 を閉じた。current 20 本・proposal.md 16 本、食い違い 0 件。前後の一致は A（migrate --json と history）・B（変換前の本文と history）とも 20 / 20 機能・160 行。pr-scope は `readFrontMatter` を import し、ci.yml の pr-scope ジョブに `npm ci` を足した。テスト 18 → 22 件。版は上げず publish なし） |
 | CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、nta PR #159、main `9ed0832`、Issue #158 を閉じた。前直しの前の食い違い 3 件が前直しで 0 件。current 22 本・proposal.md は changes 1・releases 28 を変換（51 files）。前後の一致は A・B とも 22 / 22 機能・226 行。pr-scope は Q23' の例外を足し、テスト 16 → 24 件。例外を外すと #156 の proposal.md で止まることも確かめた。egov のコピーにある `.gitkeep` の除外などは持ち込んでいないので、3 つのコピーは同じではない） |
-| CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09、nta の結果を入れて直した）。Q23' の例外は入れない |
+| CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、abbr PR #38、main `2b3bbe1`、Issue #37 を閉じた。前直しの前の食い違い 2 件が前直しで 0 件、29 files を変換。pr-scope のテスト 16 → 20 件、Q23' の例外は入れていない。3 つのコピーの違い（`onlyIdsAdded` の判定、`.gitkeep` の除外、取り込み済み差分の `specs/changes/` の残りを消すこと、Q23' の例外、テストの件数）は PR #38 の本文の表。そろえるのは Q20 のとき） |
+| D5 | 残りの順序 3 | spec-ids の docs の PR（operations.md）と Issue 草案 2 件、#5 を閉じる | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -596,3 +597,13 @@ nta の変換で当たる規則（2026-10-09 JST に nta の `check-pr-scope.mjs
 | Q23' | nta の変換の PR で `specs/changes/` の proposal.md を書き換えることを `pr-scope` でどう扱うか | (A) 新しい `check-pr-scope.mjs` に狭い例外を足す: 実装 PR で `specs/changes/<id>/proposal.md` の差分が「先頭に front matter の行を足す」「「- 承認日:」「- 実装の変更:」の行を消す」「「- 実装の変更の補足:」の行を足す」だけなら通す。テストで、通る場合と本文を変えた場合（止める）を確かめる。`pr-scope` を spec-ids に取り込むとき（Q20）に外す / (B) この PR だけ `pr-scope` が RED のままマージする（理由を PR 本文に書く） / (C) 先に #156 の差分を releases へ移す（移す先のタグが無い。Q22' で退けた案） | **A**。CI が止めるべきもの（仕様 PR の外での差分の意図の書き換え）は止めたまま、変換だけを通せる。B は `pr-scope` を RED のまま通す前例になる。例外はテストで範囲を固定する |
 
 2026-10-09 JST に shuji が決めたこと: Q23' は案 A（新しい `check-pr-scope.mjs` に、`specs/changes/` の proposal.md の変換による書き換えだけを通す狭い例外を足し、テストで範囲を固定する。`pr-scope` を spec-ids に取り込むときに外す）。指示 CN をこの形で渡した。
+
+2026-10-09 JST: houki-egov-mcp・houki-nta-mcp・houki-abbreviations の 3 つとも、`specs/` の承認の記録を spec-ids 0.3.0 の front matter に移し終えた（egov #117・nta #159・abbr #38）。spec-ids#5 は open のまま。D5（`docs/operations.md` の追随）の PR で閉じる。
+
+この後の順:
+
+1. D5: spec-ids の docs の PR（#5 を閉じる）。spec-ids 自身の `specs/`（Q21 の A'）と `pr-scope` の取り込み（Q20）の Issue を立てる（着手の時期は後で決める）
+2. nta 0.27.0（#154・#155）の仕様 PR。新しい形（front matter）で書く最初の仕様 PR。#156 の差分を releases へ移して閉じる。PR #157 の「この差分の外で見つけたこと」1・2（受入テストの `qa-jirei` の 3 か所、届かない項とコメント）も実装 PR に渡す
+3. #27 の仕様書ページと scope-by-audience（段階 4。`spec-ids history` の出力を使う）
+4. hub#5 ② と呼び出し例の照合のスクリプト（houki-hub#44）
+
