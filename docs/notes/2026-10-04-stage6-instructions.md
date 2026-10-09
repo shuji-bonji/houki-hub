@@ -30,7 +30,8 @@
 | R27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の実装 PR（#154・#155、#156 を閉じる） | 済（nta PR #161、v0.27.0 を 2026-10-09 に publish） |
 | D5b | 残りの順序 3 | spec-ids の docs の PR（operations.md 5 章、ID の無い節の書き方） | 済（spec-ids PR #11） |
 | XS27 | 残りの順序 2 | houki-research-skill の nta 0.27.0 への追随 | 済（Skill PR #29、v0.20.0） |
-| Y1 | 段階 4 | #27 の仕様書ページと scope-by-audience（設計と試作） | すぐ（2026-10-09 に追加） |
+| Y1 | 段階 4 | #27 の仕様書ページと scope-by-audience（設計と試作） | 済（hub PR #46、main `690ac1e`） |
+| Y2 | 段階 4 | #27 の仕様書ページの全部の生成と公開 | Q26' を決めてから（2026-10-09 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1548,4 +1549,51 @@ houki-hub#27（houki-hub シリーズの仕様書の提供）の仕様書ペー�
 - 生成したページは、元の spec.md・workflows の文を言い換えて意味を変えない（生成部分は写すだけにし、人が書く部分と分ける）
 - 公開（main への取り込み）はしない。コミットはブランチに作るところまで。署名・push・PR は私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る（この文書の「共通」と同じ）
 - 報告: ブランチ・コミット、決めること 1〜5 の案と勧める案（試作に使った案）、試作のページのパスと見どころ、生成スクリプトの入力と出力、全部のページを生成すると何ページになるか（リポジトリごとの数）、Y2（全部の生成と公開）と hub#5 ②（CI での生成し直し）に渡すこと
+```
+
+---
+
+## 指示 Y2: #27 の仕様書ページの全部の生成と公開
+
+Y1（設計と試作）は houki-hub PR #46 で main に入りました（`690ac1e`、2026-10-09）。`site/**` の push で GitHub Pages に公開されるので、試作の 4 機能のページと「仕様」の nav は、すでに公開されています。Y2 では `SPEC_REGISTRY` の `only` を外して全部のページを作り、試作で決めた形を確定します。
+
+Y1 で決まった形（計画書の Q26' で shuji が確かめる）:
+
+| # | 決めること | Y1 の形 |
+| --- | --- | --- |
+| 1 | URL と sidebar | `/specs/<サイトの短い名前>/<dir>`（`houki-egov`・`houki-nta`・`houki-abbreviations`・`houki-research`。`/mcp/`・`/reference/` と同じ名前）。sidebar は `site/docs/.vitepress/specs-sidebar.json` を生成して読む |
+| 2 | 載せるもの | spec.md の節を言い換えずに写す（使う人と受け取るもの・入力・戻り値・できないこと・処理の流れ・仕様 ID ごとの約束（条件と例は折りたたみ））。人が書く「使いどころ」の節を `scripts/spec-pages/<site>/<dir>.md` から差し込める |
+| 3 | 承認の履歴 | 載せる。spec-ids 0.3.0 の `history()` で集める |
+| 4 | 生成スクリプト | `scripts/spec-pages.mjs`。`node scripts/generate-reference.mjs specs`（`specs:<site>`）で呼ぶ。入力は houki-hub の作業コピーの `mcp/`・`lib/`・`skill/` の下 |
+| 5 | scope-by-audience | `site/docs/guide/scope-by-audience.md`。`overview.md`・`disclaimer.md` からリンク |
+
+```text
+houki-hub#27 の仕様書ページを、試作（Y1、PR #46）の形のまま全部の機能について生成し、公開できる状態にしてください。この会話の役は、生成と文書の作業者です。各リポジトリの specs/ は読むだけで、変えません。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub（Cowork の device_bash では $HOME/mnt/houki-hub）
+- 起点: main。作業の前に git ls-remote https://github.com/shuji-bonji/houki-hub refs/heads/main で origin と同じか確かめる。mcp/houki-egov-mcp・mcp/houki-nta-mcp・lib/houki-abbreviations・skill/houki-research-skill の作業コピーが、それぞれの origin の main と同じかも確かめる（違えば止めて私に聞く。生成の元が古くなるため）
+- ブランチ: docs/<作業日の yyyymmdd>-spec-pages（site/ を変えるので PR にする）
+
+## 最初に読むもの
+
+1. houki-hub PR #46 の本文（curl https://api.github.com/repos/shuji-bonji/houki-hub/pulls/46）と、コミット 690ac1e のメッセージ
+2. scripts/spec-pages.mjs と scripts/lib/generated-page.mjs、site/docs/specs/index.md（読み方のページ）、試作の 4 ページ
+3. docs/notes/2026-10-04-stage6-instructions.md の「指示 Y2」の前の表（Y1 で決まった形）と、計画書の Q26'
+
+## やること
+
+1. SPEC_REGISTRY の only を外し、egov 20・nta 22・abbr 23 の機能と、Skill の workflow 2 つ（tax-research・feasibility-check）のページを生成する（リポジトリごとの一覧と specs-sidebar.json も作り直す）
+2. 生成したページを全部 VitePress で組み、壊れたリンク・Mermaid の描画の誤り・見出しの重複が無いかを確かめる。機能ごとに spec.md の書き方が違う（例: 種類が CLI・DB・共通の機能、## 処理の流れが無い機能、ID の無い節の書き方が古い形の機能）ので、試作の 4 ページで見えなかった崩れを探し、生成スクリプトで直す。spec.md を直す必要があるものは直さずに一覧にして報告する
+3. 「使いどころ」（人が書く節）は、計画書の Q26' の答えに合わせる（勧める案: Y2 では新しく書かない。今ある nta_get_tsutatsu の 1 つだけにし、ほかは後で足す）
+4. リファレンスのページ（site/docs/reference/）の各ツールから、同じ機能の仕様書ページへのリンクを張るかを決め、張るなら generate-reference.mjs で行う（勧める案: 張る。仕様書ページからリファレンスへのリンクは試作ですでにある）
+5. scope-by-audience のページは、試作の文を shuji が読んで直すまで変えない（このページは業法の線を書くので、文の確認は私が行う）。直す点があれば報告に挙げるだけにする
+
+## 守ること・報告すること
+
+- 生成したページは手で直さない（直すのは生成スクリプトか、人が書く節のファイル）。仕様書の本文を言い換えない
+- 公開文書の文は「〜します」「〜です」
+- コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る（この文書の「共通」と同じ）
+- 報告: ブランチ・コミット、生成したページの数（リポジトリごと）、VitePress の組み立ての結果、生成スクリプトで直した崩れの一覧、spec.md 側で直すとよいものの一覧（リポジトリ・機能・何が崩れるか）、リファレンスからのリンクの扱い、hub#5 ②（CI での生成し直し）に渡すこと（作業コピーに頼っている入力と、CI で用意するもの）、PR 本文の草案（Refs #27。#27 を閉じるかは私が決める。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```
