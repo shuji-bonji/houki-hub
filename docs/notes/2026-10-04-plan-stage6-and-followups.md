@@ -406,8 +406,8 @@ Q4（T6）の勧める案:
 | S5 | 残りの順序 3 | spec-ids#5 の設計 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #6、main `d0ce8b7`。設計は `docs/proposals/20261009-approval-front-matter.md`。「人が判断すること」Q18〜Q31 を勧める案で承認。版 0.3.0。`check` に検査 5〜7、`history`、一度だけ使う `migrate`（0.4.0 で外す）。3 リポジトリの取り込み済みの差分 50 件のうち 20 件で current の行と releases が食い違い、16 件は和で解け、4 件（nta F1・F2、abbr F3・F4）は変換の前に前直しする） |
 | R5 | 残りの順序 3 | spec-ids 0.3.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #7、main・タグ `v0.3.0` `c82c0b4`、npm の latest 0.3.0 は 14:49 JST。テスト 95 件。実データの `migrate`（書き換えなし）で egov は食い違い 0 件、nta は F1・F2 と #156 の差分、abbr は F3・F4 だけ。前直しを当てた写しで変換前後の承認の集合が一致（egov 160 行・nta 224 行・abbr 92 行）） |
 | CE | 残りの順序 3 | houki-egov-mcp の変換の PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、egov PR #117、main `0cadfe8`、Issue #116 を閉じた。current 20 本・proposal.md 16 本、食い違い 0 件。前後の一致は A（migrate --json と history）・B（変換前の本文と history）とも 20 / 20 機能・160 行。pr-scope は `readFrontMatter` を import し、ci.yml の pr-scope ジョブに `npm ci` を足した。テスト 18 → 22 件。版は上げず publish なし） |
-| CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Q23' は案 A に決まり、指示を渡した |
-| CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。CN の報告の後に貼る |
+| CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、nta PR #159、main `9ed0832`、Issue #158 を閉じた。前直しの前の食い違い 3 件が前直しで 0 件。current 22 本・proposal.md は changes 1・releases 28 を変換（51 files）。前後の一致は A・B とも 22 / 22 機能・226 行。pr-scope は Q23' の例外を足し、テスト 16 → 24 件。例外を外すと #156 の proposal.md で止まることも確かめた。egov のコピーにある `.gitkeep` の除外などは持ち込んでいないので、3 つのコピーは同じではない） |
+| CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09、nta の結果を入れて直した）。Q23' の例外は入れない |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |

@@ -23,8 +23,8 @@
 | S5 | 残りの順序 3 | spec-ids#5 の設計 PR | 済（spec-ids PR #6、main `d0ce8b7`） |
 | R5 | 残りの順序 3 | spec-ids 0.3.0 の実装 PR | 済（spec-ids PR #7、v0.3.0 を 2026-10-09 に publish） |
 | CE | 残りの順序 3 | houki-egov-mcp の変換の PR | 済（egov PR #117、Closes #116） |
-| CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | 渡した（Q23' は案 A、2026-10-09） |
-| CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | CN の報告の後（2026-10-09 に追加） |
+| CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | 済（nta PR #159、Closes #158） |
+| CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | すぐ（2026-10-09 に nta の結果を入れて直した） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1212,7 +1212,7 @@ houki-nta-mcp の specs/ を spec-ids 0.3.0 の形（承認の記録を front ma
 
 ## 指示 CA: houki-abbreviations の変換の PR（前直し F3・F4）
 
-CN の報告を受けてから貼ります（nta で分かったことを足すため）。下の文はその前の形です。2026-10-09 JST に、houki-abbreviations の origin の main が `50bd63b` で `specs/changes/` が `.gitkeep` だけであることを確かめました。abbr は `specs/changes/` が空なので、Q23' の例外には当たりません。
+nta の変換（PR #159、main `9ed0832`、Closes #158）で分かったことを入れて直しました（2026-10-09 JST）。2026-10-09 JST に、houki-abbreviations の origin の main が `50bd63b` で `specs/changes/` が `.gitkeep` だけであることを確かめました。abbr は `specs/changes/` が空なので、Q23' の例外には当たりません。
 
 ```text
 houki-abbreviations の specs/ を spec-ids 0.3.0 の形（承認の記録を front matter に書く）に変換する PR を作ってください。この会話の役は、変換を行う作業者です。仕様の意図（ID の付いた本文）は変えません。houki-egov-mcp（PR #117）と houki-nta-mcp で同じ変換を済ませています。
@@ -1228,7 +1228,7 @@ houki-abbreviations の specs/ を spec-ids 0.3.0 の形（承認の記録を fr
 ## 最初に読むもの（この順）
 
 1. spec-ids の docs/proposals/20261009-approval-front-matter.md の「変換の手順」の前直しの表（F3・F4）
-2. houki-egov-mcp の PR #117 と、houki-nta-mcp の変換の PR の本文
+2. houki-egov-mcp の PR #117 と houki-nta-mcp の PR #159 の本文（curl https://api.github.com/repos/shuji-bonji/houki-nta-mcp/pulls/159）。比べるスクリプト compare-approvals.mjs は nta の版（初版と差分が同じ PR の行、差分で作った機能の行を読み、新設の差分を差分の集合から外す）を出発点にする
 3. houki-egov-mcp の main の .github/scripts/check-pr-scope.mjs と test（手本）
 4. houki-abbreviations の AGENTS.md・CONTRIBUTING.md、.github/workflows/ci.yml と spec-gate.yml、.github/scripts/check-pr-scope.mjs と test
 
@@ -1239,8 +1239,8 @@ houki-abbreviations の specs/ を spec-ids 0.3.0 の形（承認の記録を fr
    - F4: current の 23 本の初版を「2026-09-27（PR #10）」に戻し、「差分 `20260927-undecided-to-issues` は 2026-09-27（PR #26）」を足す（設計の Q29。コミット 151d255 が初版の PR 番号を書き換えていたことを git show で確かめる）
    - 前直しの後に migrate を実行し、食い違いが 0 件になることを確かめる
 2. chore: package.json の @shuji-bonji/spec-ids を ^0.3.0 にする（package-lock.json は私が Mac で足す）
-3. chore: migrate --write で変換し、A・B の 2 通りで前後の一致を確かめ、spec-ids check を通す
-4. ci: check-pr-scope.mjs を egov・nta と同じ形にし、テストを直し、ci.yml の pr-scope ジョブに npm ci を足す（nta で足した例外は、nta の形に合わせて入れるか、abbr では不要として入れないかを報告に書く。勧める案は、3 つのコピーを同じにするために入れる）
+3. chore: migrate --write で変換し、A・B の 2 通りで前後の一致を確かめ、spec-ids check を通す。B の読み取りが abbr の「- 承認日:」の行の書き方（前直しの後の F3・F4 の形を含む）を読めるかを先に確かめ、読めない書き方があればスクリプトに足して PR 本文に書く。after.json を壊して不一致が出ることも確かめる
+4. ci: check-pr-scope.mjs の 3 つの判定を egov・nta と同じく front matter の判定に替え（readFrontMatter を import）、テストを直し、ci.yml の pr-scope ジョブに npm ci（と cache: npm）を足す。nta で足した specs/changes/ の変換の例外（Q23'）は入れない（abbr は specs/changes/ が空で当たらない。egov のコピーにも無い）。egov と nta のコピーは、もともと .gitkeep の除外などで違いがあるので、3 つを同じにするのは pr-scope を spec-ids に取り込むとき（Q20）に行う。abbr のコピーと egov・nta のコピーの違いを報告に書く
 5. docs: AGENTS.md（32 行目付近）と、ほかに「承認日」を書いている文書を直す
 
 ## 守ること・報告すること
