@@ -585,3 +585,5 @@ spec-ids の作業コピーは `/Users/bonji/workspace/shuji-bonji/spec-ids`（2
 
 spec-ids 0.3.0 の publish の後も、3 リポジトリは `^0.2.0`（lock も 0.2.0）で、CI は `npm ci` の後に `npx spec-ids check` を動かすので、変換の PR で依存を上げるまで 0.2.0 のまま動く。dependabot は 3 リポジトリとも無い（2026-10-09 JST に確かめた）。変換までの間、3 リポジトリで spec-ids を上げる操作（`npm update` など）と `npx -y @shuji-bonji/spec-ids@latest` はしない。houki 系の外（pdf 系、e-shiwake）が spec-ids を使っているかは確かめていない。
 
+2026-10-09 JST に shuji が決めたこと: Q22' は案 A。houki-nta-mcp の変換の前直しに F5 を足す。F5 は、#156 の差分 `20261009-inspect-pdf-meta-qa-jirei`（PR #157、実装の変更: 不要、承認日 2026-10-09）を、current の `specs/current/nta_inspect_pdf_meta/spec.md` と `specs/current/db_schema/spec.md` の「- 承認日:」の行に「差分 `20261009-inspect-pdf-meta-qa-jirei` は 2026-10-09（PR #157）」として書き足すこと（古い形のまま、F1 と同じ直し方）。差分のフォルダーは `specs/changes/` に残り、`migrate` がその proposal.md も front matter に変換する。releases へ移すのは nta 0.27.0（#154・#155）の実装 PR で、その PR に `Closes #156` を書く。nta の変換の指示（CN）は、egov の変換（指示 CE）の報告で分かった落とし穴を入れてから書く。
+
