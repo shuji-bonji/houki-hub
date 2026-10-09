@@ -402,7 +402,8 @@ Q4（T6）の勧める案:
 | Q26 | 3b | nta 0.26.0 の仕様 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 済（2026-10-06、PR #152、main `c696f4a`。差分 `20261006-db-failure-paths`、ADDED 2・MODIFIED 17。「人が判断すること」16 項目を勧める案で承認。出発点から変えたのは 7（サイトから取れないときに開けない DB の応答にするのは GET-TSUTATSU-007 だけ）と 10（フォルダーに入る権限が無いときは別の Issue）） |
 | R26 | 3b | nta 0.26.0 の実装 PR（#144・#145） | `2026-10-04-stage6-instructions.md` | 済（2026-10-07、PR #153、main・タグ `v0.26.0` `c5bbb43`、npm 0.26.0 は 10:09 JST、MCP Registry 登録済み、plugin 更新済み（shuji）。#144・#145 は閉じた。PR 本文の「publish の前の確認」の欄は空のまま。実装の会話が起票した #154・#155・#156 は下の「2026-10-07 JST の状態」） |
 | Q156 | 3b | nta #156 の仕様 PR（仕様の文だけ） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、PR #157、main `c75e86a`。差分 `20261009-inspect-pdf-meta-qa-jirei`、実装の変更: 不要、`specs/current` は直し済み。外した例の代わりは `tax-answer` の `6101`。差分のフォルダーは次の nta の実装 PR（0.27.0）の最後のコミットで releases へ移し、その PR で `Closes #156`（#146 の前例）。#156 は open のまま） |
-| XS26 | 3b | houki-research-skill の nta 0.26.0 への追随 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、Skill PR #28、main・タグ `v0.19.1` `4c549d8`、リリース 11:18 JST。claude-plugins の追随は未確認） |
+| XS26 | 3b | houki-research-skill の nta 0.26.0 への追随 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、Skill PR #28、main・タグ `v0.19.1` `4c549d8`、リリース 11:18 JST。claude-plugins も更新済み（shuji）。houki-hub の `stack.json`・README は `d245555`） |
+| S5 | 残りの順序 3 | spec-ids#5 の設計 PR | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Q18〜Q21 の決定を待つ |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -549,4 +550,7 @@ Q16 の案 A の「今行うもの」は終わった。nta #156 の差分の「�
 | Q18 | spec-ids#5 の「人が判断すること」1: front matter のキー名 | (A) Issue の案のまま（proposal.md は `approved`・`pr`・`implementation`・`targets`、current は `spec_id`・`kind`・`approved`・`pr`） / (B) 変える | **A**。`specs/spec-ids.json` の設定と同じく英語のキーにそろい、`implementation` の値（`required` / `none` など）だけを仕様 PR で決めればよい |
 | Q19 | 同 2: current に `approvals:` の配列を生成して置くか | (A) 置かない。`spec-ids history` の出力だけにする / (B) `history --write` で生成して置く | **A**。同じ事実を 2 か所に置かないことが #5 の目的で、生成物でも current に置くと差分ごとに 14 本の spec.md が変わる（nta 0.26.0 の差分は 14 の dir に触れた）。#27 の仕様書ページは `history` の出力を使う |
 | Q20 | 同 3: `check-pr-scope.mjs` を spec-ids に取り込むか | (A) 取り込む（`spec-ids pr-scope`）。ただし #5 の front matter・`history` の後の版で行う / (B) #5 と同じ版で取り込む / (C) 取り込まず、3 リポジトリのコピーの判定だけを直す | **A**。2026-09-22 の決定（`scripts/` のコピーは版がずれるのでパッケージにする）と同じ理由で取り込む。#5 の版で同時に行うと、3 リポジトリの変換と CI の差し替えが重なり、どちらで止まったかが分かりにくい |
+| Q21 | spec-ids#5 の「仕様 PR」の形（spec-ids には自分自身の `specs/` が無い） | (A) `docs/proposals/<日付>-approval-front-matter.md` の設計の文書を 1 本の PR にして承認し、その後に実装 PR / (B) spec-ids に `specs/` を置き、自分の仕様を spec-ids で管理し始める / (C) 設計と実装を 1 本の PR にする | **A**。Issue の進め方 1・2（仕様を先に承認し、実装は後）を保てる。B は #5 の範囲を超える（初版起こしが要る）。C は人が振る舞いを承認する場所が実装のレビューに混ざる |
+
+spec-ids の作業コピーは `/Users/bonji/workspace/shuji-bonji/spec-ids`（2026-10-09 JST にこの会話の接続フォルダーに足した）。origin の main は `6e3964c`。未追跡の `Claude outputs/issue-approval-front-matter.md` がある。
 

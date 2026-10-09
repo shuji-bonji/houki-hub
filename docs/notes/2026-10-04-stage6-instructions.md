@@ -18,8 +18,9 @@
 | RH | 3c | houki-nta-mcp 0.25.1 の実装 PR（#147） | 済（v0.25.1 を 2026-10-05 に publish） |
 | Q26 | 3b | houki-nta-mcp 0.26.0 の仕様 PR（#144・#145） | 済（PR #152、main `c696f4a`、承認日 2026-10-06） |
 | R26 | 3b | houki-nta-mcp 0.26.0 の実装 PR（#144・#145） | 済（PR #153、v0.26.0 を 2026-10-07 に publish） |
-| Q156 | 3b | houki-nta-mcp #156 の仕様 PR（実装の変更: 不要の見込み） | すぐ（2026-10-07 に追加） |
-| XS26 | 3b | houki-research-skill の nta 0.26.0 への追随 | すぐ（2026-10-07 に追加。Q156 と並行してよい） |
+| Q156 | 3b | houki-nta-mcp #156 の仕様 PR（実装の変更: 不要の見込み） | 済（PR #157） |
+| XS26 | 3b | houki-research-skill の nta 0.26.0 への追随 | 済（Skill PR #28、v0.19.1、claude-plugins も更新済み） |
+| S5 | 残りの順序 3 | spec-ids#5 の設計 PR | Q18〜Q21 を決めてから（2026-10-09 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -964,4 +965,52 @@ proposal.md の表の 5 か所を出発点にし、main で grep し直して行
 - CHANGELOG 0.19.1（または 0.20.0）の文
 - PR 本文の草案（houki-nta-mcp 0.26.0・#144・#145 への言及。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 - claude-plugins の追随が要るか
+```
+
+---
+
+## 指示 S5: spec-ids#5 の設計 PR（承認の記録を proposal.md の front matter に移す）
+
+計画書の「残りの順序」の 3 です。spec-ids には、自分自身の `specs/` がありません（2026-10-09 JST に確かめた。0.1.0・0.2.0 は README・CHANGELOG・`docs/operations.md` で振る舞いを書き、PR #2 で実装した）。そのため、#5 の「進め方」1 の「仕様 PR」は、`docs/` に置く設計の文書（変わる振る舞い・変わらない振る舞い・人が判断すること）を 1 本の PR にし、人が承認してから実装 PR（進め方 2）に進む形にします（計画書の Q21）。
+
+この指示の出発点は、計画書の Q18〜Q21 の勧める案です。**shuji が Q18〜Q21 を決めてから新しい会話に貼ります。** 勧める案と違う決定になったら、下の「出発点」を直してから貼ります。
+
+2026-10-09 JST に、spec-ids の origin の main が `6e3964c`（0.2.0 の後、docs の 2 コミット）であることを確かめました。作業コピーに未追跡の `Claude outputs/`（`issue-approval-front-matter.md`、#5 の起票の下書きと見られる）があります。
+
+```text
+spec-ids#5（承認の記録を proposal.md の front matter に移し、current の承認日の行を手で書き足さないようにする）の設計 PR を書いてください。この会話の役は Spec Steward です（spec-ids の docs/operations.md 1.3）。実装・テストは書きません。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/spec-ids（Cowork の device_bash では $HOME/mnt/spec-ids）
+- 起点: main の 6e3964c。作業の前に git ls-remote https://github.com/shuji-bonji/spec-ids refs/heads/main で origin と同じか確かめる
+- ブランチ: spec/<作業日の yyyymmdd>-approval-front-matter
+- 置くもの: docs/proposals/<作業日の yyyymmdd>-approval-front-matter.md の 1 本（docs/proposals/ が無ければ作る）。spec-ids には specs/ が無いので、houki 系の proposal.md と同じ節の並びをこの文書に持たせる
+- 未追跡の「Claude outputs/」は触らない（コミットに入れない）
+
+## 最初に読むもの（この順）
+
+1. spec-ids の README・CHANGELOG・docs/operations.md（とくに 1.2 PR の種類、3.2 承認日、4 CI）
+2. Issue #5 の本文（curl https://api.github.com/repos/shuji-bonji/spec-ids/issues/5）
+3. src/scan.mjs・src/check.mjs・bin/spec-ids.mjs（今の走査と出力の形）
+4. 利用側の今の形（読むだけ）: houki-egov-mcp・houki-nta-mcp・houki-abbreviations（/Users/bonji/workspace/shuji-bonji/houki-hub/mcp/ の下と、houki-abbreviations の作業コピー）の specs/current/<dir>/spec.md の「- 承認日:」の行、specs/releases/*/*/proposal.md の冒頭の「- 対象:」「- 実装の変更:」「- 承認日:」の行、.github/scripts/check-pr-scope.mjs の APPROVAL_RE
+5. Issue #5 の「今の形のままでは履歴を集計できない」の表（egov の 3 件の食い違い）。nta・abbr にも同じ食い違いがあるかを、releases の specs/<dir>/ の有無と current の行を突き合わせて数える
+
+## 出発点（勧める案。文書の「人が判断すること」に書いて承認を受ける）
+
+- Q18 front matter のキー名: Issue の案のまま。proposal.md は approved・pr・implementation・targets、current の spec.md は spec_id・kind・approved・pr。implementation の値（required / none の 2 つか、今の「要 / 不要」をそのまま使うか）は文書で決める
+- Q19 current に approvals: の配列を置かない。履歴は spec-ids history <dir> の出力だけにする（history --write は作らない）
+- Q20 check-pr-scope.mjs の取り込みは #5 の後の版で行う（spec-ids pr-scope）。#5 の版では、3 リポジトリのコピーの APPROVAL_RE を front matter の判定に替える手順だけを書く
+- targets の検査（specs/<dir>/spec.md があるのに targets に無い差分を止める）は spec-ids check に足す。逆向き（targets にあるのに specs/<dir>/ が無い）は、「実装の変更: 不要」の差分（current を直接直す）で正しく起きるので止めない、を出発点にする
+- 変換（Issue の進め方 3・4）: 変換スクリプトの置き場所（spec-ids の bin のサブコマンドにするか、一度だけ使う scripts/ にするか）と、変換の前後で一致を確かめる方法（今の current の行から作った「差分 ID → 機能」の表と、変換後の spec-ids history の出力を比べる）を書く。Issue の表の食い違い（current の行と releases の specs/<dir>/ が合わない差分）を、変換で current の行と releases のどちらに合わせるかを「人が判断すること」に並べる
+- 移行の間の扱い: 変換を済ませたリポジトリと済ませていないリポジトリが並ぶ間、spec-ids check は両方の形を受け付けるか（受け付けるなら、いつ古い形をやめるか）を書く
+- 版: 0.3.0（check が front matter と targets を見るようになり、出力が変わるため）を出発点にする
+
+## 守ること・報告すること
+
+- docs/proposals/ の 1 本だけを書く。src/・test/・README・CHANGELOG・docs/operations.md は変えない（operations.md の 3.2 と 6 章を直すのは実装 PR か、その後の docs の PR。その範囲を文書に書く）
+- 文書の節: なぜ変えるか・今の動き・変えた後の動き（front matter の形、history の出力の例、check の新しい検査、pr-scope の判定）・変わらない振る舞い・互換性（利用側の 3 リポジトリで何がいつ変わるか）・変換の手順・実装 PR で直す文書・人が判断すること（勧める案つき）・確かめた値（実際に数えた件数と、どのコマンドで数えたか）・確かめていない点
+- 例は実在の差分 ID と PR 番号で書く（egov の 20261002-t1-followups の PR 番号など、releases の proposal.md から写す）
+- コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に spec-ids フォルダーの削除の許可を取る（houki-hub の指示書の「共通: Cowork の VM で作業するときの注意」と同じ。VM の git には GIT_AUTHOR_NAME="shuji narumi" GIT_AUTHOR_EMAIL="71716610+shuji-bonji@users.noreply.github.com"、COMMITTER も同じ）
+- 報告: ブランチ・コミット、文書の要約（変わる振る舞い 3〜5 行）、「人が判断すること」の一覧と勧める案、3 リポジトリで数えた食い違いの件数、PR 本文の草案（Refs #5。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）、実装 PR に渡すこと
 ```
