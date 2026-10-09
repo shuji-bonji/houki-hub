@@ -23,7 +23,7 @@
 | S5 | 残りの順序 3 | spec-ids#5 の設計 PR | 済（spec-ids PR #6、main `d0ce8b7`） |
 | R5 | 残りの順序 3 | spec-ids 0.3.0 の実装 PR | 済（spec-ids PR #7、v0.3.0 を 2026-10-09 に publish） |
 | CE | 残りの順序 3 | houki-egov-mcp の変換の PR | 済（egov PR #117、Closes #116） |
-| CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | Q23' を決めてから（2026-10-09 に追加） |
+| CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | 渡した（Q23' は案 A、2026-10-09） |
 | CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | CN の報告の後（2026-10-09 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |

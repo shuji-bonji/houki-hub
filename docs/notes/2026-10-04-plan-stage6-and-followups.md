@@ -406,7 +406,7 @@ Q4（T6）の勧める案:
 | S5 | 残りの順序 3 | spec-ids#5 の設計 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #6、main `d0ce8b7`。設計は `docs/proposals/20261009-approval-front-matter.md`。「人が判断すること」Q18〜Q31 を勧める案で承認。版 0.3.0。`check` に検査 5〜7、`history`、一度だけ使う `migrate`（0.4.0 で外す）。3 リポジトリの取り込み済みの差分 50 件のうち 20 件で current の行と releases が食い違い、16 件は和で解け、4 件（nta F1・F2、abbr F3・F4）は変換の前に前直しする） |
 | R5 | 残りの順序 3 | spec-ids 0.3.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #7、main・タグ `v0.3.0` `c82c0b4`、npm の latest 0.3.0 は 14:49 JST。テスト 95 件。実データの `migrate`（書き換えなし）で egov は食い違い 0 件、nta は F1・F2 と #156 の差分、abbr は F3・F4 だけ。前直しを当てた写しで変換前後の承認の集合が一致（egov 160 行・nta 224 行・abbr 92 行）） |
 | CE | 残りの順序 3 | houki-egov-mcp の変換の PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、egov PR #117、main `0cadfe8`、Issue #116 を閉じた。current 20 本・proposal.md 16 本、食い違い 0 件。前後の一致は A（migrate --json と history）・B（変換前の本文と history）とも 20 / 20 機能・160 行。pr-scope は `readFrontMatter` を import し、ci.yml の pr-scope ジョブに `npm ci` を足した。テスト 18 → 22 件。版は上げず publish なし） |
-| CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Q23' の決定を待つ |
+| CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Q23' は案 A に決まり、指示を渡した |
 | CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。CN の報告の後に貼る |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
@@ -595,3 +595,4 @@ nta の変換で当たる規則（2026-10-09 JST に nta の `check-pr-scope.mjs
 | --- | --- | --- | --- |
 | Q23' | nta の変換の PR で `specs/changes/` の proposal.md を書き換えることを `pr-scope` でどう扱うか | (A) 新しい `check-pr-scope.mjs` に狭い例外を足す: 実装 PR で `specs/changes/<id>/proposal.md` の差分が「先頭に front matter の行を足す」「「- 承認日:」「- 実装の変更:」の行を消す」「「- 実装の変更の補足:」の行を足す」だけなら通す。テストで、通る場合と本文を変えた場合（止める）を確かめる。`pr-scope` を spec-ids に取り込むとき（Q20）に外す / (B) この PR だけ `pr-scope` が RED のままマージする（理由を PR 本文に書く） / (C) 先に #156 の差分を releases へ移す（移す先のタグが無い。Q22' で退けた案） | **A**。CI が止めるべきもの（仕様 PR の外での差分の意図の書き換え）は止めたまま、変換だけを通せる。B は `pr-scope` を RED のまま通す前例になる。例外はテストで範囲を固定する |
 
+2026-10-09 JST に shuji が決めたこと: Q23' は案 A（新しい `check-pr-scope.mjs` に、`specs/changes/` の proposal.md の変換による書き換えだけを通す狭い例外を足し、テストで範囲を固定する。`pr-scope` を spec-ids に取り込むときに外す）。指示 CN をこの形で渡した。
