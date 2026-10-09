@@ -404,7 +404,8 @@ Q4（T6）の勧める案:
 | Q156 | 3b | nta #156 の仕様 PR（仕様の文だけ） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、PR #157、main `c75e86a`。差分 `20261009-inspect-pdf-meta-qa-jirei`、実装の変更: 不要、`specs/current` は直し済み。外した例の代わりは `tax-answer` の `6101`。差分のフォルダーは次の nta の実装 PR（0.27.0）の最後のコミットで releases へ移し、その PR で `Closes #156`（#146 の前例）。#156 は open のまま） |
 | XS26 | 3b | houki-research-skill の nta 0.26.0 への追随 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、Skill PR #28、main・タグ `v0.19.1` `4c549d8`、リリース 11:18 JST。claude-plugins も更新済み（shuji）。houki-hub の `stack.json`・README は `d245555`） |
 | S5 | 残りの順序 3 | spec-ids#5 の設計 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #6、main `d0ce8b7`。設計は `docs/proposals/20261009-approval-front-matter.md`。「人が判断すること」Q18〜Q31 を勧める案で承認。版 0.3.0。`check` に検査 5〜7、`history`、一度だけ使う `migrate`（0.4.0 で外す）。3 リポジトリの取り込み済みの差分 50 件のうち 20 件で current の行と releases が食い違い、16 件は和で解け、4 件（nta F1・F2、abbr F3・F4）は変換の前に前直しする） |
-| R5 | 残りの順序 3 | spec-ids 0.3.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09） |
+| R5 | 残りの順序 3 | spec-ids 0.3.0 の実装 PR | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #7、main・タグ `v0.3.0` `c82c0b4`、npm の latest 0.3.0 は 14:49 JST。テスト 95 件。実データの `migrate`（書き換えなし）で egov は食い違い 0 件、nta は F1・F2 と #156 の差分、abbr は F3・F4 だけ。前直しを当てた写しで変換前後の承認の集合が一致（egov 160 行・nta 224 行・abbr 92 行）） |
+| CE | 残りの順序 3 | houki-egov-mcp の変換の PR | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -581,4 +582,6 @@ spec-ids の作業コピーは `/Users/bonji/workspace/shuji-bonji/spec-ids`（2
 | Q22' | nta の変換と #156 の差分の順 | (A) 前直しに F5 を足す: #156 の差分を current の `nta_inspect_pdf_meta`・`db_schema` の行に「差分 `20261009-inspect-pdf-meta-qa-jirei` は 2026-10-09（PR #157）」で書き足してから変換する（`targets` が current の行から取れる）。差分のフォルダーは `specs/changes/` に残し、0.27.0 の実装 PR で releases へ移す / (B) nta の変換を 0.27.0 の後にする（0.27.0 の仕様 PR は古い形で書く） / (C) #156 の差分だけを releases へ移す小さな PR を先に出す（移す先のタグが無い） | **A**。F1 と同じ直し方で、`migrate` は `specs/changes/` の proposal.md も変換するので、0.27.0 の仕様 PR は最初から新しい形で書ける。B は Q16 で避けた「途中で形が 2 通りになる」が起きる。C は `specs/releases/<tag>/` の tag が決まらない |
 
 （Q22' は、spec-ids の設計の Q22（`kind` を必須にするか）と番号がぶつからないように ' を付けた。）
+
+spec-ids 0.3.0 の publish の後も、3 リポジトリは `^0.2.0`（lock も 0.2.0）で、CI は `npm ci` の後に `npx spec-ids check` を動かすので、変換の PR で依存を上げるまで 0.2.0 のまま動く。dependabot は 3 リポジトリとも無い（2026-10-09 JST に確かめた）。変換までの間、3 リポジトリで spec-ids を上げる操作（`npm update` など）と `npx -y @shuji-bonji/spec-ids@latest` はしない。houki 系の外（pdf 系、e-shiwake）が spec-ids を使っているかは確かめていない。
 
