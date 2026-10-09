@@ -414,7 +414,8 @@ Q4（T6）の勧める案:
 | D5b | 残りの順序 3 | spec-ids の docs の PR（operations.md 5 章） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #11、main `12b3448`。5 章を決まった書き方に、6 章の Steward・Publisher の指示文に 1 文ずつ、10 章から行を外した） |
 | XS27 | 残りの順序 2 | houki-research-skill の nta 0.27.0 への追随 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、Skill PR #29、main・タグ `v0.20.0` `9d2a83c`。`SKILL.md` の鉄則 5 の表に「今は取り込めません」の行を足したので minor。`ERROR-HANDLING.md` の `hint` の表と `--status` の節に EACCES の場面。check-mcp-refs・test 19 件・snapshots とも通過） |
 | Y1 | 段階 4 | #27 の仕様書ページと scope-by-audience（設計と試作） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、hub PR #46、main `690ac1e`。`scripts/spec-pages.mjs`（`generate-reference.mjs specs` から呼ぶ）、`scripts/lib/generated-page.mjs`、試作 4 ページ（nta_get_tsutatsu・search_fulltext・resolve_abbreviation・tax-research）と一覧 4 枚・読み方のページ、人が書く「使いどころ」1 つ、`guide/scope-by-audience.md`、nav の「仕様」と sidebar。main に入ったので GitHub Pages にも公開された（`site/**` の push で deploy）） |
-| Y2 | 段階 4 | #27 の仕様書ページの全部の生成と公開 | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Q26' を待つ |
+| Y2 | 段階 4 | #27 の仕様書ページの全部の生成と公開 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、hub PR #47、main `eff9bd9`、GitHub Pages に公開済み。Q26' は A。67 ページ（egov 20・nta 22・abbr 23・Skill 2）と一覧 4 枚。生成スクリプトで Mermaid の書き方の誤り 3 か所・日本語の名前の書式・同じ題・workflow 間のリンクを直した。リファレンスの各ツール・各記号から仕様書ページへリンク。残りは下の「Y2 の後」） |
+| Y3 | 段階 4 | ツールごとのページ（#27 の続き） | 未作成 | Q27'・Q28' を待つ。Issue 草案 `docs/notes/issues-2026-10-09-hub27-tool-pages/issue-tool-pages.md`、見本 `sample-get_law.md` |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 2026-10-09 に Y1（設計と試作）と Y2（全部の生成と公開）に分けた。下の表の Y1 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -651,4 +652,22 @@ Y1 で決まった形（指示 Y2 の前の表）を確かめる判断:
 | Q26' | Y1 の形（URL・載せるもの・承認の履歴・生成スクリプト・scope-by-audience の置き場所）と、Y2 の進め方 | (A) Y1 の形のまま全部を生成する。「使いどころ」は Y2 では新しく書かず、今ある 1 つだけにする。リファレンスの各ツールから仕様書ページへリンクを張る。scope-by-audience の文は shuji が読んでから直す / (B) A に加えて、主なツール（検索・取得）の「使いどころ」を Y2 で書く / (C) Y1 の形のどこかを変える | **A**。生成のページは 67 枚（egov 20・nta 22・abbr 23・Skill 2）で、まず全部が組めて崩れないことを確かめるのが先。人が書く節は、公開後に読まれ方を見て足せる |
 
 確かめていただきたい点: 試作は main に入り、公開されている（4 機能だけのページと「仕様」の nav）。Y2 が入るまでの間、公開されているのは試作の 4 機能だけになる。scope-by-audience（業法の線を書くページ）も試作の文のまま公開されている。
+
+### Y2 の後（2026-10-09 JST）
+
+Y2 は hub PR #47 で main に入り（`eff9bd9`）、GitHub Pages に公開した。Y2 の報告で残ったもの:
+
+| 作業 | 状態 |
+| --- | --- |
+| houki-nta-mcp の spec.md の Mermaid 3 か所 | 未。cli_health_check の `subgraph --check-baseline-drift` など、cli_refresh の `subgraph 投入の 1 節・1 文書` など、search_rules のラベルの中の `\"`。サイトは生成スクリプトの `mermaidSafe` で描けているが、GitHub で spec.md を開くと描けない |
+| 人が書いたページの壊れたリンク 2 つ | 未。`guide/scope-by-audience.md` 93 行目と `mcp/houki-egov.md` 46 行目。VitePress が濁点を含む見出しの id を NFD で作るため、NFC で書いたリンクが合わない。直し方は `config.ts` の `markdown.anchor.slugify` で NFC にそろえるか、リンクを書き換えるか |
+| scope-by-audience の文 | shuji の確認待ち。「この位置を支えている仕様」の表に足す行（verify_citations・feasibility-check。common_errors の next_actions はどの ID を指すかを決める）と、設計者・実装者の「提供するもの」の「改正による差分」「毎回同じ結果になる部品」が今は無いこと |
+| サイトと各リポジトリの版のずれの検出 | hub#5 ② に入れる。最新の公開タグと、生成したページの冒頭の版を比べる |
+
+Y2 の後、人が読むページの構成を検討した（2026-10-09 JST）。仕様 ID は契約とテストの索引として残し、人が読む本文は仕様書ページに寄せない、という点は shuji と別の意見で一致した。違うのは、リファレンスをツールごとのページに分ける時期だけ。
+
+| # | 何を | 案 | 勧める案 |
+| --- | --- | --- | --- |
+| Q27' | 人が読むツールの説明の置き場所 | (A) 今の 3 層のまま、橋だけを足す（解説のツール表を「一言・リファレンス・仕様」の 3 列にする。リファレンスの各ツールの錨に spec.md の「使う人と受け取るもの」「処理の流れ」「できないこと」を写す。仕様書ページの先頭を h1 の一言とリンクだけにする）。リファレンスは 1 ページのまま / (B) A の橋に加えて、リファレンスを `/reference/mcp/<server>/<tool>` のツールごとのページに分ける。人が書くのは「使いどころ」とツールの地図だけ。`/specs` は今のまま残す / (C) `/mcp/<server>` の下にツールごとの説明を人が書く | **B**。A のまま spec.md の 3 節と図を写すと、リファレンスは 1 ページで 14 ツール分の図と節が並び、今の 1,551 行より大きく伸びる。見出しも「引数」と同じ名前が 3 種類増える。分けるのは A の 2 つ目を入れるときに 1 回で済む。C は 28 ツール＋23 関数を手で書き、実装とのずれに気付けない。見本（`get_law`）で 1 ページにまとまることを確かめた |
+| Q28' | カスタムコンテナと図の使い分け | (A) コンテナの種類ごとに意味を 1 つに決める（tip＝使いどころ、info＝前提と版の条件、warning＝間違えやすいことと業法の線、danger＝取り消せない操作、details＝長い例と経緯と spec.md の図）。人向けの図はノード 10 個ほどまでの手書きにし、spec.md の処理の流れの図は畳む / (B) 決まりを作らず、ページごとに判断する | **A**。今は人が書く 14 ページでコンテナが 2 個しかなく、足すなら最初に意味を決めないと目立たなくなる。見本では spec.md の `get_law` の図がページの 3 割（約 1,800px）を占め、文字が小さかった |
 
