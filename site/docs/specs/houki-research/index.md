@@ -13,8 +13,6 @@ houki-research Skill **v0.20.0** の `skills/houki-research/SKILL.md` と `workf
 
 Skill には実行するコードが無く、SKILL.md の文章そのものが仕様です。そのため MCP のような仕様 ID と承認の履歴は無く、このページと workflow のページは SKILL.md と workflows/ の本文を言い換えずに写しています。
 
-試作のため、ページがあるのは 1 件の workflow だけです。
-
 ## 目的
 
 Skill を読み込んだ LLM が、いつこの Skill を使うかの説明です（SKILL.md の `description`）。
@@ -45,7 +43,7 @@ graph TB
 
 | workflow | 内容 | ステップ |
 |---|---|---|
-| feasibility-check | 実装する前に、その仕様が法令のどこに触れるかを条文で確かめる | 7 |
+| [feasibility-check](/specs/houki-research/feasibility-check) | 実装する前に、その仕様が法令のどこに触れるかを条文で確かめる | 7 |
 | [tax-research](/specs/houki-research/tax-research) | 税務リサーチの基本フロー | 10 |
 
 ## 鉄則 (この順序を絶対に守る)

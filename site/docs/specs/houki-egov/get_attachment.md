@@ -1,0 +1,457 @@
+---
+title: "get_attachment — houki-egov-mcp の仕様"
+description: "houki-egov-mcp の get_attachment（添付ファイル 1 件か、まとめた zip の URL を返し、求められたら保存する）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+---
+
+# get_attachment の仕様
+
+<!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/get_attachment/spec.md の写し。 -->
+
+::: info
+houki-egov-mcp **v0.20.0** の `specs/current/get_attachment/spec.md` から自動生成しました（仕様 ID 31 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+:::
+
+このページは、houki-egov-mcp のツール「get_attachment（添付ファイル 1 件か、まとめた zip の URL を返し、求められたら保存する）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+引数の型と既定値の一覧と、実測の呼び出し例は[リファレンス](/reference/mcp/houki-egov#get-attachment)にあります。
+
+最後に仕様が変わったのは v0.18.0 の「法令名・条・委任先を、確かなときだけ 1 つに決める（段階 5 法令の引き当て）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
+
+## 使う人と受け取るもの
+
+この機能を誰が呼び、何を渡して何を受け取るかを示します。
+
+- MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`law_name` と、`list_attachments` で選んだ `src`（省けば添付全部の zip）を渡して、そのファイルの URL とメタ情報を受け取る。`save: true` を付けたときは、サーバーが保存したファイルの絶対パスを受け取る
+- MCP サーバーを起動する人。環境変数 `HOUKI_EGOV_FILES_DIR` で保存先のディレクトリを決める
+
+## 入力
+
+呼び出すときに渡す値です。
+
+| 引数       | 必須 | 内容                                                                                                                                                                           |
+| ---------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `law_name` | 必須 | 法令名または略称                                                                                                                                                               |
+| `src`      | 任意 | `list_attachments` が返す `attachments[].src`（例: `"./pict/H11HO127-001.jpg"`）。ファイル名だけ（`"H11HO127-001.jpg"`）でもよい。省くと、その法令履歴の添付ファイル全部の zip。空文字・空白だけは省いたときと同じ（[SPEC-EGOV-GET-ATTACHMENT-025](#spec-egov-get-attachment-025)） |
+| `at`       | 任意 | 時点。`YYYY-MM-DD` 形式（[SPEC-EGOV-GET-ATTACHMENT-024](#spec-egov-get-attachment-024)）。`list_attachments` と同じ時点を渡す |
+| `save`     | 任意 | `true` でファイルを取得して保存する。既定は `false`（URL とメタ情報だけを返し、ファイルは取らない）                                                                            |
+
+保存先のパスは引数では指定できない。inputSchema に無い引数を渡したときの扱いは common_errors に書く。
+
+## できないこと
+
+この機能が引き受けないことです。
+
+- ファイルの中身（バイト列や base64）を応答に入れること
+- 保存先のパスやファイル名を引数で決めること（決めるのはサーバーを起動する人の環境変数だけ）
+- 保存したファイルを消すこと
+- pdf の本文を読むこと（pdf-reader-mcp に `url` か `saved.path` を渡す）
+- 添付ファイルの一覧を返すこと（`list_attachments`）
+
+## 処理の流れ
+
+呼び出しを受けてから応答を返すまでに、何をどの順で確かめるかを示します。図の中の番号は「できること」の仕様 ID の末尾 3 桁です。
+
+```mermaid
+flowchart TD
+  A["呼び出し（law_name・src・at・save）"] --> B["法令を特定し、e-Gov から法令本文と添付の一覧を取る"]
+  B --> C{"その履歴に添付が 1 件以上あるか"}
+  C -- ない --> E1["ATTACHMENT_NOT_FOUND を返す。ファイルは取らない（009）"]
+  C -- ある --> D{"src があるか"}
+  D -- ない --> Z["添付全部の zip を対象にする（007）"]
+  D -- ある --> F{"一覧の src かファイル名に一致するか（002）"}
+  F -- しない --> E2["ATTACHMENT_NOT_FOUND を返す。候補を hint、list_attachments を next_actions に（008）"]
+  F -- "src に一致する、またはファイル名で 1 件だけに当たる" --> G["そのファイルを対象にする"]
+  F -- "ファイル名で 2 件以上に当たる" --> E4["INVALID_ARGUMENT を返す。候補の src を next_actions に（029）"]
+  Z --> H{"save が true か"}
+  G --> H
+  H -- いいえ --> I["URL とメタ情報だけを返す。ファイルは取らない（001）"]
+  H -- はい --> J["e-Gov からファイルを取る（003）"]
+  J -- "e-Gov が 404003 を返す" --> E3["ATTACHMENT_NOT_FOUND を返す（010）"]
+  J -- 取れた --> K["保存先の <law_revision_id>/<ファイル名> に書く（004・005）"]
+  K --> L["saved を付けて返す（003）。pdf なら read_text を next_actions に（006）"]
+```
+
+## 仕様 ID ごとの約束
+
+この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+
+<a id="spec-egov-get-attachment-001"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-001 save を付けないときは、ファイルを取らずに URL とメタ情報を返す
+
+::: details 詳細
+`save` を省くか `false` にしたときは、e-Gov からファイルを取らず、次のフィールドを持つ応答を返す。`saved` は付けない。`note` には、保存するには `save: true` を付けるよう書く。
+
+| フィールド                   | 内容                                                                                            |
+| ---------------------------- | ----------------------------------------------------------------------------------------------- |
+| `meta`                       | 法令と法令履歴の情報。`law_revision_id` を含む（`list_attachments` の `meta` と同じフィールド） |
+| `kind`                       | `file`（`src` を指定したとき）または `zip`（`src` を省いたとき）                                |
+| `src`                        | 対象のファイルの `src`（一覧にある形。例: `./pict/H11HO127-002.jpg`）。zip では `null`          |
+| `file_name`                  | ファイル名。例: `H11HO127-002.jpg`                                                              |
+| `file_type` / `content_type` | 拡張子から決めた種別と Content-Type                                                             |
+| `url`                        | 認証なしで開ける取得 URL                                                                        |
+| `location`                   | 法令の中の置き場所（例: `title` が `別記第二`）。zip と、本文に見つからないファイルでは `null`  |
+| `note`                       | 説明                                                                                            |
+:::
+
+<a id="spec-egov-get-attachment-002"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-002 src はファイル名だけでも、1 件に決まるなら引ける
+
+::: details 詳細
+`src` が一覧のどの `src` とも一致しないときは、`src` の末尾のファイル名を一覧の `file_name` と照らす。一致する添付が 1 件だけなら、その添付を対象にする。応答の `src` は一覧にある形（例: `H11HO127-001.jpg` を渡すと `./pict/H11HO127-001.jpg`）になる。2 件以上に一致するときは [SPEC-EGOV-GET-ATTACHMENT-029](#spec-egov-get-attachment-029)、1 件も一致しないときは [SPEC-EGOV-GET-ATTACHMENT-008](#spec-egov-get-attachment-008) のエラーを返す。
+
+例: 一覧の `file_name` が `H11HO127-001.jpg` の添付が `./pict/H11HO127-001.jpg` の 1 件だけなら、`src: "H11HO127-001.jpg"` はその添付を対象にし、応答の `src` は `./pict/H11HO127-001.jpg`。
+:::
+
+<a id="spec-egov-get-attachment-003"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-003 save: true でファイルを取得して保存し、パスとサイズを返す
+
+::: details 詳細
+`save: true` のときは、e-Gov から対象のファイルを取得して保存し、応答に `saved` を付ける。e-Gov には一覧にある形の `src` を渡す。
+
+- `saved.path`: 書いたファイルの絶対パス
+- `saved.bytes`: 書いたバイト数
+- `saved.response_content_type`: e-Gov の応答の Content-Type（例: `image/jpeg`）。`content_type`（拡張子から決めたもの）とは別に返す
+- `note`: 「<ファイル名>（<サイズ>）を <パス> に保存しました。」
+:::
+
+<a id="spec-egov-get-attachment-004"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-004 保存先は <保存先のディレクトリ>/&lt;law_revision_id>/<ファイル名>
+
+::: details 詳細
+保存するファイルは、保存先のディレクトリの下に法令履歴 ID ごとのディレクトリを作って置く。環境変数 `HOUKI_EGOV_FILES_DIR` があれば、それを保存先のディレクトリにする。ファイル名は、1 件なら `file_name`（例: `<HOUKI_EGOV_FILES_DIR>/411AC0000000127_19990813_000000000000000/H11HO127-001.jpg`）、zip なら `<law_revision_id>.zip`。
+:::
+
+<a id="spec-egov-get-attachment-005"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-005 保存するファイル名にはディレクトリの部分を残さない
+
+::: details 詳細
+保存するファイル名とディレクトリ名は、パスの区切り（`/` と `\`）より前を捨てて末尾の名前だけにし、先頭の `.` を除き、英数字・`_`・`.`・`-`・かな・漢字以外の文字を `_` にする。何も残らなければ `file` にする。例: `./pict/H11HO127-001.jpg` → `H11HO127-001.jpg`、`../../etc/passwd` → `passwd`、`..\..\x.pdf` → `x.pdf`、`...` → `file`、`a b/c:d.pdf` → `c_d.pdf`。保存先のディレクトリの外には書かない。
+:::
+
+<a id="spec-egov-get-attachment-006"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-006 pdf を保存したら pdf-reader-mcp の read_text を案内する
+
+::: details 詳細
+pdf のファイルを `save: true` で保存したときは、`content_type` を `application/pdf` にし、`next_actions` の先頭に `pdf-reader-mcp:read_text`（`example` は `{ path: <saved.path> }`）を入れる。
+:::
+
+<a id="spec-egov-get-attachment-007"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-007 src を省くと、添付ファイル全部の zip を対象にする
+
+::: details 詳細
+`src` を省いたときは、その法令履歴の添付ファイル全部をまとめた zip を対象にする。応答は `kind: "zip"`・`src: null`・`file_name: "<law_revision_id>.zip"`・`content_type: "application/zip"`。`save: true` のときは e-Gov に `src` を付けずに取得し、`<law_revision_id>.zip` の名前で保存する。
+:::
+
+<a id="spec-egov-get-attachment-008"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-008 一覧に無い src はエラーにし、選び直す道を案内する
+
+::: details 詳細
+`src` が一覧のどの `src` にも `file_name` にも一致しないときは、e-Gov からファイルを取らずに、エラー `ATTACHMENT_NOT_FOUND` を返す。`hint` にその履歴の添付ファイルの `src` を最大 10 件書き（11 件以上なら末尾に `…`）、`next_actions` の先頭に `list_attachments` を入れる。
+:::
+
+<a id="spec-egov-get-attachment-009"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-009 添付が 1 件も無い法令はエラーにする
+
+::: details 詳細
+その法令履歴に添付ファイルが 1 件も無い（`attached_files_info` が空で、本文に `Fig` 要素も無い）ときは、`save` の値にかかわらず e-Gov からファイルを取らずに、エラー `ATTACHMENT_NOT_FOUND` を返す。
+:::
+
+<a id="spec-egov-get-attachment-010"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-010 e-Gov に実体が無いファイルはエラーにする
+
+::: details 詳細
+`save: true` で取得したとき、e-Gov が 400 または 404 で code `404003`（添付ファイルが無い）を返したら、エラー `ATTACHMENT_NOT_FOUND` を返す。一覧には載っているが e-Gov に実体が無いファイルがこれに当たる。`detail.status` に HTTP ステータス、`detail.cause` に e-Gov の応答本文（`404003` を含む）を入れる。
+:::
+
+<a id="spec-egov-get-attachment-011"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-011 save なしで pdf を指したときは pdf-reader-mcp の read_url を案内する
+
+::: details 詳細
+`save` を省くか `false` にして、`file_type` が `pdf` のファイルを指したときは、`next_actions` に `pdf-reader-mcp:read_url` の 1 件だけを入れる。`example` は `{ url: <応答の url> }`。`attached_files_info` に無く本文にだけある pdf でも同じ。pdf 以外のファイル（例: jpg）と zip では `next_actions` を付けない。
+
+例: `src: "./pict/b.pdf"` → `next_actions: [{ action: "pdf-reader-mcp:read_url", reason: …, example: { url: "https://laws.e-gov.go.jp/api/2/attachment/<law_revision_id>?src=.%2Fpict%2Fb.pdf" } }]`。
+:::
+
+<a id="spec-egov-get-attachment-012"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-012 save なしの zip の note
+
+::: details 詳細
+`src` を省き `save` を付けないときの `note` は、`添付ファイル <件数> 件をまとめた zip の URL です。` で始まり、保存するには `save: true` を付けるよう書く。`<件数>` は `list_attachments` の `count` と同じ（`attached_files_info` と本文の図を合わせ、重複を除いた件数）。
+
+例: `attached_files_info` に 2 件、本文にだけある図が 1 件の法令 → `添付ファイル 3 件をまとめた zip の URL です。ファイルをディスクに置くには save: true を付けてください。`
+:::
+
+<a id="spec-egov-get-attachment-013"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-013 save なしの 1 件の note には保存先のディレクトリを書く
+
+::: details 詳細
+`src` を指定し `save` を付けないときの `note` は、`<file_name> の URL です。認証なしで開けます。ファイルをディスクに置くには save: true を付けてください（<保存先のディレクトリ> 以下に保存します）。` になる。`<保存先のディレクトリ>` は [SPEC-EGOV-GET-ATTACHMENT-004](#spec-egov-get-attachment-004) の保存先のディレクトリ（法令履歴 ID のディレクトリより上）。
+
+例: `HOUKI_EGOV_FILES_DIR=/tmp/xx-files`、`src: "./pict/a.jpg"` → `a.jpg の URL です。認証なしで開けます。ファイルをディスクに置くには save: true を付けてください（/tmp/xx-files 以下に保存します）。`
+:::
+
+<a id="spec-egov-get-attachment-014"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-014 時点（at）を渡すと、その時点の法令履歴の添付を対象にする
+
+::: details 詳細
+`at` を渡したときは、その時点の法令履歴の本文と添付の一覧から対象のファイルを選ぶ。`meta.law_revision_id` はその時点の履歴 ID、`url` と `saved.path` にもその履歴 ID を使い、`meta.at` に渡した `at` を入れる。`at` を渡さないときは `meta.at` を `null` にする（キーは無くならない）。
+
+例: `at: "2019-04-01"` で e-Gov がその時点の履歴 ID `LID1_20190401_X` を返す → `meta.law_revision_id: "LID1_20190401_X"`、`meta.at: "2019-04-01"`、`url: "https://laws.e-gov.go.jp/api/2/attachment/LID1_20190401_X?src=.%2Fpict%2Fa.jpg"`。`at` を渡さないときは `meta.at: null`（v0.16.0 では `at` のキーが無かった）。
+:::
+
+<a id="spec-egov-get-attachment-015"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-015 一覧に無い src のエラーで案内する list_attachments にも at を入れる
+
+::: details 詳細
+[SPEC-EGOV-GET-ATTACHMENT-008](#spec-egov-get-attachment-008) のエラーの `next_actions` の `list_attachments` の `example` は `{ law_name: <渡した law_name> }` で、`at` を渡したときは `at` も入れる。
+
+例: `law_name: "テスト法"`、`src: "./pict/zz.jpg"`、`at: "2019-04-01"` → `example: { law_name: "テスト法", at: "2019-04-01" }`。`at` を渡さないときは `{ law_name: "テスト法" }`。
+:::
+
+<a id="spec-egov-get-attachment-016"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-016 特定できない法令と管轄外の資料はエラーにする
+
+::: details 詳細
+- 法令名が略称辞書で別の MCP サーバーの管轄の資料（例: `所基通` = 所得税基本通達）に当たるときは、エラー `OUT_OF_SCOPE` を返す。`next_actions` は `delegate_to_mcp`（`example` は `{ mcp: "houki-nta" }`）
+- 法令名から法令を特定できないときは、エラー `LAW_NOT_FOUND` を返す。`next_actions` は `resolve_abbreviation`（`example` は `{ abbr: <law_name> }`）と `search_law`（`example` は `{ keyword: <law_name> }`）
+
+どちらも `save` の値にかかわらず、e-Gov から法令本文も添付ファイルも取らない。
+:::
+
+<a id="spec-egov-get-attachment-017"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-017 添付が無いときのエラーの hint と next_actions
+
+::: details 詳細
+[SPEC-EGOV-GET-ATTACHMENT-009](#spec-egov-get-attachment-009) のエラーは、`hint` に別の時点（`at`）の履歴には添付が付いていることがある旨を書き、`next_actions` に `get_law_revisions` の 1 件を入れる。`example` は `{ law_name: <渡した law_name> }`（`at` を渡していても `at` は入れない）。
+
+例: `law_name: "テスト法"`、`at: "2019-04-01"` で、その履歴に添付が無い → `hint: "attached_files_info が空で、本文に Fig 要素もありません。別の時点（at）の履歴には付いていることがあります"`、`next_actions: [{ action: "get_law_revisions", reason: …, example: { law_name: "テスト法" } }]`。
+:::
+
+<a id="spec-egov-get-attachment-018"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-018 e-Gov が 404003 以外の 4xx を返したときは SOURCE_API_ERROR
+
+::: details 詳細
+`save: true` の取得で e-Gov が 4xx（429 を除く）を返し、[SPEC-EGOV-GET-ATTACHMENT-010](#spec-egov-get-attachment-010) に当たらないときは、エラー `SOURCE_API_ERROR`（`retryable: false`）を返す。`detail.status` に HTTP ステータス、`detail.url` に取得した URL を入れる。400 と 404 のときは、`detail.cause` に e-Gov の応答本文も入れる。
+
+例:
+- 400 で本文 `{"code":"400039","message":"m"}` → `{ code: "SOURCE_API_ERROR", retryable: false, detail: { status: 400, url: "https://laws.e-gov.go.jp/api/2/attachment/REV1?src=.%2Fpict%2Fa.jpg", cause: "{\"code\":\"400039\",\"message\":\"m\"}" } }`
+- 404 で本文 `Not Found`（JSON でない）→ `SOURCE_API_ERROR`、`retryable: false`、`detail.cause: "Not Found"`
+- 403 → `SOURCE_API_ERROR`、`retryable: false`、`detail.status: 403`（`detail.cause` は付かない）
+:::
+
+<a id="spec-egov-get-attachment-019"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-019 e-Gov の 429・5xx・時間切れ・ネットワークの失敗
+
+::: details 詳細
+`save: true` の取得で次のときは、それぞれのエラーを返す。`detail.url` には取得した URL を入れる。
+
+| e-Gov の応答        | `code`                | `retryable` |
+| ------------------- | --------------------- | ----------- |
+| 429                 | `SOURCE_RATE_LIMITED` | `true`      |
+| 時間切れ            | `SOURCE_TIMEOUT`      | `true`      |
+| 5xx（例: 500）      | `SOURCE_API_ERROR`    | `true`      |
+
+429・5xx・応答が来ないネットワークの失敗のときは、最大 3 回取り直す（最初の 1 回と合わせて最大 4 回）。途中で成功すれば保存して成功応答を返す。時間切れと、429 以外の 4xx は取り直さない。
+
+例:
+- 4 回とも 429 → e-Gov への問い合わせは 4 回で、`SOURCE_RATE_LIMITED`（`detail.status: 429`）
+- 1 回目が 500、2 回目が 200 → `saved` 付きの成功応答
+:::
+
+<a id="spec-egov-get-attachment-020"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-020 環境変数が無いときの保存先
+
+::: details 詳細
+`HOUKI_EGOV_FILES_DIR` が無いか空文字のときは、保存先のディレクトリを `<XDG_CACHE_HOME>/houki-egov-mcp/files` にする。`XDG_CACHE_HOME` も無いか空文字のときは `<ホームディレクトリ>/.cache/houki-egov-mcp/files` にする。
+
+例:
+- `HOUKI_EGOV_FILES_DIR` 無し、`XDG_CACHE_HOME=/tmp/xdg` → `saved.path` は `/tmp/xdg/houki-egov-mcp/files/<law_revision_id>/a.jpg`
+- どちらも無く、ホームディレクトリが `/tmp/home` → `saved.path` は `/tmp/home/.cache/houki-egov-mcp/files/<law_revision_id>/a.jpg`
+:::
+
+<a id="spec-egov-get-attachment-021"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-021 同じ法令履歴の同じファイル名を保存すると上書きする
+
+::: details 詳細
+同じ法令履歴の同じファイル名を `save: true` でもう一度保存すると、前のファイルを新しい中身で上書きし、エラーにしない。`saved.path` は前と同じで、`saved.bytes` は新しい中身のバイト数になる。
+
+例: 中身 `ONE`（3 バイト）で保存したあと、同じ `src` を中身 `TWO!`（4 バイト）で保存 → 2 回目の `saved.bytes` は `4`、ファイルの中身は `TWO!`。
+:::
+
+<a id="spec-egov-get-attachment-022"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-022 一覧に updated があるファイルでは、応答にも updated を付ける
+
+::: details 詳細
+対象のファイルが `attached_files_info` に載っていて `updated` を持つときは、応答に `updated` を付ける（値は `attached_files_info` の `updated`）。本文にだけあるファイルと zip では `updated` を付けない。`save` の有無は問わない。
+
+例: `attached_files_info` の `./pict/a.jpg` の `updated` が `2024-07-25T00:20:13+09:00` → 応答の `updated: "2024-07-25T00:20:13+09:00"`。本文にだけある `./pict/body-only.pdf` → `updated` は付かない。
+:::
+
+<a id="spec-egov-get-attachment-023"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-023 law_name が空文字・空白だけのときは略称辞書と e-Gov に問い合わせずに `INVALID_ARGUMENT` を返す
+
+::: details 詳細
+空文字は inputSchema の `minLength: 1` の検査（[SPEC-EGOV-COMMON-ERRORS-025](/specs/houki-egov/common_errors#spec-egov-common-errors-025)）で止まり、`INVALID_ARGUMENT`（`tool: "get_attachment"`、`detail.issues: [{ path: "law_name", message: "空文字は指定できません" }]`）を返す。空白（半角スペース・全角スペース・タブ・改行）だけのときは、ツールの処理が略称辞書と e-Gov に問い合わせる前に、[SPEC-EGOV-COMMON-ERRORS-026](/specs/houki-egov/common_errors#spec-egov-common-errors-026) の形の `INVALID_ARGUMENT`（`tool: "get_attachment"`、`error: "law_name が空です"`、`detail.issues: [{ path: "law_name", message: "空白だけは指定できません" }]`、`hint` に法令名か略称を渡すよう書く）を返す。
+
+例: `law_name: ""` は `code: "INVALID_ARGUMENT"`・`detail.issues[0].message: "空文字は指定できません"`。`law_name: "　"`（全角スペース）と `law_name: " \n"` は `code: "INVALID_ARGUMENT"`・`error: "law_name が空です"`。どれも略称辞書と e-Gov への問い合わせは 0 回。
+:::
+
+<a id="spec-egov-get-attachment-024"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-024 `at` は `YYYY-MM-DD` の形だけを受け付け、形に合わない値と暦に無い日付は `INVALID_ARGUMENT`
+
+::: details 詳細
+`at` は [SPEC-EGOV-COMMON-ERRORS-024](/specs/houki-egov/common_errors#spec-egov-common-errors-024) に従う。tools/list の inputSchema の `at` は `pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"` を持ち、形に合わない値は inputSchema の検査で `INVALID_ARGUMENT`（`tool: "get_attachment"`、`detail.issues: [{ path: "at", message: "YYYY-MM-DD の形で指定してください" }]`）になる。形は合うが暦に無い日付は、ツールの処理が e-Gov に問い合わせる前に `INVALID_ARGUMENT`（`detail.issues: [{ path: "at", message: "暦に無い日付です" }]`）を返す。
+
+例: `law_name: "戸籍法施行規則", src: "H11HO127-001.jpg", at: "2024/04/01"` は `code: "INVALID_ARGUMENT"`・`detail.issues[0].path: "at"` で、e-Gov への問い合わせは 0 回。`at: "20240401"`・`at: "2024-4-1"` も同じ。`at: "2026-02-30"` は `detail.issues[0].message: "暦に無い日付です"` で、e-Gov への問い合わせは 0 回。`at: "2024-04-01"` は [SPEC-EGOV-GET-ATTACHMENT-014](#spec-egov-get-attachment-014) のとおり。
+:::
+
+<a id="spec-egov-get-attachment-025"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-025 `src` が空文字・空白だけのときは `src` を省いたときと同じに扱う
+
+::: details 詳細
+任意の `src` が空文字、または空白（半角スペース・全角スペース・タブ・改行）だけのときは、`src` を渡さなかったときと同じく、その法令履歴の添付ファイル全部の zip を対象にする（`save` が `false` なら zip の URL とメタ情報、`true` なら zip の保存）。`ATTACHMENT_NOT_FOUND` にはしない。前後に空白の付いた `src`（`" H11HO127-001.jpg "`）は、空白を除いた名前で一覧と突き合わせる。
+
+例: `law_name: "戸籍法施行規則", src: ""` と `src: "   "` は、どちらも `src` を省いたときと同じ zip の応答（v0.15.4 では空白だけは `ATTACHMENT_NOT_FOUND` だった）。
+:::
+
+<a id="spec-egov-get-attachment-026"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-026 法令名の検索が通信の失敗で終わったときは `LAW_NOT_FOUND` ではなく `SOURCE_*` を返す
+
+::: details 詳細
+`law_name` が略称辞書に law_id 付きで無く、e-Gov の法令名検索で law_id を決めるとき、その検索が通信の失敗（接続できない・時間切れ・5xx・429・429 以外の 4xx）で終わったときは、[SPEC-EGOV-COMMON-ERRORS-027](/specs/houki-egov/common_errors#spec-egov-common-errors-027) の表の code（`SOURCE_UNAVAILABLE` / `SOURCE_TIMEOUT` / `SOURCE_API_ERROR` / `SOURCE_RATE_LIMITED`）を、表の `retryable` と `detail` 付きで返す（[SPEC-EGOV-COMMON-ERRORS-029](/specs/houki-egov/common_errors#spec-egov-common-errors-029)）。`LAW_NOT_FOUND`（[SPEC-EGOV-GET-ATTACHMENT-016](#spec-egov-get-attachment-016)）は、検索が成功して 0 件だったときだけ返す。`SOURCE_*` のときの `next_actions` に `resolve_abbreviation` / `search_law` は入れない。
+
+例: 法令名の検索が 503 を返す状態で `{ law_name: "架空の法律", src: "./pict/a.jpg" }` を渡すと、`code: "SOURCE_API_ERROR"`、`retryable: true`、`detail.status: 503`（v0.15.4 では `LAW_NOT_FOUND` だった）。検索が時間切れなら `SOURCE_TIMEOUT`、接続できなければ `SOURCE_UNAVAILABLE`（`detail.cause: "ENOTFOUND"` など）、400 なら `SOURCE_API_ERROR`・`retryable: false`。検索が 0 件で成功したときは `LAW_NOT_FOUND` のまま。
+:::
+
+<a id="spec-egov-get-attachment-027"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-027 上限（50 MB）を超えるファイルは `FILE_TOO_LARGE` で断り、Content-Length で分かるときは本文を読まない
+
+::: details 詳細
+`save: true` の取得で、ファイルが 50 MB（52,428,800 バイト）を超えているときは、エラー `FILE_TOO_LARGE`（`retryable: false`）を返し、保存しない（[SPEC-EGOV-COMMON-ERRORS-030](/specs/houki-egov/common_errors#spec-egov-common-errors-030)）。`INVALID_ARGUMENT` にはしない。大きさは次の順で確かめる。
+
+1. e-Gov の応答ヘッダーに Content-Length があり、その値が上限を超えていれば、本文を読まずにエラーにする（`detail.bytes` は Content-Length の値）
+2. Content-Length が無いか上限以下のときは本文を読み、読み終えた大きさが上限を超えていればエラーにする（`detail.bytes` は読み終えた大きさ）。途中で打ち切らない
+
+`error` は `ファイルが大きすぎます: <大きさ>（上限 50.0 MB）`、`hint` は `保存せず url をそのまま使ってください`、`detail.url` は取得した URL。
+
+例: Content-Length が `52428801` のとき、`{ law_name: "民法", src: "./pict/big.pdf", save: true }` は `code: "FILE_TOO_LARGE"`、`retryable: false`、`detail.bytes: 52428801` で、本文は読まず、ファイルは書かない（v0.15.4 では全部読んでから `INVALID_ARGUMENT` だった）。Content-Length が無く本文が 52,428,801 バイトのときも `FILE_TOO_LARGE`。Content-Length が `52428800`（ちょうど 50 MB）は保存する。
+:::
+
+<a id="spec-egov-get-attachment-028"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-028 `law_name` の全角英数字・ダッシュ類・全角空白は半角に揃えてから略称辞書と照合する
+
+::: details 詳細
+`law_name` を略称辞書で引くときは、houki-abbreviations の `resolveAbbreviation(name, { normalize: true })` の規則（全角英数字を半角に、ダッシュ類 `－` `‐` `‑` `–` `—` `―` `−` を `-` に、全角チルダを `~` に、全角空白を半角空白にし、前後の空白を除く。大文字と小文字は区別する）で揃えてから照合する。管轄の判定（`OUT_OF_SCOPE`）も同じ規則で引く。辞書に無いときに e-Gov の法令名検索へ渡す値は、前後の空白を除いた渡した値のままで、揃えない。
+
+例: `{ law_name: "ＰＬ法", src: "./pict/a.jpg" }` は `製造物責任法の添付を引き、一覧に無ければ `ATTACHMENT_NOT_FOUND`（`LAW_NOT_FOUND` ではない）`（v0.15.4 では辞書に無い扱いで、e-Gov の法令名検索に `ＰＬ法` を渡して `LAW_NOT_FOUND` だった）。`law_name: "労基法　"`（末尾が全角空白）も `労働基準法` として引く。
+:::
+
+<a id="spec-egov-get-attachment-029"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-029 ファイル名だけの src が 2 件以上の添付に当たるときは、どれも選ばずに `INVALID_ARGUMENT` を返し、候補の src を案内する
+
+::: details 詳細
+`src` が一覧のどの `src` とも一致せず、`src` の末尾のファイル名が一覧の 2 件以上の `file_name` に一致するときは、e-Gov からファイルを取らずに、エラー `INVALID_ARGUMENT` を返す。一覧で先にあるものを選んで返すことはしない。
+
+- `tool`: `get_attachment`
+- `retryable`: `false`
+- `error`: `ファイル名 "<ファイル名>" の添付ファイルが <件数> 件あります。src を一覧の形で指定してください`
+- `hint`: 当たった添付ファイルの `src` を一覧の順に最大 10 件（11 件以上なら末尾に `…`）
+- `detail.issues`: `[{ path: "src", message: "同じファイル名の添付ファイルが複数あります" }]`
+- `next_actions`: 当たった添付ファイルごとに 1 件（一覧の順に最大 10 件）。`action: "get_attachment"`、`reason: "この src を指定して取れます"`、`example` は `{ law_name: <渡した law_name>, src: <その添付の src> }` に、渡したときは `at` と `save` を加えたもの
+
+`src` が一覧のどれかの `src` に一致するときは、同じファイル名の添付が別にあってもその添付を返す（[SPEC-EGOV-GET-ATTACHMENT-002](#spec-egov-get-attachment-002)）。
+
+例: 一覧に `./pict/a/H11HO127-001.jpg` と `./pict/b/H11HO127-001.jpg` がこの順にある法令で、`src: "H11HO127-001.jpg"` を渡すと、`code: "INVALID_ARGUMENT"`、`retryable: false`、`next_actions` は `example.src` が `./pict/a/H11HO127-001.jpg` と `./pict/b/H11HO127-001.jpg` の 2 件（v0.16.0 では `./pict/a/H11HO127-001.jpg` を黙って返していた）。`src: "./pict/b/H11HO127-001.jpg"` を渡すと、その添付を返す。
+:::
+
+<a id="spec-egov-get-attachment-030"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-030 法令名が完全一致しないときは、添付を取らず候補を付けた `LAW_NOT_FOUND` を返す
+
+::: details 詳細
+`law_name` の法令は [SPEC-EGOV-COMMON-ERRORS-032](/specs/houki-egov/common_errors#spec-egov-common-errors-032) の規則で決める。略称辞書に law_id が無く、e-Gov の法令名検索の全件の中に題名の完全一致が無いときは、検索結果の先頭の法令の添付を選ばず、`save` の値にかかわらず e-Gov から法令本文も添付ファイルも取らずに、032 の形の `LAW_NOT_FOUND`（`retryable: false`）を返す。`next_actions` の候補の要素は `action: "get_attachment"`、`example` は渡した引数（`src`・`save`・`at` のうち渡したもの）の `law_name` だけを候補の題名に替えたもの。`at` を渡したときは、法令名の検索にも `asof=<at>` を付ける。[SPEC-EGOV-GET-ATTACHMENT-016](#spec-egov-get-attachment-016) の `next_actions`（`resolve_abbreviation`・`search_law`）は、法令名の検索が 0 件のときのもので、この場合は 032 の `next_actions` になる。
+
+例: `{ law_name: "所得税法施行", src: "./pict/a.jpg" }` は `code: "LAW_NOT_FOUND"`、`next_actions` の先頭は `{ action: "get_attachment", example: { law_name: "所得税法施行令", src: "./pict/a.jpg" } }`。
+:::
+
+<a id="spec-egov-get-attachment-031"></a>
+
+### SPEC-EGOV-GET-ATTACHMENT-031 法令本文の取得で e-Gov が 404・時点の 400 を返したときは `LAW_NOT_FOUND`・`INVALID_ARGUMENT`
+
+::: details 詳細
+添付の一覧を作るための法令本文の取得（`/law_data/<law_id>`）で e-Gov が 429 以外の 4xx を返したときは、[SPEC-EGOV-LIST-ATTACHMENTS-018](/specs/houki-egov/list_attachments#spec-egov-list-attachments-018) の表と同じに返す（404・`404004` は `LAW_NOT_FOUND`、400・`400044` は `INVALID_ARGUMENT`（`tool: "get_attachment"`、`detail.issues[0].path: "at"`）、そのほかの 4xx は `SOURCE_API_ERROR`・`retryable: false`）。添付ファイルの取得（`/attachment`）の 4xx は、今までどおり [SPEC-EGOV-GET-ATTACHMENT-010](#spec-egov-get-attachment-010)・018。
+
+例: `{ law_name: "民法", src: "./pict/a.jpg", at: "2000-01-01" }` は、法令本文の取得に e-Gov が 400・`400044` を返すので `code: "INVALID_ARGUMENT"`、`tool: "get_attachment"`。
+:::
+
+## まだ決めていないこと
+
+仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+
+::: details 仕様書の「未決」の節
+初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。
+
+意図か不具合かの判断が要る項目は houki-egov-mcp の Issue に移し、ここには題と Issue の番号だけを残します。今の振る舞いのままでよくテストが無いだけの項目は、受入テストを書いてから「できること」に ID を振ります。
+
+6. **save なしで pdf を指したときの案内と、zip の note。** → [SPEC-EGOV-GET-ATTACHMENT-011](#spec-egov-get-attachment-011)・[SPEC-EGOV-GET-ATTACHMENT-012](#spec-egov-get-attachment-012)・[SPEC-EGOV-GET-ATTACHMENT-013](#spec-egov-get-attachment-013)
+7. **時点（at）を渡したとき。** → [SPEC-EGOV-GET-ATTACHMENT-014](#spec-egov-get-attachment-014)・[SPEC-EGOV-GET-ATTACHMENT-015](#spec-egov-get-attachment-015)
+8. **特定できない法令と管轄外の資料。** → [SPEC-EGOV-GET-ATTACHMENT-016](#spec-egov-get-attachment-016)
+9. **添付が無いときのエラーの hint と next_actions。** → [SPEC-EGOV-GET-ATTACHMENT-017](#spec-egov-get-attachment-017)
+10. **e-Gov からの取得に失敗したときの、404003 以外の code。** → [SPEC-EGOV-GET-ATTACHMENT-018](#spec-egov-get-attachment-018)・[SPEC-EGOV-GET-ATTACHMENT-019](#spec-egov-get-attachment-019)
+11. **既定の保存先と、同じファイルの上書き。** → [SPEC-EGOV-GET-ATTACHMENT-020](#spec-egov-get-attachment-020)・[SPEC-EGOV-GET-ATTACHMENT-021](#spec-egov-get-attachment-021)
+12. **応答の `updated`。** → [SPEC-EGOV-GET-ATTACHMENT-022](#spec-egov-get-attachment-022)
+:::
+
+## 承認の履歴
+
+この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history get_attachment` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
+
+::: details 承認の履歴（8 件）
+| 承認日 | 版 | 変更 | 仕様 PR |
+|---|---|---|---|
+| 2026-10-03 | v0.18.0 | [法令名・条・委任先を、確かなときだけ 1 つに決める（段階 5 法令の引き当て）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/releases/v0.18.0/20261003-law-resolution/proposal.md) | [#95](https://github.com/shuji-bonji/houki-egov-mcp/pull/95) |
+| 2026-10-03 | v0.17.0 | [値の無いフィールドを null にし、meta の時点を常に返す（T4 応答の形）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/releases/v0.17.0/20261003-t4-response-shape/proposal.md) | [#91](https://github.com/shuji-bonji/houki-egov-mcp/pull/91) |
+| 2026-10-01 | v0.16.0 | [全角・半角・ダッシュ類の揃え方を houki-abbreviations 0.7.0 に一本化する（T3）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/releases/v0.16.0/20261001-t3-normalize/proposal.md) | [#86](https://github.com/shuji-bonji/houki-egov-mcp/pull/86) |
+| 2026-10-01 | v0.16.0 | [「見つからない」と「取得元の失敗」の code を分ける（T2）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/releases/v0.16.0/20261001-t2-error-codes/proposal.md) | [#85](https://github.com/shuji-bonji/houki-egov-mcp/pull/85) |
+| 2026-10-01 | v0.16.0 | [引数の検査を inputSchema に書き、丸めずに `INVALID_ARGUMENT` にする（T1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/releases/v0.16.0/20261001-t1-argument-guards/proposal.md) | [#84](https://github.com/shuji-bonji/houki-egov-mcp/pull/84) |
+| 2026-09-28 | v0.15.2 | [テストが無いだけの振る舞いに仕様 ID を振る](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/releases/v0.15.2/20260928-untested-behaviors/proposal.md) | [#76](https://github.com/shuji-bonji/houki-egov-mcp/pull/76) |
+| 2026-09-28 | v0.15.2 | [「未決」のうち判断が要る 85 件を Issue に移す](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/releases/v0.15.2/20260928-undecided-to-issues/proposal.md) | [#68](https://github.com/shuji-bonji/houki-egov-mcp/pull/68) |
+| 2026-09-28 | — | 初版 | [#50](https://github.com/shuji-bonji/houki-egov-mcp/pull/50) |
+:::
+
+## 関連ページ
+
+このページの元になった文書と、あわせて読むページです。
+
+- [houki-egov-mcp の仕様の一覧](/specs/houki-egov/)
+- [houki-egov-mcp の解説](/mcp/houki-egov)
+- [リファレンスの get_attachment](/reference/mcp/houki-egov#get-attachment)
+- [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/get_attachment/spec.md)

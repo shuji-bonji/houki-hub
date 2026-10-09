@@ -18,7 +18,9 @@
  *   - 仕様書の文は言い換えずに写す。生成側が足すのは、節の見出しの付け替え・節の目的の一文・
  *     折りたたみ・承認の履歴の表・関連ページの一覧だけ
  *   - 写すときに変えるのは、Vue を壊す `<名前>`（コードの外）を `&lt;` にすること、
- *     仕様 ID を生成したページへのリンクにすること、相対リンクを GitHub の URL にすることだけ
+ *     仕様 ID を生成したページへのリンクにすること、相対リンクを GitHub の URL（ページを生成した
+ *     workflow へのリンクはそのページ）にすること、Mermaid の書き方の誤りのうち、図に出る文字を
+ *     変えずに直せるもの（mermaidSafe）を直すことだけ
  *
  * 読む場所:
  *   - 既定は houki-hub の作業コピー（mcp/・lib/・skill/。git 追跡外）
@@ -26,7 +28,8 @@
  *     （CI で公開版のタグを浅く clone して置く想定。npm のパッケージは dist だけなので specs/ が無い）
  *   - どちらも無いリポジトリは飛ばし、コミット済みのページをそのまま使う
  *
- * 試作（2026-10-09、Y1）: SPEC_REGISTRY の `only` に挙げた機能だけページを作る。Y2 で `only` を外す。
+ * 試作（2026-10-09、Y1）は SPEC_REGISTRY の `only` で 4 機能に絞った。Y2（2026-10-09）で `only` を外し、全部の機能のページを作る。
+ * 試作や一部だけの公開に戻すときは、`only: ['<dir>', ...]` を足す（一覧には全部の機能が載り、ページのある機能だけがリンクになる）。
  */
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -53,7 +56,6 @@ export const SPEC_REGISTRY = {
     defaultKind: 'tool',
     guide: '/mcp/houki-egov',
     reference: '/reference/mcp/houki-egov',
-    only: ['search_fulltext'],
   },
   'houki-nta': {
     type: 'specs',
@@ -62,7 +64,6 @@ export const SPEC_REGISTRY = {
     defaultKind: 'tool',
     guide: '/mcp/houki-nta',
     reference: '/reference/mcp/houki-nta',
-    only: ['nta_get_tsutatsu'],
   },
   'houki-abbreviations': {
     type: 'specs',
@@ -71,7 +72,6 @@ export const SPEC_REGISTRY = {
     defaultKind: 'function',
     guide: '/lib/houki-abbreviations',
     reference: '/reference/lib/houki-abbreviations',
-    only: ['resolve_abbreviation'],
   },
   'houki-research': {
     type: 'skill',
@@ -79,7 +79,6 @@ export const SPEC_REGISTRY = {
     dir: 'skill/houki-research-skill',
     skillDir: 'skills/houki-research',
     guide: '/skills/houki-research',
-    only: ['tax-research'],
   },
 };
 export const SPEC_TARGETS = Object.keys(SPEC_REGISTRY);
@@ -238,18 +237,43 @@ function transformLine(line, ctx) {
 /** Markdown の塊を変換する。コードブロックの中はそのまま */
 function transformMarkdown(md, ctx) {
   let fence = null;
+  let mermaid = false;
   return md
     .split('\n')
     .map((line) => {
-      const f = line.match(/^\s*(`{3,}|~{3,})/);
+      const f = line.match(/^\s*(`{3,}|~{3,})(.*)$/);
       if (f) {
-        if (!fence) fence = f[1];
-        else if (line.trim().startsWith(fence)) fence = null;
+        if (!fence) {
+          fence = f[1];
+          mermaid = f[2].trim() === 'mermaid';
+        } else if (line.trim().startsWith(fence)) {
+          fence = null;
+          mermaid = false;
+        }
         return line;
       }
+      if (mermaid) return mermaidSafe(line);
       return fence ? line : transformLine(line, ctx);
     })
     .join('\n');
+}
+
+/**
+ * Mermaid の図の 1 行の書き方の誤りを、図に出る文字を変えずに直す（2026-10-09、Y2）。
+ * 仕様書の図のうち、mermaid 11 で描けずにエラーの図になるものがあったため。元の spec.md も直す（報告済み）。
+ * - `subgraph` の名前に空白・記号があるとき（`subgraph --check-baseline-drift`・`subgraph 投入の 1 節・1 文書`）は、
+ *   `subgraph sg<n>["名前"]` にする。表示される名前は同じ
+ * - `"…"` のラベルの中の `\"` は Mermaid では使えない（`\` が残り、`"` でラベルが閉じる）ので、`#quot;` にする。表示は `"`
+ */
+let subgraphSeq = 0;
+function mermaidSafe(line) {
+  let out = line.replace(/\\"/g, '#quot;');
+  const m = out.match(/^(\s*)subgraph\s+(.+?)\s*$/);
+  if (m && !/^[\p{L}\p{N}_]+$/u.test(m[2]) && !/^[\p{L}\p{N}_]+\s*\[.*\]$/u.test(m[2])) {
+    subgraphSeq += 1;
+    out = `${m[1]}subgraph sg${subgraphSeq}["${m[2].replace(/"/g, '#quot;')}"]`;
+  }
+  return out;
 }
 
 /** VitePress のコンテナ（::: details）の中に入れる。本文に ::: があると閉じてしまうので、外側のコロンを増やす */
@@ -285,6 +309,12 @@ function sortFeatures(features) {
   return [...features].sort((a, b) => order(a.kind) - order(b.kind) || a.dir.localeCompare(b.dir));
 }
 
+/** 機能の名前がコードの識別子か（`公開定数` のような日本語の名前は、コードの書式にしない） */
+const isIdent = (name) => /^[A-Za-z_$][\w$.]*$/.test(name);
+const nameCode = (name) => (isIdent(name) ? `\`${name}\`` : name);
+/** 「<名前> の仕様」。日本語の名前には空白を入れない */
+const specTitle = (name) => (isIdent(name) ? `${name} の仕様` : `${name}の仕様`);
+
 function referenceLink(cfg, f) {
   if (f.kind === 'tool') return `${cfg.reference}#${f.name.replace(/_/g, '-')}`;
   if (f.kind === 'function') return `${cfg.reference}#${f.name.toLowerCase().replace(/_/g, '-')}`;
@@ -314,13 +344,14 @@ function renderSpecPage(ctx, cfg, f) {
   const specUrl = `${GITHUB}/${cfg.repo}/blob/${tag}/specs/current/${f.dir}/spec.md`;
   const tctx = { linkId: (id) => ctx.linkId(id, site, f.dir) };
   L.push('---');
-  L.push(`title: ${JSON.stringify(`${f.name} — 仕様`)}`);
+  // 同じ名前の機能が複数のリポジトリにある（common_errors・resolve_abbreviation など）ので、題にリポジトリを入れる
+  L.push(`title: ${JSON.stringify(`${f.name} — ${cfg.repo} の仕様`)}`);
   L.push(
-    `description: ${JSON.stringify(`${cfg.repo} の ${f.h1}の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）`)}`
+    `description: ${JSON.stringify(`${cfg.repo} の${isIdent(f.name) ? ' ' : ''}${f.h1}の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）`)}`
   );
   L.push('---');
   L.push('');
-  L.push(`# ${f.name} の仕様`);
+  L.push(`# ${specTitle(f.name)}`);
   L.push('');
   L.push(`<!-- GENERATED FILE — 手で編集しない。本文は ${cfg.repo} の specs/current/${f.dir}/spec.md の写し。 -->`);
   L.push('');
@@ -474,7 +505,7 @@ function renderSpecIndex(ctx, cfg, features, pages) {
     L.push('| 機能 | 内容 | 仕様 ID |');
     L.push('|---|---|---|');
     for (const f of list) {
-      const name = pages.has(f.dir) ? `[\`${f.name}\`](/specs/${site}/${f.dir})` : `\`${f.name}\``;
+      const name = pages.has(f.dir) ? `[${nameCode(f.name)}](/specs/${site}/${f.dir})` : nameCode(f.name);
       L.push(`| ${name} | ${transformLine(f.summary, {}).replace(/\|/g, '\\|')} | ${f.ids.length} |`);
     }
     L.push('');
@@ -497,7 +528,7 @@ function readWorkflow(src, cfg, file) {
 }
 
 /** Skill のファイルの相対リンクを、タグの GitHub の URL にする */
-function skillLinkRewriter(cfg, tag, fromDir) {
+function skillLinkRewriter(cfg, tag, fromDir, site, pages) {
   return (url) => {
     if (/^[a-z]+:/i.test(url) || url.startsWith('#') || url.startsWith('/')) return url;
     const [path, hash] = url.split('#');
@@ -507,6 +538,9 @@ function skillLinkRewriter(cfg, tag, fromDir) {
       if (p === '..') out.pop();
       else if (p && p !== '.') out.push(p);
     }
+    // ページを生成した workflow は、GitHub ではなくそのページへ（見出しの id が違うので # は付けない）
+    const wf = out.join('/').match(new RegExp(`^${cfg.skillDir}/workflows/([^/]+)\\.md$`));
+    if (wf && pages?.has(wf[1])) return `/specs/${site}/${wf[1]}`;
     const kind = path.endsWith('/') || !/\.[a-z]+$/i.test(path) ? 'tree' : 'blob';
     return `${GITHUB}/${cfg.repo}/${kind}/${tag}/${out.join('/')}${hash ? `#${hash}` : ''}`;
   };
@@ -527,7 +561,7 @@ function toolsInWorkflow(text, toolIndex) {
 function renderWorkflowPage(ctx, cfg, w) {
   const { version, tag, site } = ctx;
   const fromDir = `${cfg.skillDir}/workflows`;
-  const tctx = { rewriteLink: skillLinkRewriter(cfg, tag, fromDir) };
+  const tctx = { rewriteLink: skillLinkRewriter(cfg, tag, fromDir, site, ctx.pages) };
   const L = [];
   L.push('---');
   L.push(`title: ${JSON.stringify(`${w.dir} — ${w.title}`)}`);
@@ -598,7 +632,7 @@ function renderSkillIndex(ctx, cfg, workflows, pages) {
   const { src, version, tag, site } = ctx;
   const skillPath = join(src, cfg.skillDir, 'SKILL.md');
   const { fm, body } = splitFrontMatter(readFileSync(skillPath, 'utf8'));
-  const tctx = { rewriteLink: skillLinkRewriter(cfg, tag, cfg.skillDir) };
+  const tctx = { rewriteLink: skillLinkRewriter(cfg, tag, cfg.skillDir, site, pages) };
   const { sections } = splitSections(body, 2);
   const pick = (h) => sections.find((s) => s.heading.startsWith(h));
   const L = [];

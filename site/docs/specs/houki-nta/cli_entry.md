@@ -1,0 +1,279 @@
+---
+title: "cli_entry — houki-nta-mcp の仕様"
+description: "houki-nta-mcp の cli_entry（`houki-nta-mcp` コマンドの起動と引数の振り分け）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+---
+
+# cli_entry の仕様
+
+<!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/cli_entry/spec.md の写し。 -->
+
+::: info
+houki-nta-mcp **v0.27.0** の `specs/current/cli_entry/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+:::
+
+このページは、houki-nta-mcp のコマンドライン「cli_entry（`houki-nta-mcp` コマンドの起動と引数の振り分け）」の仕様です。「承認の履歴」の前までは、仕様書の本文を言い換えずに写しています。
+
+最後に仕様が変わったのは v0.25.0 の「ローカル DB の場所を、応答・起動時のログ・`--status` で確かめられるようにし、保存したタックスアンサーの索引を読めないことをログに残す（nta #138・#137、T6）」（2026-10-05 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
+
+## 使う人と受け取るもの
+
+この機能を誰が呼び、何を渡して何を受け取るかを示します。
+
+- 利用者（ターミナルから `houki-nta-mcp` を実行する人）。フラグを付けずに実行して MCP サーバーを起動するか、フラグを付けて使い方・版を見る、ローカル DB を作る・最新化する・場所と中身を確かめる、国税庁サイトの構造を確かめる
+- MCP クライアント（Claude Desktop などの設定で `houki-nta-mcp` を引数なしで起動し、標準入出力で MCP のやり取りをする）
+
+## 入力
+
+呼び出すときに渡す値です。
+
+フラグはすべて `--名前` または `--名前=値` の形で、値は `=` で続ける（`--db-path /path` のように空白で分けた形は受け付けない）。フラグの並び順は問わない。フラグは、処理を選ぶフラグ（`--help`・`--version`・`--quickstart`・`--bulk-download*`・`--refresh-stale=<日数>`・`--status`・`--health-check`・`--check-baseline-drift`）を 1 つと、その処理と一緒に使えるフラグ（[SPEC-NTA-CLI-ENTRY-007](#spec-nta-cli-entry-007) の表）だけを受け付ける。それ以外の引数は [SPEC-NTA-CLI-ENTRY-006](#spec-nta-cli-entry-006)・007 のエラーにする。
+
+| フラグ                                                                                                                                                                                                                   | 必須 | 内容                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| （なし）                                                                                                                                                                                                                 | 任意 | MCP サーバーとして起動する                                                                                                            |
+| `--help` / `-h`                                                                                                                                                                                                          | 任意 | 使い方を標準出力に出して終わる                                                                                                        |
+| `--version` / `-v`                                                                                                                                                                                                       | 任意 | `<パッケージ名> v<版>` を標準出力に出して終わる                                                                                                            |
+| `--db-path=<path>`                                                                                                                                                                                                       | 任意 | 投入と `--refresh-stale` と `--status` だけで使う。CLI の処理で使う DB ファイルの場所。既定は環境変数 `HOUKI_NTA_DB_PATH`、無ければ `${XDG_CACHE_HOME:-~/.cache}/houki-nta-mcp/cache.db` |
+| `--quickstart`                                                                                                                                                                                                           | 任意 | 通達 1 つを投入する（cli_bulk_download）                                                                                              |
+| `--bulk-download` / `--bulk-download-all` / `--bulk-download-kaisei` / `--bulk-download-jimu-unei` / `--bulk-download-bunshokaitou` / `--bulk-download-tax-answer` / `--bulk-download-qa` / `--bulk-download-everything` | 任意 | 種別ごとの投入（cli_bulk_download）                                                                                                   |
+| `--tsutatsu=<正式名>` / `--bunsho-taxonomy=<csv>` / `--tax-answer-taxonomy=<csv>` / `--qa-topic=<csv>`                                                                                                                   | 任意 | 投入の対象の絞り込み（cli_bulk_download）                                                                                             |
+| `--status` | 任意 | DB の場所と、それを決めた設定、種別ごとの件数を出す。DB を作らず、移行もしない（cli_status） |
+| `--refresh` / `--refresh-stale=<日数>` / `--apply`                                                                                                                                                                       | 任意 | 取り直しと古い節の列挙・再取得（cli_refresh）                                                                                         |
+| `--health-check` / `--check-baseline-drift` / `--strict`                                                                                                                                                                 | 任意 | 国税庁サイトの代表ページの確認（cli_health_check）                                                                                    |
+
+## できないこと
+
+この機能が引き受けないことです。
+
+- `--名前 値` のように空白で分けた値を受け付けること（`--db-path=<path>` の形だけ）
+- 処理を選ぶフラグを 2 つ以上同時に実行すること（[SPEC-NTA-CLI-ENTRY-007](#spec-nta-cli-entry-007) のエラーにする）
+- MCP サーバーに CLI のフラグで DB の場所を渡すこと（MCP サーバーの DB の場所は環境変数 `HOUKI_NTA_DB_PATH` / `XDG_CACHE_HOME` だけで決まる。`--db-path=<path>` だけを渡すと [SPEC-NTA-CLI-ENTRY-007](#spec-nta-cli-entry-007) のエラー）
+- MCP サーバーの起動時に DB があるか・版が合うかを確かめてログに出すこと（起動時のログは場所と設定だけ。[SPEC-NTA-CLI-ENTRY-009](#spec-nta-cli-entry-009)）
+- MCP サーバーを標準入出力以外（HTTP など）で起動すること
+- 設定ファイルを読むこと（設定はフラグと環境変数だけ）
+
+## 処理の流れ
+
+起動してから、MCP サーバーとして待ち受けるか、フラグの処理をして終わるかを決める順を示します。図の中の番号は「できること」の仕様 ID の末尾 3 桁です。
+
+```mermaid
+flowchart TD
+  A["houki-nta-mcp を実行"] --> Z{"引数があるか"}
+  Z -- 無い --> S["MCP サーバーとして標準入出力で待ち受ける（001）"]
+  S --> S2["起動時のログに DB の絶対パスと、DB の場所の設定を出す（009）"]
+  Z -- ある --> B{"すべての引数の形が正しいか（006）"}
+  B -- "- で始まらない引数・知らないフラグ・値の無いフラグ" --> E1["エラーと使い方を出して exit 2（006）"]
+  B -- 正しい --> V{"フラグの値が正しいか（008）"}
+  V -- "税目・通達名・日数に誤り" --> E2["値のエラーを出して exit 2（008。SPEC-NTA-CLI-BULK-DOWNLOAD-010・011、SPEC-NTA-CLI-REFRESH-006）"]
+  V -- 正しい --> C{"処理を選ぶフラグが 1 つで、ほかのフラグをその処理が受け付けるか（007）"}
+  C -- "処理のフラグが無い・2 つ以上・受け付けないフラグがある" --> E3["エラーと使い方を出して exit 2（007）"]
+  C -- "--help / -h" --> H["使い方を標準出力に出して終わる（002）"]
+  C -- "--version / -v" --> VV["<パッケージ名> v<版> を出して終わる（003）"]
+  C -- "そのほかの処理のフラグ" --> O["その処理をして終わる（cli_bulk_download / cli_refresh / cli_health_check / cli_status）"]
+```
+
+## 仕様 ID ごとの約束
+
+この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+
+<a id="spec-nta-cli-entry-001"></a>
+
+### SPEC-NTA-CLI-ENTRY-001 フラグを付けないときは、どの CLI の処理も選ばず MCP サーバーとして起動する
+
+::: details 詳細
+引数を付けずに実行したときは、使い方・版の表示、投入、古い節の列挙、国税庁サイトの確認のどれも選ばれず、MCP サーバーとして標準入出力で待ち受ける。引数を読んだ結果は、投入の対象が `消費税法基本通達`（`--tsutatsu` の既定）で、ほかはすべて指定なしである。
+:::
+
+<a id="spec-nta-cli-entry-002"></a>
+
+### SPEC-NTA-CLI-ENTRY-002 `--help` と `-h` は使い方を標準出力に出して終わり、MCP サーバーを起動しない
+
+::: details 詳細
+`--help` または `-h` があるときは、使い方を標準出力に出し、ほかの処理をせずに終わる。使い方には次が載る。
+
+- 先頭にパッケージ名と版（`@shuji-bonji/houki-nta-mcp v<版>`）
+- 「まず試す」の節に `--quickstart`。この節は `--bulk-download-everything` の説明より前にある
+- 種別を足すフラグと、税目フラグに使える値の一覧。`--qa-topic の値: shotoku, gensen, …`、`--bunsho-taxonomy の値: shotoku, gensen, joto-sanrin, …`（国税局の別表記も添える）、`--tax-answer-taxonomy の値: …`
+- 保守のフラグ（`--status`・`--refresh-stale`・`--apply`・`--health-check`・`--check-baseline-drift`・`--strict`）、オプション（`--tsutatsu`・`--db-path`・`--refresh`）、環境変数 `HOUKI_NTA_DB_PATH`・`XDG_CACHE_HOME`
+- `--status` の行は、DB の場所とそれを決めた設定、種別ごとの件数を出し、DB を作らないことを書く
+
+使い方のコマンドは `houki-nta-mcp <フラグ>` の形のまま（案内のコマンドの形 [SPEC-NTA-DB-SCHEMA-027](/specs/houki-nta/db_schema#spec-nta-db-schema-027) にはしない）。
+
+例: `houki-nta-mcp --help` の標準出力に `--status` の行がある（v0.24.x には `--status` が無かった）。
+:::
+
+<a id="spec-nta-cli-entry-003"></a>
+
+### SPEC-NTA-CLI-ENTRY-003 `--version` と `-v` は `<パッケージ名> v<版>` の 1 行を出して終わる
+
+::: details 詳細
+`--version` または `-v` だけを渡したときは、`<パッケージ名> v<版>` の 1 行（例: `@shuji-bonji/houki-nta-mcp v0.24.0`）を標準出力に出し、ほかの処理をせずに終了コード 0 で終わる。houki-egov-mcp の [SPEC-EGOV-CLI-ENTRY-003](/specs/houki-egov/cli_entry#spec-egov-cli-entry-003) と同じ形である（v0.23.x までは版の数字だけ、例: `0.23.0`。#106）。ほかの引数と一緒に渡したときは [SPEC-NTA-CLI-ENTRY-007](#spec-nta-cli-entry-007) のエラーにする。
+:::
+
+<a id="spec-nta-cli-entry-004"></a>
+
+### SPEC-NTA-CLI-ENTRY-004 `--db-path=<path>` で、投入と `--refresh-stale` と `--status` が使う DB ファイルを指定できる
+
+::: details 詳細
+`--db-path=<path>` を投入のフラグ（`--quickstart`・`--bulk-download*`）か `--refresh-stale=<日数>` か `--status` と一緒に付けると、その処理は環境変数によらずそのパスの DB を使う。DB の場所の設定は `--db-path` になる（[SPEC-NTA-DB-SCHEMA-026](/specs/houki-nta/db_schema#spec-nta-db-schema-026)）。`:memory:` を渡すとファイルを作らない一時的な DB になる。例: `--bulk-download --tsutatsu=所得税基本通達 --db-path=/tmp/cache.db` は、`/tmp/cache.db` に所得税基本通達を投入する。`--status --db-path=/tmp/cache.db` は、`/tmp/cache.db` の場所と件数を出す（[SPEC-NTA-CLI-STATUS-001](/specs/houki-nta/cli_status#spec-nta-cli-status-001)）。
+
+`--db-path=<path>` だけを渡したとき、または DB を使わない処理（`--health-check`・`--check-baseline-drift`・`--help`・`--version`）と一緒に渡したときは、[SPEC-NTA-CLI-ENTRY-007](#spec-nta-cli-entry-007) のエラーにする。MCP サーバーの DB の場所は `--db-path` では変わらない（v0.23.x までは `--db-path=<path>` だけを渡すと MCP サーバーが起動し、そのパスは使わなかった。#106）。`--db-path=`（値が空）は [SPEC-NTA-CLI-ENTRY-006](#spec-nta-cli-entry-006) の値の無いフラグのエラーにする。
+:::
+
+<a id="spec-nta-cli-entry-005"></a>
+
+### SPEC-NTA-CLI-ENTRY-005 `--help` はほかの引数と一緒に渡すとエラーにし、値の誤りがあれば値のエラーを先に出す
+
+::: details 詳細
+`--help` / `-h` は、それだけを渡したときに使い方を出して終了コード 0 で終わる（[SPEC-NTA-CLI-ENTRY-002](#spec-nta-cli-entry-002)）。ほかの引数と一緒に渡したときは、使い方を出さずに次のエラーにする。
+
+- ほかの引数の形が誤っていれば [SPEC-NTA-CLI-ENTRY-006](#spec-nta-cli-entry-006) のエラー（終了コード 2）
+- 値に誤りがあれば [SPEC-NTA-CLI-ENTRY-008](#spec-nta-cli-entry-008) の値のエラー（終了コード 2）。例: `--help --qa-topic=zzz` は `[houki-nta-mcp] --qa-topic="zzz" は使えません。使える値: …` を出して終了コード 2
+- 値が正しければ [SPEC-NTA-CLI-ENTRY-007](#spec-nta-cli-entry-007) の余分な引数のエラー（終了コード 2）。例: `--help --version` は `ERROR: 余分な引数: --version`
+
+値のエラーは、使える値の一覧を文に含むので、使い方を見なくても正しい値を確かめられる（v0.23.x までは `--help --qa-topic=zzz` は値の誤りを報告せずに使い方を出し、終了コード 0 だった。#106）。
+:::
+
+<a id="spec-nta-cli-entry-006"></a>
+
+### SPEC-NTA-CLI-ENTRY-006 形の誤った引数は、何もせずにエラーと使い方を出して exit 2
+
+::: details 詳細
+引数を前から順に見て、次のどれかに当たる最初の引数があれば、そのことを標準エラー出力に出し、続けて使い方（[SPEC-NTA-CLI-ENTRY-002](#spec-nta-cli-entry-002) と同じ文。下の値の無いフラグを除く）を標準出力に出して、終了コード 2 で終わる。DB を開かず、国税庁サイトに接続せず、MCP サーバーも起動しない。
+
+| 引数 | 標準エラー出力 |
+| --- | --- |
+| `-` で始まらない（`status`・`/path` など） | `ERROR: 未知の引数: <引数>` |
+| `-` で始まり、入力の表のどのフラグでもない（打ち間違い、`-x`、値を取らないフラグに `=` を付けたもの。例: `--bulk-downlod`、`--refresh=1`） | `ERROR: 未知のフラグ: <フラグ>`（`=` 以降も含めて出す） |
+| 値を取るフラグ（`--db-path`・`--tsutatsu`・`--bunsho-taxonomy`・`--tax-answer-taxonomy`・`--qa-topic`・`--refresh-stale`）に `=` が無い、または `=` の後が空 | `ERROR: <フラグ> は値を必要とします（<フラグ>=<値> の形で指定してください）` |
+
+例:
+
+| 実行 | 標準エラー出力 | 終了コード |
+| --- | --- | --- |
+| `houki-nta-mcp --bulk-downlod` | `ERROR: 未知のフラグ: --bulk-downlod` | 2 |
+| `houki-nta-mcp --db-path /tmp/x.db --bulk-download` | `ERROR: --db-path は値を必要とします（--db-path=<値> の形で指定してください）` | 2 |
+| `houki-nta-mcp status` | `ERROR: 未知の引数: status` | 2 |
+| `houki-nta-mcp --refresh-stale` | `ERROR: --refresh-stale は値を必要とします（--refresh-stale=<値> の形で指定してください）` | 2 |
+
+値を取るフラグに値が無いときだけは、使い方を出さない（houki-egov-mcp の [SPEC-EGOV-CLI-BULK-DOWNLOAD-001](/specs/houki-egov/cli_bulk_download#spec-egov-cli-bulk-download-001) で日付が無いときと同じ）。
+
+v0.23.x では、上の引数を読み飛ばし、処理を選ぶフラグが残らなければ MCP サーバーとして起動して標準入力を待ち続けた（#106）。houki-egov-mcp の [SPEC-EGOV-CLI-ENTRY-004](/specs/houki-egov/cli_entry#spec-egov-cli-entry-004)・008 と同じ文である。
+:::
+
+<a id="spec-nta-cli-entry-007"></a>
+
+### SPEC-NTA-CLI-ENTRY-007 処理を選ぶフラグは 1 つだけで、その処理が受け付けないフラグはエラーにして exit 2
+
+::: details 詳細
+形と値が正しい（[SPEC-NTA-CLI-ENTRY-006](#spec-nta-cli-entry-006)・008）引数について、次を確かめる。当たれば、そのフラグの処理を何もせず（DB を開かず、国税庁サイトに接続せず）、標準エラー出力にエラーを出し、続けて使い方を標準出力に出して、終了コード 2 で終わる。
+
+| 場面 | 標準エラー出力 |
+| --- | --- |
+| 処理を選ぶフラグが 2 つ以上ある | `ERROR: 余分な引数: <前から 2 つ目の処理を選ぶフラグ>` |
+| 処理を選ぶフラグが受け付けないフラグがある（下の表）。同じフラグを 2 回渡したときの 2 回目を含む | `ERROR: 余分な引数: <前から最初のそのフラグ>` |
+| 処理を選ぶフラグが無く、ほかのフラグだけがある（`--db-path=<path>` だけ、`--strict` だけなど） | `ERROR: 処理を選ぶフラグがありません（<前から最初のフラグ> だけでは何もしません）` |
+
+処理を選ぶフラグと、一緒に使えるフラグは次のとおり。
+
+| 処理を選ぶフラグ | 一緒に使えるフラグ |
+| --- | --- |
+| `--help` / `-h`、`--version` / `-v` | なし |
+| `--quickstart`、`--bulk-download` | `--tsutatsu`・`--refresh`・`--db-path` |
+| `--bulk-download-all`、`--bulk-download-kaisei`、`--bulk-download-jimu-unei` | `--refresh`・`--db-path` |
+| `--bulk-download-bunshokaitou` | `--bunsho-taxonomy`・`--refresh`・`--db-path` |
+| `--bulk-download-tax-answer` | `--tax-answer-taxonomy`・`--refresh`・`--db-path` |
+| `--bulk-download-qa` | `--qa-topic`・`--refresh`・`--db-path` |
+| `--bulk-download-everything` | `--bunsho-taxonomy`・`--tax-answer-taxonomy`・`--qa-topic`・`--refresh`・`--db-path` |
+| `--refresh-stale=<日数>` | `--apply`・`--db-path`。`--refresh` は `--apply` があるときだけ（[SPEC-NTA-CLI-REFRESH-007](/specs/houki-nta/cli_refresh#spec-nta-cli-refresh-007)） |
+| `--status` | `--db-path` |
+| `--health-check`、`--check-baseline-drift` | `--strict` |
+
+例:
+
+| 実行 | 標準エラー出力 | 終了コード |
+| --- | --- | --- |
+| `houki-nta-mcp --bulk-download-qa --health-check` | `ERROR: 余分な引数: --health-check` | 2 |
+| `houki-nta-mcp --bulk-download-all --tsutatsu=所得税基本通達` | `ERROR: 余分な引数: --tsutatsu=所得税基本通達` | 2 |
+| `houki-nta-mcp --refresh-stale=30 --refresh` | `ERROR: 余分な引数: --refresh` | 2 |
+| `houki-nta-mcp --apply` | `ERROR: 処理を選ぶフラグがありません（--apply だけでは何もしません）` | 2 |
+| `houki-nta-mcp --db-path=/tmp/x.db` | `ERROR: 処理を選ぶフラグがありません（--db-path=/tmp/x.db だけでは何もしません）` | 2 |
+| `houki-nta-mcp --status --refresh` | `ERROR: 余分な引数: --refresh` | 2 |
+| `houki-nta-mcp --status --bulk-download-qa` | `ERROR: 余分な引数: --bulk-download-qa` | 2 |
+
+v0.23.x では、処理を選ぶフラグが 2 つ以上あると決まった順で最初の 1 つだけを行い（上の 1 行目は投入だけを行った）、受け付けないフラグは黙って使わず、処理を選ぶフラグが無ければ MCP サーバーとして起動した（#106）。houki-egov-mcp の [SPEC-EGOV-CLI-ENTRY-009](/specs/houki-egov/cli_entry#spec-egov-cli-entry-009) と同じ文である。v0.24.x には `--status` が無く、`houki-nta-mcp --status` は `ERROR: 未知のフラグ: --status` で終了コード 2 だった。
+:::
+
+<a id="spec-nta-cli-entry-008"></a>
+
+### SPEC-NTA-CLI-ENTRY-008 引数の検査は「形 → 値 → 組み合わせ」の順に行い、値の誤りはすべてを並べて exit 2
+
+::: details 詳細
+引数は、形（[SPEC-NTA-CLI-ENTRY-006](#spec-nta-cli-entry-006)）、値（下の表）、組み合わせ（[SPEC-NTA-CLI-ENTRY-007](#spec-nta-cli-entry-007)）の順に確かめる。形の誤りがあれば値と組み合わせは確かめない。値の誤りがあれば組み合わせは確かめない。
+
+値の誤りは、誤った値 1 つにつき 1 行を標準エラー出力にすべて出し（使い方は出さない）、終了コード 2 で終わる。DB を開かず、国税庁サイトに接続せず、MCP サーバーも起動しない。
+
+| フラグ | 正しい値 | 文 |
+| --- | --- | --- |
+| `--bunsho-taxonomy`・`--tax-answer-taxonomy`・`--qa-topic` | 各フラグの一覧の値（[SPEC-NTA-CLI-BULK-DOWNLOAD-008](/specs/houki-nta/cli_bulk_download#spec-nta-cli-bulk-download-008)） | [SPEC-NTA-CLI-BULK-DOWNLOAD-010](/specs/houki-nta/cli_bulk_download#spec-nta-cli-bulk-download-010) |
+| `--tsutatsu` | 基本通達 4 種の正式名 | [SPEC-NTA-CLI-BULK-DOWNLOAD-011](/specs/houki-nta/cli_bulk_download#spec-nta-cli-bulk-download-011) |
+| `--refresh-stale` | 0 以上の整数（数字だけ） | [SPEC-NTA-CLI-REFRESH-006](/specs/houki-nta/cli_refresh#spec-nta-cli-refresh-006) |
+
+引数の誤りの終了コードは 2、処理の失敗（DB を開けない、DB の版が合わない。[SPEC-NTA-DB-SCHEMA-021](/specs/houki-nta/db_schema#spec-nta-db-schema-021)）は 1 に分ける。houki-egov-mcp の 0.19.0 と同じ分け方である。
+
+例: `houki-nta-mcp --bulk-download-everything --qa-topic=zzz --tax-answer-taxonomy=yyy` は、`--qa-topic="zzz"` と `--tax-answer-taxonomy="yyy"` の 2 行をこの引数の順に出して終了コード 2。`houki-nta-mcp --bulk-downlod --qa-topic=zzz` は形の誤りが先なので `ERROR: 未知のフラグ: --bulk-downlod` だけを出す。
+:::
+
+<a id="spec-nta-cli-entry-009"></a>
+
+### SPEC-NTA-CLI-ENTRY-009 MCP サーバーは起動時のログに、DB の絶対パスと DB の場所の設定を出す
+
+::: details 詳細
+引数なしで MCP サーバーとして起動すると、`started` の JSON のログの行（`scope` が `server`、`msg` が `<パッケージ名> v<版> started …`）の次に、標準エラー出力へ次の JSON の 1 行を出す。
+
+| キー | 値 |
+| --- | --- |
+| `level` | `info` |
+| `scope` | `server` |
+| `msg` | `DB: <DB の絶対パス>（DB の場所の設定: <設定の名前>）` |
+| `meta` | `{ db_path: "<DB の絶対パス>", setting: "<設定の名前>" }` |
+
+`<DB の絶対パス>` と `<設定の名前>` は [SPEC-NTA-DB-SCHEMA-026](/specs/houki-nta/db_schema#spec-nta-db-schema-026) のとおり（MCP サーバーでは `--db-path` は当てはまらないので、`HOUKI_NTA_DB_PATH`・`XDG_CACHE_HOME`・`既定` のどれか）。ホームディレクトリを `~` に置き換えない（[SPEC-NTA-DB-SCHEMA-028](/specs/houki-nta/db_schema#spec-nta-db-schema-028)）。この行のために DB を開かず、ファイルがあるかも確かめない（ツールは呼び出しごとに DB を開くので、起動した後に CLI で作った DB も使える。起動時の有無を出すと古い情報になる）。MCP の応答（tools/list とツールの応答）は変わらない。
+
+例: 環境変数を付けずに、ホームディレクトリが `/Users/bonji` の環境で起動すると、`started` の行の次に `{"ts":"…","level":"info","scope":"server","msg":"DB: /Users/bonji/.cache/houki-nta-mcp/cache.db（DB の場所の設定: 既定）","meta":{"db_path":"/Users/bonji/.cache/houki-nta-mcp/cache.db","setting":"既定"}}`。`HOUKI_NTA_DB_PATH=/Users/bonji/.cache/houki-nta-mcp/cache.dev.db` を付けて起動すると `msg` は `DB: /Users/bonji/.cache/houki-nta-mcp/cache.dev.db（DB の場所の設定: HOUKI_NTA_DB_PATH）`（v0.24.x では `started` の 1 行だけで、どのファイルを開くかはログから分からなかった。houki-nta-mcp #138）。
+:::
+
+## まだ決めていないこと
+
+仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+
+::: details 仕様書の「未決」の節
+初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。
+
+意図か不具合かの判断が要る項目は houki-nta-mcp の Issue に移し、ここには題と Issue の番号だけを残します。今の振る舞いのままでよくテストが無いだけの項目は、受入テストを書いてから「できること」に ID を振ります。
+
+4. **MCP サーバーの終わり方。** 起動すると標準エラー出力に、`msg` が `<パッケージ名> v<版> started …` の JSON のログを出す（その次の行は [SPEC-NTA-CLI-ENTRY-009](#spec-nta-cli-entry-009)）。SIGINT / SIGTERM を受けると標準入出力の接続を閉じる。起動の途中で想定外の例外が起きると `fatal error` のログを出して `exit 1`。どれもテストが無い（houki-egov-mcp の [SPEC-EGOV-CLI-ENTRY-006](/specs/houki-egov/cli_entry#spec-egov-cli-entry-006)・007 に当たる）。ID を振るのは受入テストを書いてから。
+6. **`--db-path` の既定の決め方。** `HOUKI_NTA_DB_PATH` → `$XDG_CACHE_HOME/houki-nta-mcp/cache.db` → `~/.cache/houki-nta-mcp/cache.db` の順で、テストが無い。db_schema の未決 1 と同じ。
+:::
+
+## 承認の履歴
+
+この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history cli_entry` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
+
+::: details 承認の履歴（5 件）
+| 承認日 | 版 | 変更 | 仕様 PR |
+|---|---|---|---|
+| 2026-10-05 | v0.25.0 | [ローカル DB の場所を、応答・起動時のログ・`--status` で確かめられるようにし、保存したタックスアンサーの索引を読めないことをログに残す（nta #138・#137、T6）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.25.0/20261004-db-location/proposal.md) | [#142](https://github.com/shuji-bonji/houki-nta-mcp/pull/142) |
+| 2026-10-04 | v0.24.0 | [ローカル DB の版の扱い・作る入口・doc_type の制約・タックスアンサーの索引の保存と、CLI の引数の検査（段階 5 DB と CLI）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.24.0/20261003-db-cli/proposal.md) | [#135](https://github.com/shuji-bonji/houki-nta-mcp/pull/135) |
+| 2026-10-03 | v0.23.0 | [hint・next_actions・説明文・CLI の使い方と実際の動きの食い違いを、行ごとに直す（T5 文書と実装の食い違い）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.23.0/20261003-t5-docs-mismatch/proposal.md) | [#126](https://github.com/shuji-bonji/houki-nta-mcp/pull/126) |
+| 2026-09-30 | v0.22.0 | [CLI・DB の初版の「未決」のうち判断が要る 12 件を Issue に移す（#75 の続き）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.22.0/20260930-cli-db-undecided-to-issues/proposal.md) | [#114](https://github.com/shuji-bonji/houki-nta-mcp/pull/114) |
+| 2026-09-29 | — | 初版 | [#103](https://github.com/shuji-bonji/houki-nta-mcp/pull/103) |
+:::
+
+## 関連ページ
+
+このページの元になった文書と、あわせて読むページです。
+
+- [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
+- [houki-nta-mcp の解説](/mcp/houki-nta)
+- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/cli_entry/spec.md)

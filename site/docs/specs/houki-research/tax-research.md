@@ -319,19 +319,19 @@ flowchart TB
 
 | ツール | MCP サーバー | 仕様 |
 |---|---|---|
-| `resolve_abbreviation` | houki-egov-mcp | [リファレンス](/reference/mcp/houki-egov#resolve-abbreviation) |
-| `resolve_abbreviation` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#resolve-abbreviation) |
-| `get_law` | houki-egov-mcp | [リファレンス](/reference/mcp/houki-egov#get-law) |
-| `get_toc` | houki-egov-mcp | [リファレンス](/reference/mcp/houki-egov#get-toc) |
-| `search_law` | houki-egov-mcp | [リファレンス](/reference/mcp/houki-egov#search-law) |
+| `resolve_abbreviation` | houki-egov-mcp | [resolve_abbreviation の仕様](/specs/houki-egov/resolve_abbreviation) |
+| `resolve_abbreviation` | houki-nta-mcp | [resolve_abbreviation の仕様](/specs/houki-nta/resolve_abbreviation) |
+| `get_law` | houki-egov-mcp | [get_law の仕様](/specs/houki-egov/get_law) |
+| `get_toc` | houki-egov-mcp | [get_toc の仕様](/specs/houki-egov/get_toc) |
+| `search_law` | houki-egov-mcp | [search_law の仕様](/specs/houki-egov/search_law) |
 | `search_fulltext` | houki-egov-mcp | [search_fulltext の仕様](/specs/houki-egov/search_fulltext) |
 | `nta_get_tsutatsu` | houki-nta-mcp | [nta_get_tsutatsu の仕様](/specs/houki-nta/nta_get_tsutatsu) |
-| `nta_search_qa` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-search-qa) |
-| `nta_get_qa` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-get-qa) |
-| `nta_get_tax_answer` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-get-tax-answer) |
-| `nta_search_tax_answer` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-search-tax-answer) |
-| `nta_search_kaisei_tsutatsu` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-search-kaisei-tsutatsu) |
-| `nta_inspect_pdf_meta` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-inspect-pdf-meta) |
+| `nta_search_qa` | houki-nta-mcp | [nta_search_qa の仕様](/specs/houki-nta/nta_search_qa) |
+| `nta_get_qa` | houki-nta-mcp | [nta_get_qa の仕様](/specs/houki-nta/nta_get_qa) |
+| `nta_get_tax_answer` | houki-nta-mcp | [nta_get_tax_answer の仕様](/specs/houki-nta/nta_get_tax_answer) |
+| `nta_search_tax_answer` | houki-nta-mcp | [nta_search_tax_answer の仕様](/specs/houki-nta/nta_search_tax_answer) |
+| `nta_search_kaisei_tsutatsu` | houki-nta-mcp | [nta_search_kaisei_tsutatsu の仕様](/specs/houki-nta/nta_search_kaisei_tsutatsu) |
+| `nta_inspect_pdf_meta` | houki-nta-mcp | [nta_inspect_pdf_meta の仕様](/specs/houki-nta/nta_inspect_pdf_meta) |
 
 ## 例
 

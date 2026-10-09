@@ -1,5 +1,5 @@
 ---
-title: "resolveAbbreviation — 仕様"
+title: "resolveAbbreviation — houki-abbreviations の仕様"
 description: "houki-abbreviations の resolveAbbreviation（略称・正式名称・別名から辞書のエントリを 1 件引く）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
 ---
 
@@ -36,7 +36,7 @@ houki-abbreviations **v0.7.0** の `specs/current/resolve_abbreviation/spec.md` 
 
 呼び出しが返す値です。
 
-`AbbreviationEntry | null`。見つかったときは辞書のエントリそのもの、見つからないときは `null`。辞書のエントリそのもので、凍結されている（SPEC-ABBR-ABBREVIATION-ENTRIES-019）。
+`AbbreviationEntry | null`。見つかったときは辞書のエントリそのもの、見つからないときは `null`。辞書のエントリそのもので、凍結されている（[SPEC-ABBR-ABBREVIATION-ENTRIES-019](/specs/houki-abbreviations/abbreviation_entries#spec-abbr-abbreviation-entries-019)）。
 
 | フィールド        | 内容                                                                                                   |
 | ----------------- | ------------------------------------------------------------------------------------------------------ |
@@ -235,10 +235,10 @@ JavaScript から `name` に `null` または `undefined` を渡したときは�
 意図か不具合かの判断が要る項目は houki-abbreviations の Issue に移し、ここには題と Issue の番号だけを残します。今の振る舞いのままでよくテストが無いだけの項目は、受入テストを書いてから「できること」に ID を振ります。
 
 1. **README と JSDoc の `消　法` の例が実際の結果と違う。** → houki-abbreviations #17
-2. **返すエントリは凍結されておらず、書き換えると辞書に残る。** → SPEC-ABBR-ABBREVIATION-ENTRIES-019
+2. **返すエントリは凍結されておらず、書き換えると辞書に残る。** → [SPEC-ABBR-ABBREVIATION-ENTRIES-019](/specs/houki-abbreviations/abbreviation_entries#spec-abbr-abbreviation-entries-019)
 3. **全角数字・全角ハイフン・全角チルダの吸収。** `normalize: true` はこれらも半角にするが、v0.6.0 の辞書（174 件）の略称・正式名称・別名には数字・ハイフン・チルダを含む名前が無い（英字を含むのは `IT書面一括法` / `AML` / `PL法` / `JPKI法` の 4 つだけ）ため、辞書を引いて確かめられない。テスト `{ normalize: true } absorbs full-width digits` は `消法` を引いているだけで、全角数字を渡していない。テストが無い。ID を振るのは受入テストを書いてから。
 4. **既定の照合で前後の全角空白・タブ・改行も除く。** → [SPEC-ABBR-RESOLVE-ABBREVIATION-010](#spec-abbr-resolve-abbreviation-010)
-5. **半角にした名前が複数のエントリで重なるときは先に登録されたエントリを返す。** → SPEC-ABBR-ABBREVIATION-ENTRIES-017（名前は重ならない）
+5. **半角にした名前が複数のエントリで重なるときは先に登録されたエントリを返す。** → [SPEC-ABBR-ABBREVIATION-ENTRIES-017](/specs/houki-abbreviations/abbreviation_entries#spec-abbr-abbreviation-entries-017)（名前は重ならない）
 6. **`options.normalize` に `false` を明示したとき、`{}` や `null` を渡したとき。** → [SPEC-ABBR-RESOLVE-ABBREVIATION-011](#spec-abbr-resolve-abbreviation-011)
 7. **`normalize: true` で別名から引くこと。** → [SPEC-ABBR-RESOLVE-ABBREVIATION-012](#spec-abbr-resolve-abbreviation-012)
 8. **文字列でない `name`。** → [SPEC-ABBR-RESOLVE-ABBREVIATION-013](#spec-abbr-resolve-abbreviation-013)

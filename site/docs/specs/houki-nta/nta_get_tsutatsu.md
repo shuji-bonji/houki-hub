@@ -1,5 +1,5 @@
 ---
-title: "nta_get_tsutatsu — 仕様"
+title: "nta_get_tsutatsu — houki-nta-mcp の仕様"
 description: "houki-nta-mcp の nta_get_tsutatsu（基本通達の条項を 1 つ取得する）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
 ---
 
@@ -57,7 +57,7 @@ houki-nta-mcp **v0.27.0** の `specs/current/nta_get_tsutatsu/spec.md` から自
 
 - 通達の条項と法律の条番号の対応を示すこと（`base_laws` は法令名まで。条は付けない）
 - 条項本文の中の画像（算式の GIF）の内容を返すこと（alt テキストを `[画像: …]` として残す）
-- 基本通達 4 種以外の通達（電帳法取通など）を国税庁サイトから取ること・ローカル DB に投入すること（投入のフラグ `--tsutatsu` は基本通達 4 種の正式名しか受け付けない。SPEC-NTA-CLI-BULK-DOWNLOAD-011）
+- 基本通達 4 種以外の通達（電帳法取通など）を国税庁サイトから取ること・ローカル DB に投入すること（投入のフラグ `--tsutatsu` は基本通達 4 種の正式名しか受け付けない。[SPEC-NTA-CLI-BULK-DOWNLOAD-011](/specs/houki-nta/cli_bulk_download#spec-nta-cli-bulk-download-011)）
 - 1 回の呼び出しで 10 を超えるページを国税庁サイトから取ること（全節が要るときは `--bulk-download`）
 - 通達が今も有効かどうかを判定すること（改正の追跡は `nta_search_kaisei_tsutatsu` / `nta_get_kaisei_tsutatsu`）
 
@@ -179,14 +179,14 @@ flowchart TD
 その通達の条項が DB に 1 件も無く、上の 4 通達でもないとき（例: `電帳法取通`）は、エラー `TSUTATSU_NOT_FOUND` を返す。
 
 - `error` は今までどおり `"<正式名>" は DB にも未投入で、ライブ取得用 URL も未登録です`
-- `hint` は `この通達（<正式名>）は、今は取り込めません。国税庁サイトから取れるのも、投入のフラグ（--bulk-download の --tsutatsu）で DB に入れられるのも、基本通達 4 種（消費税法基本通達・所得税基本通達・法人税基本通達・相続税法基本通達）だけです`。投入のコマンドを書かない（投入のフラグ `--tsutatsu` は基本通達 4 種の正式名しか受け付けず、ほかの値は SPEC-NTA-CLI-BULK-DOWNLOAD-011 のエラーで終了コード 2 になる）
+- `hint` は `この通達（<正式名>）は、今は取り込めません。国税庁サイトから取れるのも、投入のフラグ（--bulk-download の --tsutatsu）で DB に入れられるのも、基本通達 4 種（消費税法基本通達・所得税基本通達・法人税基本通達・相続税法基本通達）だけです`。投入のコマンドを書かない（投入のフラグ `--tsutatsu` は基本通達 4 種の正式名しか受け付けず、ほかの値は [SPEC-NTA-CLI-BULK-DOWNLOAD-011](/specs/houki-nta/cli_bulk_download#spec-nta-cli-bulk-download-011) のエラーで終了コード 2 になる）
 - `next_actions` を付けない（v0.26.x の `cli_bulk_download` の 1 件を外すと、残りが無い）
 - `supported_for_live` にライブ取得できる通達名の一覧、`resolved` に略称辞書で解決したエントリを入れる（今までどおり）
-- ローカル DB の状態によらず同じ応答にする。DB を開けないとき（SPEC-NTA-DB-SCHEMA-021 の開けない行）も、SPEC-NTA-DB-SCHEMA-029 の開けないときの `hint`・`retryable`・`detail.cause` にしない。DB を開けないことは、SPEC-NTA-DB-SCHEMA-030 の `warn` の行で残る
+- ローカル DB の状態によらず同じ応答にする。DB を開けないとき（[SPEC-NTA-DB-SCHEMA-021](/specs/houki-nta/db_schema#spec-nta-db-schema-021) の開けない行）も、[SPEC-NTA-DB-SCHEMA-029](/specs/houki-nta/db_schema#spec-nta-db-schema-029) の開けないときの `hint`・`retryable`・`detail.cause` にしない。DB を開けないことは、[SPEC-NTA-DB-SCHEMA-030](/specs/houki-nta/db_schema#spec-nta-db-schema-030) の `warn` の行で残る
 
 基本通達 4 種で、候補ページに条項が無いときの `--bulk-download --tsutatsu="<正式名>"` の案内（[SPEC-NTA-GET-TSUTATSU-010](#spec-nta-get-tsutatsu-010)）は変えない。
 
-例: `{ name: "電帳法取通", clause: "4-1" }` は `code: "TSUTATSU_NOT_FOUND"`、`hint` は `この通達（電子計算機を使用して作成する国税関係帳簿書類の保存方法等の特例に関する法律の取扱通達）は、今は取り込めません。…基本通達 4 種（消費税法基本通達・所得税基本通達・法人税基本通達・相続税法基本通達）だけです`、`next_actions` は無い（v0.26.x では、`hint` が ``先に `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download --tsutatsu="電子計算機を使用して作成する国税関係帳簿書類の保存方法等の特例に関する法律の取扱通達"` を実行して DB に投入してください。``、`next_actions[0].action` が `cli_bulk_download` で、このコマンドを実行すると SPEC-NTA-CLI-BULK-DOWNLOAD-011 のエラーで終了コード 2 になった。#155）。`HOUKI_NTA_DB_PATH` で SQLite でない中身のファイルを指して起動したときも同じ応答で、`retryable` と `detail` は付かない（v0.26.x では、`hint` が ``ローカル DB（<パス>）を開けません。`` で始まり、`retryable: false`、`detail.cause` は `file is not a database`）。
+例: `{ name: "電帳法取通", clause: "4-1" }` は `code: "TSUTATSU_NOT_FOUND"`、`hint` は `この通達（電子計算機を使用して作成する国税関係帳簿書類の保存方法等の特例に関する法律の取扱通達）は、今は取り込めません。…基本通達 4 種（消費税法基本通達・所得税基本通達・法人税基本通達・相続税法基本通達）だけです`、`next_actions` は無い（v0.26.x では、`hint` が ``先に `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download --tsutatsu="電子計算機を使用して作成する国税関係帳簿書類の保存方法等の特例に関する法律の取扱通達"` を実行して DB に投入してください。``、`next_actions[0].action` が `cli_bulk_download` で、このコマンドを実行すると [SPEC-NTA-CLI-BULK-DOWNLOAD-011](/specs/houki-nta/cli_bulk_download#spec-nta-cli-bulk-download-011) のエラーで終了コード 2 になった。#155）。`HOUKI_NTA_DB_PATH` で SQLite でない中身のファイルを指して起動したときも同じ応答で、`retryable` と `detail` は付かない（v0.26.x では、`hint` が ``ローカル DB（<パス>）を開けません。`` で始まり、`retryable: false`、`detail.cause` は `file is not a database`）。
 :::
 
 <a id="spec-nta-get-tsutatsu-008"></a>
@@ -207,7 +207,7 @@ flowchart TD
 ### SPEC-NTA-GET-TSUTATSU-009 国税庁サイトから取れなかったときは、失敗の種類ごとの `SOURCE_*` を返す
 
 ::: details 詳細
-目次または候補ページの取得が、ページが無い（404・410、国税庁サイトの 404 ページへの転送）以外の形で失敗したときは、SPEC-NTA-COMMON-ERRORS-018 の表の code・`retryable`・`next_actions`・`detail` のエラーを返す（`SOURCE_RATE_LIMITED`・`SOURCE_TIMEOUT`・`SOURCE_UNAVAILABLE`・`SOURCE_API_ERROR`）。`url` と `detail.url` に、取れなかった目次か候補ページの URL を入れ、`tool` に `nta_get_tsutatsu` を入れる（v0.23.0 では `tool` が無かった）。
+目次または候補ページの取得が、ページが無い（404・410、国税庁サイトの 404 ページへの転送）以外の形で失敗したときは、[SPEC-NTA-COMMON-ERRORS-018](/specs/houki-nta/common_errors#spec-nta-common-errors-018) の表の code・`retryable`・`next_actions`・`detail` のエラーを返す（`SOURCE_RATE_LIMITED`・`SOURCE_TIMEOUT`・`SOURCE_UNAVAILABLE`・`SOURCE_API_ERROR`）。`url` と `detail.url` に、取れなかった目次か候補ページの URL を入れ、`tool` に `nta_get_tsutatsu` を入れる（v0.23.0 では `tool` が無かった）。
 
 候補ページが存在しない（404・410、または国税庁サイトの 404 ページへの転送）ことは、エラーにせず次の候補ページへ進む。目次を取り直しても候補ページがどれも存在しなければ、[SPEC-NTA-GET-TSUTATSU-010](#spec-nta-get-tsutatsu-010) の `ARTICLE_NOT_FOUND` を返す。目次のページそのものが 404・410・転送で終わったときは、目次の URL はこのサーバーが決めた値なので番号の誤りではなく、`SOURCE_API_ERROR`（`retryable: false`、`detail.status`）にする。
 
@@ -221,7 +221,7 @@ flowchart TD
 ::: details 詳細
 候補ページを取得したがどれにも条項が無いとき（[SPEC-NTA-GET-TSUTATSU-014](#spec-nta-get-tsutatsu-014) の目次の取り直しの後も同じとき）は、エラー `ARTICLE_NOT_FOUND` を返す。`available_clauses` に取得したページにある条項番号を、取得したページの順・ページの中の順に最大 50 件入れ、`searched_urls` に取得したページの URL を入れる。件数の上限は、DB の経路（[SPEC-NTA-GET-TSUTATSU-005](#spec-nta-get-tsutatsu-005)）の 50 件と同じにする。`hint` に、番号の形の確認と `nta_search_tsutatsu` での検索、`--bulk-download` で全節を DB に入れる方法を書く。`next_actions` は `nta_search_tsutatsu` と bulk download の案内（`cli_bulk_download`）の 2 件。
 
-ローカル DB を開けないとき（SPEC-NTA-DB-SCHEMA-030）は、`hint` の `--bulk-download` で全節を DB に入れる方法の文を書かず、`next_actions` に `cli_bulk_download` を入れない（`nta_search_tsutatsu` の 1 件）。`code`・`available_clauses`・`searched_urls` は同じ。
+ローカル DB を開けないとき（[SPEC-NTA-DB-SCHEMA-030](/specs/houki-nta/db_schema#spec-nta-db-schema-030)）は、`hint` の `--bulk-download` で全節を DB に入れる方法の文を書かず、`next_actions` に `cli_bulk_download` を入れない（`nta_search_tsutatsu` の 1 件）。`code`・`available_clauses`・`searched_urls` は同じ。
 
 例: 取得した 3 ページに条項が合わせて 80 件あり、どれも求めた条項でないとき、`available_clauses` は 1 ページ目の先頭から数えて 50 件（v0.22.0 では 80 件すべて）、`searched_urls` は 3 件。同じ場面で DB を開けないときは、`hint` に `--bulk-download` を含まず、`next_actions` は `nta_search_tsutatsu` の 1 件（v0.25.x では DB を開くところで `INTERNAL_ERROR` になり、国税庁サイトには取りに行かなかった）。
 :::
@@ -305,7 +305,7 @@ DB に保存してあった目次を使った呼び出しで次のどれかが�
 ### SPEC-NTA-GET-TSUTATSU-017 name が空文字・空白だけのときは略称辞書と DBを引かずに `INVALID_ARGUMENT` を返す
 
 ::: details 詳細
-空文字は inputSchema の `minLength: 1` の検査（SPEC-NTA-COMMON-ERRORS-013）で止まり、`INVALID_ARGUMENT`（`tool: "nta_get_tsutatsu"`、`detail.issues: [{ path: "name", message: "空文字は指定できません" }]`）を返す。空白（半角スペース・全角スペース・タブ・改行）だけのときは、ツールの処理が略称辞書と DBを引く前に、SPEC-NTA-COMMON-ERRORS-014 の形の `INVALID_ARGUMENT`（`tool: "nta_get_tsutatsu"`、`error: "name が空です"`、`detail.issues: [{ path: "name", message: "空白だけは指定できません" }]`、`hint` に通達名（略称か正式名）を渡すよう書く）を返す。
+空文字は inputSchema の `minLength: 1` の検査（[SPEC-NTA-COMMON-ERRORS-013](/specs/houki-nta/common_errors#spec-nta-common-errors-013)）で止まり、`INVALID_ARGUMENT`（`tool: "nta_get_tsutatsu"`、`detail.issues: [{ path: "name", message: "空文字は指定できません" }]`）を返す。空白（半角スペース・全角スペース・タブ・改行）だけのときは、ツールの処理が略称辞書と DBを引く前に、[SPEC-NTA-COMMON-ERRORS-014](/specs/houki-nta/common_errors#spec-nta-common-errors-014) の形の `INVALID_ARGUMENT`（`tool: "nta_get_tsutatsu"`、`error: "name が空です"`、`detail.issues: [{ path: "name", message: "空白だけは指定できません" }]`、`hint` に通達名（略称か正式名）を渡すよう書く）を返す。
 
 例: `name: ""` は `code: "INVALID_ARGUMENT"`・`detail.issues[0].message: "空文字は指定できません"`。`name: "　"`（全角スペース）と `name: " \n"` は `code: "INVALID_ARGUMENT"`・`error: "name が空です"`。どれも略称辞書と DBは引かない。
 
@@ -317,7 +317,7 @@ DB に保存してあった目次を使った呼び出しで次のどれかが�
 ### SPEC-NTA-GET-TSUTATSU-018 `name` の全角英数字・ダッシュ類・全角空白は半角に揃えてから略称辞書で引く
 
 ::: details 詳細
-`name` を略称辞書で解決するとき（[SPEC-NTA-GET-TSUTATSU-001](#spec-nta-get-tsutatsu-001)）は、houki-abbreviations の `resolveAbbreviation(name, { normalize: true })` の規則（全角英数字を半角に、ダッシュ類 `－` `‐` `‑` `–` `—` `―` `−` を `-` に、全角チルダ `～` `〜` を `~` に、全角空白を半角空白にし、前後の空白を除く。罫線 `─` と長音 `ー` は変えない。大文字と小文字は区別する）で揃えてから引く（SPEC-NTA-SEARCH-RULES-019）。管轄の判定（002）も同じ規則で引く。`clause` は今までどおり [SPEC-NTA-GET-TSUTATSU-004](#spec-nta-get-tsutatsu-004)・008 の規則で揃える。
+`name` を略称辞書で解決するとき（[SPEC-NTA-GET-TSUTATSU-001](#spec-nta-get-tsutatsu-001)）は、houki-abbreviations の `resolveAbbreviation(name, { normalize: true })` の規則（全角英数字を半角に、ダッシュ類 `－` `‐` `‑` `–` `—` `―` `−` を `-` に、全角チルダ `～` `〜` を `~` に、全角空白を半角空白にし、前後の空白を除く。罫線 `─` と長音 `ー` は変えない。大文字と小文字は区別する）で揃えてから引く（[SPEC-NTA-SEARCH-RULES-019](/specs/houki-nta/search_rules#spec-nta-search-rules-019)）。管轄の判定（002）も同じ規則で引く。`clause` は今までどおり [SPEC-NTA-GET-TSUTATSU-004](#spec-nta-get-tsutatsu-004)・008 の規則で揃える。
 
 例: `{ name: "消基通　", clause: "５－１－９" }` は `{ name: "消基通", clause: "5-1-9" }` と同じ応答（v0.21.3 では `name` が辞書に無い扱いで `ABBREVIATION_NOT_FOUND` だった）。
 :::

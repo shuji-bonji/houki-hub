@@ -1,5 +1,5 @@
 ---
-title: "search_fulltext — 仕様"
+title: "search_fulltext — houki-egov-mcp の仕様"
 description: "houki-egov-mcp の search_fulltext（法令の条文本文をキーワードで横断検索する）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
 ---
 
@@ -111,7 +111,7 @@ flowchart TD
 
 - `source`: `api-fallback`
 - `note`: [SPEC-EGOV-SEARCH-FULLTEXT-044](#spec-egov-search-fulltext-044) の表の、ファイルが無い行、または法令がまだ取り込まれていない行の文。開こうとした DB のパスと、`--bulk-download-everything` で DB を作ると本文を検索できることを含む
-- `next_actions`: 1 件目は `action: "bulk_download_everything"`（`example.command` は SPEC-EGOV-DB-SCHEMA-029 の形のコマンド。既定の場所なら `npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything`）、2 件目は `search_law` の案内
+- `next_actions`: 1 件目は `action: "bulk_download_everything"`（`example.command` は [SPEC-EGOV-DB-SCHEMA-029](/specs/houki-egov/db_schema#spec-egov-db-schema-029) の形のコマンド。既定の場所なら `npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything`）、2 件目は `search_law` の案内
 - `freshness`: `db_path` を含む 5 つのキーがすべて `null`（[SPEC-EGOV-SEARCH-FULLTEXT-043](#spec-egov-search-fulltext-043)）
 - `fallback`: 切り替えた検索の応答そのもの。切り替えた検索がエラーを返したときはそのエラーの形（`code` など）が入る
 
@@ -146,7 +146,7 @@ flowchart TD
 `hits[].article_num` は次の形で返す。
 
 - 本則: `30`、枝番号は `30の2`
-- 条を持たず段落だけの本則（SPEC-EGOV-CLI-BULK-DOWNLOAD-027 の `MainProvision` の行）: `本則`
+- 条を持たず段落だけの本則（[SPEC-EGOV-CLI-BULK-DOWNLOAD-027](/specs/houki-egov/cli_bulk_download#spec-egov-cli-bulk-download-027) の `MainProvision` の行）: `本則`
 - 附則: `附則(<法令の中での附則の通し番号>) <条番号>`。例: `附則(3) 1`、`附則(137) 51の2`
 - 条を持たず段落だけの附則: `附則(<n>)`（[SPEC-EGOV-SEARCH-FULLTEXT-041](#spec-egov-search-fulltext-041)）
 - 別表: `別表(<番号>)`。例: `別表(2)`
@@ -354,7 +354,7 @@ DB に同じ法令の複数の版があるときは、現行の版（または�
 ### SPEC-EGOV-SEARCH-FULLTEXT-022 `domain` は引数に無く、`filters.domain` は絞り込みをしていないことを返す
 
 ::: details 詳細
-tools/list の `search_fulltext` の inputSchema は `domain` を持たない（0.17.0 までは受け付けたが絞り込まなかった。`search_law` の SPEC-EGOV-SEARCH-LAW-016 と揃える）。`domain` を渡すと、inputSchema に無い引数として SPEC-EGOV-COMMON-ERRORS-004 の `INVALID_ARGUMENT`（`tool: "search_fulltext"`、`detail.issues: [{ path: "domain", message: "inputSchema に無い引数です" }]`）を返し、DB も e-Gov も引かない。
+tools/list の `search_fulltext` の inputSchema は `domain` を持たない（0.17.0 までは受け付けたが絞り込まなかった。`search_law` の [SPEC-EGOV-SEARCH-LAW-016](/specs/houki-egov/search_law#spec-egov-search-law-016) と揃える）。`domain` を渡すと、inputSchema に無い引数として [SPEC-EGOV-COMMON-ERRORS-004](/specs/houki-egov/common_errors#spec-egov-common-errors-004) の `INVALID_ARGUMENT`（`tool: "search_fulltext"`、`detail.issues: [{ path: "domain", message: "inputSchema に無い引数です" }]`）を返し、DB も e-Gov も引かない。
 
 `source: "bulk"` の応答の `filters.domain` はキーを残し、`{ requested: null, applied: false, note: "分野での絞り込みはしていません（domain の引数は 0.18.0 で外しました）" }` を常に入れる。
 
@@ -375,11 +375,11 @@ tools/list の `search_fulltext` の inputSchema は `domain` を持たない（
 | `days_since_sync` | `last_sync_date` からの経過日数 |
 | `staleness`       | 経過日数が 7 日未満なら `fresh`、30 日未満なら `stale`、30 日以上なら `outdated` |
 | `db_path`         | 引いた DB のパス（[SPEC-EGOV-SEARCH-FULLTEXT-042](#spec-egov-search-fulltext-042) の形） |
-| `warning`         | `outdated` のときだけ付く。``bulk DB が <日数> 日前のデータです。最新化するには `<--sync のコマンド>` (最終同期から <上限> 日を超えていれば `--bulk-download-everything`) を実行してください``。`<--sync のコマンド>` は `--sync` を付けた案内のコマンド（SPEC-EGOV-DB-SCHEMA-029）、`<上限>` は `HOUKI_EGOV_INCREMENTAL_LIMIT_DAYS` の値（既定 90） |
+| `warning`         | `outdated` のときだけ付く。``bulk DB が <日数> 日前のデータです。最新化するには `<--sync のコマンド>` (最終同期から <上限> 日を超えていれば `--bulk-download-everything`) を実行してください``。`<--sync のコマンド>` は `--sync` を付けた案内のコマンド（[SPEC-EGOV-DB-SCHEMA-029](/specs/houki-egov/db_schema#spec-egov-db-schema-029)）、`<上限>` は `HOUKI_EGOV_INCREMENTAL_LIMIT_DAYS` の値（既定 90） |
 
 鮮度が `outdated` でも DB を引いた結果を返す。
 
-例: 最終同期が 1 日前なら `staleness: "fresh"`、`days_since_sync: 1`、`warning` なし。ちょうど 7 日前なら `stale`。38 日前なら `outdated` で、`warning` に `日前` と `bulk-download` を含む。環境変数を付けずに起動したときの `warning` は ``bulk DB が 38 日前のデータです。最新化するには `npx -y @shuji-bonji/houki-egov-mcp@latest --sync` (最終同期から 90 日を超えていれば `--bulk-download-everything`) を実行してください``（v0.19.x では `` `houki-egov-mcp --sync` ``）。MCP サーバーを `HOUKI_EGOV_INCREMENTAL_LIMIT_DAYS=60` で起動したときは、`warning` に `最終同期から 60 日を超えていれば` を含む（v0.18.x では 90 のまま。CLI の SPEC-EGOV-CLI-STATUS-004 と揃える。#61）。
+例: 最終同期が 1 日前なら `staleness: "fresh"`、`days_since_sync: 1`、`warning` なし。ちょうど 7 日前なら `stale`。38 日前なら `outdated` で、`warning` に `日前` と `bulk-download` を含む。環境変数を付けずに起動したときの `warning` は ``bulk DB が 38 日前のデータです。最新化するには `npx -y @shuji-bonji/houki-egov-mcp@latest --sync` (最終同期から 90 日を超えていれば `--bulk-download-everything`) を実行してください``（v0.19.x では `` `houki-egov-mcp --sync` ``）。MCP サーバーを `HOUKI_EGOV_INCREMENTAL_LIMIT_DAYS=60` で起動したときは、`warning` に `最終同期から 60 日を超えていれば` を含む（v0.18.x では 90 のまま。CLI の [SPEC-EGOV-CLI-STATUS-004](/specs/houki-egov/cli_status#spec-egov-cli-status-004) と揃える。#61）。
 :::
 
 <a id="spec-egov-search-fulltext-024"></a>
@@ -459,7 +459,7 @@ tools/list の `search_fulltext` の inputSchema は `domain` を持たない（
 ### SPEC-EGOV-SEARCH-FULLTEXT-033 `limit` は 1 以上 30 以下の整数で、範囲の外は `INVALID_ARGUMENT` にして丸めない
 
 ::: details 詳細
-tools/list の inputSchema の `limit` は `type: "integer"`、`minimum: 1`、`maximum: 30` を持つ（SPEC-EGOV-COMMON-ERRORS-023）。0・負の数・小数・31 以上・数値でない値を渡すと、inputSchema の検査で `INVALID_ARGUMENT`（`tool: "search_fulltext"`、`detail.issues[0].path: "limit"`）を返し、ローカル DB も e-Gov も引かない。1 件や 30 件に丸めない（v0.15.4 の SPEC-EGOV-SEARCH-FULLTEXT-025・026 をやめる）。
+tools/list の inputSchema の `limit` は `type: "integer"`、`minimum: 1`、`maximum: 30` を持つ（[SPEC-EGOV-COMMON-ERRORS-023](/specs/houki-egov/common_errors#spec-egov-common-errors-023)）。0・負の数・小数・31 以上・数値でない値を渡すと、inputSchema の検査で `INVALID_ARGUMENT`（`tool: "search_fulltext"`、`detail.issues[0].path: "limit"`）を返し、ローカル DB も e-Gov も引かない。1 件や 30 件に丸めない（v0.15.4 の SPEC-EGOV-SEARCH-FULLTEXT-025・026 をやめる）。
 
 例: `{ keyword: "適格請求書", limit: 0 }` は `code: "INVALID_ARGUMENT"`、`detail.issues` は `[{ path: "limit", message: "1 以上で指定してください" }]`（v0.15.4 では 1 件返していた）。`limit: 31` と `limit: 100` は `[{ path: "limit", message: "30 以下で指定してください" }]`（v0.15.4 では 30 件）。`limit: 2.5` は `整数で指定してください`。`limit: 30` は検査を通り、最大 30 件を返す。DB の有無によらず同じ。
 :::
@@ -469,7 +469,7 @@ tools/list の inputSchema の `limit` は `type: "integer"`、`minimum: 1`、`m
 ### SPEC-EGOV-SEARCH-FULLTEXT-034 keyword が空文字・空白だけのときは DB も e-Gov も引かずに `INVALID_ARGUMENT` を返す
 
 ::: details 詳細
-空文字は inputSchema の検査（SPEC-EGOV-COMMON-ERRORS-025）、空白（半角スペース・全角スペース・タブ・改行）だけはツールの処理（SPEC-EGOV-COMMON-ERRORS-026。`error: "keyword が空です"`、`hint` に探したい語や法令名を渡すよう書く）で、どちらも `INVALID_ARGUMENT`（`tool: "search_fulltext"`、`detail.issues[0].path: "keyword"`）を返す。ローカル DB の有無によらず同じで、DB が無いときの `search_law` への切り替え（[SPEC-EGOV-SEARCH-FULLTEXT-028](#spec-egov-search-fulltext-028)）にも進まない。
+空文字は inputSchema の検査（[SPEC-EGOV-COMMON-ERRORS-025](/specs/houki-egov/common_errors#spec-egov-common-errors-025)）、空白（半角スペース・全角スペース・タブ・改行）だけはツールの処理（[SPEC-EGOV-COMMON-ERRORS-026](/specs/houki-egov/common_errors#spec-egov-common-errors-026)。`error: "keyword が空です"`、`hint` に探したい語や法令名を渡すよう書く）で、どちらも `INVALID_ARGUMENT`（`tool: "search_fulltext"`、`detail.issues[0].path: "keyword"`）を返す。ローカル DB の有無によらず同じで、DB が無いときの `search_law` への切り替え（[SPEC-EGOV-SEARCH-FULLTEXT-028](#spec-egov-search-fulltext-028)）にも進まない。
 
 例: `keyword: ""` は `detail.issues[0].message: "空文字は指定できません"`。`keyword: "　　"` と `keyword: " \t"` は `error: "keyword が空です"`。どれも `code: "INVALID_ARGUMENT"` で、DB の照会と e-Gov への問い合わせは 0 回（v0.15.4 では DB があれば `hits: []`、無ければ切り替え先の `search_law` が `INVALID_ARGUMENT` を返していた）。
 :::
@@ -479,7 +479,7 @@ tools/list の inputSchema の `limit` は `type: "integer"`、`minimum: 1`、`m
 ### SPEC-EGOV-SEARCH-FULLTEXT-035 同期の記録の日付を解釈できないときは `INTERNAL_ERROR`（`retryable: false`）を返し、全件の取り込みを案内する
 
 ::: details 詳細
-`source: "bulk"` の検索で、`freshness`（[SPEC-EGOV-SEARCH-FULLTEXT-023](#spec-egov-search-fulltext-023)）を計算するときに `sync_state.last_sync_date` が日付・時刻として解釈できない（空文字、`2026/05/08`、`2026-02-30` など）ときは、想定外の例外として止まらず、SPEC-EGOV-COMMON-ERRORS-031 の形のエラー `INTERNAL_ERROR`（`retryable: false`、`error` にその値、`hint` に `` `<コマンド>` で全件を取り込み直し、同期の記録を作り直してください``（`<コマンド>` は `--bulk-download-everything` を付けた案内のコマンド。SPEC-EGOV-DB-SCHEMA-029）、`detail.cause` に例外の文）を返す。`hits` は返さない。同期の記録が無い（`sync_state` に行が無い）ときはエラーにせず、鮮度の 4 つを `null` にした `freshness`（[SPEC-EGOV-SEARCH-FULLTEXT-043](#spec-egov-search-fulltext-043)）で `hits` を返す。
+`source: "bulk"` の検索で、`freshness`（[SPEC-EGOV-SEARCH-FULLTEXT-023](#spec-egov-search-fulltext-023)）を計算するときに `sync_state.last_sync_date` が日付・時刻として解釈できない（空文字、`2026/05/08`、`2026-02-30` など）ときは、想定外の例外として止まらず、[SPEC-EGOV-COMMON-ERRORS-031](/specs/houki-egov/common_errors#spec-egov-common-errors-031) の形のエラー `INTERNAL_ERROR`（`retryable: false`、`error` にその値、`hint` に `` `<コマンド>` で全件を取り込み直し、同期の記録を作り直してください``（`<コマンド>` は `--bulk-download-everything` を付けた案内のコマンド。[SPEC-EGOV-DB-SCHEMA-029](/specs/houki-egov/db_schema#spec-egov-db-schema-029)）、`detail.cause` に例外の文）を返す。`hits` は返さない。同期の記録が無い（`sync_state` に行が無い）ときはエラーにせず、鮮度の 4 つを `null` にした `freshness`（[SPEC-EGOV-SEARCH-FULLTEXT-043](#spec-egov-search-fulltext-043)）で `hits` を返す。
 
 例: `sync_state.last_sync_date` を `2026/05/08` に書き換えた DB で、環境変数を付けずに起動して `{ keyword: "軽減税率" }` を渡すと、`code: "INTERNAL_ERROR"`、`retryable: false`、`error` に `2026/05/08` を含み、`hint` は `` `npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` で全件を取り込み直し、同期の記録を作り直してください``。`last_sync_date` が `2026-05-08` の DB では、今までどおり `hits` と `freshness` を返す。`sync_state` に行が無い DB では `freshness.last_sync_date: null`、`freshness.db_path` に DB のパス（v0.19.x では `freshness: null`）。
 :::
@@ -489,7 +489,7 @@ tools/list の inputSchema の `limit` は `type: "integer"`、`minimum: 1`、`m
 ### SPEC-EGOV-SEARCH-FULLTEXT-036 検索語のダッシュ類は `-` に揃えて探し、版 3 の DB の本文も同じ揃え方で入っている
 
 ::: details 詳細
-`keyword` のダッシュ類 `－` `‐` `‑` `–` `—` `―` `−` は `-` に揃えてから探す（houki-abbreviations 0.7.0 の `normalizeJpText`。SPEC-ABBR-NORMALIZE-JP-TEXT-012）。取り込み（`--bulk-download-everything` / `--sync`）が `articles.body` と `laws_fts` に入れる文字列も同じ関数で揃える。
+`keyword` のダッシュ類 `－` `‐` `‑` `–` `—` `―` `−` は `-` に揃えてから探す（houki-abbreviations 0.7.0 の `normalizeJpText`。[SPEC-ABBR-NORMALIZE-JP-TEXT-012](/specs/houki-abbreviations/normalize_jp_text#spec-abbr-normalize-jp-text-012)）。取り込み（`--bulk-download-everything` / `--sync`）が `articles.body` と `laws_fts` に入れる文字列も同じ関数で揃える。
 
 0.19.0 はスキーマの版 3 の DB だけを引く（[SPEC-EGOV-SEARCH-FULLTEXT-040](#spec-egov-search-fulltext-040)）。版 3 の DB は 0.19.0 以降の `--bulk-download-everything` で作るので、どの行もダッシュ類が `-` で入っている。0.16.0 より前に取り込んだ `―` などの残る本文（版 2 の DB）は、0.19.0 では引かず、`--bulk-download-everything` で版 3 に作り直したときに揃え直す。
 
@@ -501,7 +501,7 @@ tools/list の inputSchema の `limit` は `type: "integer"`、`minimum: 1`、`m
 ### SPEC-EGOV-SEARCH-FULLTEXT-037 `keyword` 全体が houki-egov 以外の管轄の略称のときは、DB も e-Gov も引かずに `OUT_OF_SCOPE` を返す
 
 ::: details 詳細
-`keyword` の前後の空白を除いた全体が、略称辞書（`resolveAbbreviation(name, { normalize: true })`）で houki-egov 以外の管轄（`source_mcp_hint` が `houki-egov` でない。通達は `houki-nta` など）のエントリに当たるときは、ローカル DB の有無によらず、DB も e-Gov も引かずにエラー `OUT_OF_SCOPE` を返す。本文は `search_law` の SPEC-EGOV-SEARCH-LAW-015 と同じ（`error` に正式名称と管轄、`hint` に管轄先の MCP、`next_actions` に `delegate_to_mcp`、`example.mcp` に管轄）。
+`keyword` の前後の空白を除いた全体が、略称辞書（`resolveAbbreviation(name, { normalize: true })`）で houki-egov 以外の管轄（`source_mcp_hint` が `houki-egov` でない。通達は `houki-nta` など）のエントリに当たるときは、ローカル DB の有無によらず、DB も e-Gov も引かずにエラー `OUT_OF_SCOPE` を返す。本文は `search_law` の [SPEC-EGOV-SEARCH-LAW-015](/specs/houki-egov/search_law#spec-egov-search-law-015) と同じ（`error` に正式名称と管轄、`hint` に管轄先の MCP、`next_actions` に `delegate_to_mcp`、`example.mcp` に管轄）。
 
 `keyword` が管轄外の略称と別の語の組み合わせ（例: `消基通 仕入税額控除`）のときは、今までどおり本文を探す（管轄外の略称の語は法令名として扱わず、本文の語として探す）。
 
@@ -513,7 +513,7 @@ tools/list の inputSchema の `limit` は `type: "integer"`、`minimum: 1`、`m
 ### SPEC-EGOV-SEARCH-FULLTEXT-038 `law_type` の選択肢は DB と e-Gov の `law_type` の値と同じで、勅令は `ImperialOrder`
 
 ::: details 詳細
-tools/list の `search_fulltext` の inputSchema の `law_type` は、`enum: ["Constitution", "Act", "CabinetOrder", "ImperialOrder", "MinisterialOrdinance", "Rule"]` を持つ（`search_law` の SPEC-EGOV-SEARCH-LAW-018 と同じ）。ローカル DB の `laws.law_type` は取り込みが e-Gov の値（勅令は `ImperialOrder`。SPEC-EGOV-CLI-BULK-DOWNLOAD の法令種別の表）で入れるので、選択肢の値でそのまま絞れる。`ImperialOrdinance` は選択肢に無く、渡すと inputSchema の検査で `INVALID_ARGUMENT`（`tool: "search_fulltext"`、`detail.issues[0].path: "law_type"`）を返し、DB も e-Gov も引かない。DB が無いときの `search_law` への切り替え（[SPEC-EGOV-SEARCH-FULLTEXT-029](#spec-egov-search-fulltext-029)）にも同じ値を渡す。
+tools/list の `search_fulltext` の inputSchema の `law_type` は、`enum: ["Constitution", "Act", "CabinetOrder", "ImperialOrder", "MinisterialOrdinance", "Rule"]` を持つ（`search_law` の [SPEC-EGOV-SEARCH-LAW-018](/specs/houki-egov/search_law#spec-egov-search-law-018) と同じ）。ローカル DB の `laws.law_type` は取り込みが e-Gov の値（勅令は `ImperialOrder`。SPEC-EGOV-CLI-BULK-DOWNLOAD の法令種別の表）で入れるので、選択肢の値でそのまま絞れる。`ImperialOrdinance` は選択肢に無く、渡すと inputSchema の検査で `INVALID_ARGUMENT`（`tool: "search_fulltext"`、`detail.issues[0].path: "law_type"`）を返し、DB も e-Gov も引かない。DB が無いときの `search_law` への切り替え（[SPEC-EGOV-SEARCH-FULLTEXT-029](#spec-egov-search-fulltext-029)）にも同じ値を渡す。
 
 例（2026-10-03 10:25 JST に houki-egov-dev 0.17.0 と手元の DB（`last_sync_date: "2026-09-19"`）で確かめた値を元にした）: `{ keyword: "健康保険法施行令", law_type: "ImperialOrder" }` は、`law_type: "ImperialOrder"` の健康保険法施行令（`215IO0000000243`）の条を返す（`law_type` を付けない同じ検索で 3 件当たり、3 件とも `law_type: "ImperialOrder"` だった）。`{ keyword: "健康保険法施行令", law_type: "ImperialOrdinance" }` は `code: "INVALID_ARGUMENT"`（v0.17.0 では `count: 0`・`hits: []` の成功で、勅令で絞れないことが分からなかった）。DB の日本国憲法の `law_type` は `Constitution`（`日本国憲法 第9条` の検索で確かめた）なので、`law_type: "Constitution"` で日本国憲法の条に絞れる。
 :::
@@ -523,7 +523,7 @@ tools/list の `search_fulltext` の inputSchema の `law_type` は、`enum: ["C
 ### SPEC-EGOV-SEARCH-FULLTEXT-039 DB のファイルを作らず、DB に書き込まない
 
 ::: details 詳細
-`search_fulltext` は、ローカル DB のファイル・置き場所のフォルダー・テーブル・`schema_meta` を作らず、書き換えない（SPEC-EGOV-DB-SCHEMA-025）。DB のファイルが無いとき（置き場所のフォルダーも無いときを含む）と、ファイルはあるが版の記録が無いときは、[SPEC-EGOV-SEARCH-FULLTEXT-002](#spec-egov-search-fulltext-002) と同じ形で `search_law` に切り替えて返す。`note` は [SPEC-EGOV-SEARCH-FULLTEXT-044](#spec-egov-search-fulltext-044) の表のとおりで、ファイルが無いときは DB の場所の設定で文が分かれ、版の記録が無いときは `ローカル DB (<パス>) にまだ法令が取り込まれていないため` で始まる。パスの途中が普通のファイルで開けないときは、今までどおり [SPEC-EGOV-SEARCH-FULLTEXT-027](#spec-egov-search-fulltext-027)。
+`search_fulltext` は、ローカル DB のファイル・置き場所のフォルダー・テーブル・`schema_meta` を作らず、書き換えない（[SPEC-EGOV-DB-SCHEMA-025](/specs/houki-egov/db_schema#spec-egov-db-schema-025)）。DB のファイルが無いとき（置き場所のフォルダーも無いときを含む）と、ファイルはあるが版の記録が無いときは、[SPEC-EGOV-SEARCH-FULLTEXT-002](#spec-egov-search-fulltext-002) と同じ形で `search_law` に切り替えて返す。`note` は [SPEC-EGOV-SEARCH-FULLTEXT-044](#spec-egov-search-fulltext-044) の表のとおりで、ファイルが無いときは DB の場所の設定で文が分かれ、版の記録が無いときは `ローカル DB (<パス>) にまだ法令が取り込まれていないため` で始まる。パスの途中が普通のファイルで開けないときは、今までどおり [SPEC-EGOV-SEARCH-FULLTEXT-027](#spec-egov-search-fulltext-027)。
 
 例: `HOUKI_EGOV_DB_PATH=<空のフォルダー>/a/laws.db`（`<空のフォルダー>` はホームディレクトリの外）で `{ keyword: "消費税法" }` を呼ぶと、`source: "api-fallback"`、`note` は `HOUKI_EGOV_DB_PATH が指すファイル (<空のフォルダー>/a/laws.db) が無いため` で始まり、`next_actions[0].action: "bulk_download_everything"`、`next_actions[0].example.command` は `HOUKI_EGOV_DB_PATH='<空のフォルダー>/a/laws.db' npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything`。呼んだ後も `<空のフォルダー>/a` は無い（v0.18.x ではフォルダーと空の DB を作り、スキーマを書いた。README の「書き込みは CLI だけが行い、MCP server は読むだけ」と違っていた。#60）。0 バイトのファイルを `HOUKI_EGOV_DB_PATH` に指定すると、`note` は `ローカル DB (<パス>) にまだ法令が取り込まれていないため` で始まる（v0.19.x ではどちらも `bulk DL 未実行のため`）。
 :::
@@ -543,7 +543,7 @@ DB の版（`schema_meta` の `schema_version`）が 3 でないときは、DB �
 ### SPEC-EGOV-SEARCH-FULLTEXT-041 段落だけの附則のヒットは `附則(<n>)` と返し、`caption` は `null`
 
 ::: details 詳細
-条を持たず段落だけの附則の行（SPEC-EGOV-CLI-BULK-DOWNLOAD-012 の `Suppl<n>_intro`）に当たったヒットは、`article_num` を `附則(<法令の中での附則の通し番号>)`（条番号を付けない）、`caption` を `null`、`chapter_path` を附則の見出し（例: `附　則`）で返す。段落だけの本則の `本則`（[SPEC-EGOV-SEARCH-FULLTEXT-004](#spec-egov-search-fulltext-004)）と同じく、条番号の無い行には条番号を付けない。
+条を持たず段落だけの附則の行（[SPEC-EGOV-CLI-BULK-DOWNLOAD-012](/specs/houki-egov/cli_bulk_download#spec-egov-cli-bulk-download-012) の `Suppl<n>_intro`）に当たったヒットは、`article_num` を `附則(<法令の中での附則の通し番号>)`（条番号を付けない）、`caption` を `null`、`chapter_path` を附則の見出し（例: `附　則`）で返す。段落だけの本則の `本則`（[SPEC-EGOV-SEARCH-FULLTEXT-004](#spec-egov-search-fulltext-004)）と同じく、条番号の無い行には条番号を付けない。
 
 例: `{ keyword: "獣医師法施行規則 昭和二十八年九月一日から施行する" }` は `article_num: "附則(2)"`、`caption: null`、`chapter_path: "附　則"` のヒットを返す。同じ法令の条のある附則は今までどおり `附則(7) 1`。v0.18.x では同じ呼び出しが `article_num: "附則(2) intro"`、`caption: "附　則"` を返した（2026-10-03 12:57 JST に houki-egov-dev 0.17.0 の手元の DB で確かめた。#101）。
 :::
@@ -553,15 +553,15 @@ DB の版（`schema_meta` の `schema_version`）が 3 でないときは、DB �
 ### SPEC-EGOV-SEARCH-FULLTEXT-042 応答に出す DB のパスは、ホームディレクトリの部分を `~` に置き換える
 
 ::: details 詳細
-`search_fulltext` の応答に入れるローカル DB のパス（`freshness.db_path`（[SPEC-EGOV-SEARCH-FULLTEXT-043](#spec-egov-search-fulltext-043)）と、`note` の中の `<パス>`（[SPEC-EGOV-SEARCH-FULLTEXT-044](#spec-egov-search-fulltext-044)））は、次の規則で書く。案内のコマンドの中のパスはこの規則ではなく SPEC-EGOV-DB-SCHEMA-029 に従う。
+`search_fulltext` の応答に入れるローカル DB のパス（`freshness.db_path`（[SPEC-EGOV-SEARCH-FULLTEXT-043](#spec-egov-search-fulltext-043)）と、`note` の中の `<パス>`（[SPEC-EGOV-SEARCH-FULLTEXT-044](#spec-egov-search-fulltext-044)））は、次の規則で書く。案内のコマンドの中のパスはこの規則ではなく [SPEC-EGOV-DB-SCHEMA-029](/specs/houki-egov/db_schema#spec-egov-db-schema-029) に従う。
 
-1. 元にするのは DB の絶対パス（SPEC-EGOV-DB-SCHEMA-028）
+1. 元にするのは DB の絶対パス（[SPEC-EGOV-DB-SCHEMA-028](/specs/houki-egov/db_schema#spec-egov-db-schema-028)）
 2. MCP サーバーのホームディレクトリ（Node.js の `os.homedir()` の値。macOS と Linux では環境変数 `HOME`）と同じ文字列なら `~` にする。ホームディレクトリの後ろに `/` が続くときは、その前の部分を `~` に置き換える
 3. 区切りの位置で比べる。ホームディレクトリが `/Users/bonji` のとき、`/Users/bonji2/laws.db` は置き換えない
 4. ホームディレクトリが空文字か `/` のときは置き換えない
 5. 文字列のまま比べる。大文字と小文字は区別し、シンボリックリンクはたどらない
 
-CLI の出力（`--status` などの `  DB: ` の行）と MCP サーバーの起動時のログ（SPEC-EGOV-CLI-ENTRY-012）は、この規則を使わず絶対パスのまま出す（利用者の端末にしか出ないため）。
+CLI の出力（`--status` などの `  DB: ` の行）と MCP サーバーの起動時のログ（[SPEC-EGOV-CLI-ENTRY-012](/specs/houki-egov/cli_entry#spec-egov-cli-entry-012)）は、この規則を使わず絶対パスのまま出す（利用者の端末にしか出ないため）。
 
 例: ホームディレクトリが `/Users/bonji` のとき、`/Users/bonji/.cache/houki-egov-mcp/laws.db` は `~/.cache/houki-egov-mcp/laws.db`、`/tmp/x/laws.db` と `/Users/bonji2/laws.db` はそのまま。
 :::
@@ -587,7 +587,7 @@ CLI の出力（`--status` などの `  DB: ` の行）と MCP サーバーの�
 ### SPEC-EGOV-SEARCH-FULLTEXT-044 `search_law` に切り替えたときの `note` と `next_actions` は、DB の状態ごとに決める
 
 ::: details 詳細
-DB を引かずに `search_law` に切り替えたとき（[SPEC-EGOV-SEARCH-FULLTEXT-002](#spec-egov-search-fulltext-002)・027・039・040）の `note` は `<先頭>、search_law (法令名のタイトル一致) にフォールバックしています。<続き>` の 1 つの文字列で、`<先頭>`・`<続き>`・`next_actions` は次の表のとおり。`<パス>` は開こうとした DB のパス（[SPEC-EGOV-SEARCH-FULLTEXT-042](#spec-egov-search-fulltext-042) の形）、`<コマンド>` は `--bulk-download-everything` を付けた案内のコマンド（SPEC-EGOV-DB-SCHEMA-029。`HOUKI_EGOV_DB_PATH` などで DB の場所を決めて起動したときは、その変数を前に付けた形）、DB の場所の設定は SPEC-EGOV-DB-SCHEMA-028。
+DB を引かずに `search_law` に切り替えたとき（[SPEC-EGOV-SEARCH-FULLTEXT-002](#spec-egov-search-fulltext-002)・027・039・040）の `note` は `<先頭>、search_law (法令名のタイトル一致) にフォールバックしています。<続き>` の 1 つの文字列で、`<先頭>`・`<続き>`・`next_actions` は次の表のとおり。`<パス>` は開こうとした DB のパス（[SPEC-EGOV-SEARCH-FULLTEXT-042](#spec-egov-search-fulltext-042) の形）、`<コマンド>` は `--bulk-download-everything` を付けた案内のコマンド（[SPEC-EGOV-DB-SCHEMA-029](/specs/houki-egov/db_schema#spec-egov-db-schema-029)。`HOUKI_EGOV_DB_PATH` などで DB の場所を決めて起動したときは、その変数を前に付けた形）、DB の場所の設定は [SPEC-EGOV-DB-SCHEMA-028](/specs/houki-egov/db_schema#spec-egov-db-schema-028)。
 
 | DB の状態 | `<先頭>` | `<続き>` | `next_actions` |
 | --- | --- | --- | --- |
@@ -606,7 +606,7 @@ DB を引かずに `search_law` に切り替えたとき（[SPEC-EGOV-SEARCH-FUL
 - 環境変数を付けずに起動し、`~/.cache/houki-egov-mcp/laws.db` が無いとき: `note` は ``ローカル DB (~/.cache/houki-egov-mcp/laws.db) が無いため、search_law (法令名のタイトル一致) にフォールバックしています。条文本文の全文検索を有効にするには `npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` でローカル DB を構築してください``、`next_actions[0].example.command` は `npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything`
 - `HOUKI_EGOV_DB_PATH=/Users/bonji/.cache/houki-egov-mcp/laws.v3.db` で起動し、そのファイルが無いとき（2026-10-04 に houki-egov-dev で起きた場面）: `note` は `HOUKI_EGOV_DB_PATH が指すファイル (~/.cache/houki-egov-mcp/laws.v3.db) が無いため、` で始まり、`next_actions[0].example.command` は `HOUKI_EGOV_DB_PATH="$HOME/.cache/houki-egov-mcp/laws.v3.db" npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything`（v0.19.x では `note` が `bulk DL 未実行のため` で始まり、コマンドは `houki-egov-mcp --bulk-download-everything`）
 - 環境変数を付けずに起動し、`laws.db` の版が 2 のとき: `note` は `ローカル DB (~/.cache/houki-egov-mcp/laws.db) の版 (2) がこの houki-egov-mcp (3) より古いため、` で始まる
-- `HOUKI_EGOV_DB_PATH` に既存のフォルダー `/tmp/d` を指定したとき: `note` は `ローカル DB (/tmp/d) を開けなかったため、` で始まり、`--bulk-download-everything` を含まず、`next_actions` は `search_law` の 1 件だけ（v0.19.x では `bulk DB を開けなかったため` で始まり、`--bulk-download-everything` を案内していた。`--bulk-download-everything` もこの DB では取得の前に止まる。SPEC-EGOV-CLI-BULK-DOWNLOAD-029）
+- `HOUKI_EGOV_DB_PATH` に既存のフォルダー `/tmp/d` を指定したとき: `note` は `ローカル DB (/tmp/d) を開けなかったため、` で始まり、`--bulk-download-everything` を含まず、`next_actions` は `search_law` の 1 件だけ（v0.19.x では `bulk DB を開けなかったため` で始まり、`--bulk-download-everything` を案内していた。`--bulk-download-everything` もこの DB では取得の前に止まる。[SPEC-EGOV-CLI-BULK-DOWNLOAD-029](/specs/houki-egov/cli_bulk_download#spec-egov-cli-bulk-download-029)）
 :::
 
 ## まだ決めていないこと

@@ -22,8 +22,102 @@
           "collapsed": true,
           "items": [
             {
+              "text": "explain_law_type",
+              "link": "/specs/houki-egov/explain_law_type"
+            },
+            {
+              "text": "get_article_references",
+              "link": "/specs/houki-egov/get_article_references"
+            },
+            {
+              "text": "get_attachment",
+              "link": "/specs/houki-egov/get_attachment"
+            },
+            {
+              "text": "get_law",
+              "link": "/specs/houki-egov/get_law"
+            },
+            {
+              "text": "get_law_file",
+              "link": "/specs/houki-egov/get_law_file"
+            },
+            {
+              "text": "get_law_range",
+              "link": "/specs/houki-egov/get_law_range"
+            },
+            {
+              "text": "get_law_revisions",
+              "link": "/specs/houki-egov/get_law_revisions"
+            },
+            {
+              "text": "get_related_laws",
+              "link": "/specs/houki-egov/get_related_laws"
+            },
+            {
+              "text": "get_toc",
+              "link": "/specs/houki-egov/get_toc"
+            },
+            {
+              "text": "list_attachments",
+              "link": "/specs/houki-egov/list_attachments"
+            },
+            {
+              "text": "resolve_abbreviation",
+              "link": "/specs/houki-egov/resolve_abbreviation"
+            },
+            {
               "text": "search_fulltext",
               "link": "/specs/houki-egov/search_fulltext"
+            },
+            {
+              "text": "search_law",
+              "link": "/specs/houki-egov/search_law"
+            },
+            {
+              "text": "verify_citations",
+              "link": "/specs/houki-egov/verify_citations"
+            }
+          ]
+        },
+        {
+          "text": "共通の規則",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "common_errors",
+              "link": "/specs/houki-egov/common_errors"
+            }
+          ]
+        },
+        {
+          "text": "ローカル DB",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "db_schema",
+              "link": "/specs/houki-egov/db_schema"
+            }
+          ]
+        },
+        {
+          "text": "コマンドライン",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "cli_bulk_download",
+              "link": "/specs/houki-egov/cli_bulk_download"
+            },
+            {
+              "text": "cli_entry",
+              "link": "/specs/houki-egov/cli_entry"
+            },
+            {
+              "text": "cli_status",
+              "link": "/specs/houki-egov/cli_status"
+            },
+            {
+              "text": "cli_sync",
+              "link": "/specs/houki-egov/cli_sync"
             }
           ]
         }
@@ -42,8 +136,110 @@
           "collapsed": true,
           "items": [
             {
+              "text": "nta_get_bunshokaitou",
+              "link": "/specs/houki-nta/nta_get_bunshokaitou"
+            },
+            {
+              "text": "nta_get_jimu_unei",
+              "link": "/specs/houki-nta/nta_get_jimu_unei"
+            },
+            {
+              "text": "nta_get_kaisei_tsutatsu",
+              "link": "/specs/houki-nta/nta_get_kaisei_tsutatsu"
+            },
+            {
+              "text": "nta_get_qa",
+              "link": "/specs/houki-nta/nta_get_qa"
+            },
+            {
+              "text": "nta_get_tax_answer",
+              "link": "/specs/houki-nta/nta_get_tax_answer"
+            },
+            {
               "text": "nta_get_tsutatsu",
               "link": "/specs/houki-nta/nta_get_tsutatsu"
+            },
+            {
+              "text": "nta_inspect_pdf_meta",
+              "link": "/specs/houki-nta/nta_inspect_pdf_meta"
+            },
+            {
+              "text": "nta_search_bunshokaitou",
+              "link": "/specs/houki-nta/nta_search_bunshokaitou"
+            },
+            {
+              "text": "nta_search_jimu_unei",
+              "link": "/specs/houki-nta/nta_search_jimu_unei"
+            },
+            {
+              "text": "nta_search_kaisei_tsutatsu",
+              "link": "/specs/houki-nta/nta_search_kaisei_tsutatsu"
+            },
+            {
+              "text": "nta_search_qa",
+              "link": "/specs/houki-nta/nta_search_qa"
+            },
+            {
+              "text": "nta_search_tax_answer",
+              "link": "/specs/houki-nta/nta_search_tax_answer"
+            },
+            {
+              "text": "nta_search_tsutatsu",
+              "link": "/specs/houki-nta/nta_search_tsutatsu"
+            },
+            {
+              "text": "resolve_abbreviation",
+              "link": "/specs/houki-nta/resolve_abbreviation"
+            }
+          ]
+        },
+        {
+          "text": "共通の規則",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "common_errors",
+              "link": "/specs/houki-nta/common_errors"
+            },
+            {
+              "text": "search_rules",
+              "link": "/specs/houki-nta/search_rules"
+            }
+          ]
+        },
+        {
+          "text": "ローカル DB",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "db_schema",
+              "link": "/specs/houki-nta/db_schema"
+            }
+          ]
+        },
+        {
+          "text": "コマンドライン",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "cli_bulk_download",
+              "link": "/specs/houki-nta/cli_bulk_download"
+            },
+            {
+              "text": "cli_entry",
+              "link": "/specs/houki-nta/cli_entry"
+            },
+            {
+              "text": "cli_health_check",
+              "link": "/specs/houki-nta/cli_health_check"
+            },
+            {
+              "text": "cli_refresh",
+              "link": "/specs/houki-nta/cli_refresh"
+            },
+            {
+              "text": "cli_status",
+              "link": "/specs/houki-nta/cli_status"
             }
           ]
         }
@@ -62,8 +258,102 @@
           "collapsed": true,
           "items": [
             {
+              "text": "computeDaysSince",
+              "link": "/specs/houki-abbreviations/compute_days_since"
+            },
+            {
+              "text": "extractLawNames",
+              "link": "/specs/houki-abbreviations/extract_law_names"
+            },
+            {
+              "text": "findSimilar",
+              "link": "/specs/houki-abbreviations/find_similar"
+            },
+            {
+              "text": "getAbbreviationStats",
+              "link": "/specs/houki-abbreviations/get_abbreviation_stats"
+            },
+            {
+              "text": "getAllNames",
+              "link": "/specs/houki-abbreviations/get_all_names"
+            },
+            {
+              "text": "isValidLawId",
+              "link": "/specs/houki-abbreviations/is_valid_law_id"
+            },
+            {
+              "text": "judgeStaleness",
+              "link": "/specs/houki-abbreviations/judge_staleness"
+            },
+            {
+              "text": "kanjiToNumber",
+              "link": "/specs/houki-abbreviations/kanji_to_number"
+            },
+            {
+              "text": "levenshtein",
+              "link": "/specs/houki-abbreviations/levenshtein"
+            },
+            {
+              "text": "listByCategory",
+              "link": "/specs/houki-abbreviations/list_by_category"
+            },
+            {
+              "text": "listByDomain",
+              "link": "/specs/houki-abbreviations/list_by_domain"
+            },
+            {
+              "text": "listBySourceMcpHint",
+              "link": "/specs/houki-abbreviations/list_by_source_mcp_hint"
+            },
+            {
+              "text": "lookupByLawId",
+              "link": "/specs/houki-abbreviations/lookup_by_law_id"
+            },
+            {
+              "text": "lookupByLawNum",
+              "link": "/specs/houki-abbreviations/lookup_by_law_num"
+            },
+            {
+              "text": "normalizeJpText",
+              "link": "/specs/houki-abbreviations/normalize_jp_text"
+            },
+            {
+              "text": "normalizeLawNum",
+              "link": "/specs/houki-abbreviations/normalize_law_num"
+            },
+            {
+              "text": "normalizeSearchQuery",
+              "link": "/specs/houki-abbreviations/normalize_search_query"
+            },
+            {
               "text": "resolveAbbreviation",
               "link": "/specs/houki-abbreviations/resolve_abbreviation"
+            },
+            {
+              "text": "searchByName",
+              "link": "/specs/houki-abbreviations/search_by_name"
+            },
+            {
+              "text": "suggestCorrection",
+              "link": "/specs/houki-abbreviations/suggest_correction"
+            },
+            {
+              "text": "validateAllEntries",
+              "link": "/specs/houki-abbreviations/validate_all_entries"
+            }
+          ]
+        },
+        {
+          "text": "値",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "abbreviationEntries",
+              "link": "/specs/houki-abbreviations/abbreviation_entries"
+            },
+            {
+              "text": "公開定数",
+              "link": "/specs/houki-abbreviations/public_constants"
             }
           ]
         }
@@ -80,6 +370,10 @@
         {
           "text": "workflow",
           "items": [
+            {
+              "text": "feasibility-check",
+              "link": "/specs/houki-research/feasibility-check"
+            },
             {
               "text": "tax-research",
               "link": "/specs/houki-research/tax-research"
