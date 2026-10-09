@@ -1,6 +1,6 @@
 ---
 title: "houki-abbreviations — API リファレンス"
-description: "houki-abbreviations v0.6.1 の公開 API（関数 21 個・定数 6 個・インターフェース 11 個・型 6 個）のシグネチャ・追加された版・family での使用状況（dist/index.d.ts から自動生成）"
+description: "houki-abbreviations v0.7.0 の公開 API（関数 21 個・定数 6 個・インターフェース 13 個・型 6 個）のシグネチャ・追加された版・family での使用状況（dist/index.d.ts から自動生成）"
 ---
 
 # houki-abbreviations — API リファレンス
@@ -8,14 +8,14 @@ description: "houki-abbreviations v0.6.1 の公開 API（関数 21 個・定数 
 <!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import から。 -->
 
 ::: info
-**v0.6.1** の `dist/index.d.ts` から自動生成しました（関数 21 個・定数 6 個・インターフェース 11 個・型 6 個・2026-09-27）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.7.0** の `dist/index.d.ts` から自動生成しました（関数 21 個・定数 6 個・インターフェース 13 個・型 6 個・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成の API リファレンスです。** 公開されている記号の名前・シグネチャ・説明・例を、パッケージの型定義（`dist/index.d.ts`）から写しています（正典は型定義です）。辞書の中身や設計上の約束は[解説ページ](/lib/houki-abbreviations)にあります。
 
 houki-hub family の MCP サーバーが共有するために公開しているパッケージです。**0.x の間は minor で破壊的変更が入ることがあります**。安定した互換性が要るときは版を固定してください。
 
-公開しているのは関数 21 個・定数 6 個・インターフェース 11 個・型 6 個です。そのうち houki-egov-mcp と houki-nta-mcp が実際に import しているのは **17 個**で、残りは公開しているだけです（テストコードの import は数えていません）。各記号の説明と例は、一覧の下に用途ごとにまとめてあります。
+公開しているのは関数 21 個・定数 6 個・インターフェース 13 個・型 6 個です。そのうち houki-egov-mcp と houki-nta-mcp が実際に import しているのは **17 個**で、残りは公開しているだけです（テストコードの import は数えていません）。各記号の説明と例は、一覧の下に用途ごとにまとめてあります。
 
 ## 読み込み方
 
@@ -71,7 +71,9 @@ import { resolveAbbreviation } from '@shuji-bonji/houki-abbreviations';
 | [`ExtractOptions`](#extractoptions) | v0.5.0 | 未使用 | `extractLawNames` のオプション。 |
 | [`FuzzyMatch`](#fuzzymatch) | v0.4.0 | 未使用 | `findSimilar` が返す 1 件。 |
 | [`FuzzyOptions`](#fuzzyoptions) | v0.4.0 | 未使用 | findSimilar のオプション |
+| [`GetAllNamesOptions`](#getallnamesoptions) | v0.7.0 | 未使用 | `getAllNames` に渡せるオプション。 |
 | [`LawNameMatch`](#lawnamematch) | v0.5.0 | 未使用 | テキスト中の法令名抽出結果。 |
+| [`LookupByLawIdOptions`](#lookupbylawidoptions) | v0.7.0 | 未使用 | `lookupByLawId` に渡せるオプション。 |
 | [`ResolveAbbreviationOptions`](#resolveabbreviationoptions) | v0.3.0 | 未使用 | `resolveAbbreviation` に渡せるオプション。 |
 | [`SearchFilter`](#searchfilter) | v0.4.0 | 未使用 | filter 構造。 |
 | [`SearchOptions`](#searchoptions) | v0.4.0 | 未使用 | searchByName のオプション |
@@ -103,6 +105,11 @@ const abbreviationEntries: readonly AbbreviationEntry[];
 
 全分野を結合した辞書
 
+配列・各エントリ・`aliases` は凍結されている（各エントリと `aliases` は v0.7.0 から）。
+`resolveAbbreviation` / `lookupByLawId` / `listByDomain` / `searchByName` などが返す
+エントリはこの配列の要素そのもの（同じオブジェクト）で、書き換えると `TypeError` になる。
+書き換えたいときは `structuredClone(entry)` や `{ ...entry }` で自分のコピーを作る。
+
 ### AbbreviationStats
 
 *インターフェース ・ v0.1.0 で追加 ・ family では未使用*
@@ -110,13 +117,17 @@ const abbreviationEntries: readonly AbbreviationEntry[];
 ```ts
 interface AbbreviationStats {
     total: number;
-    byDomain: Record<string, number>;
-    byCategory: Record<string, number>;
-    bySourceMcpHint: Record<string, number>;
+    byDomain: Record<Domain, number>;
+    byCategory: Record<Category, number>;
+    bySourceMcpHint: Record<SourceMcpHint, number>;
 }
 ```
 
 `getAbbreviationStats` が返す辞書統計。起動時ログ・診断用。
+
+`byDomain` / `byCategory` / `bySourceMcpHint` のキーは、それぞれ `DOMAINS` /
+`CATEGORIES` / `SOURCE_MCP_HINTS` の全値を定数の順で持ち、辞書に無い値は `0`
+（v0.7.0 から。v0.6.1 までは 1 件以上ある値だけがキーで、型は `Record<string, number>`）。
 
 ### getAbbreviationStats
 
@@ -128,7 +139,7 @@ function getAbbreviationStats(): AbbreviationStats;
 
 辞書全体の統計を返す。
 
-**戻り値**: 全件数、ドメイン別件数、カテゴリ別件数、管轄 MCP 別件数
+**戻り値**: 全件数、ドメイン別件数、カテゴリ別件数、管轄 MCP 別件数（定数の全値がキーで、無い値は 0）
 
 ### listByCategory
 
@@ -215,9 +226,10 @@ resolveAbbreviation('  消法  ')                    // → 消費税法（前�
 resolveAbbreviation('存在しない')                   // → null
 
 // 正規化モード（v0.3.0〜）
-resolveAbbreviation('消　法', { normalize: true }); // → 消費税法（全角スペース吸収）
-resolveAbbreviation('ＰＬ法', { normalize: true }); // → 製造物責任法（全角→半角）
-resolveAbbreviation('ＰＬ法');                       // → null（normalize: false がデフォルト）
+resolveAbbreviation('　消法　', { normalize: true }); // → 消費税法（前後の全角スペース吸収）
+resolveAbbreviation('消　法', { normalize: true });   // → null（途中の空白は取り除かない）
+resolveAbbreviation('ＰＬ法', { normalize: true });   // → 製造物責任法（全角→半角）
+resolveAbbreviation('ＰＬ法');                         // → null（normalize: false がデフォルト）
 ```
 :::
 
@@ -234,9 +246,10 @@ interface ResolveAbbreviationOptions {
      *   v0.2.0 までと同じ挙動で、後方互換性が保たれる。
      * - `true`: 入力を `normalizeJpText` で正規化したうえで、
      *   同様に正規化されたインデックスから照合する。
-     *   全角ハイフン／チルダ／数字／全角 ASCII 文字／全角スペースの
+     *   ダッシュ類／チルダ／数字／全角 ASCII 文字／全角スペースの
      *   揺れを吸収する。**大文字小文字は保持する**ため、`PL法` と `pl法` は
-     *   別物として扱われる。
+     *   別物として扱われる。全角スペースは半角スペースになるだけで取り除かれない
+     *   （前後の空白は取り除く）。
      *
      * @default false
      */
@@ -270,7 +283,8 @@ function kanjiToNumber(input: string): number | null;
   判例の引用（`昭二五・一〇・二五`）がこの書き方。
 
 2 つの書き方が混ざった並び（`二〇十`）は `null`。1 文字（`五`）はどちらの
-読み方でも同じ値になる。
+読み方でも同じ値になる。位ごとの書き方は 15 文字まで読み、16 文字以上は値を
+正確に表せないので丸めずに `null` を返す（v0.7.0 から）。
 
 houki-egov-mcp v0.7.0 の `kanjiToNumber`（条番号用。位取りのみ）と同じ名前で、
 位取りの読み方はそちらと同じ結果を返す。位ごとの書き方を受け付ける点だけが違う。
@@ -302,11 +316,14 @@ function normalizeJpText(input: string): string;
 
 日本語テキストの全角ゆらぎを保守的に半角化する。
 
-数値表記・ASCII 文字・特定記号（ハイフン、チルダ、スペース）の全角／半角
+数値表記・ASCII 文字・特定記号（ダッシュ類、チルダ、スペース）の全角／半角
 表記揺れを吸収するための関数。**大文字小文字は保持する**ため、
 「ＰＬ法」→「PL法」のように元の casing は変わらない。
+ダッシュ類は `－` `‐` `‑` `–` `—` `―` `−` の 7 文字を `-` にする（v0.7.0 から。
+v0.6.1 までは全角ハイフン `－` だけだった）。罫線 `─` と長音 `ー` は変えない。
 
-漢字・ひらがな・カタカナ・中黒（・）・各種句読点は変更しない。
+漢字・ひらがな・カタカナ・中黒（・）・各種句読点は変更しない。どの変換も
+1 文字を 1 文字に置き換えるので、文字数が変わるのは前後の空白を取り除くときだけ。
 
 入力が空文字や `null`/`undefined` 相当（`!input`）の場合は空文字を返す。
 
@@ -319,6 +336,7 @@ function normalizeJpText(input: string): string;
 ::: details 例
 ```ts
 normalizeJpText('１８３－２');     // '183-2'
+normalizeJpText('１８３―２');     // '183-2'（U+2015 などのダッシュ類も。v0.7.0 から）
 normalizeJpText('183～193共-1');  // '183~193共-1'（チルダのみ半角化）
 normalizeJpText('ＰＬ法');         // 'PL法'（大文字保持）
 normalizeJpText('  消法  ');      // '消法'（trim）
@@ -342,13 +360,16 @@ function normalizeLawNum(input: string): string;
 
 行うこと:
 
-1. `normalizeJpText` と同じ全角 → 半角の変換（数字・英字・ハイフン・空白）
+1. `normalizeJpText` と同じ全角 → 半角の変換（数字・英字・ダッシュ類 `―` `－` `‐` `‑` `–` `—` `−`
+   → `-`・チルダ・空白）。人事院規則の `一―一` のダッシュもここで `-` になる
 2. 空白をすべて取り除く（`昭和25年 法律 第137号` → `昭和25年法律第137号`）
 3. `元年` → `1年`（`令和元年` → `令和1年`）
-4. 漢数字の並びを算用数字にする（{@link kanjiToNumber}。位取りと位ごとの両方）。
-   読めない並びはそのまま残す
-5. 算用数字の先頭の 0 を取る（`第0137号` → `第137号`）
-6. ダッシュ類（`―` `－` `‐` `–` `—` `−`）を `-` に揃える（人事院規則の `一―一` → `1-1`）
+4. 年・番号の位置にある漢数字の並びを算用数字にする（{@link kanjiToNumber}。位取りと
+   位ごとの両方）。対象は直後が `年` か `号`、直前が `第`、直前か直後が `-` のどれかに
+   当たる並びだけで、地名や語の一部の漢数字（`千葉県` `一般`）は変えない（v0.7.0 から。
+   v0.6.1 までは `千葉県` → `1000葉県` になっていた）。読めない並びはそのまま残す
+5. 算用数字の先頭の 0 を取る（`第0137号` → `第137号`）。桁数の上限は無く、数値に
+   変換して丸めることはしない（v0.7.0 から）
 
 行わないこと: 元号の別表記（`S25` / `昭25`）、`第` や `号` の有無の吸収、
 法令の種別名（`法律` / `政令`）の補完。これらは表記の揺れではなく別の書き方なので、
@@ -385,7 +406,9 @@ function normalizeSearchQuery(input: string): string;
 検索クエリ向けの積極的な正規化。
 
 `normalizeJpText` の処理に加えて以下を行う:
-- ASCII 大文字 → 小文字（case folding）
+- ASCII 大文字 `A`〜`Z` → 小文字（全角の `Ａ`〜`Ｚ` は半角にしたうえで小文字）。
+  小文字にするのはこの 52 字だけで、ローマ数字 `Ⅰ`・ギリシャ文字 `Α`・`À` などは
+  変えない（v0.7.0 から。v0.6.1 までは `toLowerCase` で英字以外も小文字にしていた）
 - 連続する空白文字 → 単一の半角スペース
 
 houki-nta-mcp の FTS5 検索のように、ユーザー入力の表記ゆれを最大限
@@ -426,12 +449,19 @@ function findSimilar(query: string, options?: _FuzzyOptions): _FuzzyMatch[];
 あいまい一致 (Levenshtein 距離ベース)。「うろ覚え」入力で類似エントリを
 探すときに使う。
 
+編集距離で近い名前を返す関数で、名前の一部から一覧を得る関数ではない。
+`民法` のような短い名前を渡しても、`民` で始まる法令の一覧にはならない。
+一覧が欲しいときは `searchByName` を使う。編集距離の比（距離 ÷ 長い方の文字数）が
+1/3 を超える名前は `maxDistance` 以下でも返さない（v0.7.0 から。距離 0 は文字数によらず返す）。
+
 ::: details 例
 ```ts
 import { findSimilar } from '@shuji-bonji/houki-abbreviations';
 
 findSimilar('労働基準法施行例');
-// → [{ entry: 労基法施行令, matchedKey: '労働基準法施行令', distance: 1 }]
+// → [{ entry: 労基則, matchedKey: '労働基準法施行規則', distance: 2 }]
+findSimilar('民法');
+// → 民（民法、0）・民訴（民訴法、1）・民執（民執法、1）・民保（民保法、1）
 ```
 :::
 
@@ -461,7 +491,12 @@ interface FuzzyMatch {
 interface FuzzyOptions {
     /** 最大編集距離 (デフォルト 2) */
     maxDistance?: number;
-    /** 結果の最大件数 (デフォルト 5) */
+    /**
+     * 結果の最大件数。1 以上 500 以下の整数。省くと 5。
+     *
+     * 規則は `searchByName` の `limit` と同じ。それ以外の値は `RangeError`、
+     * 数でない値は `TypeError` を投げ、丸めない（v0.7.0 から）。
+     */
     limit?: number;
     /** スコア順 (距離昇順) にソート。default true */
     sortByScore?: boolean;
@@ -484,6 +519,10 @@ function levenshtein(a: string, b: string): number;
 
 Levenshtein 距離 (動的計画法、O(m*n) 時間 / O(min(m,n)) 空間)。
 文字単位の挿入 / 削除 / 置換コストはすべて 1。
+
+文字はコードポイント単位で数える（v0.7.0 から）。サロゲートペアで表す文字
+（`𠮷` U+20BB7 など）は 1 文字で、`levenshtein('𠮷', '吉')` は 1
+（v0.6.1 までは UTF-16 の単位で数えて 2 だった）。
 
 自前実装にした理由は外部依存を増やさないため (本パッケージは
 軽量データライブラリの方針なので、`fast-levenshtein` 等は引き込まない)。
@@ -547,7 +586,12 @@ interface SearchOptions {
     mode?: SearchMode;
     /** 全角/半角の表記ゆらぎを吸収 (デフォルト true) */
     normalize?: boolean;
-    /** 結果の最大件数 (デフォルト 50、上限 500) */
+    /**
+     * 結果の最大件数。1 以上 500 以下の整数。省くと 50。
+     *
+     * それ以外の値（1 未満、小数、500 超、`NaN`、`Infinity`）は `RangeError`、
+     * 数でない値は `TypeError` を投げ、丸めない（v0.7.0 から）。
+     */
     limit?: number;
     /** 結果を絞り込むフィルター (各キーは単一値 or 配列) */
     filter?: SearchFilter;
@@ -566,11 +610,14 @@ function suggestCorrection(query: string, limit?: number): string[];
 
 「もしかして」サジェスト。`findSimilar` の薄いラッパで、上位 N 件の
 `formal` だけを文字列配列で返す。LLM プロンプトでそのまま使える形。
+`query` と一致した名前を持つエントリ（`distance: 0`）は入れない（v0.7.0 から）。
 
 ::: details 例
 ```ts
 suggestCorrection('労働基準法施行例');
-// → ['労働基準法施行令']
+// → ['労働基準法施行規則']
+suggestCorrection('民法');
+// → ['民事訴訟法', '民事執行法', '民事保全法']（民法 自身は入らない）
 ```
 :::
 
@@ -583,13 +630,20 @@ suggestCorrection('労働基準法施行例');
 *関数 ・ v0.5.0 で追加 ・ family では未使用*
 
 ```ts
-function getAllNames(name: string): string[];
+function getAllNames(name: string, options?: GetAllNamesOptions): string[];
 ```
 
 `abbr` / `formal` / `aliases` のいずれかから、そのエントリの
 **全別表記** を文字列配列で返す。
 
 順序は `[abbr, formal, ...aliases]`、重複は除去済み。
+`options.normalize` が `true` のとき、全角英数字・ダッシュ類・全角チルダ・全角スペースを
+半角にしてから比べる（v0.7.0 から）。返す名前は辞書の表記のまま。既定は `false`。
+
+| 引数 | 説明 |
+|---|---|
+| `name` | 略称・正式名・別名のいずれか |
+| `options` | 照合オプション（省略可） |
 
 ::: details 例
 ```ts
@@ -598,20 +652,51 @@ import { getAllNames } from '@shuji-bonji/houki-abbreviations';
 getAllNames('消法');
 // → ['消法', '消費税法', '消費税', 'インボイス', 'インボイス制度', ...]
 
+getAllNames('ＰＬ法', { normalize: true });
+// → ['製造物責任法', 'PL法']（v0.7.0 から。normalize なしなら []）
+
 getAllNames('存在しない');
 // → []
 ```
 :::
+
+### GetAllNamesOptions
+
+*インターフェース ・ v0.7.0 で追加 ・ family では未使用*
+
+```ts
+interface GetAllNamesOptions {
+    /**
+     * `true` なら、`name` と辞書の名前の両方を `normalizeJpText` に通してから比べる
+     * （全角英数字・ダッシュ類・全角チルダ・全角スペースを半角にする）。返す名前は
+     * 辞書に書かれた表記のまま。`resolveAbbreviation` の `options.normalize` と同じ意味で、
+     * 既定も同じ `false`。MCP サーバーは入口で `true` を渡す。
+     *
+     * @default false
+     */
+    normalize?: boolean;
+}
+```
+
+`getAllNames` に渡せるオプション。
 
 ### lookupByLawId
 
 *関数 ・ v0.5.0 で追加 ・ family では未使用*
 
 ```ts
-function lookupByLawId(law_id: string): AbbreviationEntry | null;
+function lookupByLawId(law_id: string, options?: LookupByLawIdOptions): AbbreviationEntry | null;
 ```
 
 e-Gov `law_id` から辞書エントリを引く。完全一致のみ。
+
+`options.normalize` が `true` のとき、全角英数字を半角にしてから比べる（v0.7.0 から）。
+小文字は大文字にしない。既定は `false` で、v0.6.1 までと同じ結果を返す。
+
+| 引数 | 説明 |
+|---|---|
+| `law_id` | e-Gov の law_id |
+| `options` | 照合オプション（省略可） |
 
 ::: details 例
 ```ts
@@ -620,8 +705,29 @@ import { lookupByLawId } from '@shuji-bonji/houki-abbreviations';
 lookupByLawId('363AC0000000108')?.formal;  // '消費税法'
 lookupByLawId('321CONSTITUTION')?.formal;  // '日本国憲法'
 lookupByLawId('999XX0000000000');          // null
+lookupByLawId('３６３AC0000000108', { normalize: true })?.formal; // '消費税法'（v0.7.0 から）
+lookupByLawId('３６３AC0000000108');                              // null
 ```
 :::
+
+### LookupByLawIdOptions
+
+*インターフェース ・ v0.7.0 で追加 ・ family では未使用*
+
+```ts
+interface LookupByLawIdOptions {
+    /**
+     * `true` なら、`law_id` を `normalizeJpText` に通してから比べる（全角英数字を半角にする）。
+     * 英字の小文字は大文字にしない（`isValidLawId` と同じく、小文字の `law_id` は一致しない）。
+     * 辞書の `law_id` は半角の大文字なので、辞書の側は変換しない。既定 `false`。
+     *
+     * @default false
+     */
+    normalize?: boolean;
+}
+```
+
+`lookupByLawId` に渡せるオプション。
 
 ### lookupByLawNum
 
@@ -661,8 +767,14 @@ function computeDaysSince(fetchedAt: string, nowMs?: number): number;
 `fetched_at` (ISO 8601) と現在時刻から経過日数を計算する純関数。
 
 - 小数なし、日数の `floor`
-- 未来時刻 (now < fetched) は 0 に丸める
-- パース不能な ISO 文字列は 0 を返す (呼び出し側で扱いを決める)
+- 未来時刻 (now < fetched) は 0 に丸める（時計のずれで起きるので、壊れた値とは扱わない）
+- `fetchedAt` は ISO 8601 の 3 つの形だけを受け付ける: 日付だけ `YYYY-MM-DD`（UTC の
+  0 時として扱う）、UTC `YYYY-MM-DDTHH:mm:ss(.sss)Z`、時差付き
+  `YYYY-MM-DDTHH:mm:ss(.sss)±hh:mm`。それ以外の書き方（`2026/05/07`、`May 7, 2026`）、
+  時差の無い時刻、暦に無い日付は `RangeError`、文字列でない値は `TypeError` を投げる
+  （v0.7.0 から。v0.6.1 までは `Date.parse` が読めないものに `0` を返し、壊れた
+  取得時刻が `fresh` になっていた）
+- `nowMs` は有限の数。`NaN` / `±Infinity` は `RangeError`、数でない値は `TypeError`
 
 | 引数 | 説明 |
 |---|---|
@@ -683,9 +795,13 @@ function judgeStaleness(daysSince: number): StalenessLevel;
 （`fresh_days` / `stale_days`）に従って `'fresh' | 'stale' | 'outdated'`
 を返す。
 
+`daysSince` は 0 以上の有限の数（小数でもよい）。負の値・`NaN`・`±Infinity` は
+`RangeError`、数でない値は `TypeError` を投げる（v0.7.0 から。v0.6.1 までは
+負の値を `'fresh'`、`NaN` を `'outdated'` にしていた）。
+
 | 引数 | 説明 |
 |---|---|
-| `daysSince` | 経過日数 (整数想定、負値は 0 に丸める呼び出し側責務) |
+| `daysSince` | 経過日数（0 以上の有限の数） |
 
 **戻り値**: `'fresh'` | `'stale'` | `'outdated'`
 
@@ -703,19 +819,21 @@ judgeStaleness(30);  // 'outdated' (境界: stale_days はちょうどで outdat
 *定数 ・ v0.4.1 で追加 ・ houki-egov-mcp / houki-nta-mcp が使用*
 
 ```ts
-const STALENESS_THRESHOLDS: {
+const STALENESS_THRESHOLDS: Readonly<{
     /** fresh と判定する境界 (この日数 **未満** なら fresh) */
     readonly fresh_days: 7;
     /** stale と判定する境界 (この日数 **未満** なら stale、それ以上は outdated) */
     readonly stale_days: 30;
-};
+}>;
 ```
 
 family 共通の閾値定数 (日数)。
 
 各 MCP は同じ感覚で staleness を判定するため本定数を参照する。
 個別の MCP で異なる閾値が必要な場合は `judgeStaleness` をラップして
-MCP 固有の閾値を使う関数を作ってよい (本定数を上書きしない)。
+MCP 固有の閾値を使う関数を作ってよい。凍結されているので、キーへの代入は
+strict mode では `TypeError` になり、`judgeStaleness` の境界は実行時に変えられない
+（v0.7.0 から）。
 
 ### StalenessLevel
 
@@ -785,15 +903,31 @@ interface ExtractOptions {
      */
     dedupe?: boolean;
     /**
-     * 部分包含時に長い方を優先するか。
+     * 範囲が重なるときに長い方を優先するか。
      *
+     * `true` なら、ほかの、より長い一致と 1 文字でも範囲が重なる短い一致を返さない。
      * 例: テキスト「民法等の一部を改正する法律」内に `民法` と
-     * `民法等の一部を改正する法律` の両方がマッチする場合、`true` なら
-     * 長い方（後者）だけを返す。
+     * `民法等の一部を改正する法律` の両方がマッチする場合、長い方（後者）だけを返す。
+     * 「消費税法法人税法」の `法法` のように、2 つの長い一致の端にまたがる短い一致も
+     * 返さない（v0.7.0 から。v0.6.1 までは、すっぽり含まれる一致だけを除いていた）。
+     * 長さが同じ一致どうしは、重なっていても両方返す。
      *
      * @default true
      */
     preferLonger?: boolean;
+    /**
+     * 全角／半角の表記ゆらぎを吸収して探すか。
+     *
+     * `true` なら、`text` と辞書のキーの両方を `normalizeJpText` と同じ規則で半角にしてから
+     * 探す（全角英数字・ダッシュ類・全角チルダ・全角スペース）。`matchedKey` は辞書の表記の
+     * まま、`position` と `length` は元の `text` の位置と長さで返す。
+     * `resolveAbbreviation` の `options.normalize` と同じ意味で、既定も同じ `false`。
+     * MCP サーバーは入口で `true` を渡す。
+     *
+     * @since 0.7.0
+     * @default false
+     */
+    normalize?: boolean;
 }
 ```
 :::
@@ -815,19 +949,24 @@ e-Gov の `law_id` 形式が妥当かを判定する純粋関数。
 
 ##### 認識する種別
 
-2026-09-20 に e-Gov 法令 API v2 `GET /api/2/laws` で取得した全 9,569 件の
-`law_id` を調べ、実在するすべての形を受け付ける（v0.6.0、Issue #6）。
-長さは全件 15 文字。
+e-Gov の公式仕様（法令データ ドキュメンテーション「法令種別と法令ID」
+https://laws.e-gov.go.jp/docs/law-data-basic/607318a-lawtypes-and-lawid/ ）に合わせた
+次の 6 つの形だけを受け付ける（v0.7.0、Issue #23）。長さはどれも 15 文字、英字は大文字だけ。
+元号の 1 桁は `1`〜`5`。件数は 2026-09-30 に e-Gov 法令 API v2 `GET /api/2/laws` で
+取得した全 9,570 件の内訳で、6 つの形で全件が `true` になる。
 
 | 形 | 件数 | 例 |
 |---|---|---|
-| `AC` / `CO` / `IO` / `DF` / `DT` + 10 桁 | 4,677 | `363AC0000000108`（消費税法） |
-| `M` / `R` + 16 進 8 文字 + 3 桁 | 4,735 | `340M50000040011`（所得税法施行規則） |
-| `RJNJ` + 8 桁 | 142 | `324RJNJ01001000`（人事院規則一―一） |
-| `RPMD` + 8 桁 | 14 | `351RPMD12230000`（内閣総理大臣決定） |
-| `CONSTITUTION` | 1 | `321CONSTITUTION` |
+| 元号 + 年 + `AC` / `CO` / `IO` / `DF` / `DT` / `DH` + 10 桁 | 4,677 | `363AC0000000108`（消費税法） |
+| 元号 + 年 + `M` + `1`〜`6` + 16 進 7 文字 + 3 桁 | 4,687 | `340M50000040011`（所得税法施行規則） |
+| 元号 + 年 + `R` + 10 進 8 桁 + 3 桁 | 49 | `322R00000001001`（会計検査院規則） |
+| 元号 + 年 + `RJNJ` + 8 桁 | 142 | `324RJNJ01001000`（人事院規則一―一） |
+| 元号 + 年 + `RPMD` + 8 桁 | 14 | `351RPMD12230000`（内閣総理大臣決定） |
+| `321CONSTITUTION` | 1 | 日本国憲法 |
 
-v0.5.x が受け付けていた `MO` / `RU` は e-Gov の実データに 1 件も無かったため
+v0.6.1 までは元号の桁・`M` の次の桁・`R` の機関番号・`CONSTITUTION` の先頭を確かめて
+いなかった（`000AC0000000000` `340M70000040011` `322R0000000A001` `363CONSTITUTION` も
+`true`）。v0.5.x が受け付けていた `MO` / `RU` は e-Gov の実データに 1 件も無かったため
 v0.6.0 で外した（省令は `M`、規則は `M` か `R` で始まる）。
 
 | 引数 | 説明 |
@@ -842,6 +981,9 @@ isValidLawId('363AC0000000108');  // true（消費税法）
 isValidLawId('340M50000040011');  // true（所得税法施行規則。v0.6.0 から）
 isValidLawId('105DF0000000337');  // true（太政官布告。v0.6.0 から）
 isValidLawId('321CONSTITUTION');  // true（日本国憲法）
+isValidLawId('106DH0000000016');  // true（太政官布達。v0.7.0 から）
+isValidLawId('363CONSTITUTION');  // false（v0.7.0 から。v0.6.1 では true だった）
+isValidLawId('699AC0000000001');  // false（元号の桁は 1〜5。v0.7.0 から）
 isValidLawId('505MO0000000020');  // false（e-Gov に無い形。v0.5.x では true だった）
 isValidLawId('AAA');              // false
 isValidLawId('');                 // false
@@ -956,8 +1098,9 @@ interface AbbreviationEntry {
     /**
      * 法令カテゴリ。どの種類のテキストか（法律本体・通達・判例 等）。
      *
-     * v0.1.0 では「法律 / 政令 / 省令 / 規則 / 憲法」のみ実エントリあり。
-     * 'kihon-tsutatsu' 以降は houki-nta-mcp 開発時に追加される。
+     * 実エントリがあるのは法令系（'constitution' 〜 'rule'）と、'kihon-tsutatsu'（8 件）・
+     * 'kobetsu-tsutatsu'（1 件）。'kokuji' / 'qa-jirei' / 'tax-answer' / 'hanrei' / 'saiketsu' は
+     * 辞書にまだエントリが無い種類として先に定義している。
      */
     category: Category;
     /**
@@ -968,7 +1111,12 @@ interface AbbreviationEntry {
      * 「管轄外」と判定し、正しい MCP に誘導する。
      */
     source_mcp_hint: SourceMcpHint;
-    /** 同義の別表記。略称・通称・英語名など */
+    /**
+     * 同義の別表記。略称・通称・英語名など。
+     *
+     * 自分の `abbr` / `formal` と同じ値は入れない（`validateAllEntries` の
+     * `alias_equals_own_name` エラー）。ほかのエントリの名前とも重ならない（`duplicate_name`）。
+     */
     aliases?: string[];
     /** 備考（例: "通称: 電子帳簿保存法"） */
     note?: string;
@@ -980,6 +1128,13 @@ interface AbbreviationEntry {
 
 1 件 = 1 つの法令／通達／判例 等のメタ情報。
 複数の略称・通称・正式名称から逆引きするための共通テーブル。
+
+##### 凍結されている
+
+`abbreviationEntries` の各エントリと `aliases` の配列は凍結されている（v0.7.0 から）。
+名前・ID・一覧・検索で返すエントリは辞書の要素そのもの（同じオブジェクト）なので、
+フィールドへの代入は strict mode では `TypeError` になる。書き換えたいときは
+`structuredClone(entry)` や `{ ...entry }` で自分のコピーを作る。
 
 ##### freshness は持たない
 
@@ -993,16 +1148,21 @@ interface AbbreviationEntry {
 *定数 ・ v0.1.0 で追加 ・ houki-nta-mcp が使用*
 
 ```ts
-const CATEGORIES: readonly ["constitution", "law", "cabinet-order", "imperial-ordinance", "ministerial-ordinance", "rule", "kihon-tsutatsu", "kobetsu-tsutatsu", "qa-jirei", "tax-answer", "hanrei", "saiketsu"];
+const CATEGORIES: readonly ["constitution", "law", "cabinet-order", "imperial-ordinance", "ministerial-ordinance", "rule", "kokuji", "kihon-tsutatsu", "kobetsu-tsutatsu", "qa-jirei", "tax-answer", "hanrei", "saiketsu"];
 ```
 
 法令カテゴリ — どの種類のテキスト（法律本体・通達・判例など）を指すか。
 
 - 'constitution' / 'law' / 'cabinet-order' / 'imperial-ordinance' /
   'ministerial-ordinance' / 'rule' は e-Gov 配下（houki-egov-mcp）。
+- 'kokuji'（告示）は各省庁公式サイト配下（houki-nta-mcp / houki-mhlw-mcp 等）。
+  e-Gov 法令 API は告示を持たない。`law_type` は持たず、`law_id` は `null`（v0.7.0 から）。
 - 'kihon-tsutatsu' / 'kobetsu-tsutatsu' / 'qa-jirei' / 'tax-answer' は
   各省庁公式サイト配下（houki-nta-mcp 等）。
 - 'hanrei' / 'saiketsu' は判例・裁決系。
+
+13 の値をこの順で持つ（`kokuji` は `rule` の次。v0.6.1 までは 12 の値）。
+凍結されている（v0.7.0 から）。
 
 ### Category
 
@@ -1034,21 +1194,25 @@ const DOMAINS: readonly ["tax", "labor", "accounting", "commercial", "civil", "a
 
 ドメインタグ（実務分野での分類）
 
+凍結されている（v0.7.0 から）。`push` や要素への代入は strict mode では `TypeError` になる。
+
 ### LAW_TYPE_CODES
 
 *定数 ・ v0.1.0 で追加 ・ houki-egov-mcp が使用*
 
 ```ts
-const LAW_TYPE_CODES: {
+const LAW_TYPE_CODES: Readonly<{
     readonly Act: "AC";
     readonly CabinetOrder: "CO";
     readonly ImperialOrdinance: "IO";
     readonly MinisterialOrdinance: "MO";
     readonly Rule: "RU";
-};
+}>;
 ```
 
 e-Gov law_id の種別プレフィックス
+
+凍結されている（v0.7.0 から）。キーへの代入は strict mode では `TypeError` になる。
 
 ### LawTypeCode
 
@@ -1073,12 +1237,14 @@ const SOURCE_MCP_HINTS: readonly ["houki-egov", "houki-nta", "houki-mhlw", "houk
 houki ファミリーの各 MCP が、自分の管轄外エントリを LLM に「正しい MCP に
 誘導する」ために使う。
 
-- 'houki-egov': e-Gov 法令API (法律・政令・省令・規則・告示)
-- 'houki-nta': 国税庁通達・Q&A・タックスアンサー
-- 'houki-mhlw': 厚労省通達・通知
-- 'houki-jaish': 労災（労働安全衛生総合研究所）
+- 'houki-egov': e-Gov 法令API (憲法・法律・政令・勅令・府省令・規則。告示は持たない)
+- 'houki-nta': 国税庁通達・告示・Q&A・タックスアンサー
+- 'houki-mhlw': 厚労省通達・告示・通知
+- 'houki-jaish': 労働安全衛生の通達（JAISH: 安全衛生情報センター）
 - 'houki-court': 判例（裁判所サイト）
 - 'houki-saiketsu': 国税不服審判所裁決
+
+凍結されている（v0.7.0 から）。
 
 ### SourceMcpHint
 
