@@ -411,6 +411,7 @@ Q4（T6）の勧める案:
 | D5 | 残りの順序 3 | spec-ids の docs の PR（operations.md）と Issue 草案 2 件、#5 を閉じる | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、spec-ids PR #10、main `0b626cc`、#5 を閉じた。`docs/operations.md` の 11 か所を直した。Issue #8（spec-ids 自身の `specs/`、Q21 の A'）と #9（`spec-ids pr-scope`、Q20）を立てた） |
 | Q27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の仕様 PR（#154・#155） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、nta PR #160、main `a2a9e5f`。front matter の形の最初の仕様 PR（`approved: 2026-10-09`・`pr: 160`、targets 5 つ）。MODIFIED 9。ID の無い節（db_schema の「処理の流れ」、nta_get_tsutatsu の「できないこと」）は差分の spec.md に節として書いた（Q24' の案 A の形）。「人が判断すること」1〜14 を勧める案で承認。11（007 は DB の状態によらず同じ応答）は仕様 PR で足した点。`--status` に加えて `--refresh-stale=<日数>` の終了コードも 0 → 1） |
 | R27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の実装 PR（#154・#155、#156 を閉じる） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09） |
+| D5b | 残りの順序 3 | spec-ids の docs の PR（operations.md 5 章） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 未 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -615,4 +616,18 @@ nta の変換で当たる規則（2026-10-09 JST に nta の `check-pr-scope.mjs
 | --- | --- | --- | --- |
 | Q24'（spec-ids の D1） | ID の無い節の直しの書き方 | (A) 差分の spec.md に節として書く形（`docs/operations.md` 5 章）に寄せる。過去の 11 件（nta 9・egov 2）は書き直さず、これからの差分だけ / (B) proposal.md の「取り込みのとき」に文章で書く形も正式にする / (C) 決めずに両方を許す（PR #10 の書き方） | **A**（PR #10 の勧めのとおり）。見出し単位の置き換えだけで取り込め、後で取り込みを機械で行うときにも扱える。決まったら spec-ids の docs の小さな PR で 5 章を直す |
 | Q25' | spec-ids #8・#9 の時期 | (A) #9（`pr-scope` の取り込み。`migrate` を外す 0.4.0 と同じ版にするかは #9 の中で決める）を段階 4（#27 の仕様書ページ、hub#5 ②、#44）の後、#8 をその後 / (B) nta 0.27.0 の前に #9 / (C) 今は決めない | **A**。3 つのコピーは今のまま動いていて、急ぐ理由が無い。nta の Q23' の例外は #156 の差分が releases へ移れば当たらなくなる |
+
+2026-10-09 JST に shuji が決めたこと:
+
+- Q24'（spec-ids PR #10 の D1）は案 A。ID の無い節（`## 未決` など）の直しは、差分の spec.md に節として書く形に寄せる。過去の 11 件（nta 9・egov 2）は書き直さない。houki-nta-mcp の仕様 PR #160 がこの形の最初の例。spec-ids の `docs/operations.md` 5 章・10 章を直す docs の PR は指示 D5b
+- Q25' は案 A。spec-ids#9（`pr-scope` の取り込み）は段階 4（#27 の仕様書ページ、hub#5 ②、houki-hub#44）の後に行い、spec-ids#8（spec-ids 自身の `specs/`）はその後に行う
+
+これで、この時点の順は次のとおり。
+
+1. nta 0.27.0 の実装 PR（指示 R27）と spec-ids の docs の PR（指示 D5b）。別リポジトリなので並行してよい
+2. nta 0.27.0 の publish の後の追随（houki-research-skill、houki-hub の site と `stack.json`、変えたツールの契約の確認）
+3. 段階 4: #27 の仕様書ページと scope-by-audience（`spec-ids history` の出力を使う）
+4. 段階 4: hub#5 ② と呼び出し例の照合のスクリプト（houki-hub#44）
+5. spec-ids#9（`pr-scope` の取り込み。nta の Q23' の例外と 3 つのコピーの違いをここで片付ける。`migrate` を外す 0.4.0 と同じ版にするかは #9 の中で決める）
+6. spec-ids#8（spec-ids 自身の `specs/`）
 

@@ -28,6 +28,7 @@
 | D5 | 残りの順序 3 | spec-ids の docs の PR（operations.md）と Issue 草案 2 件、#5 を閉じる | 済（spec-ids PR #10、#5 を閉じた。Issue #8・#9） |
 | Q27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の仕様 PR（#154・#155） | 済（nta PR #160、main `a2a9e5f`） |
 | R27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の実装 PR（#154・#155、#156 を閉じる） | すぐ（2026-10-09 に追加） |
+| D5b | 残りの順序 3 | spec-ids の docs の PR（operations.md 5 章、ID の無い節の書き方） | すぐ（2026-10-09 に追加。R27 と並行してよい） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1405,4 +1406,42 @@ test: のコミットでは新しいテストが落ち、次の feat: で通る�
 - houki-research-skill で直す箇所（proposal.md の「互換性」の Skill の表を main で grep し直して確かめる）と、houki-hub で直すもの（proposal.md の「実装 PR で直す文書」8。呼び出し例は影響なし）
 - PR 本文の草案（Closes #154 #155 #156、仕様 PR #160・#157 への言及、末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 - spec-ids 0.3.0 の形で取り込みを行って気付いたこと（AGENTS.md や spec-ids の文の分かりにくさなど）
+```
+
+---
+
+## 指示 D5b: spec-ids の docs の PR（operations.md 5 章、ID の無い節の書き方を決める）
+
+2026-10-09 JST に shuji が計画書の Q24'（spec-ids PR #10 の D1）を案 A に決めました。ID の無い節（`## 未決` など）の直しは、差分の spec.md に節として書く形に寄せます。過去の 11 件（nta 9・egov 2）は書き直しません。houki-nta-mcp の仕様 PR #160 がすでにこの形で書かれています。2026-10-09 JST に、spec-ids の origin の main が `0b626cc` であることを確かめました。R27（nta 0.27.0 の実装 PR）と並行してよい作業です。
+
+```text
+spec-ids の docs/operations.md の 5 章（差分の書き方）と 10 章（まだ決まっていないこと）を、決まった書き方に合わせる docs の PR を作ってください。この会話の役は、文書を直す作業者です。src/・test/・docs/proposals/ は変えません。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/spec-ids（Cowork の device_bash では $HOME/mnt/spec-ids）
+- 起点: main の 0b626cc。作業の前に git ls-remote https://github.com/shuji-bonji/spec-ids refs/heads/main で origin と同じか確かめる
+- ブランチ: docs/<作業日の yyyymmdd>-id-less-sections
+- 版: 上げない。未追跡の「Claude outputs/」は触らない
+
+## 決まったこと（2026-10-09 JST、shuji。spec-ids PR #10 の D1 の案 A）
+
+- ID の無い節（## 入力・## できないこと・## 未決・## 処理の流れ など）の直しは、差分の spec.md に節として書く（見出しの単位で、current の同じ見出しの節と置き換える）
+- proposal.md の「取り込みのとき（Publisher）」に文章で書く形は、これからの差分では使わない
+- 過去の 11 件（取り込み済みのうち houki-nta-mcp の 9 件・houki-egov-mcp の 2 件）は書き直さない
+- targets には、差分の spec.md を置いた機能をすべて入れる（ID の無い節だけを直す機能も、差分の specs/<dir>/spec.md を置くので targets に入る）
+- 理由: 取り込みが見出し単位の置き換えだけで済み、後で取り込みを機械で行うとき（spec-ids apply などを作るとき）にも扱える。文章で書く形は Publisher の解釈が要る
+
+## 直すこと
+
+1. 5 章: 「ID の無い節の直しは…両方…どちらに寄せるかは決まっていません（10 章）」の段落を、上の決まったことに書き直す。過去の 11 件は文章で書いた形のまま残っていること、targets はその 11 件も含めてどちらの形も受け付けること（spec-ids check の検査 6 は止めない）を 1〜2 文で残す
+2. 10 章: 「ID の無い節の直しの書き方（5 章）」の行を外す（決まったため）
+3. 6 章の Steward と Publisher の指示文に、ID の無い節を proposal.md に文章で書かないこと（Steward）、差分の spec.md の ID の無い節を current の同じ見出しの節と置き換えること（Publisher）が書かれているかを確かめ、無ければ 1 文ずつ足す
+4. 実例として、houki-nta-mcp の仕様 PR #160（差分 20261009-db-folder-access-and-tsutatsu-guide。db_schema の「処理の流れ」と nta_get_tsutatsu の「できないこと」を差分の spec.md に節として書いた）を 5 章に 1 行で挙げる
+
+## 守ること・報告すること
+
+- docs/operations.md だけを変える。文は「〜します」「〜です」
+- コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に spec-ids フォルダーの削除の許可を取る。VM の git の名前とメールは houki-hub の指示書の「共通」と同じ
+- 報告: ブランチ・コミット、直した箇所の前後の文、PR 本文の草案（spec-ids PR #10 の D1 を決めたこと、houki-nta-mcp PR #160 への言及。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```
