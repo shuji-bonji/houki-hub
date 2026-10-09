@@ -1,0 +1,366 @@
+---
+title: "tax-research — 税務リサーチの基本フロー"
+description: "houki-research Skill の workflow「税務リサーチの基本フロー」の目的・処理の流れ・各ステップ（workflows/tax-research.md から自動生成）"
+---
+
+# tax-research：税務リサーチの基本フロー
+
+<!-- GENERATED FILE — 手で編集しない。本文は houki-research-skill の skills/houki-research/workflows/tax-research.md の写し。 -->
+
+::: info
+houki-research Skill **v0.20.0** の `skills/houki-research/workflows/tax-research.md` から自動生成しました（ステップ 10 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+:::
+
+このページは、houki-research Skill の workflow（問いの形ごとの手順）「税務リサーチの基本フロー」の説明です。Skill を読み込んだ LLM は、この順で MCP のツールを呼びます。「関連ページ」の前までは、workflow の本文を言い換えずに写しています。
+
+houki-research-skill が想定する **税務リサーチの典型ワークフロー**。「制度の概観 + 法的根拠 + 通達による解釈 + 改正履歴 + 添付 PDF (新旧対照表)」を縦串で引用する。
+
+## このワークフローを使う場面
+
+この手順を選ぶ問いと、選ばない問いです。
+
+- 税制の概要を **法的根拠から** 引きたい
+- 改正点を **改正前 / 改正後** で正確に整理したい
+- 通達による行政解釈を **法律本文と紐づけて** 引きたい
+
+該当しないケース:
+
+- 略称の意味だけ知りたい → houki-abbreviations の `resolve_abbreviation` だけで十分
+- 個別事案の判断 → [`docs/BUSINESS-LAW.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/docs/BUSINESS-LAW.md) の境界 ② を参照し有資格者へ案内
+
+## フロー全体像
+
+Skill を読み込んだ LLM が、どの MCP のどのツールをどの順に呼ぶかを示します。
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant S as Skill (this)
+    participant A as houki-abbreviations
+    participant E as houki-egov-mcp
+    participant N as houki-nta-mcp
+    participant P as pdf-reader-mcp
+
+    U->>S: 自然文の問い
+    S->>S: ① 業法独占判定 (BUSINESS-LAW.md)
+    Note over S: 個別事案なら<br/>注意喚起付きで進める
+
+    S->>N: ② 略称解決 (resolve_abbreviation)
+    N->>A: 内蔵辞書を引く
+    A-->>N: { formal, source_mcp_hint }
+    N-->>S: 解決結果
+
+    S->>E: ③ 法律本文を取得 (法的根拠)
+    E-->>S: 条文 + meta (拘束力は explain_law_type で確かめる)
+
+    S->>N: ④ 通達による解釈を取得
+    N-->>S: 通達本文 + legal_status (binds_tax_office=true)<br/>+ base_laws + next_actions (v0.11.0+)
+    opt 通達を先に引いた / 法律の条がまだ引けていない
+        S->>E: ④' next_actions に従い get_law で法律本文へ戻る
+        E-->>S: 条文
+    end
+
+    opt 質疑応答事例から入った (nta_search_qa → nta_get_qa format: "json")
+        N-->>S: related_laws / related_tsutatsu + next_actions (v0.12.0+)
+        S->>E: ④'' next_actions の get_law (条・項・号入り) で法律本文へ
+        S->>N: ④'' next_actions の nta_get_tsutatsu で通達へ
+    end
+
+    S->>N: ⑤ 改正履歴 (kaisei) を検索
+    N-->>S: 改正通達一覧 (hasPdf=true 推奨)
+
+    S->>N: ⑥ nta_inspect_pdf_meta で添付 PDF の読み方 (kind: comparison, save: true)
+    N-->>S: attachedPdfs (read_strategy / layout_note) + saved[].path + next_actions
+
+    alt comparison/attachment kind の PDF
+        S->>P: ⑦ extract_tables で表構造抽出
+    else qa-pdf/related/notice/unknown
+        S->>P: ⑦ read_text で本文抽出
+    end
+    P-->>S: PDF 内容
+
+    S-->>U: 階層を明示した citation 付き回答
+```
+
+## 各ステップの詳細
+
+各ステップで呼ぶツールと引数、応答の読み方です。見出しを開くと、呼び出し例を読めます。
+
+### ステップ ①: 業法独占判定
+
+::: details 詳細
+ユーザーの問いを読み、[`docs/BUSINESS-LAW.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/docs/BUSINESS-LAW.md) の §2「3 つの境界」のどこに該当するかを判定する。
+
+| 境界 | 行動 |
+|---|---|
+| ✅ 制度の概観・条文の引用 | そのまま進める |
+| ⚠️ 個別事案への適用 | 注意喚起テンプレートを **回答冒頭** に入れて進める |
+| ❌ 業として行う場面 | このワークフロー自体を実施しない |
+:::
+
+### ステップ ②: 略称解決
+
+::: details 詳細
+ユーザーが「**消基通**」「**インボイス**」のような略称を使った場合、houki-nta-mcp の `resolve_abbreviation` を呼ぶ:
+
+```jsonc
+{
+  "tool": "resolve_abbreviation",
+  "args": { "abbr": "消基通" }
+}
+// → { formal: "消費税法基本通達", source_mcp_hint: "houki-nta", ... }
+```
+
+`resolved.source_mcp_hint` が `"houki-egov"` なら houki-egov-mcp を、`"houki-nta"` なら houki-nta-mcp を主軸にする。
+
+houki-nta-mcp v0.23.0 以上では、houki-egov の管轄のエントリ（`in_scope: false`）に `next_actions` の `delegate_to_mcp`（`example: { mcp: "houki-egov" }`）が付くので、それに従って houki-egov-mcp で引く。houki-hub family にまだ MCP の無い管轄では `next_actions` は付かず、`hint` が「対応する MCP サーバーはまだありません」になる。
+:::
+
+### ステップ ③: 法律本文を取得
+
+::: details 詳細
+法的根拠 (国会制定の法律) を houki-egov-mcp で取得:
+
+```jsonc
+// 条番号が分かっているとき
+{
+  "tool": "get_law",
+  "args": { "law_name": "消費税法", "article": "57の2" }
+}
+// 法令名は分かるが条が不明なとき → 目次
+{
+  "tool": "get_toc",
+  "args": { "law_name": "消費税法" }
+}
+// 法令名を探すとき（タイトル一致。条の見出しや本文の語では当たらない）
+{
+  "tool": "search_law",
+  "args": { "keyword": "適格請求書" }
+}
+// → query.resolved: "消費税法"（略称辞書の alias で解決）。"適格請求書発行事業者の登録" のような条の見出しを渡すと total_count: 0
+// どの法令の何条か自体が不明なとき → 条文本文の横断検索（ローカル DB が必要）
+{
+  "tool": "search_fulltext",
+  "args": { "keyword": "消費税法 適格請求書発行事業者の登録" }
+}
+// → hits[0]: 消費税法 57の2「（適格請求書発行事業者の登録等）」（score_reasons に article_caption_match）
+//   hits[1]: 消費税法 附則(137) 44「（適格請求書発行事業者の登録等に関する経過措置）」
+//   実測: houki-egov-mcp v0.15.1（2026-09-21）
+```
+
+`get_law` の応答は条文本文と `meta`（`law_id` / `title` / `law_num` / `retrieved_at` / `url`。houki-egov-mcp v0.17.0 以上では `at` も常にあり、時点を渡さなかったときは `null`）で、`legal_status` は付かない。法律が国民を拘束すること（`binds_citizens: true`）は `explain_law_type { "name": "法律" }` の応答を根拠にする（houki-egov-mcp v0.15.1、2026-09-21 実測。`binds_courts` は返さない）。
+
+`search_fulltext` の応答で `source` が `"api-fallback"` なら本文検索は行われていない（`search_law` の結果が `fallback` に入っている）。ローカル DB が無い・開けないときのほか、houki-egov-mcp v0.19.0 以上では DB の版が合わないとき（v0.18.x 以前に作った古い版、新しい版、版を読めない DB）もこうなる。その場合は `note` の案内をユーザーに伝え（`next_actions` に `bulk_download_everything` があればその `example.command`。v0.20.0 以上では `npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` の形。無ければ `note` の続きの文が案内する houki-egov-mcp の更新や DB のパスの確認）、回答には「法令名の一致で探した」と書く。`note` の先頭の文ごとの DB の状態と、投入したはずのときに DB の場所を確かめる手順は [`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/docs/ERROR-HANDLING.md) の「`search_fulltext` の `api-fallback`」にある。
+
+これが citation の **「法律 (法的根拠)」** セクションになる。
+:::
+
+### ステップ ④: 通達による解釈を取得
+
+::: details 詳細
+```jsonc
+{
+  "tool": "nta_get_tsutatsu",
+  "args": { "name": "消基通", "clause": "1-7-2" }
+}
+// → 本文 + legal_status (binds_tax_office=true / binds_citizens=false)
+```
+
+これが citation の **「行政解釈 (通達)」** セクションになる。`legal_status` の `binds_citizens=false` を **必ず** 注釈する。
+
+houki-nta-mcp v0.11.0 以上では、応答に解釈の対象になる法律と、houki-egov-mcp への戻り方が入る:
+
+```jsonc
+// nta_get_tsutatsu (format: "json") の応答の末尾
+{
+  "base_laws": ["消費税法", "消費税法施行令", "消費税法施行規則"],
+  "next_actions": [
+    {
+      "action": "delegate_to_mcp",
+      "reason": "通達は国民・裁判所を拘束しない。根拠は法律本文で確認する",
+      "example": { "mcp": "houki-egov", "tool": "get_law", "law_name": "消費税法" }
+    }
+  ]
+}
+// nta_search_tsutatsu では base_laws の代わりに
+//   "base_laws_by_tsutatsu": { "消費税法基本通達": ["消費税法", "消費税法施行令", "消費税法施行規則"] }
+// が 1 回だけ入り、next_actions は結果に現れた通達ごとに 1 件
+```
+:::
+
+### ステップ ④': 通達から法律本文へ戻る
+
+::: details 詳細
+ステップ ③ を飛ばして通達から入った場合や、③ で引いた条と通達が参照している条が違う場合は、ここで法律本文へ戻る。
+
+1. `next_actions[].example` から `mcp` と `tool` を除いた残り (法律名だけが入っている) を houki-egov-mcp の `get_law` に渡す。`mcp` と `tool` はどの MCP のどの tool を呼ぶかを示すもので引数ではなく、そのまま渡すと houki-egov-mcp v0.6.0 以上では `INVALID_ARGUMENT` (`mcp, tool: inputSchema に無い引数です`) になる
+2. 条番号は応答に入っていないので、通達の本文の参照 (例: 消基通 1-7-2 の「法第57条の2第4項」) を読み、`article` / `paragraph` を足して引き直す。基本通達の本文では「法」は法律、「令」は施行令、「規則」は施行規則を指すのが通例
+
+```jsonc
+// 消基通 1-7-2 の本文「法第57条の2第4項」→ base_laws の先頭 (消費税法) の 57 条の 2 第 4 項
+{
+  "tool": "get_law",
+  "args": { "law_name": "消費税法", "article": "57の2", "paragraph": 4 }
+}
+// 所基通 49-39 の本文「令第138条」→ base_laws の 2 番目 (所得税法施行令) の 138 条
+{
+  "tool": "get_law",
+  "args": { "law_name": "所得税法施行令", "article": "138" }
+}
+```
+
+引いた条文は citation の「法律 (法的根拠)」「政令 / 省令」に置く。
+:::
+
+### ステップ ④'': 質疑応答事例から法律本文と通達へ戻る
+
+::: details 詳細
+質疑応答事例 (`nta_search_qa` → `nta_get_qa`) から入った場合は、【関係法令通達】欄に挙がっている法律と通達へ戻る。質疑応答事例は国税庁の参考資料で、税務署員も拘束しない (`legal_status` の `binds_*` がすべて `false`)。
+
+1. `nta_get_qa` は **`format: "json"` を指定する** (既定の markdown には `related_laws` などが出ない)
+2. `next_actions[].example` から `mcp` と `tool` を除いた残りを渡す。通達と違い、条・項・号まで入っている。`nta_get_tsutatsu` への案内の `example` は `name` と `clause` だけなので、そのまま渡せる
+3. `next_actions` が付かない参照 (租税条約・「旧」「改正前」の条文・条番号の無い法令・基本通達 4 種以外の通達) は、`related_laws` / `related_tsutatsu` の `raw` を読んで [`SKILL.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/SKILL.md) 鉄則 3 の表のとおり扱う
+
+houki-nta-mcp v0.12.0 の応答の抜粋 (2026-09-11、`{ "topic": "shohi", "category": "02", "id": "19", "format": "json" }`):
+
+```jsonc
+{
+  "qa": {
+    "title": "個人事業者が所有するゴルフ会員権の譲渡",
+    "relatedLaws": ["消費税法第2条第1項第8号、消費税法基本通達5-1-1"],
+    "notice": "令和7年8月1日現在の法令・通達等に基づいて作成しています。…",
+    "basisDate": "2025-08-01"
+  },
+  "related_laws": [
+    { "law_name": "消費税法", "article": "2", "paragraph": 1, "item": 8, "raw": "消費税法第2条第1項第8号" }
+  ],
+  "related_tsutatsu": [
+    { "name": "消費税法基本通達", "clause": "5-1-1", "raw": "消費税法基本通達5-1-1" }
+  ],
+  "next_actions": [
+    { "action": "delegate_to_mcp", "example": { "mcp": "houki-egov", "tool": "get_law", "law_name": "消費税法", "article": "2", "paragraph": 1, "item": 8 } },
+    { "action": "nta_get_tsutatsu", "example": { "name": "消費税法基本通達", "clause": "5-1-1" } }
+  ]
+}
+```
+
+枝番号の号 (「法人税法第2条第12号の8」) は、houki-nta-mcp v0.14.0 以上で `item: "12の8"` の文字列になる。`get_law` が文字列の `item` を受け付けるのは houki-egov-mcp v0.6.0 以上。項が 1 つだけの条 (法人税法 2 条など) は `paragraph` なしの `item` でも引ける (houki-egov-mcp v0.6.0 以上)。
+
+citation では、引いた条文を「法律 (法的根拠)」、通達を「行政解釈」、質疑応答事例を「参考情報 (拘束力なし)」に置き、`qa.basisDate` と `qa.notice` の趣旨を注に書く ([`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/docs/CITATION.md))。
+
+タックスアンサー (`nta_get_tax_answer`) には構造化された根拠法令が無い。本文の「根拠法令等」の節を読み、挙がっている法令を `get_law` で引く。
+
+8xxx 帯（災害関係）の docId も、houki-nta-mcp v0.24.0 以上では `nta_get_tax_answer` で取れる。`nta_search_tax_answer` の `next_actions` が 8xxx の `nta_get_tax_answer` を案内したら、そのまま従ってよい。v0.23.x 以前は 8xxx を `INVALID_ARGUMENT` で断るので、その案内には従わず、`results[].sourceUrl` を案内する。
+:::
+
+### ステップ ⑤: 改正履歴を検索
+
+::: details 詳細
+```jsonc
+{
+  "tool": "nta_search_kaisei_tsutatsu",
+  "args": { "keyword": "インボイス", "hasPdf": true, "limit": 5 }
+}
+// → 改正通達一覧
+```
+
+`hasPdf: true` で **添付 PDF (新旧対照表) を持つもの** だけに絞る。
+:::
+
+### ステップ ⑥: 添付 PDF の読み方を取得
+
+::: details 詳細
+```jsonc
+{
+  "tool": "nta_inspect_pdf_meta",
+  "args": { "docType": "kaisei", "docId": "0025004-026", "kind": "comparison", "save": true }
+}
+// → attachedPdfs[] (kind / read_strategy / layout_note)
+//   + saved[] (url / path / bytes / cached / error?)
+//   + next_actions[] (pdf-reader-mcp の呼び出し例 + 汎用の read_pdf)
+```
+
+改正点だけが要るので `kind: "comparison"` で新旧対照表に絞る。0025004-026 では「【参考】…新旧対応表」（章の構成の対応表）と「別紙1」「別紙2」（本文の新旧対照表）の 3 件が返る（houki-nta-mcp v0.20.0 以上。v0.19.x は別紙が `attachment` になるので `kind` を付けずに全件を見る）。表として取るには `save: true` が要る（pdf-reader-mcp の `extract_tables` は `file_path` しか受け取らない）。
+:::
+
+### ステップ ⑦: PDF を読み、改正点を取り出す
+
+::: details 詳細
+```mermaid
+flowchart TB
+  meta["応答の attachedPdfs[].read_strategy と saved[].path を見る"]
+  meta --> reader{"pdf-reader-mcp はあるか"}
+  reader -->|ある| t1["next_actions[0].example をそのまま extract_tables に渡す<br/>{ file_path: saved[0].path }"]
+  reader -->|ない| t2["saved[0].path（無ければ url）を手元の PDF 読み取りツールに渡し<br/>layout_note のとおり左右 2 列の表として読む"]
+  t1 --> q2{"表が 0 件 (タグ無し)?"}
+  q2 -->|Yes| t3["read_text { file_path, split_columns: 2 }"]
+  q2 -->|No| diff
+  t2 --> diff["新旧対照表の読み方 (SKILL.md 鉄則 3) で改正点を取り出す:<br/>見出し行で左右を確かめる / （同左）・（省略）・（新設）・（削除）、または【新設】・【削除】・【一部改正】 / 番号でなく内容で対応を取る"]
+  t3 --> diff
+
+  classDef pri fill:#d4edda,stroke:#28a745
+  classDef sec fill:#cce5ff,stroke:#0066cc
+  class t1 pri
+  class t2,t3 sec
+```
+
+`saved[].error` が付いた PDF（`HTTP 404` など）は保存できていないので、`next_actions` の `read_url { url, split_columns: 2 }` で URL のまま読む。
+:::
+
+### ステップ ⑧: 階層を明示した citation 付き回答
+
+::: details 詳細
+[`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/docs/CITATION.md) のフォーマットに従って、本文の末尾に `## Sources` セクションを置く。
+:::
+
+## この手順で使うツール
+
+上のステップに出てくる houki-hub family のツールと、その仕様のページです。houki-hub の外のツール（pdf-reader-mcp など）は載せていません。
+
+| ツール | MCP サーバー | 仕様 |
+|---|---|---|
+| `resolve_abbreviation` | houki-egov-mcp | [リファレンス](/reference/mcp/houki-egov#resolve-abbreviation) |
+| `resolve_abbreviation` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#resolve-abbreviation) |
+| `get_law` | houki-egov-mcp | [リファレンス](/reference/mcp/houki-egov#get-law) |
+| `get_toc` | houki-egov-mcp | [リファレンス](/reference/mcp/houki-egov#get-toc) |
+| `search_law` | houki-egov-mcp | [リファレンス](/reference/mcp/houki-egov#search-law) |
+| `search_fulltext` | houki-egov-mcp | [search_fulltext の仕様](/specs/houki-egov/search_fulltext) |
+| `nta_get_tsutatsu` | houki-nta-mcp | [nta_get_tsutatsu の仕様](/specs/houki-nta/nta_get_tsutatsu) |
+| `nta_search_qa` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-search-qa) |
+| `nta_get_qa` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-get-qa) |
+| `nta_get_tax_answer` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-get-tax-answer) |
+| `nta_search_tax_answer` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-search-tax-answer) |
+| `nta_search_kaisei_tsutatsu` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-search-kaisei-tsutatsu) |
+| `nta_inspect_pdf_meta` | houki-nta-mcp | [リファレンス](/reference/mcp/houki-nta#nta-inspect-pdf-meta) |
+
+## 例
+
+実際のやり取りの例です。
+
+具体的な session 例は [`../examples/invoice-registration.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/examples/invoice-registration.md) を参照。
+
+## アンチパターン
+
+この手順でしてはいけない呼び方と、その理由です。
+
+- ❌ 法律本文を確認せずに通達だけ引用する → 通達は内部文書なので、法的根拠が抜ける
+- ❌ 通達の応答の `next_actions` (`delegate_to_mcp` → houki-egov-mcp の `get_law`) を読まずに回答を終える → 同上。成功時の応答にも付くので、エラーのときだけ見るのでは足りない
+- ❌ `next_actions[].example` を `mcp` と `tool` ごと `get_law` に渡す → egov v0.6.0 以上は inputSchema に無い引数を `INVALID_ARGUMENT` で返す。`mcp` と `tool` を除いてから渡す
+- ❌ 質疑応答事例の回答だけで答える → 参考資料で誰も拘束しない。`next_actions` で法律本文と通達へ戻る
+- ❌ `nta_get_qa` を `format` の既定 (markdown) のまま呼んで、根拠の条文を本文から探す → `format: "json"` の `related_laws` と `next_actions` を使う
+- ❌ `qa.notice` を落とす → 作成時点 (`basisDate`) と「個別の取引では異なる課税関係が生じうる」という断り書きが citation から消える
+- ❌ `nta_search_*` の `DOC_NOT_FOUND` を「該当なし」と答える → その種別の文書がローカル DB に無いだけ。`next_actions` の投入コマンドを案内する (houki-nta-mcp v0.13.0 以上)
+- ❌ 改正前後の差分を `read_text` / `read_url` で `split_columns` 無しに読む → カラムが交互連結し改正点が判別不能。`extract_tables { file_path }` または `split_columns: 2` を使う
+- ❌ `nta_inspect_pdf_meta` の `url` を `extract_tables` に渡す → `extract_tables` は `file_path` しか受け取らない。`save: true` で呼び直して `saved[].path` を渡す
+- ❌ 新旧対照表の左右を見出し行で確かめずに「左が改正後」と決める → 多くはそうだが、決め打ちすると改正前後が逆になる
+- ❌ pdf-reader-mcp が無いからと PDF を読まずに終える → `saved[].path` か `url` を手元の PDF 読み取りツールに渡し、`layout_note` のとおりに読む
+- ❌ `legal_status` の引用を省略する → 通達と法律を同列に扱う citation になる
+- ❌ 「あなたの確定申告では…」と個別判断を返す → 業法独占規定 (税理士法 52 条) に抵触するおそれ
+
+## 関連ページ
+
+このページの元になった文書と、あわせて読むページです。
+
+- [houki-research Skill の仕様の一覧](/specs/houki-research/)
+- [houki-research Skill の解説](/skills/houki-research)
+- [元の workflow（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/workflows/tax-research.md)

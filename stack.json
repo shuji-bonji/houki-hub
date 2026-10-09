@@ -6,7 +6,7 @@
     "layer = 役割 / form = 配布形態（誰が起動するか）/ status = released・planned・concept。",
     "planned / concept は名前と束ねる単位を予約しているだけで、ディレクトリも npm も無い。"
   ],
-  "generatedAt": "2026-10-09T12:41:40.584Z",
+  "generatedAt": "2026-10-09T13:01:53.107Z",
   "generatedBy": "scripts/generate-stack.mjs",
   "npmScope": "@shuji-bonji",
   "repos": [
@@ -107,8 +107,8 @@
       "local": {
         "version": null,
         "tag": null,
-        "dirty": false,
-        "unpushedCommits": 1
+        "dirty": true,
+        "unpushedCommits": null
       },
       "consistency": {
         "status": "not_published",

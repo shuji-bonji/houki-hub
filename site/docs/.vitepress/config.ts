@@ -1,6 +1,8 @@
 import { defineConfig } from 'vitepress';
 import llmstxt from 'vitepress-plugin-llms';
 import { withMermaid } from 'vitepress-plugin-mermaid';
+// 仕様書ページ（houki-hub#27）の sidebar は scripts/spec-pages.mjs が生成する
+import specsSidebar from './specs-sidebar.json';
 
 /** プロジェクトページなので base を含む。OGP の URL は絶対でなければ無視される。 */
 const BASE = '/houki-hub/';
@@ -18,6 +20,7 @@ const nav = [
   { text: 'ライブラリ', link: '/lib/houki-abbreviations' },
   { text: 'Skill', link: '/skills/houki-research' },
   { text: 'リファレンス', link: '/reference/mcp/houki-egov' },
+  { text: '仕様', link: '/specs/' },
   { text: 'ロードマップ', link: '/guide/roadmap' }
 ];
 
@@ -32,7 +35,8 @@ const sidebar = {
         { text: '導入手順', link: '/guide/getting-started' },
         { text: 'ローカル DB（全文検索用）', link: '/guide/local-database' },
         { text: '現状と予定', link: '/guide/roadmap' },
-        { text: '免責事項と利用範囲', link: '/guide/disclaimer' }
+        { text: '免責事項と利用範囲', link: '/guide/disclaimer' },
+        { text: '利用者ごとにできること', link: '/guide/scope-by-audience' }
       ]
     }
   ],
@@ -73,7 +77,8 @@ const sidebar = {
       text: 'ライブラリ API',
       items: [{ text: 'houki-abbreviations', link: '/reference/lib/houki-abbreviations' }]
     }
-  ]
+  ],
+  ...specsSidebar
 };
 
 export default withMermaid(

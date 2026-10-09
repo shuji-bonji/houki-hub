@@ -15,10 +15,15 @@
  * MCP サーバーは起動して `tools/list` を読む。ライブラリは起動できるものが無いので、
  * 公開ビルドの型定義（dist/index.d.ts）を読む。詳しくは下の LIB_REGISTRY の頭の注記。
  *
+ * 仕様書ページ（houki-hub#27。各リポジトリの specs/ と Skill の workflows/ から）も同じコマンドで作る。
+ * 中身は scripts/spec-pages.mjs、ページの書き込みの規則は scripts/lib/generated-page.mjs で共有する。
+ *
  * 使い方:
- *   node scripts/generate-reference.mjs                    # 全サーバー + 全ライブラリ
+ *   node scripts/generate-reference.mjs                    # 全サーバー + 全ライブラリ + 仕様書ページ
  *   node scripts/generate-reference.mjs houki-egov         # 1 つだけ
  *   node scripts/generate-reference.mjs houki-abbreviations
+ *   node scripts/generate-reference.mjs specs              # 仕様書ページだけ（サーバーを起動しない）
+ *   node scripts/generate-reference.mjs specs:houki-nta    # 1 つのリポジトリの仕様書ページだけ
  *
  * 依存なし（生の JSON-RPC over stdio。MCP SDK は import しない）。
  * mcp/ は git 追跡外の作業コピーなので、CI や fresh clone では dist が無い。
@@ -35,6 +40,8 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { writeGenerated } from './lib/generated-page.mjs';
+import { SPEC_TARGETS, generateSpecPages } from './spec-pages.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = join(ROOT, 'site/docs');
@@ -66,28 +73,6 @@ const REGISTRY = {
       'すべての応答に `legal_status`（通達は国民を拘束しない旨）と、DB から返した場合は `freshness` が付きます。',
   },
 };
-
-/* ---------------- 生成ページの書き込み ----------------
- *
- * 冒頭の「…・YYYY-MM-DD）。手で編集しないでください」の日付は、内容が最後に変わった日として使う。
- * 新しく作った本文の日付を既存ファイルの日付に差し替えて比べ、同じなら書かない。
- * 違いがあれば新しい日付のまま書く。
- */
-const GENERATED_DATE = /(・)(\d{4}-\d{2}-\d{2})(）。手で編集しないでください)/;
-
-function writeGenerated(outPath, text) {
-  if (existsSync(outPath)) {
-    const before = readFileSync(outPath, 'utf8');
-    const prev = before.match(GENERATED_DATE);
-    if (prev) {
-      const sameExceptDate = text.replace(GENERATED_DATE, `$1${prev[2]}$3`);
-      if (sameExceptDate === before) return { written: false, date: prev[2] };
-    }
-  }
-  writeFileSync(outPath, text);
-  const now = text.match(GENERATED_DATE);
-  return { written: true, date: now ? now[2] : null };
-}
 
 const T = {
   title: (name) => `${name} — ツールリファレンス`,
@@ -820,8 +805,9 @@ function syncLibVersion(name, cfg, pkg) {
 /* ---------------- main ---------------- */
 
 const targets = process.argv.slice(2);
-const known = [...Object.keys(REGISTRY), ...Object.keys(LIB_REGISTRY)];
-const names = targets.length ? targets : known;
+const specTargets = SPEC_TARGETS.map((n) => `specs:${n}`);
+const known = [...Object.keys(REGISTRY), ...Object.keys(LIB_REGISTRY), 'specs', ...specTargets];
+const names = targets.length ? targets : [...Object.keys(REGISTRY), ...Object.keys(LIB_REGISTRY), 'specs'];
 for (const unknown of names.filter((n) => !known.includes(n))) {
   console.error(`unknown target: ${unknown} (known: ${known.join(', ')})`);
   process.exit(1);
@@ -829,6 +815,9 @@ for (const unknown of names.filter((n) => !known.includes(n))) {
 for (const name of names.filter((n) => n in LIB_REGISTRY)) {
   await generateLib(name);
 }
+// 仕様書ページ（houki-hub#27）。サーバーを起動しないので、MCP のハンドシェイクより先に回す
+const specNames = names.includes('specs') ? SPEC_TARGETS : names.filter((n) => n.startsWith('specs:')).map((n) => n.slice(6));
+if (specNames.length) await generateSpecPages(specNames);
 for (const name of names.filter((n) => n in REGISTRY)) {
   const cfg = REGISTRY[name];
   // mcp/ は追跡外の作業コピー。CI と fresh clone には dist が無いのでスキップし、

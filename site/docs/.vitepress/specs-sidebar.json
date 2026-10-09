@@ -1,0 +1,92 @@
+{
+  "/specs/": [
+    {
+      "text": "仕様書",
+      "items": [
+        {
+          "text": "仕様書の読み方",
+          "link": "/specs/"
+        }
+      ]
+    },
+    {
+      "text": "houki-egov-mcp",
+      "collapsed": true,
+      "items": [
+        {
+          "text": "一覧",
+          "link": "/specs/houki-egov/"
+        },
+        {
+          "text": "ツール",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "search_fulltext",
+              "link": "/specs/houki-egov/search_fulltext"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "houki-nta-mcp",
+      "collapsed": true,
+      "items": [
+        {
+          "text": "一覧",
+          "link": "/specs/houki-nta/"
+        },
+        {
+          "text": "ツール",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "nta_get_tsutatsu",
+              "link": "/specs/houki-nta/nta_get_tsutatsu"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "houki-abbreviations",
+      "collapsed": true,
+      "items": [
+        {
+          "text": "一覧",
+          "link": "/specs/houki-abbreviations/"
+        },
+        {
+          "text": "関数",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "resolveAbbreviation",
+              "link": "/specs/houki-abbreviations/resolve_abbreviation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "houki-research Skill",
+      "collapsed": true,
+      "items": [
+        {
+          "text": "一覧",
+          "link": "/specs/houki-research/"
+        },
+        {
+          "text": "workflow",
+          "items": [
+            {
+              "text": "tax-research",
+              "link": "/specs/houki-research/tax-research"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
