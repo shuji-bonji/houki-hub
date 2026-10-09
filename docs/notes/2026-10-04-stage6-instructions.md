@@ -25,7 +25,8 @@
 | CE | 残りの順序 3 | houki-egov-mcp の変換の PR | 済（egov PR #117、Closes #116） |
 | CN | 残りの順序 3 | houki-nta-mcp の変換の PR（前直し F1・F2・F5） | 済（nta PR #159、Closes #158） |
 | CA | 残りの順序 3 | houki-abbreviations の変換の PR（前直し F3・F4） | 済（abbr PR #38、Closes #37） |
-| D5 | 残りの順序 3 | spec-ids の docs の PR（operations.md）と Issue 草案 2 件、#5 を閉じる | すぐ（2026-10-09 に追加） |
+| D5 | 残りの順序 3 | spec-ids の docs の PR（operations.md）と Issue 草案 2 件、#5 を閉じる | 済（spec-ids PR #10、#5 を閉じた。Issue #8・#9） |
+| Q27 | 残りの順序 2 | houki-nta-mcp 0.27.0 の仕様 PR（#154・#155） | Q24'（D1）を決めてから（2026-10-09 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1291,4 +1292,49 @@ spec-ids の docs/operations.md を 0.3.0（承認の記録を front matter に�
 - 文は「〜します」「〜です」。実在の PR 番号・コミット・件数で書く
 - コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に spec-ids フォルダーの削除の許可を取る。VM の git の名前とメールは houki-hub の指示書の「共通」と同じ
 - 報告: ブランチ・コミット、直した節の一覧、PR 本文の草案（Closes #5。3 リポジトリの変換の PR へのリンク、「人が判断すること」（5 章の書き方）。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）、Issue の草案 2 件
+```
+
+---
+
+## 指示 Q27: houki-nta-mcp 0.27.0 の仕様 PR（#154・#155、front matter の形で書く最初の仕様 PR）
+
+spec-ids#5 が閉じた後（spec-ids PR #10、main `0b626cc`）に、新しい会話に貼ります。houki-nta-mcp で、承認の記録を front matter に書く形になってから最初の仕様 PR です。下の出発点は計画書の Q24'（spec-ids の D1）が勧める案 A のときの形です。2026-10-09 JST に、houki-nta-mcp の origin の main が `9ed0832` で、`specs/changes/` に `20261009-inspect-pdf-meta-qa-jirei/`（#156、front matter に変換済み、`implementation: none`）だけがあることを確かめました。
+
+```text
+houki-nta-mcp 0.27.0（#154 置き場所のフォルダーに入る権限が無いときの DB の判定、#155 GET-TSUTATSU-007 が実行できないコマンドを案内する）の仕様 PR を書いてください。この会話の役は Spec Steward です（AGENTS.md の「役割」）。実装・テストは書きません。承認の記録を front matter に書く形（spec-ids 0.3.0）になってから最初の仕様 PR です。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-nta-mcp（device_bash では $HOME/mnt/houki-hub/mcp/houki-nta-mcp）
+- 起点: main の 9ed0832。git ls-remote https://github.com/shuji-bonji/houki-nta-mcp refs/heads/main で origin と同じか確かめ、specs/changes/ に 20261009-inspect-pdf-meta-qa-jirei/ だけがあることを確かめる（この差分は触らない。0.27.0 の実装 PR で releases へ移す）
+- ブランチ: spec/<作業日の yyyymmdd>-db-folder-access-and-tsutatsu-guide
+- npx spec-ids は node_modules の 0.3.0 を使う（package-lock.json が 0.3.0）。VM で動かなければ $HOME/mnt/spec-ids/bin/spec-ids.mjs を使う
+
+## 最初に読むもの（この順）
+
+1. AGENTS.md（変換後の承認の記録の書き方）と CONTRIBUTING.md
+2. spec-ids の docs/operations.md（PR #10 の後。3.2「承認の記録」と 5 章「差分の書き方」）と README の front matter の表
+3. Issue #154・#155 の本文（curl https://api.github.com/repos/shuji-bonji/houki-nta-mcp/issues/154 と /155）
+4. specs/releases/v0.26.0/20261006-db-failure-paths/proposal.md の「人が判断すること」10 と「この差分の外で見つけたこと」1・2（#154・#155 の出所）
+5. specs/changes/20261009-inspect-pdf-meta-qa-jirei/proposal.md の「この差分の外で見つけたこと」（とくに 4: search_rules の docId の説明）
+6. specs/current の db_schema（021・029・030、probeDbState の判定）、cli_status（004・007）、cli_bulk_download（011。--tsutatsu が受け付ける値）、nta_get_tsutatsu（007・010）、search_rules（docId の説明）
+7. src/db/index.ts の probeDbState、src/tools/handlers.ts の getTsutatsu の 007 の枝、src/cli.ts の --tsutatsu の値の検査
+
+## 出発点（勧める案。proposal.md の「人が判断すること」に書いて承認を受ける）
+
+- #154: 置き場所のフォルダー（またはパスの途中のフォルダー）に入る権限が無いときは、statSync の EACCES を見て「開けない」（unopenable）と判定する。読むだけのツールは 029 の開けないときの応答（DOC_NOT_FOUND / TSUTATSU_NOT_FOUND と開けないときの hint）、書き戻す 3 ツールは 030 の動き、--status は [ERROR] DB を開けません と終了コード 1（CLI-STATUS-007 の側に入る。004 の「DB が無い」から外れる）、投入のフラグは今のまま（終了コード 1）。入口の扱いがそろう。--status の終了コードが変わるので 0.27.0（minor）。ほかの案（今のまま、または --status だけを変える）を並べる
+- #155: 案 A。GET-TSUTATSU-007 で、--tsutatsu が受け付けない通達（基本通達 4 種以外）には cli_bulk_download の案内を付けず、hint で「この通達は今は取り込めない」こと（取り込めるのは --tsutatsu の 4 種）を書く。next_actions は今の 007 の形から cli_bulk_download を外す（残りが無ければ消す）。基本通達 4 種の案内は今のまま。案 B（--tsutatsu に対応する通達を増やす）は #116（範囲の検討。計画の外）に当たるので並べるだけにする。DB-SCHEMA-027 の表の該当行も直す
+- 同じ差分に入れる仕様の文の直し: search_rules の docId の説明（「nta_inspect_pdf_meta にそのまま渡せる。例: 質疑応答事例は shohi/02/19」）を、nta_inspect_pdf_meta に渡せるのは 4 つの種別だけ、に直す（#156 の差分の「この差分の外で見つけたこと」4）
+- ID の無い節（## 未決、処理の流れの図など）を直すときは、差分の spec.md にその節を見出しの単位で書く（spec-ids の D1 の案 A。proposal.md の「取り込みのとき」に文章で書かない）
+- 実装 PR に渡すもの（proposal.md の「実装の変更」に書く）: (1) #156 の差分のフォルダーを specs/releases/v0.27.0/ へ移し、実装 PR に Closes #156 を書く。(2) 受入テストの 3 か所が nta_inspect_pdf_meta を docType: 'qa-jirei' で直接呼んでいる（#156 の差分の「この差分の外で見つけたこと」1）。4 つの値のどれかに置き換えるか外す。(3) LEGAL_STATUS_BY_DOCTYPE の qa-jirei の項と handleNtaInspectPdfMetaInner のコメント（同 2）を消すか
+
+## 守ること・報告すること
+
+- specs/changes/<yyyymmdd-slug>/ の下だけを書く。新しい仕様 ID は npx spec-ids next <dir>
+- proposal.md の先頭に front matter を書く: implementation: required、targets: [<この差分が書き換える specs/current の dir をすべて>]、approved: と pr: は空（私がマージの前に書く）。本文に「- 承認日:」の行は書かない（spec-ids check の検査 7 が止める）。targets には、差分の specs/<dir>/spec.md を置く dir と、ID の無い節を直す dir をすべて入れる
+- proposal.md の節は v0.26.0 の proposal.md と同じ並び（なぜ変えるか・今の動き・変えた後の動き・変わる仕様 ID・変わらない振る舞い・互換性・呼び出し例への影響・実装 PR で直す文書・実装の変更・publish の前の確認・取り込みのとき・人が判断すること・確かめた値・確かめていない点・この差分の外で見つけたこと）
+- 「取り込みのとき（Publisher）」には、current に承認を書き足さないこと（spec-ids 0.3.0 の運用）と、#156 の差分も同じ実装 PR で releases へ移すことを書く
+- npx spec-ids check と BASE_REF=main HEAD_REF=<ブランチ> node .github/scripts/check-pr-scope.mjs を通す（pr-scope は approved・pr の空欄だけで止まることを確かめる）
+- コミットを作るところまで。署名・push・PR・マージは私が行う。VM の注意は、この文書の「共通: Cowork の VM で作業するときの注意」と同じ
+- 報告: ブランチ・コミット、ADDED / MODIFIED / REMOVED の数と targets、spec-ids check と pr-scope の結果、「人が判断すること」の一覧（勧める案つき）、PR 本文の草案（Refs #154 #155。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）、実装 PR に渡すこと、front matter の形で仕様 PR を書いて気付いたこと（spec-ids や AGENTS.md の文の分かりにくさなど）
 ```
