@@ -40,7 +40,7 @@
 | P1 | 段階 4 | houki-egov-mcp 0.20.1・houki-abbreviations 0.7.1 の patch（振る舞いの変更なし、Q35' の A） | 済（egov PR #118・abbr PR #41、2026-10-10 に publish） |
 | Z2 | 段階 4 | hub#5 ② の有効化と #44 の全部の例（Q34'〜Q38' の A） | 済（hub PR #54、main `8212b3a`） |
 | Y7 | 段階 4 | scope-by-audience の食い違い 5 か所と、Mermaid の最後の行が欠けること（Q40'・Q41'） | 済（hub PR #55 `1d26e78`・#56 `4541a7f`） |
-| Y8 | 段階 4 | scope-by-audience の残りの食い違い 6〜9（Q42'） | Q42' の決定の後（2026-10-10 に追加） |
+| Y8 | 段階 4 | scope-by-audience の残りの食い違い 6〜9（Q42'） | すぐ（2026-10-10 21:16 JST に Q42' を案 A に決めた） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1999,7 +1999,7 @@ houki-hub のサイトで、2 つの直しを別々の PR にしてください�
 
 ## 指示 Y8: scope-by-audience の残りの食い違い（このページの言い方の直しを終える）
 
-Y7 の PR #55 の「残っていること」です。計画書の「Z2・Y7 の後」の 6〜9 の表と Q42' を、勧める案（A）で書いています。決定が変わったら、この指示を直してから渡します。
+Y7 の PR #55 の「残っていること」です。計画書の「Z2・Y7 の後」の 6〜9 の表と Q42' は、2026-10-10 JST に shuji が案 A に決めました。
 
 ```text
 houki-hub の site/docs/guide/scope-by-audience.md で、業法の線の言い方が Q33' とそろっていない文を直してください。この PR で、このページの言い方の直しを終えます。この会話の役は、文書の作業者です。生成したページ（reference/・specs/）は変えません。
@@ -2007,7 +2007,7 @@ houki-hub の site/docs/guide/scope-by-audience.md で、業法の線の言い�
 ## 場所
 
 - リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub（Cowork の device_bash では $HOME/mnt/houki-hub）
-- 起点: main。作業の前に git ls-remote https://github.com/shuji-bonji/houki-hub refs/heads/main で origin と同じか確かめる（PR #55・#56 が入った後）。作業コピーにステージされた変更や未コミットの変更があれば、触らずに私に伝える
+- 起点: main。作業の前に git ls-remote https://github.com/shuji-bonji/houki-hub refs/heads/main で origin と同じか確かめる（PR #55・#56・#57 が入った後）。作業コピーにステージされた変更や未コミットの変更があれば、触らずに私に伝える
 - ブランチ: docs/<作業日の yyyymmdd>-scope-by-audience-final
 
 ## 最初に読むもの（この順）
