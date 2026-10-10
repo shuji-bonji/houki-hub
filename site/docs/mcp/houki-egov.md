@@ -14,19 +14,24 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 
 ## ツール
 
-引数の詳細と実測の呼び出し例は[ツールリファレンス](/reference/mcp/houki-egov/)にあります。
+引数の詳細と実測の呼び出し例はツールのページに、ツールが何をし、何を扱わないかは仕様書ページにあります。一覧は[ツールリファレンス](/reference/mcp/houki-egov/)にもあります。
 
-| ツール | 用途 |
-| --- | --- |
-| `search_law` | 法令名でキーワード検索します。略称（「法人税法」「個情法」）は正式名に解決してから検索します |
-| `get_law` | 条・項・号の単位で本文を取得します。Markdown / JSON / 目次のみ、を選べます。枝番号の号は `item: "8の2"` のように文字列で指定します（v0.6.0 から） |
-| `get_toc` | 目次だけを取得します。長い法令で本文を読む前に構造を掴むためのものです |
-| `get_law_revisions` | 改正履歴（公布日・施行日・状態）を取得します |
-| `search_fulltext` | 条文本文を横断して全文検索します。ローカル DB が必要で、無いときは `search_law` の結果を `source: "api-fallback"` として返します |
-| `resolve_abbreviation` | 略称が正式名と法令 ID にどう解決されるかを診断します |
-| `explain_law_type` | 法令の種別（憲法・法律・政令・省令・通達など）と、それぞれの拘束力を説明します |
-| `get_related_laws` | 法令名から施行令・施行規則（施行令からは親の法律）を、e-Gov に実在するものだけ `law_id` 付きで返します。名前の末尾に「施行令」「施行規則」を付けた候補だけを試します（v0.10.0 から） |
-| `get_article_references` | 条文本文が引いている他法令の条（`law_id` 付き）、同一法令内の条・項・号、「政令で定める」の委任先を取り出し、`get_law` の引数を `next_actions` に付けます。「前項」「同法」は解決しません（v0.10.0 から） |
+| ツールのページ | 一言 | 仕様書ページ |
+| --- | --- | --- |
+| [`search_law`](/reference/mcp/houki-egov/search_law) | 法令名でキーワード検索します。略称（「法人税法」「個情法」）は正式名に解決してから検索します | [仕様](/specs/houki-egov/search_law) |
+| [`get_law`](/reference/mcp/houki-egov/get_law) | 条・項・号の単位で本文を取得します。Markdown / JSON / 目次のみ、を選べます。枝番号の号は `item: "8の2"` のように文字列で指定します（v0.6.0 から） | [仕様](/specs/houki-egov/get_law) |
+| [`get_toc`](/reference/mcp/houki-egov/get_toc) | 目次だけを取得します。長い法令で本文を読む前に構造を掴むためのものです | [仕様](/specs/houki-egov/get_toc) |
+| [`get_law_range`](/reference/mcp/houki-egov/get_law_range) | 編・章・節・款・目のいずれか、または附則 1 本を範囲にして、その中の条を本文ごと取得します | [仕様](/specs/houki-egov/get_law_range) |
+| [`get_law_revisions`](/reference/mcp/houki-egov/get_law_revisions) | 改正履歴（公布日・施行日・状態）を取得します | [仕様](/specs/houki-egov/get_law_revisions) |
+| [`search_fulltext`](/reference/mcp/houki-egov/search_fulltext) | 条文本文を横断して全文検索します。ローカル DB が必要で、無いときは `search_law` の結果を `source: "api-fallback"` として返します | [仕様](/specs/houki-egov/search_fulltext) |
+| [`resolve_abbreviation`](/reference/mcp/houki-egov/resolve_abbreviation) | 略称が正式名と法令 ID にどう解決されるかを診断します | [仕様](/specs/houki-egov/resolve_abbreviation) |
+| [`explain_law_type`](/reference/mcp/houki-egov/explain_law_type) | 法令の種別（憲法・法律・政令・省令・通達など）と、それぞれの拘束力を説明します | [仕様](/specs/houki-egov/explain_law_type) |
+| [`get_related_laws`](/reference/mcp/houki-egov/get_related_laws) | 法令名から施行令・施行規則（施行令からは親の法律）を、e-Gov に実在するものだけ `law_id` 付きで返します。名前の末尾に「施行令」「施行規則」を付けた候補だけを試します（v0.10.0 から） | [仕様](/specs/houki-egov/get_related_laws) |
+| [`get_article_references`](/reference/mcp/houki-egov/get_article_references) | 条文本文が引いている他法令の条（`law_id` 付き）、同一法令内の条・項・号、「政令で定める」の委任先を取り出し、`get_law` の引数を `next_actions` に付けます。「前項」「同法」は解決しません（v0.10.0 から） | [仕様](/specs/houki-egov/get_article_references) |
+| [`verify_citations`](/reference/mcp/houki-egov/verify_citations) | LLM が組み立てた法令の引用の一覧を、1 回の呼び出しでまとめて実在確認します | [仕様](/specs/houki-egov/verify_citations) |
+| [`list_attachments`](/reference/mcp/houki-egov/list_attachments) | 法令に付いている添付ファイル（別表・様式・別記の図）の一覧を返します | [仕様](/specs/houki-egov/list_attachments) |
+| [`get_attachment`](/reference/mcp/houki-egov/get_attachment) | 添付ファイル 1 件か、その法令履歴の添付ファイルをまとめた zip の URL を返します。`save: true` のときはファイルを保存して絶対パスを返します | [仕様](/specs/houki-egov/get_attachment) |
+| [`get_law_file`](/reference/mcp/houki-egov/get_law_file) | 法令本文を 1 つのファイル（xml / json / html / rtf / docx）で取る URL を返します。`save: true` のときはファイルを保存して絶対パスを返します | [仕様](/specs/houki-egov/get_law_file) |
 
 ## 全文検索のためのローカル DB
 
@@ -45,7 +50,19 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 | DB が要るツール | 14 のうち 1（`search_fulltext`）。DB が無いと法令名の一致で返り、`source: "api-fallback"` が付きます |
 | 版が上がったとき | 0.19.0 で DB の版を 3 にしました。0.18.x 以前に作った DB は `--bulk-download-everything` で作り直します。作り直した DB を 0.18.x 以前で開くと全テーブルが消えます（[版をまたぐときの注意](/guide/local-database#版をまたぐときの注意)） |
 
-各項目の詳細は以下の各節にあります。
+各項目の詳細は以下の各節にあります。DB を作る・最新にする・作り直す流れは次のとおりです。
+
+```mermaid
+flowchart TB
+  S(["初めて使う"]) --> B["--bulk-download-everything<br/>全件の zip（約 290 MB）"]
+  B --> DB[("laws.db")]
+  DB --> C{"days_since_sync<br/>（--status）"}
+  C -->|0| K["そのまま使う"]
+  C -->|90 日以内| SY["--sync<br/>日次差分"]
+  SY --> DB
+  C -->|90 日を<br/>超えた| B
+  V(["パッケージを上げて<br/>DB の版が変わった"]) --> B
+```
 
 ### ローカル DB を作っていないとき
 
@@ -58,6 +75,24 @@ description: e-Gov 法令 API v2 から法律・政令・省令の本文・目�
 
 ほかの 13 ツール（`search_law`・`get_law`・`get_toc`・`get_law_range`・`get_law_revisions`・`resolve_abbreviation`・`explain_law_type`・`get_related_laws`・`get_article_references`・`verify_citations`・`list_attachments`・`get_attachment`・`get_law_file`）は
 e-Gov 法令 API をその場で呼ぶので、DB の有無に関係なく同じように動きます。
+
+```mermaid
+flowchart TB
+  L["LLM"]
+  T["search_law など<br/>13 ツール"]
+  F["search_fulltext"]
+  Q{"laws.db が<br/>あるか"}
+  DB[("laws.db")]
+  FB["法令名の一致<br/>api-fallback"]
+  API[("e-Gov<br/>法令 API v2")]
+  L --> T
+  L --> F
+  T --> API
+  F --> Q
+  Q -->|ある| DB
+  Q -->|無い| FB
+  FB --> API
+```
 
 ### 作り方
 
@@ -123,6 +158,8 @@ v0.19.1 は、この版の状態だけを `UnEnforced` から `CurrentEnforced` 
 状態を書き換えた版があると、取り込みの件数の後に `  状態の更新: <件数> 件 (…)` の行が出ます。
 
 v0.19.0 はこの版を「中身が同じ」として飛ばしていたので、施行日を過ぎても版が未施行のまま残り、`search_fulltext` が改正前の条文を返し続けることがありました（[houki-egov-mcp #107](https://github.com/shuji-bonji/houki-egov-mcp/issues/107)）。
+
+::: info v0.19.0 で 2026-10-04 以降に --sync した DB
 v0.19.0 で 2026-10-04 以降に `--sync` した DB は、v0.19.1 に上げた後に次のコマンドを 1 回実行してください。未施行のまま残った版の状態を直します（条の本文は入れ直しません。全件の zip 約 290 MB を取得します）。
 
 ```sh
@@ -131,6 +168,7 @@ npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything
 
 v0.19.1 の `--sync` や `--status` が `[WARN] 施行日が last_sync_date …` を出したときも同じです。
 このコマンドが要る DB の正確な範囲は、リポジトリの [docs/NOTES.md](https://github.com/shuji-bonji/houki-egov-mcp/blob/main/docs/NOTES.md) にあります。
+:::
 
 ### 同期の状態を見る
 

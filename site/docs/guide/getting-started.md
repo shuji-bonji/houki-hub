@@ -5,7 +5,9 @@ description: houki-egov-mcp / houki-nta-mcp / houki-research Skill を Claude De
 
 # 導入手順
 
+::: info 必要なもの
 必要なものは Node.js 22 以上だけです。データベースの構築は任意で、なくても API 経由で動きます。
+:::
 
 ## 1. MCP サーバーを設定に追加する
 
@@ -75,7 +77,9 @@ Claude Code では、marketplace の [claude-plugins](https://github.com/shuji-b
 /plugin install houki-research@shuji-bonji
 ```
 
+::: info houki-research v0.7.0 から
 houki-research v0.7.0 からは `houki-egov-mcp` と `houki-nta-mcp` を `dependencies` に宣言しているため、この 1 コマンドで 2 つの MCP も入ります。手順 1 の設定を手で書く必要はありません。
+:::
 
 ```text
 /plugin install houki-egov-mcp@shuji-bonji

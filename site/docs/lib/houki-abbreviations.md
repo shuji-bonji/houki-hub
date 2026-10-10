@@ -39,7 +39,9 @@ houki-egov-mcp と houki-nta-mcp の `package.json` は `^0.4.1` を指定して
 両 MCP が実際に読み込んでいるのは、公開している 42 記号のうち 16 記号（関数 5・定数 5・型 6）です。
 どれを使っているかは、[API リファレンス](/reference/lib/houki-abbreviations/)の一覧にある「family での使用」列で確かめられます。
 
+::: info minor を上げたとき
 このパッケージを minor で上げたときは、MCP 側の依存範囲も上げて publish し直す必要があります（次は 0.6.0 の略称展開を houki-nta-mcp が使うとき）。
+:::
 
 ## 提供する機能
 

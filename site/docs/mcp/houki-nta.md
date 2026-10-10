@@ -51,18 +51,24 @@ v0.11.0 から、この対応が応答に入ります（[houki-nta-mcp#20](https
 
 ## ツール
 
-引数の詳細と実測の呼び出し例は[ツールリファレンス](/reference/mcp/houki-nta/)にあります。
+引数の詳細と実測の呼び出し例はツールのページに、ツールが何をし、何を扱わないかは仕様書ページにあります。一覧は[ツールリファレンス](/reference/mcp/houki-nta/)にもあります。
 
-| ツール | 用途 |
-| --- | --- |
-| `nta_get_tsutatsu` / `nta_search_tsutatsu` | 基本通達の本文取得と全文検索 |
-| `nta_get_kaisei_tsutatsu` / `nta_search_kaisei_tsutatsu` | 改正通達の取得と検索。添付 PDF は種別（新旧対照表・別紙・Q&A など）に分類して表で返します |
-| `nta_get_jimu_unei` / `nta_search_jimu_unei` | 事務運営指針の取得と検索 |
-| `nta_get_bunshokaitou` / `nta_search_bunshokaitou` | 文書回答事例の取得と検索 |
-| `nta_get_tax_answer` / `nta_search_tax_answer` | タックスアンサーの取得と検索 |
-| `nta_get_qa` / `nta_search_qa` | 質疑応答事例の取得と検索 |
-| `nta_inspect_pdf_meta` | 文書に添付された PDF の一覧に、種別と読み方（表として取る / 本文として読む / 先頭を見て決める、紙面の組み方）を付けて返します。`save: true` で PDF を保存して絶対パスを返し、`next_actions` に pdf-reader-mcp の呼び出し例と、他の PDF 読み取りツール向けの 1 件を置きます。本文は読みません（v0.19.0） |
-| `resolve_abbreviation` | 略称の解決を診断します |
+| ツールのページ | 一言 | 仕様書ページ |
+| --- | --- | --- |
+| [`nta_search_tsutatsu`](/reference/mcp/houki-nta/nta_search_tsutatsu) | 基本通達を全文検索します | [仕様](/specs/houki-nta/nta_search_tsutatsu) |
+| [`nta_get_tsutatsu`](/reference/mcp/houki-nta/nta_get_tsutatsu) | 基本通達の本文を取得します | [仕様](/specs/houki-nta/nta_get_tsutatsu) |
+| [`nta_search_kaisei_tsutatsu`](/reference/mcp/houki-nta/nta_search_kaisei_tsutatsu) | 改正通達を検索します | [仕様](/specs/houki-nta/nta_search_kaisei_tsutatsu) |
+| [`nta_get_kaisei_tsutatsu`](/reference/mcp/houki-nta/nta_get_kaisei_tsutatsu) | 改正通達を取得します。添付 PDF は種別（新旧対照表・別紙・Q&A など）に分類して表で返します | [仕様](/specs/houki-nta/nta_get_kaisei_tsutatsu) |
+| [`nta_search_jimu_unei`](/reference/mcp/houki-nta/nta_search_jimu_unei) | 事務運営指針を検索します | [仕様](/specs/houki-nta/nta_search_jimu_unei) |
+| [`nta_get_jimu_unei`](/reference/mcp/houki-nta/nta_get_jimu_unei) | 事務運営指針を取得します | [仕様](/specs/houki-nta/nta_get_jimu_unei) |
+| [`nta_search_bunshokaitou`](/reference/mcp/houki-nta/nta_search_bunshokaitou) | 文書回答事例を検索します | [仕様](/specs/houki-nta/nta_search_bunshokaitou) |
+| [`nta_get_bunshokaitou`](/reference/mcp/houki-nta/nta_get_bunshokaitou) | 文書回答事例を取得します | [仕様](/specs/houki-nta/nta_get_bunshokaitou) |
+| [`nta_search_tax_answer`](/reference/mcp/houki-nta/nta_search_tax_answer) | タックスアンサーを検索します | [仕様](/specs/houki-nta/nta_search_tax_answer) |
+| [`nta_get_tax_answer`](/reference/mcp/houki-nta/nta_get_tax_answer) | タックスアンサーを取得します | [仕様](/specs/houki-nta/nta_get_tax_answer) |
+| [`nta_search_qa`](/reference/mcp/houki-nta/nta_search_qa) | 質疑応答事例を検索します | [仕様](/specs/houki-nta/nta_search_qa) |
+| [`nta_get_qa`](/reference/mcp/houki-nta/nta_get_qa) | 質疑応答事例を取得します | [仕様](/specs/houki-nta/nta_get_qa) |
+| [`nta_inspect_pdf_meta`](/reference/mcp/houki-nta/nta_inspect_pdf_meta) | 文書に添付された PDF の一覧に、種別と読み方（表として取る / 本文として読む / 先頭を見て決める、紙面の組み方）を付けて返します。`save: true` で PDF を保存して絶対パスを返し、`next_actions` に pdf-reader-mcp の呼び出し例と、他の PDF 読み取りツール向けの 1 件を置きます。本文は読みません（v0.19.0） | [仕様](/specs/houki-nta/nta_inspect_pdf_meta) |
+| [`resolve_abbreviation`](/reference/mcp/houki-nta/resolve_abbreviation) | 略称の解決を診断します | [仕様](/specs/houki-nta/resolve_abbreviation) |
 
 検索ツールは `hasPdf` で PDF 付きの文書だけに絞れ、応答に `freshness`（取り込みからの経過）が付きます。`nta_search_qa` は `topic`（`shotoku`・`shohi` などの税目）で絞り込めます（v0.13.0 から）。
 
@@ -104,7 +110,9 @@ v0.12.0 から、`nta_get_qa` を `format: "json"` で呼ぶと、この欄を�
 
 v0.12.0 で取り込んだ 1,834 件の【関係法令通達】を区切ると 5,059 個の参照になり、そのうち 94.2% を法令か通達として読み取れました。読み取れなかった参照は、`relatedLaws` の原文にだけ残ります。
 
+::: info v0.11.1 までに作った DB
 ページ下部の注記は、v0.11.1 までは【関係法令通達】（その欄が無いページでは【回答要旨】）に混ざっていました。v0.11.1 までに作ったローカル DB では、「異なる課税関係が生ずる」のような注記の文言で、ほぼ全件の質疑応答事例がヒットします。`houki-nta-mcp --bulk-download-qa --refresh` で取り込み直してください。取り込み直すとほぼ全件の本文が変わるため、最後に「構造変質の疑い」の警告が出ますが、解析方法を変えたためで、国税庁のページが変わったわけではありません。
+:::
 
 ## 検索が 0 件のとき
 
@@ -167,15 +175,48 @@ houki-nta-mcp のローカル DB は、そのページを 1 件ずつ取得し�
 | `nta_get_kaisei_tsutatsu` `nta_get_jimu_unei` `nta_get_bunshokaitou` `nta_inspect_pdf_meta` | `DOC_NOT_FOUND` を返し、投入するコマンドを案内します（`nta_inspect_pdf_meta` は添付 PDF の一覧を DB の文書から読むため） |
 | `resolve_abbreviation` | DB を使いません |
 
+```mermaid
+flowchart TB
+  L["LLM"]
+  S["検索<br/>6 ツール"]
+  G1["通達・質疑応答事例・<br/>タックスアンサーの取得"]
+  G2["改正通達・事務運営指針・<br/>文書回答事例の取得など"]
+  DB[("cache.db")]
+  SITE[("国税庁<br/>サイト")]
+  E["DOC_NOT_FOUND<br/>投入コマンドの案内"]
+  L --> S & G1 & G2
+  S & G1 & G2 --> DB
+  G1 -->|DB に<br/>無いとき| SITE
+  SITE -->|書き戻す| DB
+  S -->|種別が<br/>0 件| E
+  G2 -->|DB に<br/>無いとき| E
+```
+
 改正通達・事務運営指針・文書回答事例の 3 つが国税庁サイトへ取りに行かないのは、docId から個別ページの URL を組み立てるのに税目フォルダの世代差（`sozoku` と `sozoku2` など）を解く必要があるためです。
 
 v0.15.0 までは、`nta_get_qa` と `nta_get_tax_answer` が DB を引かずに毎回国税庁サイトから取得していました。v0.16.0 で `nta_get_tsutatsu` と同じ形に揃えています（[houki-nta-mcp #29](https://github.com/shuji-bonji/houki-nta-mcp/issues/29)）。
 
-::: tip v0.15.0 以前に作った DB のとき
+::: info v0.15.0 以前に作った DB のとき
 質疑応答事例とタックスアンサーを DB から返すには、本文だけでなく段落や節の構造も保存しておく必要があります。この保存は v0.16.0 から始まったので、それ以前に作った DB では最初の 1 回だけ国税庁サイトから取得し、その結果を DB に入れます。2 回目からは DB から返ります。`--bulk-download-qa` と `--bulk-download-tax-answer` を回しても埋まります。
 :::
 
 ### 作り方
+
+DB を作る・最新にする・作り直す流れは次のとおりです。各コマンドの説明はこの後に続きます。
+
+```mermaid
+flowchart TB
+  S(["初めて使う"]) --> Q["--quickstart<br/>通達 1 本・約 3〜5 分"]
+  S --> ALL["--bulk-download-everything<br/>6 種別・約 100 分"]
+  Q --> DB[("cache.db")]
+  ALL --> DB
+  DB --> R1["--refresh-stale=N<br/>古いものを一覧"]
+  R1 --> R2["--refresh-stale=N --apply<br/>古いものを取り直す"]
+  R2 --> DB
+  DB --> RF["--bulk-download-everything<br/>--refresh で全部取り直す"]
+  RF --> DB
+  V(["パッケージを<br/>上げる"]) -->|起動時に移行| DB
+```
 
 初めて入れたときは、通達 1 本だけを入れて動くことを確かめてください（v0.18.0）。
 
@@ -275,11 +316,13 @@ npx -y @shuji-bonji/houki-nta-mcp@latest --refresh-stale=30
 npx -y @shuji-bonji/houki-nta-mcp@latest --refresh-stale=30 --apply
 ```
 
+::: danger --refresh は既存のデータを消します
 全部を入れ直すときは `--refresh` を付けます。既存のデータを消してから取り直すので、最初の投入と同じだけ時間がかかります。
 
 ```sh
 npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-everything --refresh
 ```
+:::
 
 `--refresh` を付けずに再実行したときは、国税庁サイトが `304 Not Modified` を返す節を飛ばすので短時間で終わります。
 本文の解析だけをやり直したいとき（v0.10.0 以前の DB に算式画像のプレースホルダを入れる場合など）は `--refresh` を使います。

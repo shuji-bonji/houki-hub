@@ -37,7 +37,9 @@ v0.3.0 から、このときに返すものと返さないものを表で定め�
 | 返すもの | 条文・通達・裁決の提示（出典付き）、制度の概観と改正履歴、論点の列挙、何が事実認定に依存するかの明示、`legal_status` の階層 |
 | 返さないもの | 結論（該当する・しない）、可否の判定、金額・税額の確定、書類の起案・文案、推測 |
 
+::: warning 返さないもの
 返さないものは、注意喚起を添えても返しません。理由は精度ではなく業法の独占規定です（[免責事項と利用範囲](/guide/disclaimer)）。
+:::
 
 ### ② 横断の手順
 
@@ -52,7 +54,54 @@ v0.3.0 から、このときに返すものと返さないものを表で定め�
 
 MCP を組み込む開発者は問いを投げる利用者ではなく契約を読む利用者なので、手順ではなく `docs/ARCHITECTURE.md` / `ERROR-CODES.md` と各 MCP の `tools/list` を参照します。
 
-以下は通達・Q&A から根拠条文へ戻る手順（`tax-research.md`）です。
+#### feasibility-check で呼ぶ順
+
+仕様が法令のどこに触れるかを確かめるときに、Skill を読み込んだ LLM がツールを呼ぶ順です（番号は workflow のステップ）。全体の手順は [feasibility-check の仕様書ページ](/specs/houki-research/feasibility-check) にあります。
+
+```mermaid
+sequenceDiagram
+  participant L as LLM
+  participant E as egov-mcp
+  participant N as nta-mcp
+  L->>L: ② 仕様の語を<br/>法令の語にする
+  L->>E: ③ search_law /<br/>search_fulltext
+  E-->>L: 法令名と law_id
+  L->>E: ④ get_toc<br/>→ get_law
+  E-->>L: 条・項・号
+  L->>E: ⑤ get_related_laws<br/>→ get_article_references<br/>→ get_law
+  E-->>L: 施行令・施行規則<br/>と委任先の条
+  opt 税に関わる仕様
+    L->>N: ⑤' 通達・Q&A
+    N-->>L: 通達と<br/>next_actions
+  end
+  L->>E: ⑥ get_law_revisions
+  E-->>L: 施行日と<br/>未施行の改正
+```
+
+図で呼ぶツールのページ: [`search_law`](/reference/mcp/houki-egov/search_law)・[`search_fulltext`](/reference/mcp/houki-egov/search_fulltext)・[`get_toc`](/reference/mcp/houki-egov/get_toc)・[`get_law`](/reference/mcp/houki-egov/get_law)・[`get_related_laws`](/reference/mcp/houki-egov/get_related_laws)・[`get_article_references`](/reference/mcp/houki-egov/get_article_references)・[`get_law_revisions`](/reference/mcp/houki-egov/get_law_revisions)
+
+#### tax-research で呼ぶ順
+
+以下は通達・Q&A から根拠条文へ戻る手順（`tax-research.md`）です。ツールを呼ぶ順は次のとおりです（番号は下の手順の番号）。全体の手順は [tax-research の仕様書ページ](/specs/houki-research/tax-research) にあります。
+
+```mermaid
+sequenceDiagram
+  participant L as LLM
+  participant E as egov-mcp
+  participant N as nta-mcp
+  L->>N: 1. resolve_abbreviation
+  N-->>L: 正式名と<br/>担当 MCP
+  L->>E: 2. get_law
+  E-->>L: 条文と URL
+  L->>N: 3. nta_search_tsutatsu<br/>→ nta_get_tsutatsu
+  N-->>L: 通達・legal_status<br/>・next_actions
+  L->>E: 3. next_actions の<br/>get_law
+  L->>E: 4. get_law_revisions
+  L->>N: 4. nta_search_kaisei_tsutatsu<br/>→ nta_inspect_pdf_meta
+  N-->>L: PDF の読み方と<br/>保存したパス
+```
+
+図で呼ぶツールのページ: [`resolve_abbreviation`](/reference/mcp/houki-nta/resolve_abbreviation)・[`get_law`](/reference/mcp/houki-egov/get_law)・[`nta_search_tsutatsu`](/reference/mcp/houki-nta/nta_search_tsutatsu)・[`nta_get_tsutatsu`](/reference/mcp/houki-nta/nta_get_tsutatsu)・[`get_law_revisions`](/reference/mcp/houki-egov/get_law_revisions)・[`nta_search_kaisei_tsutatsu`](/reference/mcp/houki-nta/nta_search_kaisei_tsutatsu)・[`nta_inspect_pdf_meta`](/reference/mcp/houki-nta/nta_inspect_pdf_meta)。質疑応答事例から入るときは [`nta_search_qa`](/reference/mcp/houki-nta/nta_search_qa)・[`nta_get_qa`](/reference/mcp/houki-nta/nta_get_qa) を使います（下の 3 の 3 つ目）。
 
 1. 略称（「消基通」「インボイス」「労基法」）が含まれていれば、まず `resolve_abbreviation` で正式名と担当 MCP（`source_mcp_hint`）を確かめます
 2. 法律本文を houki-egov-mcp で引きます。政令・省令があれば続けて引きます

@@ -5,7 +5,10 @@ description: houki-hub family の各部品の版と、次に取り組む順序�
 
 # 現状と予定
 
+::: info 時点
 2026-09-13（JST）時点の状態です。版は npm の公開版です。
+:::
+
 判断の経緯を含む詳しい記録はリポジトリの [docs/ROADMAP.md](https://github.com/shuji-bonji/houki-hub/blob/main/docs/ROADMAP.md) にあります。
 
 ## 公開済みの部品
