@@ -744,3 +744,9 @@ Z2 の指示を書く前に shuji にしていただくこと（設計の文書�
 3. Q33'〜Q38' を決める
 
 Q35' を A にする場合、egov 0.20.1・abbr 0.7.1 の publish は Z2 の前に行う（実装 PR ではなく、CHANGELOG と版だけの PR。仕様 PR は要らない）。
+
+2026-10-10 15:25 JST、shuji が Mac で設計の文書 8 章のコマンド 5 を回した結果: `default_workflow_permissions: "read"`、`can_approve_pull_request_reviews: false`。`reference-regen.yml` は workflow の `permissions:` で `contents: write`・`pull-requests: write` を宣言しているので、`bot/reference-regen` への push は通る。ただし「Allow GitHub Actions to create and approve pull requests」が無効なので、`open_pr: true` のときの `gh pr create` は「GitHub Actions is not permitted to create or approve pull requests」で失敗する。`open_pr: false`（既定）の実行には影響しない。
+
+| # | 何を | 案 | 勧める案と理由 |
+| --- | --- | --- | --- |
+| Q39' | Actions が PR を開けない設定 | (A) 「Allow GitHub Actions to create and approve pull requests」だけを有効にする。`default_workflow_permissions` は `read` のまま（`gh api -X PUT repos/shuji-bonji/houki-hub/actions/permissions/workflow -f default_workflow_permissions=read -F can_approve_pull_request_reviews=true`） / (B) 設定は変えず、workflow は `bot/reference-regen` に push するだけにし、PR は shuji が要約の比較の URL から開く / (C) PAT か GitHub App のトークンで PR を開く | **A**。書き込みの権限を持つのは `permissions:` で宣言した `reference-regen.yml` だけで、ほかの workflow（`stack-check.yml`・`deploy.yml`）は既定の `read` のまま。有効にすると Actions が PR を承認することもできるようになるが、houki-hub には PR を承認する workflow も、承認を求める branch protection も無い。B は毎回人が PR を開く手間が残る。C は #5 ④ で取らないと決めた形（リポジトリを跨ぐトークンの管理） |
