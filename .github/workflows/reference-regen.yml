@@ -1,9 +1,10 @@
-name: Reference regeneration (prototype)
+name: Reference regeneration
 
 # リファレンス（site/docs/reference/）と仕様書ページ（site/docs/specs/）を、各リポジトリの公開版から作り直す。
 # 差分があれば PR（ブランチ bot/reference-regen）を開くか、開いている PR を更新する。
-# あわせて、作り直す前のサイトの生成ページの版と公開版のずれ（scripts/check-site-versions.mjs）を PR の本文と実行の要約に出す。
-# （houki-hub#5 ②。設計は docs/notes/2026-10-10-design-hub5-regen-and-examples-check.md）
+# あわせて、作り直す前のサイトの生成ページの版と公開版のずれ（scripts/check-site-versions.mjs）と、
+# DB の要らない呼び出し例の照合（scripts/check-examples-contract.mjs --db absent、Q38'）の結果を、PR の本文と実行の要約に出す。
+# （houki-hub#5 ②・#44。設計は docs/notes/2026-10-10-design-hub5-regen-and-examples-check.md）
 #
 # 入力の取り方（.github/scripts/prepare-sources.mjs）:
 #   - 版: npm の latest（npm に無い Skill は最新のタグ）
@@ -11,11 +12,17 @@ name: Reference regeneration (prototype)
 #   - MCP の tools/list: npx -y <npm>@<版>（clone は build しない）
 #   - houki-abbreviations の .d.ts: 公開した tarball の dist/ を clone に重ねる
 #
-# 試作のあいだは workflow_dispatch だけで動かす。schedule と push のトリガーは、shuji が試作を見てから足す。
-# 既定（open_pr: false）は PR を開かず、差分の一覧を実行の要約に出し、差分を artifact に置くだけ。
-# PR を開くには、Settings → Actions → General の「Allow GitHub Actions to create and approve pull requests」を有効にしておく必要がある。
+# いつ動くか（決めること 5、Q34' の A）:
+#   - schedule: 毎日 07:37 JST（stack-check.yml の 07:17 JST の 20 分後）。差分があれば PR を開く・更新する
+#   - workflow_dispatch: 手動。open_pr の既定は false で、差分の一覧を実行の要約に出し、差分を artifact に置くだけ
+# PR を開くには、Settings → Actions → General の「Allow GitHub Actions to create and approve pull requests」を有効にしておく必要がある（Q39'）。
+#
+# 呼び出し例の照合で「形の違い」があっても、この workflow は失敗にしない。件数を PR の本文の先頭と実行の要約に出す
+# （失敗にするかは運用を見てから決める）。
 
 on:
+  schedule:
+    - cron: '37 22 * * *' # 毎日 07:37 JST
   workflow_dispatch:
     inputs:
       open_pr:
@@ -33,6 +40,8 @@ concurrency:
 
 env:
   BRANCH: bot/reference-regen
+  # schedule で動いたときは PR を開く（open_pr: true と同じ）。手動のときは入力の open_pr に従う
+  OPEN_PR: ${{ github.event_name == 'schedule' || inputs.open_pr == true }}
 
 jobs:
   regen:
@@ -58,6 +67,12 @@ jobs:
       - name: リファレンスと仕様書ページを作り直す
         run: node scripts/generate-reference.mjs 2>&1 | tee "$RUNNER_TEMP/generate.log"
 
+      # DB の要らない例だけを、作り直しと同じ公開版（HOUKI_MCP_LAUNCH=npx・HOUKI_MCP_VERSIONS）で流す（Q38'）。
+      # 形の違いがあっても、スクリプトが落ちても、この step は失敗にしない（結果が無いことは要約と PR の本文に出る）
+      - name: 呼び出し例を照合する（DB の要らない例）
+        continue-on-error: true
+        run: node scripts/check-examples-contract.mjs --db absent --json > "$RUNNER_TEMP/contract.json"
+
       - name: 差分をまとめる
         id: diff
         run: |
@@ -71,6 +86,8 @@ jobs:
             console.log(["| リポジトリ | 作った版 | npm の latest | 最新のタグ | 注記 |", "| --- | --- | --- | --- | --- |", ...rows].join("\n"));
           ' "$SOURCES/versions.json" > "$RUNNER_TEMP/versions.md"
           {
+            node .github/scripts/contract-summary.mjs "$RUNNER_TEMP/contract.json" --headline
+            echo
             echo "公開版から作り直した結果です。\`.github/workflows/reference-regen.yml\` が $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M') JST に実行しました（[実行ログ](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})）。"
             echo
             echo "## 作った版"
@@ -87,10 +104,12 @@ jobs:
             tail -n 40 "$RUNNER_TEMP/diffstat.txt"
             echo '```'
             echo
+            node .github/scripts/contract-summary.mjs "$RUNNER_TEMP/contract.json"
+            echo
             echo "## マージの前に確かめること"
             echo
             echo "- 冒頭の版が同じでも中身が変わったページは、公開していない作業コピーから作られていた可能性があります（例: 仕様書ページの「承認の履歴」が消える）。その版を公開するまでマージを待つかを決めてください"
-            echo "- 呼び出し例（\`scripts/reference-examples/\`）はこの PR では変えません。応答の照合は \`node scripts/check-examples-contract.mjs\` を Mac で回します（houki-hub#44）"
+            echo "- 呼び出し例（\`scripts/reference-examples/\`）はこの PR では変えません。上の照合は DB の要らない例だけです。DB の要る例を含む全部の例は、各 MCP の publish の後に Mac で \`node scripts/check-examples-contract.mjs --write-verified\` を流します（houki-hub#44）"
           } > "$RUNNER_TEMP/pr-body.md"
           cat "$RUNNER_TEMP/pr-body.md" >> "$GITHUB_STEP_SUMMARY"
 
@@ -103,9 +122,10 @@ jobs:
             ${{ runner.temp }}/regen.diff
             ${{ runner.temp }}/generate.log
             ${{ runner.temp }}/pr-body.md
+            ${{ runner.temp }}/contract.json
 
       - name: PR を開く・更新する
-        if: steps.diff.outputs.changed == 'true' && inputs.open_pr
+        if: steps.diff.outputs.changed == 'true' && env.OPEN_PR == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
