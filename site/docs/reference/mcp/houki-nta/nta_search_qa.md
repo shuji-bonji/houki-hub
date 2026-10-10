@@ -36,6 +36,7 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_qa/spec
 
 ::: details 呼び出し例 — 「テレワークに関係する質疑応答事例」
 - 実測: v0.25.0（2026-10-05）
+- 確かめた版: v0.27.0（2026-10-10）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -86,6 +87,7 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_qa/spec
 
 ::: details 呼び出し例 — 税目（topic）で絞る
 - 実測: v0.25.0（2026-10-05）
+- 確かめた版: v0.27.0（2026-10-10）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -132,6 +134,7 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_qa/spec
 
 ::: details 呼び出し例 — キーワードに合う文書が無いとき
 - 実測: v0.25.0（2026-10-05）
+- 確かめた版: v0.27.0（2026-10-10）
 - ローカル DB: あり（質疑応答事例 1,841 件）
 
 **引数**

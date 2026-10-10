@@ -38,6 +38,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/list_attachments/
 
 ::: details 呼び出し例 — 「国旗国歌法の日章旗の寸法図はどこにあるか」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要
 
 **引数**
@@ -97,6 +98,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/list_attachments/
 
 ::: details 呼び出し例 — 「戸籍法施行規則の様式（届書の書式）を一覧で」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要
 
 **引数**

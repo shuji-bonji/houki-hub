@@ -36,6 +36,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_article_refer
 
 ::: details 呼び出し例 — 「所得税法 57 条の 2 第 2 項が引いている法令」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要（`next_actions` の `search_fulltext` を実行するときだけ必要）
 
 **引数**

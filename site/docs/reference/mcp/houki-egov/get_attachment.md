@@ -41,6 +41,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_attachment/sp
 
 ::: details 呼び出し例 — 「日章旗の寸法図をディスクに置く」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要
 
 **引数**
@@ -76,6 +77,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_attachment/sp
 
 ::: details 呼び出し例 — 一覧に無い `src` を渡したとき（`ATTACHMENT_NOT_FOUND`）
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要
 
 **引数**

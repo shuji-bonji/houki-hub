@@ -40,6 +40,7 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_kaisei_
 
 ::: details 呼び出し例 — 「インボイス関係の改正通達を新旧対照表付きで」
 - 実測: v0.25.0（2026-10-05）
+- 確かめた版: v0.27.0（2026-10-10）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**

@@ -47,6 +47,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_law_range/spe
 
 ::: details 呼び出し例 — 「民法の契約の章をまとめて読みたい」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要
 
 **引数**
@@ -103,6 +104,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_law_range/spe
 
 ::: details 呼び出し例 — 「遺留分の章だけ読みたい」（`path` で指定）
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要
 
 **引数**
@@ -146,6 +148,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_law_range/spe
 
 ::: details 呼び出し例 — 「章だけ指定したら候補が返ってきた」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要
 
 **引数**
@@ -178,6 +181,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_law_range/spe
 
 ::: details 呼び出し例 — 「附則の 7 本目を読む」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要
 
 **引数**

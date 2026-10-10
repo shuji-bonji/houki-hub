@@ -36,6 +36,7 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_jimu_un
 
 ::: details 呼び出し例 — 「書面添付制度の事務運営指針」
 - 実測: v0.25.0（2026-10-05）
+- 確かめた版: v0.27.0（2026-10-10）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**

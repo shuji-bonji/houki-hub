@@ -40,6 +40,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/search_fulltext/s
 
 ::: details 呼び出し例 — 「民法で不法行為に関係する条は」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: あり（`freshness.last_sync_date` が 2026-10-04 の DB）
 
 **引数**

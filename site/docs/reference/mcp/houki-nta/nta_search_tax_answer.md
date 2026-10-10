@@ -35,6 +35,7 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_tax_ans
 
 ::: details 呼び出し例 — 「医療費控除のタックスアンサー」
 - 実測: v0.25.1（2026-10-05。タックスアンサーを `--bulk-download-tax-answer --refresh` で入れ直した DB）
+- 確かめた版: v0.27.0（2026-10-10）
 - ローカル DB: あり（`staleness: "fresh"`。国税庁の索引から消えた記事が 1 件ある DB）
 
 **引数**

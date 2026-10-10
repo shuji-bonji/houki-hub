@@ -41,6 +41,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_law_file/spec
 
 ::: details 呼び出し例 — 「民法の全文を Word で」（URL だけ）
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要
 
 **引数**
@@ -73,6 +74,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_law_file/spec
 
 ::: details 呼び出し例 — 「2020 年 4 月 1 日時点の国旗国歌法を HTML で保存」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要
 
 **引数**
