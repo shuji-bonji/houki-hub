@@ -897,3 +897,5 @@ spec-ids#9（`pr-scope` を `spec-ids pr-scope` として取り込む）は、�
 2026-10-10 23:58 JST: R9 は spec-ids PR #12 で main に入った（早送り、`5ad662c`、23:57 JST。CI は PR・main とも success）。spec-ids#9 は閉じた。タグ `v0.4.0` はまだ無く、npm の latest は 0.3.0（同時刻に確かめた）。houki-hub PR #59 の題と本文は Y9 のものに差し替え済み。
 
 C9 で ci.yml を書き換える形（spec-ids の `templates/spec-gate.yml` と README の `pr-scope` の節から）: 今の `pr-scope` のジョブの 2 つの step（`node --test .github/scripts/check-pr-scope.test.mjs` と `node .github/scripts/check-pr-scope.mjs`）を、`npx spec-ids pr-scope` の 1 つの step にする。環境変数 `BASE_REF: origin/${{ github.base_ref }}`・`HEAD_REF: ${{ github.head_ref }}`、`fetch-depth: 0`、`npm ci` は今のまま使える。
+
+2026-10-11 00:02 JST: spec-ids 0.4.0 を publish した（タグ `v0.4.0` = `5ad662c`、npm の latest 0.4.0 は 2026-10-11 00:02 JST）。指示 C9 を渡せる。
