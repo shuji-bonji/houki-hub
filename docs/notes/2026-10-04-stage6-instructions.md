@@ -42,6 +42,8 @@
 | Y7 | 段階 4 | scope-by-audience の食い違い 5 か所と、Mermaid の最後の行が欠けること（Q40'・Q41'） | 済（hub PR #55 `1d26e78`・#56 `4541a7f`） |
 | Y8 | 段階 4 | scope-by-audience の残りの食い違い 6〜9（Q42'） | 済（hub PR #58、main `533ef13`） |
 | Y9 | 段階 4 | scope-by-audience の 10〜12（法令上の評価を言い切る文と「全工程」、Q43'） | すぐ（2026-10-10 21:32 JST に Q43' を案 A に決めた） |
+| R9 | 段階 4 の後 | spec-ids 0.4.0 の実装 PR（`spec-ids pr-scope`、`migrate` を外す、spec-ids#9） | すぐ（2026-10-10 に追加。Y9 と並行できる） |
+| C9 | 段階 4 の後 | houki 系 3 リポジトリの `check-pr-scope.mjs` を `npx spec-ids pr-scope` に置き換える PR | R9 の publish の後 |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -2074,4 +2076,95 @@ houki-hub の site/docs/guide/scope-by-audience.md の 3 か所の文を、下�
 - 確かめること: 組み立て（vitepress build docs）、このページのリンクとアンカー、図（A1・A2 を変えた図）が描けること、幅 390 で読めること
 - コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る
 - 報告: ブランチ・コミット、3 か所の前後、食い違いの有無、確認の結果、PR 本文の草案（Refs #27。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 R9: spec-ids 0.4.0 の実装 PR（`spec-ids pr-scope` と `migrate` を外すこと）
+
+spec-ids#9 です。2026-10-10 23:12 JST に shuji が、決めること 1〜8 を勧める案で決めました（計画書の「spec-ids#9 の判断」）。#5 と違い、設計の PR は置きません。
+
+```text
+spec-ids に、houki 系 3 リポジトリの .github/scripts/check-pr-scope.mjs（pr-scope）をサブコマンド spec-ids pr-scope として取り込み、0.3.0 だけに置いた spec-ids migrate を外した 0.4.0 の実装 PR を作ってください。この会話の役は、実装者です。
+
+## 場所
+
+- spec-ids: /Users/bonji/workspace/shuji-bonji/spec-ids（Cowork の device_bash では $HOME/mnt/spec-ids）。未追跡の "Claude outputs/" は触らない
+- 読むだけのリポジトリ（コピーの元）: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-egov-mcp、/Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-nta-mcp、/Users/bonji/workspace/shuji-bonji/houki-hub/lib/houki-abbreviations（$HOME/mnt/houki-hub/mcp/…・$HOME/mnt/houki-hub/lib/…）。この会話では変えない
+- 起点: spec-ids の main。作業の前に git ls-remote https://github.com/shuji-bonji/spec-ids refs/heads/main で origin と同じか確かめる（12b3448 の見込み）
+- ブランチ: feat/<作業日の yyyymmdd>-pr-scope
+
+## 最初に読むもの（この順）
+
+1. spec-ids#9 の本文（curl https://api.github.com/repos/shuji-bonji/spec-ids/issues/9）
+2. houki-hub の docs/notes/2026-10-04-plan-stage6-and-followups.md の「spec-ids#9 の判断」（決めること 1〜8 と、6 の前提の確認）と、Q23'（nta の変換の例外）
+3. 3 つのコピー: 各リポジトリの .github/scripts/check-pr-scope.mjs・check-pr-scope.test.mjs と、.github/workflows/ci.yml の pr-scope のジョブ。違いの表は houki-abbreviations PR #38 の本文
+4. spec-ids の docs/operations.md（1.2 PR の種類、3 章、4 章、7 章、9 章、10 章）、README.md、CHANGELOG.md、src/（frontmatter.mjs・config.mjs・migrate.mjs・index.mjs）、bin/spec-ids.mjs、templates/spec-gate.yml、test/
+
+## 決まったこと（この PR で入れる形）
+
+1. テスト名に ID を足すだけの変更の判定: egov・nta の形（足した後に前の ID がすべて残り、数が増えていれば通す。消す・差し替える変更は止める）
+2. specs/changes/.gitkeep は、差分のファイルとして数えない
+3. 取り込み済みの差分（specs/releases/<tag>/<id>/ に同じ ID がある）の specs/changes/<id>/ の残りを消す変更は許す（operations.md 7 章の片付け）
+4. nta のコピーにある変換の例外（Q23'。実装 PR で specs/changes/ の proposal.md を front matter に書き換えることを通す）は入れない
+5. 3 つのコピーのテスト（20・22・24 件）を spec-ids の test/ に移して 1 つにまとめる。1〜4 で止める側と通す側の両方を残す。重なるテストは 1 つにし、件数と、まとめたテストの対応を報告に書く
+6. 版は 0.4.0。spec-ids migrate（src/migrate.mjs、bin の migrate、test/migrate.test.mjs、README の節）を外す。CHANGELOG に、migrate を外したこと（0.3.0 で変換を終えていないリポジトリは、0.3.0 の npx @shuji-bonji/spec-ids@0.3.0 migrate で変換してから上げる）を書く
+7. ブランチ名の接頭辞（spec/・spec-init/）は固定し、operations.md に書く。設定（specs/spec-ids.json）には出さない
+8. init が作る templates/spec-gate.yml に pr-scope のジョブを足す（pull_request のときだけ、checkout は fetch-depth: 0、npm ci の後に npx spec-ids pr-scope）
+
+## やること
+
+1. src/pr-scope.mjs（名前は既存の src/ に合わせる）に判定を置き、bin に pr-scope のサブコマンドを足す。入力（PR のブランチ名、比べる基準のコミット、変わったファイルの一覧）の受け取り方は、3 つのコピーが ci.yml で受け取っている形（環境変数・引数・git diff）を読んで決め、利用側の ci.yml の書き換えが最小になる形にする。終了コードと出力の形は、check と同じ決まり（README の終了コードの節）にそろえる
+2. テストを移す（決まったことの 5）。spec-ids の既存のテストの書き方（test/helpers.mjs）に合わせる
+3. templates/spec-gate.yml に pr-scope のジョブを足し、init のテスト（test/config-init.test.mjs）を直す
+4. migrate を外す（決まったことの 6）
+5. README（サブコマンドの一覧、pr-scope の節、終了コード、ファイルの表）、CHANGELOG（0.4.0）、docs/operations.md（4 章の表の pr-scope の行、9 章の導入の手順の 3、10 章の pr-scope の置き場と migrate の行）を直す。operations.md のほかの章に、コピーを前提にした文が残っていれば直す
+6. package.json の版を 0.4.0 にする（package-lock.json も）
+7. 3 つのコピーと同じ判定になることを、各リポジトリの実際の PR の差分で確かめる。少なくとも、仕様 PR（spec/…）1 本と実装 PR 1 本を、3 リポジトリのそれぞれから選び（PR 番号は git log と GitHub から）、コピーと spec-ids pr-scope の判定を比べる。判定が違えば、1〜4 の決まりによる違いかを書く
+
+## 守ること・報告すること
+
+- 3 つの houki 系リポジトリは変えない（置き換えは次の指示 C9）
+- テストの期待値を、実装に合わせて書き換えない。コピーのテストの期待値を変える必要があれば、決まったことの 1〜4 のどれによるかを書く
+- コミットを作るところまで。署名・push・PR・タグ・publish は私が行う。git を使う前に spec-ids フォルダーの削除の許可を取る。VM の git が .git にロックファイル（HEAD.lock・next-index-*.lock・maintenance.lock・tmp_obj_*）を残したら、許可を取ってから消して進める
+- 報告: ブランチ・コミット、pr-scope の入力の受け取り方と CLI の形、テストの件数と対応、やることの 7 の比較の結果、C9 に渡すこと（各リポジトリの ci.yml の書き換えの形、消すファイル、依存の上げ方）、publish の後に私がすること、PR 本文の草案（Closes #9。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 C9: houki 系 3 リポジトリの pr-scope を spec-ids pr-scope に置き換える
+
+R9 の publish（spec-ids 0.4.0）の後に渡します。R9 の報告の「C9 に渡すこと」を読んでから、この指示の「やること」を直します。
+
+```text
+houki-egov-mcp・houki-nta-mcp・houki-abbreviations の 3 リポジトリで、.github/scripts/check-pr-scope.mjs のコピーを spec-ids 0.4.0 の spec-ids pr-scope に置き換える PR を 1 本ずつ作ってください。publish はしません（版は上げない）。この会話の役は、実装者です。
+
+## 場所
+
+- houki-egov-mcp: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-egov-mcp（$HOME/mnt/houki-hub/mcp/houki-egov-mcp）
+- houki-nta-mcp: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-nta-mcp（$HOME/mnt/houki-hub/mcp/houki-nta-mcp）
+- houki-abbreviations: /Users/bonji/workspace/shuji-bonji/houki-hub/lib/houki-abbreviations（$HOME/mnt/houki-hub/lib/houki-abbreviations）
+- 起点: それぞれ main。作業の前に git ls-remote https://github.com/shuji-bonji/<repo> refs/heads/main で origin と同じか確かめる
+- ブランチ: それぞれ ci/<作業日の yyyymmdd>-spec-ids-pr-scope（spec/・spec-init/ 以外なので、実装 PR として pr-scope が検査する）
+
+## 最初に読むもの（この順）
+
+1. houki-hub の docs/notes/2026-10-04-plan-stage6-and-followups.md の「spec-ids#9 の判断」
+2. spec-ids 0.4.0 の README の pr-scope の節と CHANGELOG、R9 の PR の本文（「C9 に渡すこと」）
+3. 各リポジトリの .github/scripts/check-pr-scope.mjs・check-pr-scope.test.mjs、.github/workflows/ci.yml（と spec-gate.yml があればそれも）、AGENTS.md の「PR の種類」と pr-scope に触れる文、package.json の test のスクリプト（check-pr-scope.test.mjs を流しているか）
+
+## やること（各リポジトリ）
+
+1. package.json の @shuji-bonji/spec-ids を ^0.4.0 にし、package-lock.json を更新する
+2. ci.yml の pr-scope のジョブを npx spec-ids pr-scope に置き換える（R9 の「C9 に渡すこと」の形）
+3. .github/scripts/check-pr-scope.mjs と check-pr-scope.test.mjs を消す。package.json のスクリプトや ci.yml がそれらを呼んでいれば直す
+4. AGENTS.md と docs/ の、コピーを前提にした文（.github/scripts/check-pr-scope.mjs を指す文）を spec-ids pr-scope に直す
+5. lint・format:check・test・build、npx spec-ids check、npx spec-ids pr-scope（このブランチを実装 PR として）が通ることを確かめる
+6. CHANGELOG の Unreleased に、CI の pr-scope を spec-ids 0.4.0 に替えたことを書く（版は上げない）
+
+## 守ること・報告すること
+
+- src/ と specs/ は変えない
+- コミットを作るところまで。署名・push・PR は私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る（mcp/・lib/ は houki-hub の下にある）
+- 報告: 3 つのブランチとコミット、消したファイル、ci.yml の前後、確かめた結果、PR 本文の草案 3 本（Refs shuji-bonji/spec-ids#9。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```

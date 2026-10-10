@@ -880,3 +880,7 @@ spec-ids#9（`pr-scope` を `spec-ids pr-scope` として取り込む）は、�
 | 8 | `init` が作る `spec-gate.yml` に `pr-scope` のジョブを足すか | (A) 足す（`pull_request` のときだけ、`fetch-depth: 0`） / (B) 足さず、README に足し方を書く | **A**。新しく導入するリポジトリが、最初から仕様 PR と実装 PR の分け方の検査を持てる。今の 3 リポジトリは ci.yml のジョブを `npx spec-ids pr-scope` に置き換える |
 
 進め方の案（#5 と同じ順）: (1) spec-ids の実装 PR（`spec-ids pr-scope`、テストの移植、`init` のテンプレート、`migrate` を外すかは 6 による、README・CHANGELOG・operations.md の 4・9・10 章）→ publish、(2) 3 リポジトリで `check-pr-scope.mjs` とテストを消し、ci.yml の `pr-scope` ジョブを `npx spec-ids pr-scope` にし、依存を上げる PR（各リポジトリ 1 本、publish しない）。#5 と違って設計の PR は置かない。決めることは上の 8 つで、Issue に書いてあり、ここで決めれば実装の PR に入れられるため。
+
+2026-10-10 23:12 JST に shuji が決めたこと: spec-ids#9 の決めること 1〜8 は勧める案のとおり。6（版）の前提は、コントロールの会話が同じ日に確かめた: shuji-bonji の公開リポジトリ 100 個（fork を除く）の既定のブランチの `package.json` を読み、`@shuji-bonji/spec-ids` を依存に持つのは houki-egov-mcp・houki-nta-mcp・houki-abbreviations の 3 つだけ（どれも `^0.3.0`）。pdf 系（pdf-reader-mcp・pdf-spec-mcp・pdf-verify-mcp・pdf-writer-mcp・pdf-constraints・pdf-agent-stack・pdf-agent-pipeline・3 つの skill・pdf-specialist-plugin）・normativepdf・e-shiwake は、`package.json`・`.github/workflows/`・`specs/spec-ids.json` のどれにも spec-ids が無い。非公開のリポジトリは確かめていない。これで 6 は案 A（0.4.0 で `spec-ids pr-scope` を足し、`migrate` を外す）。
+
+指示 R9（spec-ids 0.4.0 の実装 PR）と C9（3 リポジトリの置き換えの PR）を書いた。
