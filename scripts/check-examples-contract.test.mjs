@@ -17,6 +17,7 @@ import {
   parseJsoncPattern,
   pathMatches,
   statusOf,
+  stripContractLines,
   valueAt,
 } from './lib/example-contract.mjs';
 
@@ -373,4 +374,12 @@ test('表と集計', () => {
   assert.match(table, /\| （無し） \| 未確認 \| DB が要る例/);
   assert.equal(describeFindings(rows[2]), '形: `a` キーが無い / データ: `b` 1 → 2 / 増えた: `c` 例に無いキー: d');
   assert.deepEqual(summarizeContract(rows), { total: 3, match: 1, data: 0, shape: 1, unverified: 1, skipped: 0 });
+});
+
+test('stripContractLines: 「- 照合:」の行だけを落とし、「- 版の照合:」「- ローカル DB:」は残す（Q37\')', () => {
+  const text = ['::: details 呼び出し例 — 「x」', '- 実測: v0.27.0（2026-10-10）', '- ローカル DB: あり', '- 照合: `results` は 1 件目だけ（理由）', '- 版の照合: しない（理由）', '', '**引数**', ':::'].join('\n');
+  assert.equal(
+    stripContractLines(text),
+    ['::: details 呼び出し例 — 「x」', '- 実測: v0.27.0（2026-10-10）', '- ローカル DB: あり', '- 版の照合: しない（理由）', '', '**引数**', ':::'].join('\n'),
+  );
 });

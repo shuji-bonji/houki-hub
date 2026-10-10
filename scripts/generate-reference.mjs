@@ -50,6 +50,7 @@ import { createRequire } from 'node:module';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { todayJst, writeGenerated } from './lib/generated-page.mjs';
+import { stripContractLines } from './lib/example-contract.mjs';
 import { launchConfig, MCP_SERVERS, McpStdioClient, sourceDirFromEnv } from './lib/mcp-client.mjs';
 import { SPEC_TARGETS, details, generateSpecPages, specPageIndex, specSourceFor } from './spec-pages.mjs';
 
@@ -240,11 +241,16 @@ function paramRows(schema, prefix = '', requiredList = schema.required ?? []) {
   return rows;
 }
 
-/** 手書きの呼び出し例。無ければ null。Markdown をそのまま末尾に付ける */
+/**
+ * 手書きの呼び出し例。無ければ null。Markdown を末尾に付ける。
+ * ただし例の `- 照合:` の行（照合のスクリプト check-examples-contract.mjs が読む例外の指定）は、
+ * ツールを使う人の情報ではないのでページに出さない（Q37'、2026-10-10）。`- ローカル DB:` と `- 版の照合:` の行は出す。
+ */
 function loadToolExample(server, toolName) {
   const p = join(ROOT, 'scripts/reference-examples', server, 'ja', `${toolName}.md`);
-  return existsSync(p) ? readFileSync(p, 'utf8').trim() : null;
+  return existsSync(p) ? stripContractLines(readFileSync(p, 'utf8')).trim() : null;
 }
+
 
 /**
  * 説明の最初の 1 文（一覧の「一言」）。括弧の中の「。」では切らない（2026-10-10、Y3）。

@@ -104,6 +104,17 @@ export function parseContractExamples(text) {
   return out;
 }
 
+/**
+ * 例の本文から `- 照合:` の行を落とす（`- 版の照合:`・`- ローカル DB:` は残す）。
+ * generate-reference.mjs がツールのページに例を写すときに使う（Q37'、2026-10-10）。
+ */
+export function stripContractLines(text) {
+  return text
+    .split(/\r?\n/)
+    .filter((line) => !CHECK_RE.test(line))
+    .join('\n');
+}
+
 /* ========================= jsonc をパターンとして読む ========================= */
 
 /** どんな値でもよい（例の `…` / `...` の値） */
