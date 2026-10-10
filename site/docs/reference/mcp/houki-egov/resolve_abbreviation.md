@@ -33,6 +33,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/resolve_abbreviat
 
 ::: details 呼び出し例 — 「消基通 は何の略で、どのサーバーが担当か」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要（辞書は houki-abbreviations に内蔵）
 
 **引数**

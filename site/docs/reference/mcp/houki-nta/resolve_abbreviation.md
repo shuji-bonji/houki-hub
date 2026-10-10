@@ -33,6 +33,7 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/resolve_abbreviati
 
 ::: details 呼び出し例 — 「電帳法 は houki-nta-mcp で引けるか」
 - 実測: v0.25.0（2026-10-05）
+- 確かめた版: v0.27.0（2026-10-10）
 - ローカル DB: 不要
 
 **引数**

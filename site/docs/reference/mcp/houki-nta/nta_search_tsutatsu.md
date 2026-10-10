@@ -38,6 +38,7 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_tsutats
 
 ::: details 呼び出し例 — 「軽減税率に関係する通達の節は」
 - 実測: v0.25.0（2026-10-05）
+- 確かめた版: v0.27.0（2026-10-10）
 - ローカル DB: あり（`staleness: "fresh"`）
 
 **引数**
@@ -109,6 +110,7 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_tsutats
 
 ::: details 呼び出し例 — DB が古いとき（`staleness: "outdated"`）
 - 実測: v0.10.2（2026-09-07）。同じ呼び出しを、最後の取り込みから 126 日たった DB に対して行ったときの応答です
+- ローカル DB: あり（最後の取り込みから 126 日たった DB）
 - 版の照合: しない（126 日たった DB を用意できず、取り直せないため）
 
 引数は上の例と同じです。違うのは `freshness` だけで、`hits` の中身は変わりません。

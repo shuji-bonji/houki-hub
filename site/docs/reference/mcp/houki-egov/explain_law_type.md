@@ -33,6 +33,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/explain_law_type/
 
 ::: details 呼び出し例 — 「通達は守らなくてよいのか」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要（サーバー内蔵の知識）
 
 **引数**

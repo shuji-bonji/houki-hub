@@ -34,6 +34,7 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_kaisei_tsu
 
 ::: details 呼び出し例 — 「令和 7 年 4 月 1 日の消基通改正の本文と添付 PDF」
 - 実測: v0.25.0（2026-10-05）
+- 確かめた版: v0.27.0（2026-10-10）
 - ローカル DB: あり（`source: "db"`）
 
 **引数**
@@ -81,6 +82,7 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_kaisei_tsu
 
 ::: details 呼び出し例 — 「docId を打ち間違えたとき」
 - 実測: v0.25.0（2026-10-05）
+- 確かめた版: v0.27.0（2026-10-10）
 - ローカル DB: あり（改正通達 118 件）
 
 **引数**

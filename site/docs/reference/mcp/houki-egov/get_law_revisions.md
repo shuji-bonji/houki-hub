@@ -34,6 +34,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_law_revisions
 
 ::: details 呼び出し例 — 「消費税法の直近の改正と施行日」
 - 実測: v0.20.0（2026-10-05）
+- 確かめた版: v0.20.1（2026-10-10）
 - ローカル DB: 不要
 
 **引数**
