@@ -884,3 +884,12 @@ spec-ids#9（`pr-scope` を `spec-ids pr-scope` として取り込む）は、�
 2026-10-10 23:12 JST に shuji が決めたこと: spec-ids#9 の決めること 1〜8 は勧める案のとおり。6（版）の前提は、コントロールの会話が同じ日に確かめた: shuji-bonji の公開リポジトリ 100 個（fork を除く）の既定のブランチの `package.json` を読み、`@shuji-bonji/spec-ids` を依存に持つのは houki-egov-mcp・houki-nta-mcp・houki-abbreviations の 3 つだけ（どれも `^0.3.0`）。pdf 系（pdf-reader-mcp・pdf-spec-mcp・pdf-verify-mcp・pdf-writer-mcp・pdf-constraints・pdf-agent-stack・pdf-agent-pipeline・3 つの skill・pdf-specialist-plugin）・normativepdf・e-shiwake は、`package.json`・`.github/workflows/`・`specs/spec-ids.json` のどれにも spec-ids が無い。非公開のリポジトリは確かめていない。これで 6 は案 A（0.4.0 で `spec-ids pr-scope` を足し、`migrate` を外す）。
 
 指示 R9（spec-ids 0.4.0 の実装 PR）と C9（3 リポジトリの置き換えの PR）を書いた。
+
+### Y9 の後（2026-10-10 JST）
+
+| 作業 | 状態 |
+| --- | --- |
+| Y9（scope-by-audience の 10〜12） | 済（2026-10-10、hub PR #59、main `19ab3e7`、23:47 JST）。3 か所を指示 Y9 の文のとおりに置き換えた（1 ファイル、+4 −4）。PR #59 の本文には、Y9 の本文ではなく指示 R9（spec-ids 0.4.0）の PR 本文の草案が入っている（`Closes #9` を含む。houki-hub#9 は 2026-09-10 に閉じた別の Issue で、状態は変わっていない）。本文は shuji が Y9 の本文に差し替える |
+| scope-by-audience の言い方の直し | Y5〜Y9（PR #52・#53・#55・#58・#59）で終わった |
+| 段階 4 | 終わった |
+| R9（spec-ids 0.4.0） | spec-ids の作業コピーのブランチ `feat/20261010-pr-scope` にコミット 3 つ（`8f4e3c0` 実装、`693bc83` 文書、`264d92b` 版）。origin には未 push。PR の本文の草案は、誤って hub PR #59 に入った文（テスト 107 件、3 リポジトリの 18 本の PR でコピーと判定を比べ、違いは決定 2〜4 によるものだけ） |

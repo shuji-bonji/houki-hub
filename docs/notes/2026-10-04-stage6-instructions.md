@@ -41,8 +41,8 @@
 | Z2 | 段階 4 | hub#5 ② の有効化と #44 の全部の例（Q34'〜Q38' の A） | 済（hub PR #54、main `8212b3a`） |
 | Y7 | 段階 4 | scope-by-audience の食い違い 5 か所と、Mermaid の最後の行が欠けること（Q40'・Q41'） | 済（hub PR #55 `1d26e78`・#56 `4541a7f`） |
 | Y8 | 段階 4 | scope-by-audience の残りの食い違い 6〜9（Q42'） | 済（hub PR #58、main `533ef13`） |
-| Y9 | 段階 4 | scope-by-audience の 10〜12（法令上の評価を言い切る文と「全工程」、Q43'） | すぐ（2026-10-10 21:32 JST に Q43' を案 A に決めた） |
-| R9 | 段階 4 の後 | spec-ids 0.4.0 の実装 PR（`spec-ids pr-scope`、`migrate` を外す、spec-ids#9） | すぐ（2026-10-10 に追加。Y9 と並行できる） |
+| Y9 | 段階 4 | scope-by-audience の 10〜12（法令上の評価を言い切る文と「全工程」、Q43'） | 済（hub PR #59、main `19ab3e7`） |
+| R9 | 段階 4 の後 | spec-ids 0.4.0 の実装 PR（`spec-ids pr-scope`、`migrate` を外す、spec-ids#9） | コミット済み（ブランチ `feat/20261010-pr-scope`、`264d92b`）。push・PR・publish は shuji |
 | C9 | 段階 4 の後 | houki 系 3 リポジトリの `check-pr-scope.mjs` を `npx spec-ids pr-scope` に置き換える PR | R9 の publish の後 |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
