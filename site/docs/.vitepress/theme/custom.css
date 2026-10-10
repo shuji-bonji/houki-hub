@@ -32,3 +32,12 @@
   display: block;
   overflow-x: auto;
 }
+
+/*
+ * Mermaid の図のノードの文の行の高さ。Mermaid は line-height: 1.5 で文の高さを測り、foreignObject の高さを決める。
+ * ノードの文は <p> に入るので、.vp-doc p の line-height（28px）が効くと 1 行ごとに 4px ずつ高くなり、
+ * 3 行以上のノードで最後の行の下が foreignObject の外に出て欠ける。Mermaid の図の中の <p> だけを 1.5 に戻す
+ */
+.vp-doc .mermaid foreignObject p {
+  line-height: 1.5;
+}
