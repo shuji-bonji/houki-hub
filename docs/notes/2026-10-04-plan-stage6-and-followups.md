@@ -717,3 +717,5 @@ Y4 の後（2026-10-10 JST）: 段階 4 のうち、#27 の仕様書ページ（
 
 (2) のリンクの粒度（2026-10-10 JST、shuji の指摘）: 表の今の行は「ツール名と代表の仕様 ID」を 1 つのリンクにしている（SPEC-NTA-GET-TSUTATSU-013）。足す 3 つも同じ粒度にする（案 A）。verify_citations は SPEC-EGOV-VERIFY-CITATIONS-004、next_actions はエラーの側の SPEC-EGOV-COMMON-ERRORS-032 と成功の側の SPEC-EGOV-GET-RELATED-LAWS-008。feasibility-check は Skill の workflow で仕様 ID を持たない（tax-research も同じ）ので、ページへのリンクのままにする。next_actions のフィールドの形を決めている common_errors の「エラー応答のフィールド」の表には仕様 ID が無い。ID を付けるかは、次の egov・nta の仕様 PR で検討する（今は決めない）。
 
+2026-10-10 JST に shuji が A に決めた。新しい仕様は起票せず、既存の仕様項目も直さない。変えるのは scope-by-audience の説明の表だけ（指示 Y5 の形のまま）。シリーズ全体の約束を houki-hub の仕様にする案（D: houki-hub に `specs/` を置き、各 MCP の仕様項目を対応付ける）は取らない。考えるなら Issue にして、spec-ids#8 と同じ時期（段階 4 の後）に検討する。
+
