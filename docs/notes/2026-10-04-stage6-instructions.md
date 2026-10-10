@@ -1814,8 +1814,12 @@ houki-hub の人が書くページ 2 つ（guide/scope-by-audience.md と mcp/ho
 
 1. (1) 「法規シリーズが提供するもの」の表の設計者・実装者の行を、今あるものと今後の対応に書き分ける。士業者の行の書き方（「（いずれも今後の対応）」）に合わせる。案: 「法令の構造化データ、仕様と法令の対応付け（[feasibility-check](/specs/houki-research/feasibility-check)）。改正による差分と、毎回同じ結果になる部品（計算・期限）は今後の対応」。同じ節の「設計者・実装者に向けた範囲は、法令の構造化データと、毎回同じ結果になる部品です。」の文も、部品が今後の対応であることが分かる形にそろえる。93 行目あたりの「今の法規シリーズが実際に提供している範囲は…」の文と食い違わないかを確かめる
 2. (2) 「この位置を支えている仕様」の表にリンクを足し、`<!-- Y2: … -->` のコメントを消す。新しい行は作らず、今の行に足す:
-   - 法源への到達: [verify_citations](/specs/houki-egov/verify_citations)（回答に添える引用の条・項・号が e-Gov の法令にあるかを、まとめて確かめる）と、`next_actions`（応答に、次に呼ぶツールと引数の例を添える。形はエラー応答のフィールドの表（[houki-egov](/specs/houki-egov/common_errors) と [houki-nta](/specs/houki-nta/common_errors) の「エラー応答のフィールド」）、中身は各ツールの仕様項目が決める。例に [SPEC-EGOV-GET-RELATED-LAWS-008](/specs/houki-egov/get_related_laws#spec-egov-get-related-laws-008)）。錨は生成したページの見出しの id を見て書く（Y4 で id を NFC にそろえた。「エラー応答のフィールド」は濁点を含む）
-   - 論点の抽出: [feasibility-check](/specs/houki-research/feasibility-check)（実装する前に、仕様が法令のどこに触れるかを条文で確かめる手順）
+   - 法源への到達: 今の行の書き方（「[nta_get_tsutatsu の SPEC-NTA-GET-TSUTATSU-013](…)」のように、ツール名と代表の仕様 ID を 1 つのリンクにする）に合わせて、次の 3 つを足す（Q32' の (2)、案 A）
+     - [verify_citations の SPEC-EGOV-VERIFY-CITATIONS-004](/specs/houki-egov/verify_citations#spec-egov-verify-citations-004)（存在しない引用が混ざっていても、引用 1 件ごとに条・項・号があるかを返す）
+     - [common_errors の SPEC-EGOV-COMMON-ERRORS-032](/specs/houki-egov/common_errors#spec-egov-common-errors-032)（法令名が題名と完全に一致しないときは、候補の正式名を next_actions に添えて返す）
+     - [get_related_laws の SPEC-EGOV-GET-RELATED-LAWS-008](/specs/houki-egov/get_related_laws#spec-egov-get-related-laws-008)（法律から、委任先の施行令・施行規則の目次へ進む案内を next_actions に添える）
+   - 論点の抽出: [feasibility-check](/specs/houki-research/feasibility-check)（実装する前に、仕様が法令のどこに触れるかを条文で確かめる手順）。Skill の workflow には仕様 ID が無いので、tax-research と同じくページへのリンクにする
+   - 錨は生成したページの見出しの id を見て確かめる（Y4 で id を NFC にそろえた）
    - 括弧の説明は、今の行と同じ長さ（1 句）にする。上の「専門家の仕事の中での位置」の表の法源への到達の行（「引用した法令が実在するかを確かめるツールと、次に読むべき法令を応答に添える仕組み」）と、足すリンクが 1 対 1 で対応するかを確かめる
 3. mcp/houki-nta.md の `--tsutatsu` の説明（`--quickstart` の案内の文と、`--quickstart`・`--bulk-download` の表の行）に、受け付けるのは基本通達 4 種（消費税法基本通達・所得税基本通達・法人税基本通達・相続税法基本通達）の正式名だけで、ほかの値は取り込みを始めずにエラーで終わることを書く。根拠の仕様項目（cli_bulk_download の該当の ID）へリンクする。表の中は短くし、4 種の列挙は表の下か案内の文に置く
 
