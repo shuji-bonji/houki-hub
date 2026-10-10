@@ -415,8 +415,8 @@ Q4（T6）の勧める案:
 | XS27 | 残りの順序 2 | houki-research-skill の nta 0.27.0 への追随 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、Skill PR #29、main・タグ `v0.20.0` `9d2a83c`。`SKILL.md` の鉄則 5 の表に「今は取り込めません」の行を足したので minor。`ERROR-HANDLING.md` の `hint` の表と `--status` の節に EACCES の場面。check-mcp-refs・test 19 件・snapshots とも通過） |
 | Y1 | 段階 4 | #27 の仕様書ページと scope-by-audience（設計と試作） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、hub PR #46、main `690ac1e`。`scripts/spec-pages.mjs`（`generate-reference.mjs specs` から呼ぶ）、`scripts/lib/generated-page.mjs`、試作 4 ページ（nta_get_tsutatsu・search_fulltext・resolve_abbreviation・tax-research）と一覧 4 枚・読み方のページ、人が書く「使いどころ」1 つ、`guide/scope-by-audience.md`、nav の「仕様」と sidebar。main に入ったので GitHub Pages にも公開された（`site/**` の push で deploy）） |
 | Y2 | 段階 4 | #27 の仕様書ページの全部の生成と公開 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、hub PR #47、main `eff9bd9`、GitHub Pages に公開済み。Q26' は A。67 ページ（egov 20・nta 22・abbr 23・Skill 2）と一覧 4 枚。生成スクリプトで Mermaid の書き方の誤り 3 か所・日本語の名前の書式・同じ題・workflow 間のリンクを直した。リファレンスの各ツール・各記号から仕様書ページへリンク。残りは下の「Y2 の後」） |
-| Y3 | 段階 4 | ツールごとのページ（#27 の続き。リファレンスを分ける） | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Q27' は B。Issue は houki-hub#48（草案 `docs/notes/issues-2026-10-09-hub27-tool-pages/issue-tool-pages.md`）、見本 `sample-get_law.md` |
-| Y4 | 段階 4 | 人が書くページのコンテナと図、壊れたリンク 2 つ | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Q28' は A。Y3 の後 |
+| Y3 | 段階 4 | ツールごとのページ（#27 の続き。リファレンスを分ける） | `2026-10-04-stage6-instructions.md` | 済（2026-10-10、hub PR #49、main `e518da9`、GitHub Pages に公開。MCP は `/reference/mcp/<server>/<tool>`（egov 14・nta 14）、ライブラリは `/reference/lib/houki-abbreviations/<dir>`（関数 21・値 2）と `types`。今までの 1 ページはツールの一覧と共通の前置きだけにし、今の錨（`#get-law` など）で開くと theme がツールのページへ移す。仕様書ページの先頭は h1 の一言・ツールのページへのリンク・最後の変更の 1 文にし、「使いどころ」はツールのページへ移した。内部リンク 15,718 本とアンカーの壊れは 0 件（NFC/NFD の既知の 2 件は Y4）、Mermaid 132 図の読み込みエラー 0 件、再生成で書き換わるファイル無し。houki-hub#48 は open のまま（PR は Refs #48）） |
+| Y4 | 段階 4 | 人が書くページのコンテナと図、壊れたリンク 2 つ | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Q28' は A。Y3 が済んだので今始めてよい |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 2026-10-09 に Y1（設計と試作）と Y2（全部の生成と公開）に分けた。下の表の Y1 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -683,4 +683,10 @@ Y2 の後、人が読むページの構成を検討した（2026-10-09 JST）。
 2. Y4: 人が書くページのコンテナと図（壊れたリンク 2 つを含む）
 3. hub#5 ②（CI での生成し直しと、版のずれの検出）と呼び出し例の照合のスクリプト（houki-hub#44）。Y3 でリファレンスが分かれるので、#44 は分かれた後の形で作る
 4. houki-nta-mcp の spec.md の Mermaid 3 か所は、nta の次の仕様 PR で ID の無い節（処理の流れ）の直しとして入れる（Q24' の A の形）
+
+Y3 の後（2026-10-10 JST）:
+
+| # | 何を | 案 | 勧める案 |
+| --- | --- | --- | --- |
+| Q29' | houki-hub#48 と #27 を閉じる時期 | (A) #48 は Y3 で本題（ツールごとのページ）が済んだので今閉じる。#27 は Y4（人が書くページ）の後に閉じ、CI での生成し直しと版のずれの検出は hub#5 ② に任せる / (B) 2 つとも Y4 の後に閉じる / (C) #27 は hub#5 ② の後まで開けておく | **A**。#48 の決めること 1〜3 は Y3 で入った。#27 の「ツールごとに 1 ページで説明する」は Y2・Y3 で満たし、Y4 は読みやすさの仕上げ。CI での生成し直しは hub#5 の範囲で、#27 を開けておく理由にならない |
 
