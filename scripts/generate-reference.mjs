@@ -45,24 +45,24 @@
  * 1 つの MCP の版を上げただけで他のページにも差分が出ていた。
  */
 
-import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { dirname, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { todayJst, writeGenerated } from './lib/generated-page.mjs';
+import { launchConfig, MCP_SERVERS, McpStdioClient, sourceDirFromEnv } from './lib/mcp-client.mjs';
 import { SPEC_TARGETS, details, generateSpecPages, specPageIndex, specSourceFor } from './spec-pages.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = join(ROOT, 'site/docs');
 
-/** サーバーの起動方法と出力先。 */
+/**
+ * サーバーの出力先とページの前置き。起動方法（作業コピーの dist・clone の dist・npx）は
+ * scripts/lib/mcp-client.mjs の launchConfig が環境変数 HOUKI_MCP_LAUNCH で決める（houki-hub#5 ②）。
+ */
 const REGISTRY = {
   'houki-egov': {
     npm: '@shuji-bonji/houki-egov-mcp',
-    command: 'node',
-    args: [join(ROOT, 'mcp/houki-egov-mcp/dist/index.js')],
-    env: {},
     out: 'reference/mcp/houki-egov',
     base: '/reference/mcp/houki-egov/',
     guide: '/mcp/houki-egov',
@@ -73,9 +73,6 @@ const REGISTRY = {
   },
   'houki-nta': {
     npm: '@shuji-bonji/houki-nta-mcp',
-    command: 'node',
-    args: [join(ROOT, 'mcp/houki-nta-mcp/dist/index.js')],
-    env: {},
     out: 'reference/mcp/houki-nta',
     base: '/reference/mcp/houki-nta/',
     guide: '/mcp/houki-nta',
@@ -181,63 +178,22 @@ const OVERLAY_SECTIONS = ['使いどころ', '呼び出しの流れ'];
 
 /* ---------------- MCP ハンドシェイク（生の JSON-RPC over stdio） ---------------- */
 
-function handshake(cfg) {
-  return new Promise((resolveHS, rejectHS) => {
-    const p = spawn(cfg.command, cfg.args, { stdio: ['pipe', 'pipe', 'pipe'], env: { ...process.env, ...cfg.env } });
-    let stderrTail = '';
-    p.stderr.on('data', (d) => {
-      stderrTail = (stderrTail + d).slice(-2000);
-    });
-    const timer = setTimeout(() => {
-      p.kill();
-      rejectHS(new Error(`handshake timeout (20s)${stderrTail ? `\n--- server stderr (tail) ---\n${stderrTail}` : ''}`));
-    }, 20_000);
-
-    let buf = '';
-    const pending = new Map();
-    // JSON でない行（native module の警告など）は読み飛ばす
-    p.stdout.on('data', (d) => {
-      buf += d;
-      let i;
-      while ((i = buf.indexOf('\n')) >= 0) {
-        const line = buf.slice(0, i);
-        buf = buf.slice(i + 1);
-        if (!line.trim()) continue;
-        let msg;
-        try {
-          msg = JSON.parse(line);
-        } catch {
-          continue;
-        }
-        if (msg.id != null && pending.has(msg.id)) pending.get(msg.id)(msg);
-      }
-    });
-    p.on('error', rejectHS);
-
-    const send = (m) => p.stdin.write(`${JSON.stringify(m)}\n`);
-    const rpc = (id, method, params) =>
-      new Promise((res) => {
-        pending.set(id, res);
-        send({ jsonrpc: '2.0', id, method, params });
-      });
-
-    (async () => {
-      const init = await rpc(1, 'initialize', {
-        protocolVersion: '2024-11-05',
-        capabilities: {},
-        clientInfo: { name: 'generate-reference', version: '0.0.1' },
-      });
-      send({ jsonrpc: '2.0', method: 'notifications/initialized' });
-      const tools = await rpc(2, 'tools/list', {});
-      clearTimeout(timer);
-      p.kill();
-      resolveHS({ serverInfo: init.result.serverInfo, tools: tools.result.tools });
-    })().catch((e) => {
-      clearTimeout(timer);
-      p.kill();
-      rejectHS(e);
-    });
+/**
+ * サーバーを起動して tools/list を読む。起動と stdio のやり取りは scripts/lib/mcp-client.mjs と共有する
+ * （check-examples-contract.mjs と同じ仕組み。houki-hub#5 ②・#44）。
+ * npx の初回はパッケージのダウンロードを含むので、待ち時間を長くとる。
+ */
+async function handshake(launch) {
+  const client = await McpStdioClient.start(launch, {
+    timeoutMs: launch.mode === 'npx' ? 180_000 : 20_000,
+    clientName: 'generate-reference',
   });
+  try {
+    const tools = await client.listTools();
+    return { serverInfo: client.serverInfo, tools };
+  } finally {
+    client.close();
+  }
 }
 
 /* ---------------- Markdown ---------------- */
@@ -624,15 +580,24 @@ function walkTs(dir) {
  * 「公開しているが family では使っていない」を手で書かずに出すための走査。
  * mcp/ が無いとき（fresh clone）は null を返し、列ごと落とす。
  */
-function scanFamilyUsage(npmName) {
+function familySources() {
+  // HOUKI_SOURCE_DIR（CI で各リポジトリを clone した置き場所）があれば、そこの MCP の src を読む（houki-hub#5 ②）
+  const base = sourceDirFromEnv();
+  if (base) return Object.values(MCP_SERVERS).map((s) => ({ name: s.repo, src: join(base, s.repo, 'src') }));
   const mcpRoot = join(ROOT, 'mcp');
-  if (!existsSync(mcpRoot)) return null;
+  if (!existsSync(mcpRoot)) return [];
+  return readdirSync(mcpRoot, { withFileTypes: true })
+    .filter((e) => e.isDirectory())
+    .map((e) => ({ name: e.name, src: join(mcpRoot, e.name, 'src') }));
+}
+
+function scanFamilyUsage(npmName) {
   const usage = new Map();
   const servers = [];
   const escaped = npmName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  for (const e of readdirSync(mcpRoot, { withFileTypes: true })) {
-    const src = join(mcpRoot, e.name, 'src');
-    if (!e.isDirectory() || !existsSync(src)) continue;
+  for (const e of familySources()) {
+    const src = e.src;
+    if (!existsSync(src)) continue;
     servers.push(e.name);
     for (const file of walkTs(src)) {
       const text = readFileSync(file, 'utf8');
@@ -1003,7 +968,9 @@ function renderLibTypesPage(cfg, pkg, items, ctx) {
 
 async function generateLib(name) {
   const cfg = LIB_REGISTRY[name];
-  const libDir = join(ROOT, cfg.dir);
+  // HOUKI_SOURCE_DIR があれば <dir>/<リポジトリ名>/ を読む（CI で公開版のタグを clone し、dist を置いた形。houki-hub#5 ②）
+  const sourceBase = sourceDirFromEnv();
+  const libDir = sourceBase ? join(sourceBase, basename(cfg.dir)) : join(ROOT, cfg.dir);
   const entry = join(libDir, cfg.entry);
   // lib/ は追跡外の作業コピー。CI と fresh clone には dist が無いのでスキップし、
   // コミット済みのページでビルドする。
@@ -1211,15 +1178,16 @@ for (const name of names.filter((n) => n in LIB_REGISTRY)) {
 }
 for (const name of names.filter((n) => n in REGISTRY)) {
   const cfg = REGISTRY[name];
-  // mcp/ は追跡外の作業コピー。CI と fresh clone には dist が無いのでスキップし、
+  const launch = launchConfig(name);
+  // 既定（HOUKI_MCP_LAUNCH=local）の mcp/ は追跡外の作業コピー。CI と fresh clone には dist が無いのでスキップし、
   // コミット済みのページでビルドする。dist があるのに起動できないときは落とす
-  // （再生成できたのに古いページを黙って出荷しないため）。
-  if (!existsSync(cfg.args[0])) {
-    console.warn(`⚠ skip ${name}: server dist not found (${cfg.args[0]}) — using committed pages`);
+  // （再生成できたのに古いページを黙って出荷しないため）。npx で起動するときはスキップしない。
+  if (!launch.available) {
+    console.warn(`⚠ skip ${name}: server dist not found (${launch.entry}) — using committed pages`);
     continue;
   }
-  const { serverInfo, tools } = await handshake(cfg);
-  console.log(`${serverInfo.name} v${serverInfo.version} — ${tools.length} tools`);
+  const { serverInfo, tools } = await handshake(launch);
+  console.log(`${serverInfo.name} v${serverInfo.version} — ${tools.length} tools（${launch.label}）`);
   const spec = await specSourceFor(name);
   if (!spec) console.warn(`  ⚠ ${name} の仕様書が読めない。ツールのページに仕様書の節を出さない`);
   const specLinks = specPageIndex(name);

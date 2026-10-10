@@ -25,7 +25,8 @@
  *
  * 読む場所:
  *   - 既定は houki-hub の作業コピー（mcp/・lib/・skill/。git 追跡外）
- *   - 環境変数 HOUKI_SPECS_SOURCE=<dir> があれば <dir>/<リポジトリ名>/ を読む
+ *   - 環境変数 HOUKI_SOURCE_DIR=<dir>（元の名前 HOUKI_SPECS_SOURCE も使える）があれば <dir>/<リポジトリ名>/ を読む。
+ *     リファレンス（generate-reference.mjs）の .d.ts と、ライブラリの使用状況の走査も同じ置き場所を読む（houki-hub#5 ②）
  *     （CI で公開版のタグを浅く clone して置く想定。npm のパッケージは dist だけなので specs/ が無い）
  *   - どちらも無いリポジトリは飛ばし、コミット済みのページをそのまま使う
  *
@@ -137,7 +138,7 @@ const WORKFLOW_SECTIONS = {
 /* ---------------- 読み込み ---------------- */
 
 function sourceDir(cfg) {
-  const base = process.env.HOUKI_SPECS_SOURCE;
+  const base = process.env.HOUKI_SOURCE_DIR || process.env.HOUKI_SPECS_SOURCE;
   return base ? join(resolve(base), cfg.repo) : join(ROOT, cfg.dir);
 }
 
@@ -146,9 +147,12 @@ function versionOf(cfg, src) {
   return existsSync(p) ? JSON.parse(readFileSync(p, 'utf8')).version : null;
 }
 
-/** spec-ids の Node API。利用側のリポジトリの node_modules、無ければ site/ の node_modules から読む */
+/**
+ * spec-ids の Node API。利用側のリポジトリの node_modules、その親（HOUKI_SOURCE_DIR に clone したとき、
+ * CI はそこへ 1 回だけ入れる。houki-hub#5 ②）、site/ の node_modules の順に探す
+ */
 async function loadSpecIds(src) {
-  for (const base of [src, join(ROOT, 'site')]) {
+  for (const base of [src, dirname(src), join(ROOT, 'site')]) {
     const p = join(base, 'node_modules/@shuji-bonji/spec-ids/src/index.mjs');
     if (existsSync(p)) return import(pathToFileURL(p).href);
   }
