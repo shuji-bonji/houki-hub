@@ -819,3 +819,7 @@ Y7 の PR #55 が「残っていること」に挙げたもの: 同じページ�
 | Q42' | 残りの食い違い 6〜9 | (A) 上の表の直す案で 1 本の PR にする（指示 Y8）。作業の会話には、ページ全体をもう一度読み、残りがあれば今回の PR で直す案まで書かせ、このページの言い方の直しをこの PR で終える / (B) 6〜8 だけ直し、9 は shuji が文を決める / (C) 直さない | **A**。PR #53 と #55 は、どちらも「残っていること」を次に送った。A は、残りを報告で出し切らせて、shuji が 1 回で決められる形にする。9 の直す案は、上の表の「担いません」と同じ立場で書き、法令に触れるかは言い切らない |
 
 2026-10-10 21:04 JST: shuji が Q39' を案 A で設定した（`gh api -X PUT …/actions/permissions/workflow -f default_workflow_permissions=read -F can_approve_pull_request_reviews=true`）。続けて `reference-regen.yml` を `open_pr: false` で回した（run 38050539197、main `4541a7f`、21:02〜21:03 JST、success、約 40 秒）。全部の step が成功し、「PR を開く・更新する」は `open_pr: false` なので飛ばされた。artifact `reference-regen`（13,875 バイト）がある。差分のファイル数と照合の件数は、実行の要約で shuji が確かめる（コントロールの会話からはログに届かない）。次は `open_pr: true` で 1 回回し、最初の PR で「確かめた版」の行がツールのページに出ることと、egov・abbr の「承認の履歴」が残ることを確かめてからマージする。
+
+2026-10-10 21:08 JST: `open_pr: true` で回した（run 38050896579、success）。bot が hub PR #57（`bot/reference-regen`、29 ファイル、+51 −1）を開いた。変わったのは MCP のツールのページ 28 枚（「確かめた版」の行）と `site/docs/lib/houki-abbreviations.md` の 1 行（最新 0.7.0 → 0.7.1）。仕様書ページの差分は無く、egov・abbr の「承認の履歴」は消えていない。作り直す前のサイトの版は 4 リポジトリとも公開版と一致。DB の要らない例の照合は一致 26・データ側の差分 2・形の違い 0・未確認 19・照合しない 1。
+
+見つかったこと（Q42' とは別）: `site/docs/lib/houki-abbreviations.md` の同じ行の「houki-egov-mcp 0.6.0 と houki-nta-mcp 0.17.0 が取り込んでいるのは 0.4.1」は古い（今の egov・nta は 0.7.x を取り込んでいる）。版の数字だけをスクリプトが書き換え、括弧の中の文は人が書いたまま残っている。直すかは PR #57 の後に決める。
