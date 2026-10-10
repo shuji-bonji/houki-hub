@@ -42,8 +42,8 @@
 | Y7 | 段階 4 | scope-by-audience の食い違い 5 か所と、Mermaid の最後の行が欠けること（Q40'・Q41'） | 済（hub PR #55 `1d26e78`・#56 `4541a7f`） |
 | Y8 | 段階 4 | scope-by-audience の残りの食い違い 6〜9（Q42'） | 済（hub PR #58、main `533ef13`） |
 | Y9 | 段階 4 | scope-by-audience の 10〜12（法令上の評価を言い切る文と「全工程」、Q43'） | 済（hub PR #59、main `19ab3e7`） |
-| R9 | 段階 4 の後 | spec-ids 0.4.0 の実装 PR（`spec-ids pr-scope`、`migrate` を外す、spec-ids#9） | コミット済み（ブランチ `feat/20261010-pr-scope`、`264d92b`）。push・PR・publish は shuji |
-| C9 | 段階 4 の後 | houki 系 3 リポジトリの `check-pr-scope.mjs` を `npx spec-ids pr-scope` に置き換える PR | R9 の publish の後 |
+| R9 | 段階 4 の後 | spec-ids 0.4.0 の実装 PR（`spec-ids pr-scope`、`migrate` を外す、spec-ids#9） | 済（spec-ids PR #12、main `5ad662c`、#9 を閉じた）。タグ `v0.4.0` と publish は shuji |
+| C9 | 段階 4 の後 | houki 系 3 リポジトリの `check-pr-scope.mjs` を `npx spec-ids pr-scope` に置き換える PR | spec-ids 0.4.0 の publish の後（指示は R9 の結果で直し済み） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -2134,7 +2134,7 @@ spec-ids に、houki 系 3 リポジトリの .github/scripts/check-pr-scope.mjs
 
 ## 指示 C9: houki 系 3 リポジトリの pr-scope を spec-ids pr-scope に置き換える
 
-R9 の publish（spec-ids 0.4.0）の後に渡します。R9 の報告の「C9 に渡すこと」を読んでから、この指示の「やること」を直します。
+spec-ids 0.4.0 の publish の後に渡します。R9（spec-ids PR #12）の結果で、ci.yml の書き換えの形を「やること」の 2 に書きました。
 
 ```text
 houki-egov-mcp・houki-nta-mcp・houki-abbreviations の 3 リポジトリで、.github/scripts/check-pr-scope.mjs のコピーを spec-ids 0.4.0 の spec-ids pr-scope に置き換える PR を 1 本ずつ作ってください。publish はしません（版は上げない）。この会話の役は、実装者です。
@@ -2150,13 +2150,13 @@ houki-egov-mcp・houki-nta-mcp・houki-abbreviations の 3 リポジトリで、
 ## 最初に読むもの（この順）
 
 1. houki-hub の docs/notes/2026-10-04-plan-stage6-and-followups.md の「spec-ids#9 の判断」
-2. spec-ids 0.4.0 の README の pr-scope の節と CHANGELOG、R9 の PR の本文（「C9 に渡すこと」）
+2. spec-ids 0.4.0 の README の pr-scope の節と CHANGELOG、templates/spec-gate.yml の pr-scope のジョブ、spec-ids PR #12 の本文
 3. 各リポジトリの .github/scripts/check-pr-scope.mjs・check-pr-scope.test.mjs、.github/workflows/ci.yml（と spec-gate.yml があればそれも）、AGENTS.md の「PR の種類」と pr-scope に触れる文、package.json の test のスクリプト（check-pr-scope.test.mjs を流しているか）
 
 ## やること（各リポジトリ）
 
 1. package.json の @shuji-bonji/spec-ids を ^0.4.0 にし、package-lock.json を更新する
-2. ci.yml の pr-scope のジョブを npx spec-ids pr-scope に置き換える（R9 の「C9 に渡すこと」の形）
+2. ci.yml の pr-scope のジョブで、2 つの step（node --test .github/scripts/check-pr-scope.test.mjs と node .github/scripts/check-pr-scope.mjs）を、step 1 つ（- run: npx spec-ids pr-scope）にする。env の BASE_REF: origin/${{ github.base_ref }} と HEAD_REF: ${{ github.head_ref }}、checkout の fetch-depth: 0、npm ci はそのまま残す。コメントの「check-pr-scope.mjs は … readFrontMatter を import する」は、npm ci が spec-ids を入れるため、という文に直す
 3. .github/scripts/check-pr-scope.mjs と check-pr-scope.test.mjs を消す。package.json のスクリプトや ci.yml がそれらを呼んでいれば直す
 4. AGENTS.md と docs/ の、コピーを前提にした文（.github/scripts/check-pr-scope.mjs を指す文）を spec-ids pr-scope に直す
 5. lint・format:check・test・build、npx spec-ids check、npx spec-ids pr-scope（このブランチを実装 PR として）が通ることを確かめる

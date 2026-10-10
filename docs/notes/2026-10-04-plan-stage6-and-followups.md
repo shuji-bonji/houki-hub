@@ -893,3 +893,7 @@ spec-ids#9（`pr-scope` を `spec-ids pr-scope` として取り込む）は、�
 | scope-by-audience の言い方の直し | Y5〜Y9（PR #52・#53・#55・#58・#59）で終わった |
 | 段階 4 | 終わった |
 | R9（spec-ids 0.4.0） | spec-ids の作業コピーのブランチ `feat/20261010-pr-scope` にコミット 3 つ（`8f4e3c0` 実装、`693bc83` 文書、`264d92b` 版）。origin には未 push。PR の本文の草案は、誤って hub PR #59 に入った文（テスト 107 件、3 リポジトリの 18 本の PR でコピーと判定を比べ、違いは決定 2〜4 によるものだけ） |
+
+2026-10-10 23:58 JST: R9 は spec-ids PR #12 で main に入った（早送り、`5ad662c`、23:57 JST。CI は PR・main とも success）。spec-ids#9 は閉じた。タグ `v0.4.0` はまだ無く、npm の latest は 0.3.0（同時刻に確かめた）。houki-hub PR #59 の題と本文は Y9 のものに差し替え済み。
+
+C9 で ci.yml を書き換える形（spec-ids の `templates/spec-gate.yml` と README の `pr-scope` の節から）: 今の `pr-scope` のジョブの 2 つの step（`node --test .github/scripts/check-pr-scope.test.mjs` と `node .github/scripts/check-pr-scope.mjs`）を、`npx spec-ids pr-scope` の 1 つの step にする。環境変数 `BASE_REF: origin/${{ github.base_ref }}`・`HEAD_REF: ${{ github.head_ref }}`、`fetch-depth: 0`、`npm ci` は今のまま使える。
