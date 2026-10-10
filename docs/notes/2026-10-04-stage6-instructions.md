@@ -35,6 +35,7 @@
 | Y3 | 段階 4 | ツールごとのページ（リファレンスを分ける。Q27' の B、houki-hub#48） | 済（hub PR #49、main `e518da9`） |
 | Y4 | 段階 4 | 人が書くページのコンテナと図（Q28' の A） | 済（hub PR #50、main `2d3d92e`） |
 | Z1 | 段階 4 | hub#5 ② と呼び出し例の照合のスクリプト（#44）の設計と試作 | すぐ（2026-10-10 に追加） |
+| Y5 | 段階 4 | scope-by-audience の (1)・(2) と houki-nta.md の `--tsutatsu` の説明 | すぐ（2026-10-10 に追加。Z1 と並行できる） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1785,4 +1786,44 @@ hub#5 ②（CI での作り直し）:
 - 公開文書（site/）は変えない。設計の文書は docs/notes/ に置く
 - コミットを作るところまで。署名・push・PR は私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る（この文書の「共通」と同じ）
 - 報告: ブランチ・コミット、決めること 1〜10 の案と勧める案（試作に使った案）、試作で確かめたこと（CI で npx の起動が通るか、照合のスクリプトで流した例と結果）、私が Mac で回すコマンド、Z2（有効化と全部の例）に渡すこと、PR 本文の草案（Refs #5 #44。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 Y5: scope-by-audience の (1)・(2) と houki-nta.md の `--tsutatsu` の説明
+
+Y4 の後に始めます。Z1 とは触るファイルが重ならないので並行できます。計画書の Q32' で決めた (1)・(2) と、Y4 で直す案を挙げるだけにしていた `--tsutatsu` の説明を、1 本の小さな PR にします。scope-by-audience の (3)（業法の線の言い回し）はこの指示に入れません。
+
+```text
+houki-hub の人が書くページ 2 つ（guide/scope-by-audience.md と mcp/houki-nta.md）の文を直してください。この会話の役は、文書の作業者です。生成したページ（reference/・specs/）は変えません。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub（Cowork の device_bash では $HOME/mnt/houki-hub）
+- 起点: main。作業の前に git ls-remote https://github.com/shuji-bonji/houki-hub refs/heads/main で origin と同じか確かめる（Y4 の PR #50 が入った後）
+- ブランチ: docs/<作業日の yyyymmdd>-scope-by-audience-fixes（site/ を変えるので PR にする）
+
+## 最初に読むもの（この順）
+
+1. docs/notes/2026-10-04-plan-stage6-and-followups.md の Q32'
+2. site/docs/guide/scope-by-audience.md の全体
+3. site/docs/specs/houki-egov/verify_citations.md・common_errors.md の「エラー応答のフィールド」、site/docs/specs/houki-nta/common_errors.md の同じ表、site/docs/specs/houki-research/feasibility-check.md の「このワークフローを使う場面」
+4. site/docs/mcp/houki-nta.md の `--tsutatsu` の箇所（grep -n -- "--tsutatsu"）と、site/docs/specs/houki-nta/cli_bulk_download.md の `--tsutatsu` の行と、基本通達 4 種のほかの値を拒む仕様項目
+
+## やること
+
+1. (1) 「法規シリーズが提供するもの」の表の設計者・実装者の行を、今あるものと今後の対応に書き分ける。士業者の行の書き方（「（いずれも今後の対応）」）に合わせる。案: 「法令の構造化データ、仕様と法令の対応付け（[feasibility-check](/specs/houki-research/feasibility-check)）。改正による差分と、毎回同じ結果になる部品（計算・期限）は今後の対応」。同じ節の「設計者・実装者に向けた範囲は、法令の構造化データと、毎回同じ結果になる部品です。」の文も、部品が今後の対応であることが分かる形にそろえる。93 行目あたりの「今の法規シリーズが実際に提供している範囲は…」の文と食い違わないかを確かめる
+2. (2) 「この位置を支えている仕様」の表にリンクを足し、`<!-- Y2: … -->` のコメントを消す。新しい行は作らず、今の行に足す:
+   - 法源への到達: [verify_citations](/specs/houki-egov/verify_citations)（回答に添える引用の条・項・号が e-Gov の法令にあるかを、まとめて確かめる）と、`next_actions`（応答に、次に呼ぶツールと引数の例を添える。形はエラー応答のフィールドの表（[houki-egov](/specs/houki-egov/common_errors) と [houki-nta](/specs/houki-nta/common_errors) の「エラー応答のフィールド」）、中身は各ツールの仕様項目が決める。例に [SPEC-EGOV-GET-RELATED-LAWS-008](/specs/houki-egov/get_related_laws#spec-egov-get-related-laws-008)）。錨は生成したページの見出しの id を見て書く（Y4 で id を NFC にそろえた。「エラー応答のフィールド」は濁点を含む）
+   - 論点の抽出: [feasibility-check](/specs/houki-research/feasibility-check)（実装する前に、仕様が法令のどこに触れるかを条文で確かめる手順）
+   - 括弧の説明は、今の行と同じ長さ（1 句）にする。上の「専門家の仕事の中での位置」の表の法源への到達の行（「引用した法令が実在するかを確かめるツールと、次に読むべき法令を応答に添える仕組み」）と、足すリンクが 1 対 1 で対応するかを確かめる
+3. mcp/houki-nta.md の `--tsutatsu` の説明（`--quickstart` の案内の文と、`--quickstart`・`--bulk-download` の表の行）に、受け付けるのは基本通達 4 種（消費税法基本通達・所得税基本通達・法人税基本通達・相続税法基本通達）の正式名だけで、ほかの値は取り込みを始めずにエラーで終わることを書く。根拠の仕様項目（cli_bulk_download の該当の ID）へリンクする。表の中は短くし、4 種の列挙は表の下か案内の文に置く
+
+## 守ること・報告すること
+
+- 公開文書の文は「〜します」「〜です」。比喩を使わず、何が起きるかを書く
+- scope-by-audience の業法の線に触れる文（「当てはめ」の行、図の A3 など）は変えない。(3) は私が決めてから別に直す
+- 確かめること: 組み立て（npm run docs:build か、リポジトリの決まったコマンド）、変えた 2 ページのリンクとアンカーが全部開くこと（指示 Y3 と同じ方法）
+- コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る
+- 報告: ブランチ・コミット、変えた文の前後（3 か所とも）、足したリンクと錨、組み立てとリンクの確認の結果、迷った点、PR 本文の草案（Refs #27。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```

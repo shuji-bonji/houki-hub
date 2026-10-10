@@ -418,6 +418,7 @@ Q4（T6）の勧める案:
 | Y3 | 段階 4 | ツールごとのページ（#27 の続き。リファレンスを分ける） | `2026-10-04-stage6-instructions.md` | 済（2026-10-10、hub PR #49、main `e518da9`、GitHub Pages に公開。MCP は `/reference/mcp/<server>/<tool>`（egov 14・nta 14）、ライブラリは `/reference/lib/houki-abbreviations/<dir>`（関数 21・値 2）と `types`。今までの 1 ページはツールの一覧と共通の前置きだけにし、今の錨（`#get-law` など）で開くと theme がツールのページへ移す。仕様書ページの先頭は h1 の一言・ツールのページへのリンク・最後の変更の 1 文にし、「使いどころ」はツールのページへ移した。内部リンク 15,718 本とアンカーの壊れは 0 件（NFC/NFD の既知の 2 件は Y4）、Mermaid 132 図の読み込みエラー 0 件、再生成で書き換わるファイル無し。houki-hub#48 は open のまま（PR は Refs #48）） |
 | Y4 | 段階 4 | 人が書くページのコンテナと図、壊れたリンク 2 つ | `2026-10-04-stage6-instructions.md` | 済（2026-10-10、hub PR #50、main `2d3d92e`、GitHub Pages に公開。「約束」→「仕様項目」、節の名前を「利用者と得られる結果」「扱わないこと」「検討中のこと」に（spec.md の見出しは変えず生成スクリプトの対応表で。読み方のページに元の見出しとの対応表）。`markdown.anchor.slugify` で見出しの id を NFC にそろえ、壊れたリンク 2 つを直した（id が変わったのは濁点・半濁点を含む見出しだけ、135 ページ）。前提・版の条件を info、取り消せない操作を danger、業法の線を warning に入れた（文は変えていない）。図を 8 個足した。houki-egov・houki-nta のツール表を 3 列にし、houki-egov の表に無かった 5 ツールを足した。142 ページ・内部リンク 15,795 本・Mermaid 140 図で壊れ 0。Refs #27） |
 | Z1 | 段階 4 | hub#5 ② と呼び出し例の照合のスクリプト（#44）の設計と試作 | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-10）。Z と ZC を Z1（設計と試作）と Z2（有効化と全部の例）に分けた |
+| Y5 | 段階 4 | scope-by-audience の (1)・(2) と houki-nta.md の `--tsutatsu` の説明 | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-10）。Q32' の (1) A と (2) の調べた結果で。(3) 業法の線の言い回しは shuji の回答を待って足す |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 2026-10-09 に Y1（設計と試作）と Y2（全部の生成と公開）に分けた。下の表の Y1 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -702,8 +703,15 @@ Y4 の後（2026-10-10 JST）: 段階 4 のうち、#27 の仕様書ページ（
 | 作業 | 状態 |
 | --- | --- |
 | houki-hub#48・#27 を閉じる | 2026-10-10 に shuji が閉じると決めた（Q29' の A）。コメントの文は `docs/notes/issues-2026-10-10-hub27-close/` の 2 つ。投稿は shuji |
-| `site/docs/mcp/houki-nta.md` の `--tsutatsu` の説明 | 未。Y4 の指示では直す案を報告に挙げるだけにした。PR #50 の本文には挙がっていない |
-| scope-by-audience の文の確認 | shuji の確認待ち（Y2 の後の表） |
+| `site/docs/mcp/houki-nta.md` の `--tsutatsu` の説明 | 指示 Y5 に入れた。Y4 の指示では直す案を報告に挙げるだけにしたが、PR #50 の本文には挙がっていない |
+| scope-by-audience の文の確認 | (1)・(2) は指示 Y5。(3) 業法の線の言い回し（「当てはめ」の行、図の A3）は shuji の回答待ち |
 | houki-nta-mcp の spec.md の Mermaid 3 か所 | nta の次の仕様 PR で直す（Y2 の後の表） |
 | hub#5 ② と呼び出し例の照合のスクリプト（houki-hub#44） | 次の作業。Y3 でリファレンスがツールごとのページに分かれ、呼び出し例の置き場所とページの作り直しの仕組みが変わったので、その形で作る |
+
+2026-10-10 JST に shuji が決めたこと（Q32'、scope-by-audience の文の確認）:
+
+| # | 何を | 決めたこと |
+| --- | --- | --- |
+| (1) | 「法規シリーズが提供するもの」の設計者・実装者の行が、まだ提供していないもの（改正による差分、毎回同じ結果になる部品）を「提供するもの」に書いている | **A**。士業者の行と同じく「今後の対応」と書き分ける。今あるのは法令の構造化データと、仕様と法令の対応付け（feasibility-check）。同じ節の 129 行目（「設計者・実装者に向けた範囲は、…毎回同じ結果になる部品です」）も同じ形にそろえる |
+| (2) | 「この位置を支えている仕様」の表に、書きかけのコメント（verify_citations・next_actions・feasibility-check）が残っている | 新しい仕様は要らない。3 つとも仕様と仕様書ページがすでにある。`verify_citations` は houki-egov-mcp のツール（`/specs/houki-egov/verify_citations`、仕様 ID 48 件）。`feasibility-check` は Skill の workflow（`/specs/houki-research/feasibility-check`）。`next_actions` はエラーと成功の応答に付く案内のフィールドで、形は common_errors の「エラー応答のフィールド」の表（egov・nta）が決め、中身は各ツールの仕様 ID が決める（例: SPEC-EGOV-GET-RELATED-LAWS-008、すでに表にある SPEC-NTA-GET-TSUTATSU-013）。上の「専門家の仕事の中での位置」の表は、法源への到達の行で 2 つ（引用の実在確認、次に読む法令の案内）を「担います」の根拠に挙げているので、表に載せないと根拠のリンクが欠ける。直しは表にリンクを足してコメントを消すだけで、指示 Y5 に入れた |
 
