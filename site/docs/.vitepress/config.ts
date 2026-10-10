@@ -6,6 +6,27 @@ import referenceSidebar from './reference-sidebar.json';
 // 仕様書ページ（houki-hub#27）の sidebar は scripts/spec-pages.mjs が生成する
 import specsSidebar from './specs-sidebar.json';
 
+/**
+ * 見出しの id を作る関数。VitePress の既定（@mdit-vue/shared の slugify）と同じ処理の後に、NFC にそろえる。
+ * 既定は NFKD で文字を分解するので、濁点・半濁点を含む見出し（「版をまたぐときの注意」など）の id が
+ * 分解した形（NFD）になり、ページに NFC で書いた錨（`#版をまたぐときの注意`）と合わなかった（houki-hub#27 の Y4、2026-10-10）。
+ * NFKD による全角英数字・記号の半角化はそのまま残す。
+ */
+const rControl = /[\u0000-\u001f]/g;
+const rSpecial = /[\s~`!@#$%^&*()\-_+=[\]{}|\\;:"'“”‘’<>,.?/]+/g;
+const rCombining = /[\u0300-\u036F]/g;
+const slugifyNfc = (str: string) =>
+  str
+    .normalize('NFKD')
+    .replace(rCombining, '')
+    .replace(rControl, '')
+    .replace(rSpecial, '-')
+    .replace(/-{2,}/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/^(\d)/, '_$1')
+    .toLowerCase()
+    .normalize('NFC');
+
 /** プロジェクトページなので base を含む。OGP の URL は絶対でなければ無視される。 */
 const BASE = '/houki-hub/';
 const SITE = `https://shuji-bonji.github.io${BASE}`;
@@ -84,7 +105,8 @@ export default withMermaid(
     lastUpdated: true,
     // markdown-it-attrs を無効化する。ツールリファレンスの例示行の行末 {...} を
     // attrs が属性として消費し、不正な属性名を生む（pdf-agent-stack で踏んだ）。
-    markdown: { attrs: { disable: true } },
+    // anchor.slugify: 見出しの id を NFC にそろえる（上の slugifyNfc）。
+    markdown: { attrs: { disable: true }, anchor: { slugify: slugifyNfc } },
     sitemap: { hostname: SITE },
     // llms.txt 生成はビルド時のみ有効化する。
     // プラグインの dev ミドルウェアは「.md で終わる全リクエスト」を横取りして
