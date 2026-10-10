@@ -417,8 +417,8 @@ Q4（T6）の勧める案:
 | Y2 | 段階 4 | #27 の仕様書ページの全部の生成と公開 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、hub PR #47、main `eff9bd9`、GitHub Pages に公開済み。Q26' は A。67 ページ（egov 20・nta 22・abbr 23・Skill 2）と一覧 4 枚。生成スクリプトで Mermaid の書き方の誤り 3 か所・日本語の名前の書式・同じ題・workflow 間のリンクを直した。リファレンスの各ツール・各記号から仕様書ページへリンク。残りは下の「Y2 の後」） |
 | Y3 | 段階 4 | ツールごとのページ（#27 の続き。リファレンスを分ける） | `2026-10-04-stage6-instructions.md` | 済（2026-10-10、hub PR #49、main `e518da9`、GitHub Pages に公開。MCP は `/reference/mcp/<server>/<tool>`（egov 14・nta 14）、ライブラリは `/reference/lib/houki-abbreviations/<dir>`（関数 21・値 2）と `types`。今までの 1 ページはツールの一覧と共通の前置きだけにし、今の錨（`#get-law` など）で開くと theme がツールのページへ移す。仕様書ページの先頭は h1 の一言・ツールのページへのリンク・最後の変更の 1 文にし、「使いどころ」はツールのページへ移した。内部リンク 15,718 本とアンカーの壊れは 0 件（NFC/NFD の既知の 2 件は Y4）、Mermaid 132 図の読み込みエラー 0 件、再生成で書き換わるファイル無し。houki-hub#48 は open のまま（PR は Refs #48）） |
 | Y4 | 段階 4 | 人が書くページのコンテナと図、壊れたリンク 2 つ | `2026-10-04-stage6-instructions.md` | 済（2026-10-10、hub PR #50、main `2d3d92e`、GitHub Pages に公開。「約束」→「仕様項目」、節の名前を「利用者と得られる結果」「扱わないこと」「検討中のこと」に（spec.md の見出しは変えず生成スクリプトの対応表で。読み方のページに元の見出しとの対応表）。`markdown.anchor.slugify` で見出しの id を NFC にそろえ、壊れたリンク 2 つを直した（id が変わったのは濁点・半濁点を含む見出しだけ、135 ページ）。前提・版の条件を info、取り消せない操作を danger、業法の線を warning に入れた（文は変えていない）。図を 8 個足した。houki-egov・houki-nta のツール表を 3 列にし、houki-egov の表に無かった 5 ツールを足した。142 ページ・内部リンク 15,795 本・Mermaid 140 図で壊れ 0。Refs #27） |
-| Z1 | 段階 4 | hub#5 ② と呼び出し例の照合のスクリプト（#44）の設計と試作 | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-10）。Z と ZC を Z1（設計と試作）と Z2（有効化と全部の例）に分けた |
-| Y5 | 段階 4 | scope-by-audience の (1)・(2) と houki-nta.md の `--tsutatsu` の説明 | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-10）。Q32' の (1) A と (2) の調べた結果で。(3) 業法の線の言い回しは shuji の回答を待って足す |
+| Z1 | 段階 4 | hub#5 ② と呼び出し例の照合のスクリプト（#44）の設計と試作 | `2026-10-04-stage6-instructions.md` | 済（2026-10-10、hub PR #51、main `e664481`（早送り）。設計は `docs/notes/2026-10-10-design-hub5-regen-and-examples-check.md`。`scripts/lib/mcp-client.mjs`（`HOUKI_MCP_LAUNCH` = local / checkout / npx）、`.github/scripts/prepare-sources.mjs`、`scripts/check-site-versions.mjs`、`.github/workflows/reference-regen.yml`（`workflow_dispatch` だけ、既定は PR を開かない）、`scripts/check-examples-contract.mjs`。テスト 65 件。DB の無い環境で全 48 例: 一致 25・データ側の差分 2・形の違い 0・未確認 20・照合しない 1。nta 0.25.0 では #147 の劣化を形の違いとして拾った。Z2 に渡すことは設計の文書の 9 章、判断は下の「Z1・Y5 の後」） |
+| Y5 | 段階 4 | scope-by-audience の (1)・(2) と houki-nta.md の `--tsutatsu` の説明 | `2026-10-04-stage6-instructions.md` | 済（2026-10-10、hub PR #52、main `2eb0dc1`。`--tsutatsu` は SPEC-NTA-CLI-BULK-DOWNLOAD-011 へリンク。リンクとアンカーは scope-by-audience 19 件・houki-nta 52 件で壊れ 0。(3) は入れていない） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 2026-10-09 に Y1（設計と試作）と Y2（全部の生成と公開）に分けた。下の表の Y1 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -703,10 +703,10 @@ Y4 の後（2026-10-10 JST）: 段階 4 のうち、#27 の仕様書ページ（
 | 作業 | 状態 |
 | --- | --- |
 | houki-hub#48・#27 を閉じる | 済（2026-10-10 11:30 JST に shuji が閉じた。Q29' の A。コメントの文は `docs/notes/issues-2026-10-10-hub27-close/` の 2 つ） |
-| `site/docs/mcp/houki-nta.md` の `--tsutatsu` の説明 | 指示 Y5 に入れた。Y4 の指示では直す案を報告に挙げるだけにしたが、PR #50 の本文には挙がっていない |
-| scope-by-audience の文の確認 | (1)・(2) は指示 Y5。(3) 業法の線の言い回し（「当てはめ」の行、図の A3）は shuji の回答待ち |
+| `site/docs/mcp/houki-nta.md` の `--tsutatsu` の説明 | 済（Y5、PR #52） |
+| scope-by-audience の文の確認 | (1)・(2) は済（Y5、PR #52）。(3) 業法の線の言い回しは Q33'（下の「Z1・Y5 の後」）で shuji の回答待ち |
 | houki-nta-mcp の spec.md の Mermaid 3 か所 | nta の次の仕様 PR で直す（Y2 の後の表） |
-| hub#5 ② と呼び出し例の照合のスクリプト（houki-hub#44） | 次の作業。Y3 でリファレンスがツールごとのページに分かれ、呼び出し例の置き場所とページの作り直しの仕組みが変わったので、その形で作る |
+| hub#5 ② と呼び出し例の照合のスクリプト（houki-hub#44） | 設計と試作は済（Z1、PR #51）。有効化と全部の例は Z2（下の「Z1・Y5 の後」の判断の後に指示を書く） |
 
 2026-10-10 JST に shuji が決めたこと（Q32'、scope-by-audience の文の確認）:
 
@@ -720,3 +720,27 @@ Y4 の後（2026-10-10 JST）: 段階 4 のうち、#27 の仕様書ページ（
 2026-10-10 JST に shuji が A に決めた。新しい仕様は起票せず、既存の仕様項目も直さない。変えるのは scope-by-audience の説明の表だけ（指示 Y5 の形のまま）。シリーズ全体の約束を houki-hub の仕様にする案（D: houki-hub に `specs/` を置き、各 MCP の仕様項目を対応付ける）は取らない。考えるなら Issue にして、spec-ids#8 と同じ時期（段階 4 の後）に検討する。
 
 2026-10-10 JST（コントロールの会話を移した後）: origin の main は `4fba1a4` で、ローカルの main と同じ（`022d332` 以降の docs/ のコミットは push 済み）。指示 Y5・Z1 はまだ始まっていない（ブランチが無い）。計画書の外で残っているもの: houki-abbreviations#35 が open のまま（cron の変更 `50bd63b` と再実行の成功は 2026-10-04 に済。閉じるコメントの投稿だけが残る。2026-10-05 の「残りの順序」の「いつ挟んでもよいもの」）。
+
+### Z1・Y5 の後（2026-10-10 JST）
+
+Z1（hub PR #51）と Y5（hub PR #52）は main に入った。houki-hub#5・#44 は open のまま（PR は Refs）。
+
+Z1 で見つかったこと: 今のサイトの egov と abbreviations の仕様書ページは、公開していない main から作られている。houki-egov-mcp の main は `v0.20.0` の 5 コミット先、houki-abbreviations の main は `v0.7.0` の 9 コミット先で、その間の変更は spec-ids 0.3.0 への変換（front matter）・CI・AGENTS.md・日付の誤記の直しだけ（2026-10-10 JST に GitHub の compare で確かめた。abbr の `src/validate.ts` は import の並びとコメントの日付だけ）。公開版のタグの spec.md には front matter が無いので、`reference-regen.yml` で公開版から作り直すと、2 つの仕様書ページから「承認の履歴」の節と「最後に仕様が変わったのは…」の行が消える（46 ファイルの差分）。冒頭の版は同じなので、`check-site-versions.mjs` では拾えない。
+
+| # | 何を | 案 | 勧める案と理由 |
+| --- | --- | --- | --- |
+| Q33'-1 | scope-by-audience の (3)、「専門家の仕事の中での位置」の表の当てはめの行（今は「一般論としての当てはめはできます。確からしさの評価は、資格を持つ人の判断の代わりにはなりません」） | (A) 今のまま / (B) 「担いません」で始め、「LLM が一般論として要件を示すことはありますが、個別の事実に当てはめた結論は返しません」と書く / (C) 「補助します（要件を並べるまで）」 | **B**。ほかの行は「担います／補助します／担いません」で始まるが、この行だけ「できます」で、法規シリーズが担うかが読み取れない。すぐ下の事実の獲得の行（結論を返さない）とも食い違って読める |
+| Q33'-2 | 同、図の A3（今は「不特定多数に結論を提供する: 定まっていない・提供する側が線を引く」） | (A) 今のまま / (B) 「不特定多数に個別の結論を提供する: 業法の独占業務に触れるおそれ・提供する側が範囲を決める」 / (C) 図から外し、本文の箇条書きだけに残す | **B**。「定まっていない」では何が定まっていないのかが分からない。B はプロジェクトの前提（独占業務は想定外）と同じ言葉で、言い切らず「おそれ」にとどめる |
+| Q34' | Z1 の設計の決めること 1〜10 | (A) 設計の文書の勧める案のまま Z2 に進む（1 は B: npx と clone、2 は A: npm の latest、3 は A: `bot/reference-regen` の PR を 1 つ、4 は B: `reference-regen.yml` の中、5 は有効化のときに毎日 07:37 JST と手動、6〜10 は文書のとおり） / (B) どれかを変える | **A**。どれも試作で動きを確かめた形で、変える理由が見つかっていない |
+| Q35' | 公開版から作り直すと egov・abbr の「承認の履歴」が消えること（設計 9 章の 2） | (A) houki-egov-mcp 0.20.1・houki-abbreviations 0.7.1 を、振る舞いの変更なしの patch として publish し、タグの spec.md を front matter の形にしてから `open_pr: true` で回す / (B) 2 つの次の版（内容のある変更）が出るまで `open_pr: false` のままにし、schedule も付けない / (C) `prepare-sources.mjs` で specs/ だけ main から取る | **A**。B は有効化の時期が 2 つのリポジトリの次の変更しだいになり、決まらない。C は、仕様 PR が実装 PR より先に main に入る運用（仕様を先に承認する）のため、まだ公開していない振る舞いがサイトに出る。A の 2 つは npm の中身（`dist`）が変わらず、egov・nta の houki-abbreviations の指定（`^0.7.0`）の範囲に入るので、MCP 側の追随は要らない。CHANGELOG には「振る舞いの変更なし。仕様の承認の記録を front matter に移した」と書く |
+| Q36' | `bot/reference-regen` のコミットの署名（設計 9 章の 4） | (A) 求めない。runner の `git commit` のまま。マージは shuji が GitHub の画面で行う / (B) GitHub の API でコミットを作り、GitHub に署名させる | **A**。houki-hub の main に署名を求める branch protection は今無く、bot の PR は生成ページだけを変える。保護を入れるときに B に変える |
+| Q37' | 例の `- 照合:` の行をツールのページに出すか（設計 9 章の 6） | (A) `generate-reference.mjs` で落とす / (B) 出す | **A**。照合のスクリプトのための行で、利用者がツールを使うときの情報ではない。`- ローカル DB:` の行は利用者にも意味があるので出したままにする |
+| Q38' | DB の要らない例を CI（`reference-regen.yml`）で `--db absent` で流すか（設計 9 章の 9） | (A) 流して、結果の表を実行の要約と PR の本文に載せる / (B) 流さない（Mac だけ） | **A**。約 20 秒で 27 例を判定でき、公開版の形の違いを毎日拾える。e-Gov・国税庁への呼び出しは 1 日に 30 回ほどで、今の Mac での手作業の確認と同じ程度 |
+
+Z2 の指示を書く前に shuji にしていただくこと（設計の文書の 8 章・9 章の 1）:
+
+1. Mac で 8 章のコマンド 1（作業コピーから作り直してページが変わらないこと）と 5（`gh api repos/shuji-bonji/houki-hub/actions/permissions/workflow`）
+2. Actions から `reference-regen.yml` を `open_pr: false` で 1 回回し、要約を見る
+3. Q33'〜Q38' を決める
+
+Q35' を A にする場合、egov 0.20.1・abbr 0.7.1 の publish は Z2 の前に行う（実装 PR ではなく、CHANGELOG と版だけの PR。仕様 PR は要らない）。
