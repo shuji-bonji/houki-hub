@@ -175,6 +175,7 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 
 ::: details 呼び出し例 — 存在しない条を指定したとき（`ARTICLE_NOT_FOUND`）
 - 実測: v0.20.0（2026-10-05）
+- ローカル DB: 不要
 
 **引数**
 
