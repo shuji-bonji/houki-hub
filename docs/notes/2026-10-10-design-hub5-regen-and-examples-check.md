@@ -301,3 +301,33 @@ gh api repos/shuji-bonji/houki-hub/actions/permissions/workflow
 8. Mac で全 48 例を流して、形の違いとデータ側の差分の例を見る。規則で吸収すべきもの（family 共通の一覧に足す）と、例を直すものに分ける
 9. DB の要らない例を `reference-regen.yml` で `--db absent` で流し、PR の本文に載せるかを決める
 10. 公開の手順（各 MCP の publish の後、patch を含む）に照合のスクリプトを入れる（#44 の「やること」5）
+
+## 10. Z2 で確かめたこと（2026-10-10 JST）
+
+Z2（ブランチ `feat/20261010-hub5-enable-and-examples`）で、7 章の確かめていない点のうち確かめたものと、決めること 8〜10 を入れた結果をまとめる。
+
+### 7 章の各点
+
+| 何を | 結果 |
+| --- | --- |
+| GitHub の runner の上で workflow が通るか | 未。main に入れた後、Actions から `open_pr: false` で 1 回回す。VM（Linux・aarch64・Node 22）で、workflow の照合の step と同じコマンド（`check-examples-contract.mjs --db absent --json`、egov 0.20.1・nta 0.27.0 を npx）と `contract-summary.mjs` を流して通った（約 14 秒） |
+| `GITHUB_TOKEN` で PR を開けるか | 開けない設定だと確かめた（2026-10-10 15:25 JST、shuji が `gh api …/actions/permissions/workflow` を回した結果 `can_approve_pull_request_reviews: false`）。Q39' の設定を変えるまで、schedule の実行は `gh pr create` の step で失敗する。`bot/reference-regen` への push はその前に済む |
+| better-sqlite3 が prebuilt で入ったか | Linux・aarch64（Ubuntu 22.04、g++ と make あり）の npx のキャッシュで、better-sqlite3 12.11.1 の `build/` は `Release/better_sqlite3.node` だけで、ソースから build したときに残る `Makefile`・`config.gypi` が無い。prebuilt を取ったと見てよい。runner（x86_64）は実行ログの `prebuild-install` の行で確かめる |
+| DB の要る 20 例の照合 | 済。Mac で全 48 例を流し、1 回目は一致 43・データ側の差分 4・形の違い 0・未確認 0・照合しない 1。差分 4 件は例の書き方によるもので、直した後の 2 回目は一致 47・照合しない 1（記録は `2026-10-10-contract-check-egov-0.20.1-nta-0.27.0.md`） |
+| `--db present` で DB に無い文書を引いたときの書き戻し | 未。Mac の 2 回では、DB の要る例はどれも DB にある文書を引いていて、国税庁サイトから取った応答は無かった（`nta_get_*` の例の `source` がどれも例と同じ） |
+| Mac の `generate-reference.mjs`（`local`）で、作業コピーから作ったページが変わらないか | 未。VM では `HOUKI_MCP_LAUNCH=npx` で egov 0.20.1・nta 0.27.0 から作り直し、ツールのページ 28 枚のうち変わったのは Q37' で落とした 1 行（`nta_search_tax_answer`）だけだった。`local` は Mac の 8 章のコマンド 1 で確かめる |
+
+### 決めること 8〜10 を入れた結果
+
+| # | 入れたもの |
+| --- | --- |
+| 8 | 全 48 例に `- ローカル DB:` の行をそろえた（残りの 3 例）。`- 照合:` の行は `generate-reference.mjs` がツールのページに出さない（Q37'）。比べ方の規則に 2 つ足した: `**.rank` は ±0.01、文字列の「…」の前後の空白（半角・全角、改行は含めない）は省略の記号の一部 |
+| 9 | `check-examples-contract.mjs --write-verified`。一致した例の「- 実測:」の次に「- 確かめた版: vX（YYYY-MM-DD）」を書く。同じ版の行があれば変えず（最初に確かめた日を残す）、実測と同じ版なら書かない。npx（公開版）で起動したときだけ書く。`check-example-versions.mjs` は実測と確かめた版の新しいほうを公開版と比べ、判定の表示を「前の版で実測」にした。`stack-drift-issue.mjs` の Issue は「stack.json のずれ」と「確かめていない呼び出し例」の節に分けた |
+| 10 | CI では `reference-regen.yml` が `--db absent --json` で流し、`.github/scripts/contract-summary.mjs` が PR の本文の先頭に件数、本文に表を出す（Q38'）。形の違いがあっても workflow は失敗にしない |
+
+### Z2 で決めなかったこと
+
+- 形の違いで workflow を失敗にするか。運用を見てから決める
+- `stack-check.yml` は、`stack.json` のずれが無いと Issue を立てない。確かめていない例だけが残っているとき（公開の後に `stack.json` を直したが、照合をまだ流していない）は Issue にならない。確かめていない例だけでも Issue を立てるかは、運用を見てから決める
+- 各 MCP リポジトリの AGENTS.md の Publisher の手順に、照合のスクリプトを足すか（houki-hub#44 を閉じるときに決める）
+- `- 確かめた版:` と、3 例に足した `- ローカル DB:` の行は、ツールのページにまだ出ていない。Z2 の PR では生成し直していない（生成ページの差分を Q37' と例の直しの分だけにするため）。マージの後の最初の `reference-regen.yml` の PR で出る
