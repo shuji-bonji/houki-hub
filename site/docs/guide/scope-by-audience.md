@@ -42,11 +42,9 @@ flowchart TB
 
 | 層 | 仕様 |
 | --- | --- |
-| 法源への到達 | [search_fulltext](/specs/houki-egov/search_fulltext)（条文の本文をキーワードで横断して探す）、[resolveAbbreviation](/specs/houki-abbreviations/resolve_abbreviation)（略称から正式名を引く）、[nta_get_tsutatsu の SPEC-NTA-GET-TSUTATSU-013](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-013)（通達から、解釈の対象の法律の本文へ戻る案内） |
-| 論点の抽出 | [tax-research](/specs/houki-research/tax-research)（法律 → 通達 → 改正 → 添付 PDF の順に引く手順） |
+| 法源への到達 | [search_fulltext](/specs/houki-egov/search_fulltext)（条文の本文をキーワードで横断して探す）、[resolveAbbreviation](/specs/houki-abbreviations/resolve_abbreviation)（略称から正式名を引く）、[verify_citations の SPEC-EGOV-VERIFY-CITATIONS-004](/specs/houki-egov/verify_citations#spec-egov-verify-citations-004)（引用 1 件ごとに条・項・号があるかを返す）、[common_errors の SPEC-EGOV-COMMON-ERRORS-032](/specs/houki-egov/common_errors#spec-egov-common-errors-032)（法令名が題名と一致しないときに、候補の正式名を next_actions に添える）、[get_related_laws の SPEC-EGOV-GET-RELATED-LAWS-008](/specs/houki-egov/get_related_laws#spec-egov-get-related-laws-008)（法律から、委任先の施行令・施行規則の目次へ進む案内）、[nta_get_tsutatsu の SPEC-NTA-GET-TSUTATSU-013](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-013)（通達から、解釈の対象の法律の本文へ戻る案内） |
+| 論点の抽出 | [tax-research](/specs/houki-research/tax-research)（法律 → 通達 → 改正 → 添付 PDF の順に引く手順）、[feasibility-check](/specs/houki-research/feasibility-check)（実装する前に、仕様が法令のどこに触れるかを条文で確かめる手順） |
 | 事実の獲得・結論と責任（担わないこと） | [tax-research](/specs/houki-research/tax-research) の最初のステップ（問いが個別の事案や業としての利用に当たるかを、回答の前に判定する） |
-
-<!-- Y2: 全ページの生成の後に、verify_citations（引用の実在確認）、common_errors の next_actions、feasibility-check の行を足す -->
 
 ## 利用者ごとの線
 
@@ -126,7 +124,7 @@ flowchart LR
 | コスト | バッチ処理やキャッシュ、毎回同じ結果になる部品で運用できます。推論の費用より、法令を構造化したデータを整える費用のほうが大きくなります | 時点ごとの版・経過措置・附則まで含めて法令を構造化し、自前で保ち続けるのは費用が高く、共有の基盤が無いと各社が同じものを別々に作ることになります |
 | 技術 | 法令の構造化データ、施行日ごとの切り替え、計算、期限の起算の規則、テストできる実装に使えます | 条文のあいまいな部分（「正当な理由」「相当の期間」など）は規則として実装できず、人の判断か LLM の推論に残ります。規則にする部分と判断に残す部分の線引きが必要です |
 
-設計者・実装者に向けた範囲は、法令の構造化データと、毎回同じ結果になる部品です。LLM を使うのは、仕様と法令の対応付けと、規則にできない部分の補助に限ります。
+設計者・実装者に向けた範囲は、法令の構造化データと、毎回同じ結果になる部品（計算・期限）です。今の法規シリーズが提供しているのは法令の構造化データで、部品は今後の対応です。LLM を使うのは、仕様と法令の対応付けと、規則にできない部分の補助に限ります。
 
 ### 3 つの線が引かれる場所
 
@@ -164,6 +162,6 @@ flowchart TB
 | --- | --- | --- |
 | 一般の人 | 法源への到達、論点の提示、専門家に相談するときの資料の整理 | 結論、結論の確からしさ |
 | 士業者 | 上に加えて、時点ごとの法令・判例・裁決・計算・期限・推論の記録・反論を探す検証（いずれも今後の対応） | 結論の責任、事務所ごとの過去の事案の検索の仕組み |
-| 設計者・実装者 | 法令の構造化データ、改正による差分、毎回同じ結果になる部品、仕様と法令の対応付け | 個別の事案の結論を出す機能 |
+| 設計者・実装者 | 法令の構造化データ、仕様と法令の対応付け（[feasibility-check](/specs/houki-research/feasibility-check)）。改正による差分と、毎回同じ結果になる部品（計算・期限）は今後の対応 | 個別の事案の結論を出す機能 |
 
 3 つの立場に共通して提供するのは、法源への到達と、品質を保つための基盤（引用の確認と、改正への追随）です。これが、共有の基盤として法規シリーズが担う中心です。利用者ごとに違うのは、その上にどの層を積むかと、責任を誰が引き受けるかです。
