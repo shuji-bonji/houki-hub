@@ -416,7 +416,7 @@ Q4（T6）の勧める案:
 | Y1 | 段階 4 | #27 の仕様書ページと scope-by-audience（設計と試作） | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、hub PR #46、main `690ac1e`。`scripts/spec-pages.mjs`（`generate-reference.mjs specs` から呼ぶ）、`scripts/lib/generated-page.mjs`、試作 4 ページ（nta_get_tsutatsu・search_fulltext・resolve_abbreviation・tax-research）と一覧 4 枚・読み方のページ、人が書く「使いどころ」1 つ、`guide/scope-by-audience.md`、nav の「仕様」と sidebar。main に入ったので GitHub Pages にも公開された（`site/**` の push で deploy）） |
 | Y2 | 段階 4 | #27 の仕様書ページの全部の生成と公開 | `2026-10-04-stage6-instructions.md` | 済（2026-10-09、hub PR #47、main `eff9bd9`、GitHub Pages に公開済み。Q26' は A。67 ページ（egov 20・nta 22・abbr 23・Skill 2）と一覧 4 枚。生成スクリプトで Mermaid の書き方の誤り 3 か所・日本語の名前の書式・同じ題・workflow 間のリンクを直した。リファレンスの各ツール・各記号から仕様書ページへリンク。残りは下の「Y2 の後」） |
 | Y3 | 段階 4 | ツールごとのページ（#27 の続き。リファレンスを分ける） | `2026-10-04-stage6-instructions.md` | 済（2026-10-10、hub PR #49、main `e518da9`、GitHub Pages に公開。MCP は `/reference/mcp/<server>/<tool>`（egov 14・nta 14）、ライブラリは `/reference/lib/houki-abbreviations/<dir>`（関数 21・値 2）と `types`。今までの 1 ページはツールの一覧と共通の前置きだけにし、今の錨（`#get-law` など）で開くと theme がツールのページへ移す。仕様書ページの先頭は h1 の一言・ツールのページへのリンク・最後の変更の 1 文にし、「使いどころ」はツールのページへ移した。内部リンク 15,718 本とアンカーの壊れは 0 件（NFC/NFD の既知の 2 件は Y4）、Mermaid 132 図の読み込みエラー 0 件、再生成で書き換わるファイル無し。houki-hub#48 は open のまま（PR は Refs #48）） |
-| Y4 | 段階 4 | 人が書くページのコンテナと図、壊れたリンク 2 つ | `2026-10-04-stage6-instructions.md` | 作成済み（2026-10-09）。Q28' は A。Y3 が済んだので今始めてよい |
+| Y4 | 段階 4 | 人が書くページのコンテナと図、壊れたリンク 2 つ | `2026-10-04-stage6-instructions.md` | 済（2026-10-10、hub PR #50、main `2d3d92e`、GitHub Pages に公開。「約束」→「仕様項目」、節の名前を「利用者と得られる結果」「扱わないこと」「検討中のこと」に（spec.md の見出しは変えず生成スクリプトの対応表で。読み方のページに元の見出しとの対応表）。`markdown.anchor.slugify` で見出しの id を NFC にそろえ、壊れたリンク 2 つを直した（id が変わったのは濁点・半濁点を含む見出しだけ、135 ページ）。前提・版の条件を info、取り消せない操作を danger、業法の線を warning に入れた（文は変えていない）。図を 8 個足した。houki-egov・houki-nta のツール表を 3 列にし、houki-egov の表に無かった 5 ツールを足した。142 ページ・内部リンク 15,795 本・Mermaid 140 図で壊れ 0。Refs #27） |
 | Y | 4 | #27 の生成スクリプトと scope-by-audience のページ | 段階 2 の後 | 2026-10-09 に Y1（設計と試作）と Y2（全部の生成と公開）に分けた。下の表の Y1 |
 | Z | 4 | hub#5 ② | Y の公開の後 | 未 |
 | ZC | 4 | 呼び出し例の照合のスクリプト（6f） | Z と同時 | 未（houki-hub#44、2026-10-06 起票。草案 `docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md`。きっかけは houki-hub#43 の追記 2026-10-06） |
@@ -695,4 +695,14 @@ Y3 の後（2026-10-10 JST）:
 2026-10-10 JST に shuji が決めたこと（Q31'）: 仕様書ページとツールのページの節の名前を、利用者向けに変える。「使う人と受け取るもの」→「利用者と得られる結果」、「できないこと」→「扱わないこと」、「まだ決めていないこと」→「検討中のこと」。見出しだけでなく、各節の冒頭の一文と、読み方のページ・site/README.md の説明も直す。指示 Y4 のやること 8 に入れた。
 
 変える場所: 調べると、spec.md の見出しはもともと `## アクター`・`## できないこと`・`## 未決` で、生成スクリプト（`scripts/spec-pages.mjs` の対応表）がサイト用の名前に置き換えていた（`アクター` → 「使う人と受け取るもの」など）。そのため、spec.md の見出しは変えず、対応表の名前だけを変える。3 リポジトリの 65 本の spec.md に仕様 PR を出す案（前の回答の案 B）は取り下げる。spec.md の見出しは、仕様を書く人と spec-ids の文書（`docs/operations.md` 5 章の「`## できないこと` `## 未決` など ID の無い節」）が使う名前で、読み手が違う。読み方のページには、節の見出しをサイト用の名前に置き換えていることを書く。
+
+Y4 の後（2026-10-10 JST）: 段階 4 のうち、#27 の仕様書ページ（Y1〜Y4）は済んだ。残りは次のとおり。
+
+| 作業 | 状態 |
+| --- | --- |
+| houki-hub#48・#27 を閉じる | Q29' の決定を待つ（勧める案 A: 両方とも今閉じてよい。Y4 が済んだので、案 A の「#27 は Y4 の後」も満たした） |
+| `site/docs/mcp/houki-nta.md` の `--tsutatsu` の説明 | 未。Y4 の指示では直す案を報告に挙げるだけにした。PR #50 の本文には挙がっていない |
+| scope-by-audience の文の確認 | shuji の確認待ち（Y2 の後の表） |
+| houki-nta-mcp の spec.md の Mermaid 3 か所 | nta の次の仕様 PR で直す（Y2 の後の表） |
+| hub#5 ② と呼び出し例の照合のスクリプト（houki-hub#44） | 次の作業。Y3 でリファレンスがツールごとのページに分かれ、呼び出し例の置き場所とページの作り直しの仕組みが変わったので、その形で作る |
 
