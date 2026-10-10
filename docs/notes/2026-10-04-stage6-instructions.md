@@ -36,9 +36,10 @@
 | Y4 | 段階 4 | 人が書くページのコンテナと図（Q28' の A） | 済（hub PR #50、main `2d3d92e`） |
 | Z1 | 段階 4 | hub#5 ② と呼び出し例の照合のスクリプト（#44）の設計と試作 | 済（hub PR #51、main `e664481`） |
 | Y5 | 段階 4 | scope-by-audience の (1)・(2) と houki-nta.md の `--tsutatsu` の説明 | 済（hub PR #52、main `2eb0dc1`） |
-| Y6 | 段階 4 | scope-by-audience の (3)（業法の線の言い回し、Q33'-1・-2 の B） | すぐ（2026-10-10 に追加。P1・Z2 と並行できる） |
-| P1 | 段階 4 | houki-egov-mcp 0.20.1・houki-abbreviations 0.7.1 の patch（振る舞いの変更なし、Q35' の A） | すぐ（2026-10-10 に追加。Y6・Z2 と並行できる） |
-| Z2 | 段階 4 | hub#5 ② の有効化と #44 の全部の例（Q34'〜Q38' の A） | すぐ始めてよい。マージは P1 の publish と Q39' の設定の後（2026-10-10 に追加） |
+| Y6 | 段階 4 | scope-by-audience の (3)（業法の線の言い回し、Q33'-1・-2 の B） | 済（hub PR #53、main `be6f92a`） |
+| P1 | 段階 4 | houki-egov-mcp 0.20.1・houki-abbreviations 0.7.1 の patch（振る舞いの変更なし、Q35' の A） | 済（egov PR #118・abbr PR #41、2026-10-10 に publish） |
+| Z2 | 段階 4 | hub#5 ② の有効化と #44 の全部の例（Q34'〜Q38' の A） | 作業中。マージは Q39' の設定の後（P1 の publish は済） |
+| Y7 | 段階 4 | scope-by-audience の食い違い 5 か所と、Mermaid の最後の行が欠けること（Q40'・Q41'） | Q40'・Q41' の決定の後（2026-10-10 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1947,4 +1948,48 @@ houki-hub#5 の②（CI でリファレンスと仕様書ページを作り直�
 - egov・abbr の公開版（0.20.1・0.7.1、指示 P1）がまだ出ていないうちは、公開版から作り直すと「承認の履歴」が消える。この PR に、公開版から作り直したページを入れない
 - コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る
 - 報告: ブランチ・コミット、やること 1〜8 の結果、Mac での全 48 例の結果の表と分け方、Issue の草案、マージの前後に私がすること（Q39' の設定、P1 の publish の確認、open_pr: true での最初の実行、#5・#44 を閉じる時期）、PR 本文の草案（Refs #5 #44。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 Y7: scope-by-audience の食い違い 5 か所と、Mermaid の最後の行が欠けること
+
+Y6（hub PR #53）の「残っていること」の 2 つです。計画書の「Y6・P1 の後」の Q40'・Q41' を勧める案（A）で書いています。決定が変わったら、この指示を直してから渡します。
+
+```text
+houki-hub のサイトで、2 つの直しを別々の PR にしてください。この会話の役は、文書の作業者です。生成したページ（reference/・specs/）は変えません。
+
+1 本目: site/docs/guide/scope-by-audience.md の、業法の線の言い方が食い違う 5 か所の文
+2 本目: Mermaid の図で、ノードの文が 3 行以上のときに最後の行の下が欠けること（theme の CSS）
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub（Cowork の device_bash では $HOME/mnt/houki-hub）
+- 起点: main。作業の前に git ls-remote https://github.com/shuji-bonji/houki-hub refs/heads/main で origin と同じか確かめる（Y6 の PR #53 と、egov 0.20.1・abbr 0.7.1 への追随のコミットが入った後）。作業コピーにステージされた変更や未コミットの変更があれば、触らずに私に伝える
+- ブランチ: 1 本目は docs/<作業日の yyyymmdd>-scope-by-audience-consistency、2 本目は fix/<作業日の yyyymmdd>-mermaid-line-height（どちらも main から）
+
+## 最初に読むもの（この順）
+
+1. docs/notes/2026-10-04-plan-stage6-and-followups.md の「Z1・Y5 の後」の Q33' と、「Y6・P1 の後」の 5 か所の表と Q40'・Q41'
+2. hub PR #53 の本文（curl https://api.github.com/repos/shuji-bonji/houki-hub/pulls/53）
+3. site/docs/guide/scope-by-audience.md の全体
+4. site/docs/.vitepress/theme/custom.css・index.ts と、Mermaid を描く仕組み（config.ts の Mermaid の設定）
+
+## やること（1 本目）
+
+1. 計画書の 5 か所の表の「直す案」のとおりに文を直す。直す案の文が前後の文とつながらないときは、意味を変えずに語順だけを直し、報告に前後を書く
+2. 5 か所のほかに、同じページで Q33' の言い方と食い違う文が残っていないかを読み直す。見つけたものは変えずに報告に挙げる
+
+## やること（2 本目）
+
+1. 欠ける図を、今の main で 2 つ以上挙げる（ページと図の場所、幅 1280 と 390 のスクリーンショット）
+2. custom.css で、Mermaid の foreignObject の中の行の高さを直す（PR #53 の案は line-height: 1.5）。Mermaid の図だけに効く書き方にし、本文の line-height を変えない
+3. サイトの全部の Mermaid の図（Y4 の時点で 140 図）を、直す前と後で比べ、欠けが直ったことと、ほかの図の大きさや折り返しが崩れていないことを確かめる。全部を目で見られなければ、ノードの文が 3 行以上の図の一覧を作り、その全部と、そうでない図のうち 10 図を見る
+
+## 守ること・報告すること
+
+- 公開文書の文は「〜します」「〜です」。比喩を使わず、何が起きるかを書く。法令に触れるかどうかを言い切らない（「おそれ」「範囲」の言い方を保つ）
+- 確かめること: 2 本とも組み立て（vitepress build docs）、1 本目は変えたページのリンクとアンカー、2 本目は上の図の確認
+- コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る
+- 報告: 2 本のブランチとコミット、1 本目の 5 か所の前後と、ほかに見つけた食い違い、2 本目の欠けていた図の一覧と直した後の確認の結果（スクリーンショットの置き場所）、PR 本文の草案 2 本（1 本目は Refs #27。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```
