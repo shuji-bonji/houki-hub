@@ -1,11 +1,11 @@
 ---
 title: "explain_law_type — houki-egov-mcp のツール"
-description: "houki-egov-mcp の explain_law_type：法令種別（憲法・法律・政令・省令・規則・条例・告示・通達 等）の制定主体・階層上の位置・国民への拘束力・実務上の注意点を解説する。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-egov-mcp の explain_law_type：法令種別（憲法・法律・政令・省令・規則・条例・告示・通達 等）の制定主体・階層上の位置・国民への拘束力・実務上の注意点を解説する。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # explain_law_type
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/explain_law_type.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/explain_law_type/spec.md、使いどころは scripts/spec-pages/houki-egov/explain_law_type.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/explain_law_type.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/explain_law_type/spec.md、使いどころは scripts/spec-pages/houki-egov/explain_law_type.md から。 -->
 
 ::: info
 houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/explain_law_type/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/explain_law_type/
 
 法令種別（憲法・法律・政令・省令・規則・条例・告示・通達 等）の制定主体・階層上の位置・国民への拘束力・実務上の注意点を解説する。法務専門家でない利用者が「政令と省令の違い」「通達は守らなくていいのか」等を確認するための知識ツール。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。法令種別の名前（`政令`・`通達` など）を渡して、その種別を誰が定めるか・法令の階層のどこにあるか・国民を拘束するか・罰則を設けられるかの解説を受け取る。法務の専門家でない利用者が「政令と省令の違い」「通達は守らなくてよいのか」を確かめるのに使う
 
@@ -76,9 +76,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/explain_law_type/
 `binds_citizens: false` が、通達が国民を拘束しないことを表します。「施行令」「施行規則」「Act」のような別名も `name` に渡せます。`see_also` は法令の階層をまとめた文書の URL です。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 個々の法令（例: `消費税法施行令`）がどの種別かを判定すること（法令の種別は `search_law` や `get_law` の応答の `law_type`）
 - 法令や通達の本文を返すこと
@@ -105,12 +105,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 22 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/explain_law_type)で読めます。
+このツールの仕様項目 22 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/explain_law_type)で読めます。
 
-::: details 約束の見出し（22 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（22 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/explain_law_type#spec-egov-explain-law-type-001) | 種別の名前から解説を返す |
 | [002](/specs/houki-egov/explain_law_type#spec-egov-explain-law-type-002) | 別名から、その種別の解説を返す |

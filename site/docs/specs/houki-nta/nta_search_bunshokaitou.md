@@ -1,6 +1,6 @@
 ---
 title: "nta_search_bunshokaitou — houki-nta-mcp の仕様"
-description: "houki-nta-mcp の nta_search_bunshokaitou（文書回答事例をキーワードで検索する）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-nta-mcp の nta_search_bunshokaitou（文書回答事例をキーワードで検索する）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # nta_search_bunshokaitou の仕様
@@ -17,9 +17,9 @@ houki-nta-mcp **v0.27.0** の `specs/current/nta_search_bunshokaitou/spec.md` �
 
 最後に仕様が変わったのは v0.26.0 の「ローカル DB を開けないときの読むだけのツールと書き戻すツールの応答、`--bulk-download-tax-answer` が索引を保存できないときの終わり方（nta #144・#145）」（2026-10-06 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`keyword` を渡して、ローカル DB に入っている国税庁の文書回答事例（本庁と国税局の両方）のうちキーワードに合うものの一覧（`docId`・題名・抜粋）を受け取る。本文は `nta_get_bunshokaitou` に `docId` を渡して読む
 
@@ -36,9 +36,9 @@ houki-nta-mcp **v0.27.0** の `specs/current/nta_search_bunshokaitou/spec.md` �
 
 検索の対象はローカル DB だけである。事前に `houki-nta-mcp --bulk-download-bunshokaitou` で文書回答事例を DB に入れておく必要がある。国税庁サイトには取りに行かない。
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 文書の本文を返すこと（結果は `docId`・題名・抜粋まで。本文は `nta_get_bunshokaitou`）
 - 国税庁サイトに取りに行くこと（DB に無い文書は、`--bulk-download-bunshokaitou` をもう一度実行して取り込む）
@@ -73,9 +73,9 @@ flowchart TD
   M -- ある --> E3["results: [] と件数付きの「該当なし」を返す。件数は別表記を含む（004・003）"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-nta-search-bunshokaitou-001"></a>
 
@@ -185,9 +185,9 @@ tools/list の inputSchema の `limit` は `type: "integer"`、`minimum: 1`、`m
 v0.21.3 では空の `keyword` に `results: []` と「該当なし」の `hint`（[SPEC-NTA-SEARCH-BUNSHOKAITOU-004](#spec-nta-search-bunshokaitou-004) の形）を返していたが、空の `keyword` は探していないので、004 の対象から外れる。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

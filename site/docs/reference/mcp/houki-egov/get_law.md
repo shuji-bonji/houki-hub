@@ -1,11 +1,11 @@
 ---
 title: "get_law — houki-egov-mcp のツール"
-description: "houki-egov-mcp の get_law：日本の法令から条文を取得します。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-egov-mcp の get_law：日本の法令から条文を取得します。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # get_law
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_law.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/get_law/spec.md、使いどころは scripts/spec-pages/houki-egov/get_law.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_law.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_law/spec.md、使いどころは scripts/spec-pages/houki-egov/get_law.md から。 -->
 
 ::: info
 houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_law/spec.md` から自動生成しました（仕様 ID 43 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_law/spec.md` 
 
 日本の法令から条文を取得します。略称（消法・所法・労基法 等）に対応し、条・項・号の単位で指定できます。法令名は題名の完全一致だけを使い、一致しなければ候補を付けた LAW_NOT_FOUND を返します。article の条は本則の中から探し、附則の条は suppl_index で附則を指して取ります。章・節をまとめて取るときは get_law_range を使います。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`law_name` と `article`（任意で `paragraph`・`item`）を渡して、e-Gov 法令 API v2 から取った法令の条・項・号の本文を受け取る。`article` を省くと、その法令の目次を受け取る
 
@@ -241,9 +241,9 @@ URL: https://laws.e-gov.go.jp/law/340AC0000000033
 `next_actions[0]` に次に呼ぶべきツールと引数の例が入っています。`article` は本則の中だけを探すので、本則に無く附則にだけある条番号も `ARTICLE_NOT_FOUND` になります（v0.18.0 から。附則の条は `suppl_index` で附則を指して取ります）。法令名が略称辞書にも e-Gov の題名にも完全一致しないときは、候補を付けた `LAW_NOT_FOUND` が返ります（v0.18.0 から）。エラーコードの語彙と、コードごとの対処は [houki-research Skill](/skills/houki-research) が定めています。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 編・章・節や附則 1 本をまとめて取ること（`get_law_range`）
 - 目次に附則の中の条を載せること（目次の附則は見出しだけ。附則の条まで見るのは `get_toc` の `suppl: "full"`）
@@ -290,12 +290,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 43 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_law)で読めます。
+このツールの仕様項目 43 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_law)で読めます。
 
-::: details 約束の見出し（43 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（43 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/get_law#spec-egov-get-law-001) | 通達などの略称は OUT_OF_SCOPE を返し、e-Gov を引かない |
 | [002](/specs/houki-egov/get_law#spec-egov-get-law-002) | item は数値でも文字列でも受け付ける |

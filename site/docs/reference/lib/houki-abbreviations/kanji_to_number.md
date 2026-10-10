@@ -1,11 +1,11 @@
 ---
 title: "kanjiToNumber — houki-abbreviations の関数"
-description: "houki-abbreviations の関数 kanjiToNumber：漢数字を数値にする。（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の関数 kanjiToNumber：漢数字を数値にする。（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # kanjiToNumber
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/kanji_to_number/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/kanji_to_number.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/kanji_to_number/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/kanji_to_number.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/kanji_to_number/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -31,9 +31,9 @@ houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/kanji_to
 houki-egov-mcp v0.7.0 の `kanjiToNumber`（条番号用。位取りのみ）と同じ名前で、
 位取りの読み方はそちらと同じ結果を返す。位ごとの書き方を受け付ける点だけが違う。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この関数を誰が呼び、何を渡して何を受け取るかを示します。
+この関数の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - このパッケージを import するコード（houki-hub family の MCP サーバーなど）。条番号・法令番号から切り出した漢数字の並びを渡して、数値を受け取る
 - このパッケージの中では `normalizeLawNum` が、漢数字の並びごとにこの関数を使う
@@ -67,9 +67,9 @@ kanjiToNumber('25');       // null（算用数字は対象外）
 ```
 :::
 
-## できないこと
+## 扱わないこと
 
-この関数が引き受けないことです。
+この関数が意図して扱わないことです。
 
 - 万以上の単位（`万` `億`）を読むこと
 - 大字（`壱` `弐` `拾`）や `零` を読むこと
@@ -96,12 +96,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この関数が守る約束 9 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/kanji_to_number)で読めます。
+この関数の仕様項目 9 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/kanji_to_number)で読めます。
 
-::: details 約束の見出し（9 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（9 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/kanji_to_number#spec-abbr-kanji-to-number-001) | 位取りの漢数字を読む |
 | [002](/specs/houki-abbreviations/kanji_to_number#spec-abbr-kanji-to-number-002) | 位ごとの漢数字を読む |

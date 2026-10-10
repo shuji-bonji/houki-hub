@@ -1,11 +1,11 @@
 ---
 title: "computeDaysSince — houki-abbreviations の関数"
-description: "houki-abbreviations の関数 computeDaysSince：`fetched_at` (ISO 8601) と現在時刻から経過日数を計算する純関数。（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の関数 computeDaysSince：`fetched_at` (ISO 8601) と現在時刻から経過日数を計算する純関数。（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # computeDaysSince
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/compute_days_since/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/compute_days_since.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/compute_days_since/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/compute_days_since.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/compute_days_since/spec.md` から自動生成しました（仕様 ID 10 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -25,9 +25,9 @@ houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/compute_
   取得時刻が `fresh` になっていた）
 - `nowMs` は有限の数。`NaN` / `±Infinity` は `RangeError`、数でない値は `TypeError`
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この関数を誰が呼び、何を渡して何を受け取るかを示します。
+この関数の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-hub family の MCP サーバー（houki-nta-mcp など）。自分のローカル DB やキャッシュに持っている取得時刻 `fetched_at` を渡して経過日数を受け取り、`judgeStaleness` に渡して鮮度を判定する
 
@@ -44,9 +44,9 @@ function computeDaysSince(fetchedAt: string, nowMs?: number): number;
 | `fetchedAt` | ISO 8601 形式の取得時刻 (例: "2026-04-01T00:00:00Z") |
 | `nowMs` | Date.now() 相当 (テスト時に固定値を渡せる) |
 
-## できないこと
+## 扱わないこと
 
-この関数が引き受けないことです。
+この関数が意図して扱わないことです。
 
 - 経過日数から鮮度（`fresh` / `stale` / `outdated`）を判定すること（`judgeStaleness`）
 - `fetched_at` を DB やキャッシュから読むこと（各 MCP サーバーが持つ）
@@ -73,12 +73,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この関数が守る約束 10 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/compute_days_since)で読めます。
+この関数の仕様項目 10 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/compute_days_since)で読めます。
 
-::: details 約束の見出し（10 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（10 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/compute_days_since#spec-abbr-compute-days-since-001) | 経過日数を 1 日未満切り捨ての整数で返す |
 | [002](/specs/houki-abbreviations/compute_days_since#spec-abbr-compute-days-since-002) | 今より後の取得時刻には 0 を返す |

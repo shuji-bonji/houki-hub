@@ -1,6 +1,6 @@
 ---
 title: "get_law — houki-egov-mcp の仕様"
-description: "houki-egov-mcp の get_law（法令の条・項・号を 1 つ取得する。条を省くと目次を返す）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-egov-mcp の get_law（法令の条・項・号を 1 つ取得する。条を省くと目次を返す）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # get_law の仕様
@@ -17,9 +17,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/get_law/spec.md` から自動生�
 
 最後に仕様が変わったのは v0.18.0 の「法令名・条・委任先を、確かなときだけ 1 つに決める（段階 5 法令の引き当て）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`law_name` と `article`（任意で `paragraph`・`item`）を渡して、e-Gov 法令 API v2 から取った法令の条・項・号の本文を受け取る。`article` を省くと、その法令の目次を受け取る
 
@@ -37,9 +37,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/get_law/spec.md` から自動生�
 | `at`        | 任意 | 時点。`YYYY-MM-DD`（[SPEC-EGOV-GET-LAW-037](#spec-egov-get-law-037)）。その時点の条文を取る |
 | `suppl_index` | 任意 | 附則の番号。1 以上の整数（[SPEC-EGOV-GET-LAW-043](#spec-egov-get-law-043)）。`get_toc` の `suppl_provisions[].index`、`get_law_range` の `suppl_index` と同じ番号。渡すと `article` をその附則の中で探す |
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 編・章・節や附則 1 本をまとめて取ること（`get_law_range`）
 - 目次に附則の中の条を載せること（目次の附則は見出しだけ。附則の条まで見るのは `get_toc` の `suppl: "full"`）
@@ -82,9 +82,9 @@ flowchart TD
   I -- "どちらも無い" --> O
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-egov-get-law-001"></a>
 
@@ -589,9 +589,9 @@ tools/list の inputSchema の `suppl_index` は `type: "integer"`、`minimum: 1
 例: `{ law_name: "消費税法", article: "100", suppl_index: 27 }` の `markdown` は `# 消費税法 附則(27) 第100条` で始まり、2 行目は `附則(27) 平成八年六月一四日法律第八二号（抄）`、3 行目は `（消費税法の一部改正に伴う経過措置）`。`{ law_name: "消費税法", article: "100", suppl_index: 27, format: "json" }` の `data.suppl_index` は `27`、`{ law_name: "消費税法", article: "30", format: "json" }` の `data.suppl_index` は `null`。`{ law_name: "消費税法", article: "100", suppl_index: 999 }` は `RANGE_NOT_FOUND`、`hint` に `附則は 168 本`（2026-10-03 の本数）。`{ law_name: "消費税法", suppl_index: 27 }` は `INVALID_ARGUMENT`。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

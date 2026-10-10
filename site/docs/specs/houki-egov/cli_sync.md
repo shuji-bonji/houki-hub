@@ -1,6 +1,6 @@
 ---
 title: "cli_sync — houki-egov-mcp の仕様"
-description: "houki-egov-mcp の cli_sync（全件取り込み済みのローカル DB を日次差分で最新化する）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-egov-mcp の cli_sync（全件取り込み済みのローカル DB を日次差分で最新化する）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # cli_sync の仕様
@@ -15,9 +15,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/cli_sync/spec.md` から自動生�
 
 最後に仕様が変わったのは v0.20.0 の「ローカル DB の場所を、応答・起動時のログ・`--status` で確かめられるようにする（egov #108・#110、T6）」（2026-10-04 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - 利用者（ターミナルから `houki-egov-mcp --sync` を実行する人。定期実行に組み込む人を含む）。`--bulk-download-everything` で作ったローカル DB に、最後に同期した日から今日までの e-Gov の日次差分を取り込む
 
@@ -32,9 +32,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/cli_sync/spec.md` から自動生�
 | `HOUKI_EGOV_DB_PATH`                     | 任意 | DB ファイルの場所。既定は `${XDG_CACHE_HOME:-~/.cache}/houki-egov-mcp/laws.db`            |
 | `HOUKI_EGOV_BULK_RETRY`                  | 任意 | 1 日分の zip の取得に失敗したときに試す回数（既定 3）                                     |
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 差分で追える日数を超えた DB を最新化すること（全件の取り込み `--bulk-download-everything` をやり直す）
 - 全件の取り込みをしていない DB を差分だけで作ること
@@ -68,9 +68,9 @@ flowchart TD
   Q -- ない --> Z["件数をまとめて出し、状態の更新（020）と施行日を過ぎた未施行の版（021）を出して終わる"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-egov-cli-sync-001"></a>
 
@@ -324,9 +324,9 @@ v0.19.0 で、施行日の翌日以降の `--sync` まで進めた DB は、そ�
 例: 2026-10-05 に施行日を迎える未施行の版が 5 つある DB を、v0.19.0 の `--sync` で 2026-10-06 まで進め（`last_sync_date: 2026-10-06`）、0.19.1 以降に上げて 2026-10-07 に環境変数を付けずに `--sync` を実行すると、10-06 と 10-07 の差分だけを確かめるので 5 版は `UnEnforced` のまま残り、`[WARN] 施行日が last_sync_date (2026-10-07) より前なのに未施行 (UnEnforced) のままの版が 5 件あります。npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything を 1 回実行すると直ります（…）` を出して終了コード 0（件数は 2026-10-04 JST に shuji の DB で数えた施行日 2026-10-05 の版の数を当てはめたもの。実行した値ではない。v0.19.1 ではコマンドが `houki-egov-mcp --bulk-download-everything`）。`HOUKI_EGOV_DB_PATH=/Users/bonji/.cache/houki-egov-mcp/laws.dev.db` を付けて実行したとき（ホームディレクトリが `/Users/bonji`）は、コマンドが `HOUKI_EGOV_DB_PATH="$HOME/.cache/houki-egov-mcp/laws.dev.db" npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` になる。全件の zip から作った直後の DB（2026-10-03 作成）では、施行日が 2026-10-04 以前の `UnEnforced` の版は 0 件だった（houki-egov-mcp #107 の本文）ので、この行は出ない。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

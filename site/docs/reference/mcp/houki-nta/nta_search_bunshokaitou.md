@@ -1,11 +1,11 @@
 ---
 title: "nta_search_bunshokaitou — houki-nta-mcp のツール"
-description: "houki-nta-mcp の nta_search_bunshokaitou：文書回答事例（bunshokaitou）を FTS5 でキーワード検索する。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-nta-mcp の nta_search_bunshokaitou：文書回答事例（bunshokaitou）を FTS5 でキーワード検索する。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # nta_search_bunshokaitou
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_search_bunshokaitou.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/nta_search_bunshokaitou/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_search_bunshokaitou.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_search_bunshokaitou.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_search_bunshokaitou/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_search_bunshokaitou.md から。 -->
 
 ::: info
 houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_bunshokaitou/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_bunshok
 
 文書回答事例（bunshokaitou）を FTS5 でキーワード検索する。事前に `--bulk-download-bunshokaitou` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`keyword` を渡して、ローカル DB に入っている国税庁の文書回答事例（本庁と国税局の両方）のうちキーワードに合うものの一覧（`docId`・題名・抜粋）を受け取る。本文は `nta_get_bunshokaitou` に `docId` を渡して読む
 
@@ -172,9 +172,9 @@ v0.10.2 以前は表と別紙を取り込んでいなかったため、題名の
 国税局のページは本庁と違う税目フォルダ名を使うことがあり（東京局の `souzoku` など）、v0.13.0 までは `taxonomy: "sozoku"` で東京局の文書が出ませんでした。v0.14.0 からは、`sozoku` と `souzoku`、`gensen` と `gensenshotoku`、`joto-sanrin` と `joto_sanrin` をまとめて検索します。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 文書の本文を返すこと（結果は `docId`・題名・抜粋まで。本文は `nta_get_bunshokaitou`）
 - 国税庁サイトに取りに行くこと（DB に無い文書は、`--bulk-download-bunshokaitou` をもう一度実行して取り込む）
@@ -213,12 +213,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 8 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_search_bunshokaitou)で読めます。
+このツールの仕様項目 8 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_search_bunshokaitou)で読めます。
 
-::: details 約束の見出し（8 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（8 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-nta/nta_search_bunshokaitou#spec-nta-search-bunshokaitou-001) | 文書回答事例が DB に 1 件も無いときは検索できないことをエラーで返す |
 | [002](/specs/houki-nta/nta_search_bunshokaitou#spec-nta-search-bunshokaitou-002) | 税目の範囲に文書が無いときは税目の一覧と投入コマンドを案内する |

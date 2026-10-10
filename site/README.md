@@ -35,7 +35,7 @@ docs/
 ```
 
 `docs/reference/` は `scripts/generate-reference.mjs` が生成します（`npm run build` の先頭で走ります）。ツール（関数）ごとに 1 ページで、MCP は `docs/reference/mcp/<server>/<tool>.md`、ライブラリは `docs/reference/lib/houki-abbreviations/<仕様書の dir>.md` です。各サーバーとライブラリの `index.md` はツールの一覧と共通の前置きです。
-引数は MCP サーバーを起動して `tools/list` から、ライブラリのシグネチャは `dist/index.d.ts` から、「使う人と受け取るもの」「できないこと」「処理の流れ」「約束の一覧」は各リポジトリの `specs/current/<dir>/spec.md` から写します。
+引数は MCP サーバーを起動して `tools/list` から、ライブラリのシグネチャは `dist/index.d.ts` から、「利用者と得られる結果」「扱わないこと」「処理の流れ」「仕様項目の一覧」は各リポジトリの `specs/current/<dir>/spec.md` から写します（spec.md の `## アクター`・`## できないこと`・`## できること` の節を、サイトではこの名前で出します。対応表は `scripts/spec-pages.mjs` の `SPEC_SECTIONS` と `scripts/generate-reference.mjs` の `SPEC_COPY`）。
 `mcp/` の clone が無い環境（CI）では生成を飛ばし、コミット済みのページを使います。呼び出し例は `scripts/reference-examples/<server>/ja/<tool>.md` に手で書き、生成時にツールのページの「呼び出し例」の節に入ります（最初の `::: details` より前に書いた注意は「引数」の節の末尾に入ります）。
 
 ## 書き方

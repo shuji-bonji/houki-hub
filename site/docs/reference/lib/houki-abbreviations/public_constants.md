@@ -1,11 +1,11 @@
 ---
 title: "公開定数 — houki-abbreviations の値"
-description: "houki-abbreviations の値 公開定数：CATEGORIES / DOMAINS / LAW_TYPE_CODES / SOURCE_MCP_HINTS / STALENESS_THRESHOLDS（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の値 公開定数：CATEGORIES / DOMAINS / LAW_TYPE_CODES / SOURCE_MCP_HINTS / STALENESS_THRESHOLDS（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # 公開定数
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/public_constants/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/public_constants.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/public_constants/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/public_constants.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/public_constants/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/public_c
 
 CATEGORIES / DOMAINS / LAW_TYPE_CODES / SOURCE_MCP_HINTS / STALENESS_THRESHOLDS
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この値を誰が呼び、何を渡して何を受け取るかを示します。
+この値の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-hub family の MCP サーバー（houki-egov-mcp・houki-nta-mcp など）。辞書エントリの `domain` / `category` / `source_mcp_hint` がとりうる値の一覧として読み、引数の検査や管轄の判定に使う。鮮度の判定では `STALENESS_THRESHOLDS` の境界を使う
 - このパッケージの辞書データ（`src/data/*.json`）。各エントリの値はこれらの定数の値のどれかにする
@@ -118,9 +118,9 @@ MCP 固有の閾値を使う関数を作ってよい。凍結されているの�
 strict mode では `TypeError` になり、`judgeStaleness` の境界は実行時に変えられない
 （v0.7.0 から）。
 
-## できないこと
+## 扱わないこと
 
-この値が引き受けないことです。
+この値が意図して扱わないことです。
 
 - 値を追加・変更する手段を持つこと（凍結されている。009。値を変えるにはこのパッケージの新しい版が要る）
 - 鮮度を判定すること（`judgeStaleness`）。この文書は境界の値だけを書く
@@ -145,12 +145,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この値が守る約束 9 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/public_constants)で読めます。
+この値の仕様項目 9 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/public_constants)で読めます。
 
-::: details 約束の見出し（9 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（9 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/public_constants#spec-abbr-public-constants-001) | STALENESS_THRESHOLDS は fresh_days 7・stale_days 30 を持つ |
 | [002](/specs/houki-abbreviations/public_constants#spec-abbr-public-constants-002) | 辞書の全エントリの domain・category・source_mcp_hint は定数の値のどれかである |

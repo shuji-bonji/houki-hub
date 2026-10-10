@@ -1,11 +1,11 @@
 ---
 title: "getAbbreviationStats — houki-abbreviations の関数"
-description: "houki-abbreviations の関数 getAbbreviationStats：辞書全体の統計を返す。（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の関数 getAbbreviationStats：辞書全体の統計を返す。（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # getAbbreviationStats
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/get_abbreviation_stats/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/get_abbreviation_stats.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_abbreviation_stats/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/get_abbreviation_stats.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/get_abbreviation_stats/spec.md` から自動生成しました（仕様 ID 6 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -15,9 +15,9 @@ houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/get_abbr
 
 辞書全体の統計を返す。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この関数を誰が呼び、何を渡して何を受け取るかを示します。
+この関数の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-hub family の MCP サーバーと、このパッケージを import する利用者のコード。起動時のログや診断で、取り込んだ辞書の件数を確かめるために呼ぶ
 
@@ -33,9 +33,9 @@ function getAbbreviationStats(): AbbreviationStats;
 
 **関係する型**: [`AbbreviationStats`](/reference/lib/houki-abbreviations/types#abbreviationstats)
 
-## できないこと
+## 扱わないこと
 
-この関数が引き受けないことです。
+この関数が意図して扱わないことです。
 
 - 分野などで絞り込んだ件数を返すこと（引数は無い。絞り込んだ一覧は `listByDomain` / `listByCategory` / `listBySourceMcpHint`）
 - 辞書の版や更新日を返すこと
@@ -57,12 +57,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この関数が守る約束 6 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/get_abbreviation_stats)で読めます。
+この関数の仕様項目 6 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/get_abbreviation_stats)で読めます。
 
-::: details 約束の見出し（6 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（6 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/get_abbreviation_stats#spec-abbr-get-abbreviation-stats-001) | total は辞書のエントリの件数 |
 | [002](/specs/houki-abbreviations/get_abbreviation_stats#spec-abbr-get-abbreviation-stats-002) | 分野別・種別別・MCP 別の件数の合計は total と等しい |

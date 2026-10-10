@@ -1,11 +1,11 @@
 ---
 title: "nta_inspect_pdf_meta — houki-nta-mcp のツール"
-description: "houki-nta-mcp の nta_inspect_pdf_meta：指定した文書の添付 PDF の一覧を返す。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-nta-mcp の nta_inspect_pdf_meta：指定した文書の添付 PDF の一覧を返す。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # nta_inspect_pdf_meta
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_inspect_pdf_meta.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/nta_inspect_pdf_meta/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_inspect_pdf_meta.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_inspect_pdf_meta.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_inspect_pdf_meta/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_inspect_pdf_meta.md から。 -->
 
 ::: info
 houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_inspect_pdf_meta/spec.md` から自動生成しました（仕様 ID 20 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_inspect_pdf_me
 
 指定した文書の添付 PDF の一覧を返す。本文は読まない。各 PDF に kind（comparison=新旧対照表 / attachment=別紙・別表 / qa-pdf / related / notice / unknown）と、読み方（read_strategy: tables=表として取る / text=本文として読む / sample=先頭を見て決める、layout_note: 紙面の組み方）を付ける。save: true のときだけ PDF をサーバー側の保存先（既定は XDG_CACHE_HOME か ~/.cache の下の houki-nta-mcp/files/。環境変数 HOUKI_NTA_FILES_DIR で変更）に取得し、saved[] に絶対パスを返す。next_actions に pdf-reader-mcp の呼び出し例（保存済みなら extract_tables / read_text に file_path、未保存なら read_url に url）と、他の PDF 読み取りツール向けの汎用の 1 件を置く。読み手は固定しない。`nta_get_*` で全文を取得すると重い場合や、PDF だけを確認したい時に使う。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`docType` と `docId` を渡して、ローカル DB にあるその文書の添付 PDF の一覧（種別・読み方・URL）を受け取る。PDF の本文は受け取らない。`save: true` にすると PDF をサーバー側に保存した絶対パスも受け取り、pdf-reader-mcp などの PDF 読み取りツールにそのパスを渡す
 
@@ -158,9 +158,9 @@ v0.18.3 までは `next_actions` の代わりに `reader_hints` が付いてい�
 別紙 1（本文の新旧対照表）はタグ付きなので `extract_tables` が見出し行「改正後 | 改正前」の表を返します。参考の対応表はタグ無しで `extract_tables` が 0 件になるので、`read_text` に `split_columns: 2` を付けて同じ `file_path` を読みます。新旧対照表から改正点を取り出す手順（左右どちらが改正後かを見出し行で確かめる、「（同左）」「（省略）」「（新設）」「（削除）」と「【新設】」「【削除】」「【一部改正】」の扱い）は houki-research-skill の鉄則 3 にあります。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - PDF の本文を読むこと・要約すること（読むのは pdf-reader-mcp などの PDF 読み取りツール。このツールは一覧・種別・読み方・保存だけ）
 - 質疑応答事例（qa-jirei）と基本通達の条項（`nta_get_tsutatsu` の対象）の PDF を扱うこと（`docType` に無い）
@@ -208,12 +208,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 20 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_inspect_pdf_meta)で読めます。
+このツールの仕様項目 20 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_inspect_pdf_meta)で読めます。
 
-::: details 約束の見出し（20 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（20 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-nta/nta_inspect_pdf_meta#spec-nta-inspect-pdf-meta-001) | ローカル DB に無い文書は取りに行かない |
 | [002](/specs/houki-nta/nta_inspect_pdf_meta#spec-nta-inspect-pdf-meta-002) | 文書の添付 PDF の一覧を種別の順に返し、索引から消えた文書には印を付ける |

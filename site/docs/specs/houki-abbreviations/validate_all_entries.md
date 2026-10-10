@@ -1,6 +1,6 @@
 ---
 title: "validateAllEntries — houki-abbreviations の仕様"
-description: "houki-abbreviations の validateAllEntries（同梱の辞書全件の整合性を検査し、エラーと警告の一覧を返す）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-abbreviations の validateAllEntries（同梱の辞書全件の整合性を検査し、エラーと警告の一覧を返す）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # validateAllEntries の仕様
@@ -17,9 +17,9 @@ houki-abbreviations **v0.7.0** の `specs/current/validate_all_entries/spec.md` 
 
 最後に仕様が変わったのは v0.7.0 の「辞書の約束（名前の重なり・別名・告示）と、件数・近さの決め方」（2026-09-30 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-abbreviations の辞書を編集する人と CI。辞書にエントリを足したり直したりしたあとで呼び、同梱の辞書全件に重複・欠損・形の誤りが無いかを受け取る
 - `npm run validate`（`dist/index.js` の `validateAllEntries` を呼び、警告を `WARN:`、エラーを `ERROR:` で出力し、エラーがあれば終了コード 1 で終わる）
@@ -83,9 +83,9 @@ v0.6.1 にあった警告 `alias_collides_with_abbr`（別名がほかのエン�
 | `hanrei`                                                                                           | `houki-court`              |
 | `saiketsu`                                                                                         | `houki-saiketsu`           |
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 利用者が用意したエントリの配列を渡して検査すること（公開する `validateAllEntries` は引数を取らず、同梱の辞書だけを検査する）
 - `law_id` の法令が e-Gov に実在するか、`formal` や `law_num` が e-Gov の値と一致するかを確かめること（e-Gov API を呼ぶ `scripts/verify-law-ids.mjs` で行う。パッケージには含まれない）
@@ -114,9 +114,9 @@ flowchart TD
   J -- いいえ --> L["valid: false"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-abbr-validate-all-entries-001"></a>
 
@@ -286,9 +286,9 @@ v0.6.0 の同梱辞書 174 件を検査すると `valid: true` を返す（`erro
 例: `category: "kokuji"` で `source_mcp_hint: "houki-egov"` のエントリがあれば、`warnings` に `category_hint_mismatch` があり、`errors` には無い（e-Gov 法令 API は告示を持たない）。`source_mcp_hint: "houki-nta"` なら警告は無い。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

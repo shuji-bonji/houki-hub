@@ -1,11 +1,11 @@
 ---
 title: "nta_search_kaisei_tsutatsu — houki-nta-mcp のツール"
-description: "houki-nta-mcp の nta_search_kaisei_tsutatsu：改正通達（一部改正通達）を FTS5 でキーワード検索する。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-nta-mcp の nta_search_kaisei_tsutatsu：改正通達（一部改正通達）を FTS5 でキーワード検索する。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # nta_search_kaisei_tsutatsu
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_search_kaisei_tsutatsu.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/nta_search_kaisei_tsutatsu/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_search_kaisei_tsutatsu.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_search_kaisei_tsutatsu.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_search_kaisei_tsutatsu/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_search_kaisei_tsutatsu.md から。 -->
 
 ::: info
 houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_kaisei_tsutatsu/spec.md` から自動生成しました（仕様 ID 6 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_kaisei_
 
 改正通達（一部改正通達）を FTS5 でキーワード検索する。事前に `--bulk-download-kaisei` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`keyword` を渡して、ローカル DB に取り込んである国税庁の改正通達（一部改正通達）のうち、キーワードに合う文書の一覧（文書 ID・題名・発遣日・出典 URL・抜粋）を受け取る。本文は `nta_get_kaisei_tsutatsu` で別に取る
 
@@ -102,9 +102,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_kaisei_
 `docId` には新形式（`0025004-026`）と旧形式（`191001`）が混在します。どちらもそのまま `nta_get_kaisei_tsutatsu` に渡せます。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 国税庁サイトから改正通達を取ること（DB に無い文書は検索に出ない。取り込みは `--bulk-download-kaisei`）
 - 改正通達の本文や添付 PDF の内容を返すこと（本文は `nta_get_kaisei_tsutatsu`、PDF の一覧は `nta_inspect_pdf_meta`）
@@ -136,12 +136,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 6 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_search_kaisei_tsutatsu)で読めます。
+このツールの仕様項目 6 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_search_kaisei_tsutatsu)で読めます。
 
-::: details 約束の見出し（6 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（6 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-nta/nta_search_kaisei_tsutatsu#spec-nta-search-kaisei-tsutatsu-001) | DB に改正通達が 1 件も無いときは検索せずにエラーを返す |
 | [002](/specs/houki-nta/nta_search_kaisei_tsutatsu#spec-nta-search-kaisei-tsutatsu-002) | taxonomy で絞った範囲に文書が無いときは税目の一覧を返す |

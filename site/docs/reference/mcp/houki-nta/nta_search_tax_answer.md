@@ -1,11 +1,11 @@
 ---
 title: "nta_search_tax_answer — houki-nta-mcp のツール"
-description: "houki-nta-mcp の nta_search_tax_answer：タックスアンサー（一般納税者向け解説、約 750 件）を FTS5 でキーワード検索する。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-nta-mcp の nta_search_tax_answer：タックスアンサー（一般納税者向け解説、約 750 件）を FTS5 でキーワード検索する。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # nta_search_tax_answer
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_search_tax_answer.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/nta_search_tax_answer/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_search_tax_answer.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_search_tax_answer.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_search_tax_answer/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_search_tax_answer.md から。 -->
 
 ::: info
 houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_tax_answer/spec.md` から自動生成しました（仕様 ID 6 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_tax_ans
 
 タックスアンサー（一般納税者向け解説、約 750 件）を FTS5 でキーワード検索する。事前に `--bulk-download-tax-answer` で DB 投入が必要。この種別の文書が DB に 1 件も無いときはエラー DOC_NOT_FOUND を返す（キーワードに合わないだけの 0 件は results: [] で返す）。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`keyword` を渡して、ローカル DB に入っている国税庁のタックスアンサー（一般納税者向けの解説、約 750 件）のうちキーワードに合うものの一覧（番号・題名・出典 URL・抜粋）を受け取る。本文は `nta_get_tax_answer` で番号を指定して取る
 
@@ -97,9 +97,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_tax_ans
 `freshness` は、国税庁の索引にある記事だけの取得日時の範囲です（v0.24.1 から）。索引から消えた記事（`orphaned_at` が付いた行）は投入で取り直されないので、範囲から外しています。この DB では No.2882 が 2026-10-04 に索引から消え、2026-09-07 の取得日時のまま残っていますが、`oldest_fetched_at` はその日時にならず、`staleness` は `fresh` です。v0.24.0 までは、この記事の日時が `oldest_fetched_at` になり、投入をやり直しても `stale` のままでした（[houki-nta-mcp#139](https://github.com/shuji-bonji/houki-nta-mcp/issues/139)）。`freshness.db_path` は引いた DB のパスで、ホームディレクトリの部分は `~` に置き換えてあります（v0.25.0 から）。`legal_status.binds_tax_office` も `false` で、通達と違い税務職員も拘束しない参考資料です。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 国税庁サイトからタックスアンサーを探すこと（探すのはローカル DB だけ。DB に入れるのは `--bulk-download-tax-answer`）
 - タックスアンサーの本文を返すこと（`results` は番号・題名・出典 URL・抜粋まで。本文は `nta_get_tax_answer`）
@@ -128,12 +128,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 6 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_search_tax_answer)で読めます。
+このツールの仕様項目 6 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_search_tax_answer)で読めます。
 
-::: details 約束の見出し（6 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（6 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-nta/nta_search_tax_answer#spec-nta-search-tax-answer-001) | DB にタックスアンサーが 1 件も無いときは「該当なし」ではなくエラーを返す |
 | [002](/specs/houki-nta/nta_search_tax_answer#spec-nta-search-tax-answer-002) | タックスアンサーはあるがキーワードに合わないときは、成功として空の一覧と件数を返す |

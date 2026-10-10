@@ -1,6 +1,6 @@
 ---
 title: "getAbbreviationStats — houki-abbreviations の仕様"
-description: "houki-abbreviations の getAbbreviationStats（辞書の件数を分野別・種別別・MCP 別に数えて返す）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-abbreviations の getAbbreviationStats（辞書の件数を分野別・種別別・MCP 別に数えて返す）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # getAbbreviationStats の仕様
@@ -17,9 +17,9 @@ houki-abbreviations **v0.7.0** の `specs/current/get_abbreviation_stats/spec.md
 
 最後に仕様が変わったのは v0.7.0 の「辞書の約束（名前の重なり・別名・告示）と、件数・近さの決め方」（2026-09-30 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-hub family の MCP サーバーと、このパッケージを import する利用者のコード。起動時のログや診断で、取り込んだ辞書の件数を確かめるために呼ぶ
 
@@ -83,9 +83,9 @@ houki-abbreviations **v0.7.0** の `specs/current/get_abbreviation_stats/spec.md
 }
 ```
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 分野などで絞り込んだ件数を返すこと（引数は無い。絞り込んだ一覧は `listByDomain` / `listByCategory` / `listBySourceMcpHint`）
 - 辞書の版や更新日を返すこと
@@ -103,9 +103,9 @@ flowchart TD
   C --> D["byDomain・byCategory・bySourceMcpHint に入れて返す。byDomain には 6 分野すべてのキーがある（003）"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-abbr-get-abbreviation-stats-001"></a>
 
@@ -163,9 +163,9 @@ flowchart TD
 例: `getAbbreviationStats().byCategory.hanrei` は `0`（v0.6.1 では `undefined`）。`getAbbreviationStats().bySourceMcpHint['houki-mhlw']` は `0`。`getAbbreviationStats().byCategory.law` は 1 以上。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

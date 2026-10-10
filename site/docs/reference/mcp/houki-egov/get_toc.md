@@ -1,11 +1,11 @@
 ---
 title: "get_toc — houki-egov-mcp のツール"
-description: "houki-egov-mcp の get_toc：法令の目次（編・章・節・条の構造）のみを取得する。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-egov-mcp の get_toc：法令の目次（編・章・節・条の構造）のみを取得する。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # get_toc
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_toc.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/get_toc/spec.md、使いどころは scripts/spec-pages/houki-egov/get_toc.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_toc.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_toc/spec.md、使いどころは scripts/spec-pages/houki-egov/get_toc.md から。 -->
 
 ::: info
 houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_toc/spec.md` から自動生成しました（仕様 ID 28 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_toc/spec.md` 
 
 法令の目次（編・章・節・条の構造）のみを取得する。トークン節約用。本則は `toc`、附則は改正法ごとに `suppl_provisions` へ分けて返す（現行の規定と、改正法ごとの施行日・経過措置を混ぜないため）。既定では附則は見出しと条数だけを返し、`suppl: "full"` で附則の中の条まで返す。depth で階層を浅く打ち切れる（民法・会社法のような大規模法令の概観把握向け）。応答の toc[].path（例 "Part3/Chapter2"）は get_law_range にそのまま渡せる。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`law_name` を渡して、法令の編・章・節・条の目次（本則）と、改正法ごとの附則の目次を受け取る。受け取った `toc[].path` や `suppl_provisions[].index` を `get_law_range` に渡して、範囲の本文を取る
 
@@ -104,9 +104,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_toc/spec.md` 
 `node_count` は本則のノード数、`truncated: true` は `depth` で本則の階層を打ち切ったことを示します（附則の本数は `depth` では変わりません）。`toc[].path` を `get_law_range` に渡すと、その編・章の条文を本文ごと取れます。特定の条を探すだけなら、`get_toc` より `search_fulltext` に「民法 不法行為」のように法令名と語を渡す方が短く済みます。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 条の本文を返すこと（範囲の本文は `get_law_range`、1 条ずつは `get_law`）
 - 附則の中に `path` を付けること（附則は `suppl_provisions[].index` で指す）
@@ -142,12 +142,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 28 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_toc)で読めます。
+このツールの仕様項目 28 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_toc)で読めます。
 
-::: details 約束の見出し（28 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（28 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/get_toc#spec-egov-get-toc-001) | 本則を `toc`、附則を `suppl_provisions` に分けて返す |
 | [002](/specs/houki-egov/get_toc#spec-egov-get-toc-002) | `toc` のノードの形 |

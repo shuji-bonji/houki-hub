@@ -1,11 +1,11 @@
 ---
 title: "nta_get_kaisei_tsutatsu — houki-nta-mcp のツール"
-description: "houki-nta-mcp の nta_get_kaisei_tsutatsu：改正通達の本文を docId で取得する（DB 経由）。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-nta-mcp の nta_get_kaisei_tsutatsu：改正通達の本文を docId で取得する（DB 経由）。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # nta_get_kaisei_tsutatsu
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_kaisei_tsutatsu.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/nta_get_kaisei_tsutatsu/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_kaisei_tsutatsu.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_kaisei_tsutatsu.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_get_kaisei_tsutatsu/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_kaisei_tsutatsu.md から。 -->
 
 ::: info
 houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_kaisei_tsutatsu/spec.md` から自動生成しました（仕様 ID 11 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_kaisei_tsu
 
 改正通達の本文を docId で取得する（DB 経由）。本文 + 添付 PDF URL（pdf-reader-mcp で読み取り推奨）を返す。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`docId` を渡して、ローカル DB に入れてある改正通達（法令解釈通達の一部改正）1 件の本文と添付 PDF の一覧を受け取る。`docId` は `nta_search_kaisei_tsutatsu` の結果か、このツールのエラーの `available_doc_ids` から得る
 
@@ -118,9 +118,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_kaisei_tsu
 `docId` に英小文字・数字・`-` 以外の文字が入っているときは、DB を引く前に `INVALID_ARGUMENT` になります。`DOC_NOT_FOUND` は、形は合っているが DB にその文書が無いときだけです。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - DB に無い改正通達を国税庁サイトから取ること（改正通達は docId から個別ページの URL を組み立てるのに税目フォルダの世代差を解く必要があるため。DB に入れるのは `houki-nta-mcp --bulk-download-kaisei`）
 - 添付 PDF の本文を読むこと（応答には PDF の URL・種別・読み方の案内までを載せる。本文は pdf-reader-mcp などの PDF 読み取りツールに渡す。表を取るときの保存は `nta_inspect_pdf_meta`）
@@ -154,12 +154,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 11 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_kaisei_tsutatsu)で読めます。
+このツールの仕様項目 11 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_kaisei_tsutatsu)で読めます。
 
-::: details 約束の見出し（11 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（11 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-nta/nta_get_kaisei_tsutatsu#spec-nta-get-kaisei-tsutatsu-001) | ローカル DB に改正通達が 1 件も無いときは投入を案内する |
 | [002](/specs/houki-nta/nta_get_kaisei_tsutatsu#spec-nta-get-kaisei-tsutatsu-002) | 改正通達はあるが docId が無いときは「見つかりません」と候補を返す |

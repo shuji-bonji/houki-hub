@@ -1,11 +1,11 @@
 ---
 title: "nta_get_tax_answer — houki-nta-mcp のツール"
-description: "houki-nta-mcp の nta_get_tax_answer：国税庁のタックスアンサー（よくある税の質問）本文を番号で取得する。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-nta-mcp の nta_get_tax_answer：国税庁のタックスアンサー（よくある税の質問）本文を番号で取得する。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # nta_get_tax_answer
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_tax_answer.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/nta_get_tax_answer/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_tax_answer.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_tax_answer.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_get_tax_answer/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_tax_answer.md から。 -->
 
 ::: info
 houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_tax_answer/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_tax_answer
 
 国税庁のタックスアンサー（よくある税の質問）本文を番号で取得する。国税庁の索引で番号から記事の URL を決める。8xxx（災害）も取れる。例: 6101 → 消費税の基本的なしくみ。国税庁の索引に番号が無いとき、または国税庁サイトにそのページが無いときはエラー DOC_NOT_FOUND を返し、nta_search_tax_answer を案内する
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。タックスアンサー番号 `no` を渡して、国税庁の「タックスアンサー（よくある税の質問）」1 件の本文（見出しごとの節）を受け取る
 
@@ -156,9 +156,9 @@ v0.15.0 までは DB を引かずに毎回国税庁サイトから取得して�
 `申告先等` が何についての話かは、その前にある最も近い `level: 2` の節（「手続き」）で分かります。v0.25.0 では、この記事の `sections` は 7 つで、小見出しの文字列はどこにも入らず、「手続き」の節に「申告等の方法」と「申告先等」の段落が続けて入っていました。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 記事を題名やキーワードから探すこと（探すのは `nta_search_tax_answer`）
 - 国税庁の索引に無い番号の記事を取ること（`DOC_NOT_FOUND`。`0xxx` 帯は索引に無い）
@@ -210,12 +210,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 18 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_tax_answer)で読めます。
+このツールの仕様項目 18 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_tax_answer)で読めます。
 
-::: details 約束の見出し（18 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（18 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-nta/nta_get_tax_answer#spec-nta-get-tax-answer-001) | 番号が空か数字でなければ取りに行かない |
 | [003](/specs/houki-nta/nta_get_tax_answer#spec-nta-get-tax-answer-003) | 記事の URL は国税庁の索引で決め、DB にある行はその行の URL を使う |

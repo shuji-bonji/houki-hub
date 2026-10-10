@@ -8,7 +8,7 @@ description: "houki-research Skill の目的・責務・鉄則と、問いの形
 <!-- GENERATED FILE — 手で編集しない。houki-research-skill の skills/houki-research/SKILL.md と workflows/ から生成。 -->
 
 ::: info
-houki-research Skill **v0.20.0** の `skills/houki-research/SKILL.md` と `workflows/` から自動生成しました（workflow 2 件・2026-10-09）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-research Skill **v0.20.0** の `skills/houki-research/SKILL.md` と `workflows/` から自動生成しました（workflow 2 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 Skill には実行するコードが無く、SKILL.md の文章そのものが仕様です。そのため MCP のような仕様 ID と承認の履歴は無く、このページと workflow のページは SKILL.md と workflows/ の本文を言い換えずに写しています。
@@ -48,7 +48,7 @@ graph TB
 
 ## 鉄則 (この順序を絶対に守る)
 
-どの workflow でも守る順序と約束です。見出しを開くと、SKILL.md の本文を読めます。
+どの workflow でも守る順序と決まりです。見出しを開くと、SKILL.md の本文を読めます。
 
 ### 鉄則 1: 業法独占規定への注意は **回答前に** 行う
 

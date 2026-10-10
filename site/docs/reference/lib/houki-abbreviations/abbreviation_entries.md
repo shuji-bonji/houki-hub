@@ -1,11 +1,11 @@
 ---
 title: "abbreviationEntries — houki-abbreviations の値"
-description: "houki-abbreviations の値 abbreviationEntries：全分野を結合した辞書（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の値 abbreviationEntries：全分野を結合した辞書（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # abbreviationEntries
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/abbreviation_entries/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/abbreviation_entries.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/abbreviation_entries/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/abbreviation_entries.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/abbreviation_entries/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -20,9 +20,9 @@ houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/abbrevia
 エントリはこの配列の要素そのもの（同じオブジェクト）で、書き換えると `TypeError` になる。
 書き換えたいときは `structuredClone(entry)` や `{ ...entry }` で自分のコピーを作る。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この値を誰が呼び、何を渡して何を受け取るかを示します。
+この値の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-hub family の MCP サーバー（houki-egov-mcp、houki-nta-mcp など）。`abbreviationEntries` を import し、辞書の全エントリを走査して自分の管轄のエントリを取り出したり、独自の索引を作ったりする
 - このパッケージの他の公開関数（`resolveAbbreviation`・`listByDomain`・`searchByName`・`lookupByLawId`・`validateAllEntries` など）。どれもこの配列を対象に動く
@@ -38,9 +38,9 @@ const abbreviationEntries: readonly AbbreviationEntry[];
 
 **関係する型**: [`AbbreviationEntry`](/reference/lib/houki-abbreviations/types#abbreviationentry)
 
-## できないこと
+## 扱わないこと
 
-この値が引き受けないことです。
+この値が意図して扱わないことです。
 
 - 名前からエントリを 1 件引くこと（`resolveAbbreviation`）
 - 分野・カテゴリ・管轄で絞った一覧を返すこと（`listByDomain` / `listByCategory` / `listBySourceMcpHint`）
@@ -70,12 +70,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この値が守る約束 19 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/abbreviation_entries)で読めます。
+この値の仕様項目 19 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/abbreviation_entries)で読めます。
 
-::: details 約束の見出し（19 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（19 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/abbreviation_entries#spec-abbr-abbreviation-entries-001) | 6 分野すべてのエントリを 1 つの配列に持つ |
 | [002](/specs/houki-abbreviations/abbreviation_entries#spec-abbr-abbreviation-entries-002) | 全エントリが必須フィールドを持ち、値は定義された一覧の中にある |

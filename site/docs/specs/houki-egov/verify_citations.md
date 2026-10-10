@@ -1,6 +1,6 @@
 ---
 title: "verify_citations — houki-egov-mcp の仕様"
-description: "houki-egov-mcp の verify_citations（法令の引用のリストをまとめて実在確認する）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-egov-mcp の verify_citations（法令の引用のリストをまとめて実在確認する）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # verify_citations の仕様
@@ -17,9 +17,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/verify_citations/spec.md` から�
 
 最後に仕様が変わったのは v0.18.0 の「法令名・条・委任先を、確かなときだけ 1 つに決める（段階 5 法令の引き当て）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。回答に添える法令の引用（法令名または `law_id`、条、任意で項・号）の配列を渡して、件ごとに「e-Gov の法令にその条・項・号があるか」の判定を受け取る
 
@@ -44,9 +44,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/verify_citations/spec.md` から�
 | `suppl_index` | 任意                    | 附則の番号。1 以上の整数（[SPEC-EGOV-VERIFY-CITATIONS-047](#spec-egov-verify-citations-047)）。`get_toc` の `suppl_provisions[].index` と同じ番号。渡すと `article` をその附則の中で確かめる。省くと本則の中だけで確かめる（[SPEC-EGOV-VERIFY-CITATIONS-046](#spec-egov-verify-citations-046)） |
 | `label`     | 任意                      | 引用元の表示文字列。判定には使わず、応答の `input` にそのまま返す                 |
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 引用した条文が主張を支えるかどうかを判定すること（確かめるのは条・項・号が e-Gov の法令にあるかだけ）
 - 条文本文を返すこと（本文は `get_law`）
@@ -107,9 +107,9 @@ flowchart TD
   AM2 --> Z
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-egov-verify-citations-001"></a>
 
@@ -603,9 +603,9 @@ tools/list の inputSchema の `citations.items.properties.paragraph` は `type:
 例（2026-10-03 10:12 JST に houki-egov-dev 0.17.0 で確かめた）: `{ citations: [{ law_name: "所得税法", article: "9" }], at: "2000-01-01" }` は `code: "INVALID_ARGUMENT"`、`detail.issues[0].path: "at"` で、`results` を持たない。v0.17.0 では、その件が `code: "LAW_NOT_FOUND"`、`reason: "e-Gov に law_id 340AC0000000033 の法令がありません"` の `not_found` で、所得税法が e-Gov に無いと読める応答だった。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

@@ -1,6 +1,6 @@
 ---
 title: "cli_health_check — houki-nta-mcp の仕様"
-description: "houki-nta-mcp の cli_health_check（国税庁サイトの代表ページの確認と、基準（baseline）との比較）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-nta-mcp の cli_health_check（国税庁サイトの代表ページの確認と、基準（baseline）との比較）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # cli_health_check の仕様
@@ -15,9 +15,9 @@ houki-nta-mcp **v0.27.0** の `specs/current/cli_health_check/spec.md` から自
 
 最後に仕様が変わったのは v0.24.0 の「ローカル DB の版の扱い・作る入口・doc_type の制約・タックスアンサーの索引の保存と、CLI の引数の検査（段階 5 DB と CLI）」（2026-10-04 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - 運用者（国税庁サイトの構造の変更を、投入が失敗する前に知りたい人。CI の定期実行に組み込む人を含む）。`--health-check` で 9 件の代表ページを取得して解析できるかを確かめ、`--check-baseline-drift` で代表ページの URL が国税庁の通達の目次（`https://www.nta.go.jp/law/tsutatsu/menu.htm`）に今もあるかを確かめる
 
@@ -46,9 +46,9 @@ houki-nta-mcp **v0.27.0** の `specs/current/cli_health_check/spec.md` から自
 | `tax-answer`       | `https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6101.htm`     | 題名が取れる                               |
 | `qa-jirei`         | `https://www.nta.go.jp/law/shitsugi/shohi/02/19.htm`                 | 題名が取れる                               |
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 代表ページの URL を設定で差し替えること（9 件は固定。国税庁サイトの世代移行があれば、`--check-baseline-drift` の `newerGenerations` を見て houki-nta-mcp 側の URL を更新する）
 - `--health-check` で、代表ページ以外（投入した全節・全文書）を確かめること
@@ -84,9 +84,9 @@ flowchart TD
   end
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-nta-cli-health-check-001"></a>
 
@@ -152,9 +152,9 @@ bulk download が終わったときの記録は、その種別の baseline フ�
 例: 今の代表ページ 9 件（判定の対象は基本通達 4 種と改正通達の索引の 5 件）で目次に問題が無ければ、まとめの行は `[drift-check] 5/5 OK, drift=0, 対象外=4 (<秒>s)`（v0.23.x では `[drift-check] 9/9 OK, drift=0 (<秒>s)`。#111）。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

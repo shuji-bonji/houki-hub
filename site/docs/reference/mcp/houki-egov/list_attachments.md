@@ -1,11 +1,11 @@
 ---
 title: "list_attachments — houki-egov-mcp のツール"
-description: "houki-egov-mcp の list_attachments：法令に付いている添付ファイル（別表・様式・別記の図。jpg / pdf）の一覧を返す。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-egov-mcp の list_attachments：法令に付いている添付ファイル（別表・様式・別記の図。jpg / pdf）の一覧を返す。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # list_attachments
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/list_attachments.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/list_attachments/spec.md、使いどころは scripts/spec-pages/houki-egov/list_attachments.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/list_attachments.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/list_attachments/spec.md、使いどころは scripts/spec-pages/houki-egov/list_attachments.md から。 -->
 
 ::: info
 houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/list_attachments/spec.md` から自動生成しました（仕様 ID 25 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/list_attachments/
 
 法令に付いている添付ファイル（別表・様式・別記の図。jpg / pdf）の一覧を返す。各ファイルに、認証なしで開ける取得 URL と、法令の中の置き場所（「別表第一（第一条関係）」「附録第十一号様式」のような見出しと関係条文、条の中なら条番号）を付ける。get_law の条文には図の中身が入らないので、別表・様式の図が要るときにこのツールで URL を取る。pdf は pdf-reader-mcp の read_url に url を渡して読める。ファイルの中身は返さない。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`law_name`（と任意で `at`）を渡して、その法令履歴に付いている添付ファイル（別表・様式・別記の図。jpg / pdf）の一覧を受け取る。一覧の `url` をそのまま開くか、pdf-reader-mcp の `read_url` に渡すか、`get_attachment` で保存する
 
@@ -144,9 +144,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/list_attachments/
 `location.title` で「附録第十一号様式」を選び、その `url` を pdf-reader-mcp の `read_url` に渡せば出生届の書式が読めます。添付が無い法令（民法）では `count: 0` の成功応答で、エラーにはなりません。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 添付ファイルの中身（画像・pdf のバイト列や base64）を返すこと。返すのは URL だけで、取得・保存は `get_attachment` が行う
 - pdf の添付の本文を読むこと（pdf-reader-mcp の `read_url` に `url` を渡す）
@@ -175,12 +175,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 25 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/list_attachments)で読めます。
+このツールの仕様項目 25 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/list_attachments)で読めます。
 
-::: details 約束の見出し（25 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（25 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/list_attachments#spec-egov-list-attachments-001) | 添付ファイルの一覧を、取得 URL と種別付きで返す |
 | [002](/specs/houki-egov/list_attachments#spec-egov-list-attachments-002) | 各ファイルに、法令の中の置き場所を付ける |

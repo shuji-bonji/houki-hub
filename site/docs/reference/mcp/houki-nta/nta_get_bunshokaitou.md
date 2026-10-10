@@ -1,11 +1,11 @@
 ---
 title: "nta_get_bunshokaitou — houki-nta-mcp のツール"
-description: "houki-nta-mcp の nta_get_bunshokaitou：文書回答事例の本文を docId で取得する（DB 経由）。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-nta-mcp の nta_get_bunshokaitou：文書回答事例の本文を docId で取得する（DB 経由）。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # nta_get_bunshokaitou
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_bunshokaitou.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/nta_get_bunshokaitou/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_bunshokaitou.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_bunshokaitou.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_get_bunshokaitou/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_bunshokaitou.md から。 -->
 
 ::: info
 houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_bunshokaitou/spec.md` から自動生成しました（仕様 ID 11 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_bunshokait
 
 文書回答事例の本文を docId で取得する（DB 経由）。本庁系は "shotoku/250416"、国税局系は "tokyo/shotoku/260218" のような形式。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`docId` を渡して、ローカル DB に入っている国税庁の文書回答事例 1 件の本文・発出日・添付 PDF の一覧を受け取る
 
@@ -123,9 +123,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_bunshokait
 別紙の箇条書き（`イ` `ロ` `ハ` や `(1)` `(2)`）は、階層をたたんで 1 行ずつの段落として入ります。この文書では本文が約 7,000 文字あり、その大半が別紙です。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - DB に無い文書を国税庁サイトから取ること（docId から個別ページの URL を組み立てるには税目フォルダの世代差を解く必要があるため。取り込むのは `--bulk-download-bunshokaitou`）。応答に `source: "live"` が現れることはない
 - 題名やキーワードから文書を探すこと（探すのは `nta_search_bunshokaitou`）
@@ -158,12 +158,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 11 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_bunshokaitou)で読めます。
+このツールの仕様項目 11 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_bunshokaitou)で読めます。
 
-::: details 約束の見出し（11 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（11 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-nta/nta_get_bunshokaitou#spec-nta-get-bunshokaitou-001) | ローカル DB にある文書はエラーにせず返す |
 | [002](/specs/houki-nta/nta_get_bunshokaitou#spec-nta-get-bunshokaitou-002) | DB に文書回答事例が 1 件も無いときは投入を案内する |

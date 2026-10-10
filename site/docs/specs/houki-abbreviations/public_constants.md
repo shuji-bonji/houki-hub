@@ -1,6 +1,6 @@
 ---
 title: "公開定数 — houki-abbreviations の仕様"
-description: "houki-abbreviations の公開定数（CATEGORIES / DOMAINS / LAW_TYPE_CODES / SOURCE_MCP_HINTS / STALENESS_THRESHOLDS）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-abbreviations の公開定数（CATEGORIES / DOMAINS / LAW_TYPE_CODES / SOURCE_MCP_HINTS / STALENESS_THRESHOLDS）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # 公開定数の仕様
@@ -17,9 +17,9 @@ CATEGORIES / DOMAINS / LAW_TYPE_CODES / SOURCE_MCP_HINTS / STALENESS_THRESHOLDS
 
 最後に仕様が変わったのは v0.7.0 の「辞書のエントリと公開定数を凍結する」（2026-09-30 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-hub family の MCP サーバー（houki-egov-mcp・houki-nta-mcp など）。辞書エントリの `domain` / `category` / `source_mcp_hint` がとりうる値の一覧として読み、引数の検査や管轄の判定に使う。鮮度の判定では `STALENESS_THRESHOLDS` の境界を使う
 - このパッケージの辞書データ（`src/data/*.json`）。各エントリの値はこれらの定数の値のどれかにする
@@ -105,9 +105,9 @@ e-Gov の法令種別の名前と、e-Gov の法令 ID（`law_id`）の 4〜5 �
 
 7 日は週 1 回の確認、30 日は月 1 回の一括取得を想定した値（houki-nta-mcp v0.6.0 で決めた値）。違う境界が要る MCP サーバーは、この定数を書き換えずに自分の判定関数を書く。
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 値を追加・変更する手段を持つこと（凍結されている。009。値を変えるにはこのパッケージの新しい版が要る）
 - 鮮度を判定すること（`judgeStaleness`）。この文書は境界の値だけを書く
@@ -128,9 +128,9 @@ flowchart TD
   T["STALENESS_THRESHOLDS"] --> J["fresh_days 7 / stale_days 30 で judgeStaleness が判定する（001）"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-abbr-public-constants-001"></a>
 
@@ -222,9 +222,9 @@ flowchart TD
 例: `DOMAINS.push('x')` は `TypeError` を投げ、`DOMAINS.length` は 6 のまま（v0.6.1 では 7 になっていた）。`CATEGORIES[0] = 'x'` と `SOURCE_MCP_HINTS.pop()` も `TypeError`。`LAW_TYPE_CODES.Act = 'XX'` は `TypeError` で、`LAW_TYPE_CODES.Act` は `'AC'` のまま。`STALENESS_THRESHOLDS.fresh_days = 100` は `TypeError` で、その後の `judgeStaleness(50)` は `'outdated'` のまま（v0.6.1 では `'fresh'` になっていた）。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

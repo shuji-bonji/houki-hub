@@ -1,11 +1,11 @@
 ---
 title: "findSimilar — houki-abbreviations の関数"
-description: "houki-abbreviations の関数 findSimilar：あいまい一致 (Levenshtein 距離ベース)。（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の関数 findSimilar：あいまい一致 (Levenshtein 距離ベース)。（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # findSimilar
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/find_similar/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/find_similar.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/find_similar/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/find_similar.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/find_similar/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -21,9 +21,9 @@ houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/find_sim
 一覧が欲しいときは `searchByName` を使う。編集距離の比（距離 ÷ 長い方の文字数）が
 1/3 を超える名前は `maxDistance` 以下でも返さない（v0.7.0 から。距離 0 は文字数によらず返す）。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この関数を誰が呼び、何を渡して何を受け取るかを示します。
+この関数の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-abbreviations を import する利用者（houki-nta-mcp・houki-egov-mcp などの MCP サーバー、または独自のコード）。`労働基準法施行例` のように 1〜2 文字誤った名前を渡して、近い名前を持つ辞書のエントリと、その近さ（編集距離）を受け取る
 - この関数は編集距離で近い名前を返す関数で、名前の一部から一覧を得る関数ではない。`民法` のような短い名前を渡しても、`民` で始まる法令の一覧にはならない。一覧が欲しいときは `searchByName` を使う（README と JSDoc にも同じ文を書く）
@@ -51,9 +51,9 @@ findSimilar('民法');
 ```
 :::
 
-## できないこと
+## 扱わないこと
 
-この関数が引き受けないことです。
+この関数が意図して扱わないことです。
 
 - 名前の一部で探すこと（`searchByName`。`findSimilar` は名前全体どうしの編集距離を比べる）
 - 略称と正式名称のように編集距離が大きい組を結び付けること（辞書の `aliases` に登録して `resolveAbbreviation` で引く）
@@ -81,12 +81,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この関数が守る約束 22 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/find_similar)で読めます。
+この関数の仕様項目 22 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/find_similar)で読めます。
 
-::: details 約束の見出し（22 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（22 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/find_similar#spec-abbr-find-similar-001) | 名前が一致するエントリは distance 0 で先頭に返す |
 | [002](/specs/houki-abbreviations/find_similar#spec-abbr-find-similar-002) | 編集距離が maxDistance 以下のエントリだけを返す |

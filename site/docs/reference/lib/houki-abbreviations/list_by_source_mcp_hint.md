@@ -1,11 +1,11 @@
 ---
 title: "listBySourceMcpHint — houki-abbreviations の関数"
-description: "houki-abbreviations の関数 listBySourceMcpHint：指定 MCP が管轄するエントリ一覧を返す。（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の関数 listBySourceMcpHint：指定 MCP が管轄するエントリ一覧を返す。（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # listBySourceMcpHint
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/list_by_source_mcp_hint/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/list_by_source_mcp_hint.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/list_by_source_mcp_hint/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/list_by_source_mcp_hint.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/list_by_source_mcp_hint/spec.md` から自動生成しました（仕様 ID 5 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -19,9 +19,9 @@ houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/list_by_
 ことで、管轄外の問い合わせを早期に「正しい MCP に誘導するエラー」として
 返せるようになる。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この関数を誰が呼び、何を渡して何を受け取るかを示します。
+この関数の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-hub family の MCP サーバー。起動時に自分の名前（例: `houki-nta`）を渡して、自分が本文を返せるエントリだけの一覧を受け取る。それ以外のエントリを問い合わせられたときに、本文を持つ MCP の名前を案内するために使う
 
@@ -46,9 +46,9 @@ listBySourceMcpHint('houki-nta')   // → 国税庁管轄 9 件
 ```
 :::
 
-## できないこと
+## 扱わないこと
 
-この関数が引き受けないことです。
+この関数が意図して扱わないことです。
 
 - 複数の MCP をまとめて絞り込むこと（`searchByName` の `filter.source_mcp_hint` は配列を受け付ける）
 - 分野で絞り込むこと（`listByDomain`）
@@ -72,12 +72,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この関数が守る約束 5 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/list_by_source_mcp_hint)で読めます。
+この関数の仕様項目 5 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/list_by_source_mcp_hint)で読めます。
 
-::: details 約束の見出し（5 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（5 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/list_by_source_mcp_hint#spec-abbr-list-by-source-mcp-hint-001) | 指定した MCP が本文を持つエントリだけを返す |
 | [002](/specs/houki-abbreviations/list_by_source_mcp_hint#spec-abbr-list-by-source-mcp-hint-002) | エントリの無い MCP には空配列を返す |

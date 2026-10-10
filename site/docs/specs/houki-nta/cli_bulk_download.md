@@ -1,6 +1,6 @@
 ---
 title: "cli_bulk_download — houki-nta-mcp の仕様"
-description: "houki-nta-mcp の cli_bulk_download（国税庁サイトから通達と文書を取得してローカル DB に入れる）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-nta-mcp の cli_bulk_download（国税庁サイトから通達と文書を取得してローカル DB に入れる）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # cli_bulk_download の仕様
@@ -15,9 +15,9 @@ houki-nta-mcp **v0.27.0** の `specs/current/cli_bulk_download/spec.md` から�
 
 最後に仕様が変わったのは v0.26.0 の「ローカル DB を開けないときの読むだけのツールと書き戻すツールの応答、`--bulk-download-tax-answer` が索引を保存できないときの終わり方（nta #144・#145）」（2026-10-06 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - 利用者（ターミナルから `houki-nta-mcp --quickstart` や `--bulk-download-*` を実行する人）。国税庁サイトから基本通達の条項と 5 種別の文書を取得し、ローカル DB に入れる。入れた DB は `nta_search_*`（検索は DB が無いと `TSUTATSU_NOT_FOUND` / `DOC_NOT_FOUND` になる）と `nta_get_*`（DB にあれば国税庁サイトに取りに行かない）が引く
 
@@ -45,9 +45,9 @@ houki-nta-mcp **v0.27.0** の `specs/current/cli_bulk_download/spec.md` から�
 
 投入のフラグは 1 回の実行で 1 つだけ。一緒に使えるフラグは cli_entry の [SPEC-NTA-CLI-ENTRY-007](/specs/houki-nta/cli_entry#spec-nta-cli-entry-007)。DB の版による扱いは [SPEC-NTA-DB-SCHEMA-021](/specs/houki-nta/db_schema#spec-nta-db-schema-021)
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 基本通達 4 種以外の通達を投入すること（`--tsutatsu` に 4 種以外の値を渡すと [SPEC-NTA-CLI-BULK-DOWNLOAD-011](#spec-nta-cli-bulk-download-011) のエラー）
 - 通達の章や節を絞って投入すること（CLI にはフラグが無い。章を絞った実行は `bulk_completed_at` を書かない。[SPEC-NTA-DB-SCHEMA-015](/specs/houki-nta/db_schema#spec-nta-db-schema-015)）
@@ -79,9 +79,9 @@ flowchart TD
   R --> OR["税目を絞らずに、または絞った税目の索引をすべて取れたら、索引から消えた文書の印を付け直す（012）"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-nta-cli-bulk-download-001"></a>
 
@@ -235,9 +235,9 @@ flowchart TD
 v0.25.x では、`--bulk-download-tax-answer` は記事を 1 件も取らずに止まり、SQLite の例外が MCP サーバーの入口まで伝わって `fatal error` のログを出し、終了コード 1 で終わる。`--bulk-download-everything` では `(5/6) タックスアンサー 失敗: table tax_answer_index has no column named url` を出してタックスアンサーを飛ばし、質疑応答事例へ進んで終了コード 0 で終わる（proposal.md の「今の動き」）。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

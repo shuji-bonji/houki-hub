@@ -1,11 +1,11 @@
 ---
 title: "get_law_file — houki-egov-mcp のツール"
-description: "houki-egov-mcp の get_law_file：法令本文を 1 つのファイル（xml / json / html / rtf / docx）で取る道を返す。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-egov-mcp の get_law_file：法令本文を 1 つのファイル（xml / json / html / rtf / docx）で取る道を返す。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # get_law_file
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_law_file.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/get_law_file/spec.md、使いどころは scripts/spec-pages/houki-egov/get_law_file.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_law_file.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_law_file/spec.md、使いどころは scripts/spec-pages/houki-egov/get_law_file.md から。 -->
 
 ::: info
 houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_law_file/spec.md` から自動生成しました（仕様 ID 23 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_law_file/spec
 
 法令本文を 1 つのファイル（xml / json / html / rtf / docx）で取る道を返す。既定では認証なしで開ける URL だけを返し、save: true のときだけファイルを取得してサーバー側の保存先（既定は XDG_CACHE_HOME か ~/.cache の下の houki-egov-mcp/files/。環境変数 HOUKI_EGOV_FILES_DIR で変更）に書いて絶対パスを返す。条文を読むだけなら get_law / get_law_range のほうが小さく済む（民法の xml は 1.6 MB、docx は 182 KB）。人が Word や ブラウザーで開く版が要るとき（docx / html / rtf）と、法令 XML をそのまま処理したいとき（xml / json）のためのツール。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`law_name` と `file_type` を渡して、法令本文 1 つ分のファイル（xml / json / html / rtf / docx）を取る URL を受け取る。`save: true` を付けたときは、サーバーが保存したファイルの絶対パスと、そのファイルの法令履歴 ID を受け取る
 - MCP サーバーを起動する人。環境変数 `HOUKI_EGOV_FILES_DIR` で保存先のディレクトリを決める
@@ -102,9 +102,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_law_file/spec
 保存すると e-Gov のファイル名から法令履歴 ID が取れます（URL だけのときは分かりません）。実測では民法の docx が 182 KB、消費税法の rtf が 1.8 MB でした。1 ファイル 50 MB（52,428,800 バイト）を超えるときは保存せず、`FILE_TOO_LARGE`（`retryable: false`、`detail.bytes` に大きさ）を返します。Content-Length で分かるときは本文を読みません（v0.16.0 から。v0.15.x では `INVALID_ARGUMENT` でした）。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - ファイルの中身（バイト列や base64）を応答に入れること
 - 保存先のパスやファイル名を引数で決めること（決めるのはサーバーを起動する人の環境変数だけ）
@@ -138,12 +138,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 23 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_law_file)で読めます。
+このツールの仕様項目 23 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_law_file)で読めます。
 
-::: details 約束の見出し（23 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（23 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/get_law_file#spec-egov-get-law-file-001) | save を付けないときは、ファイルを取らずに URL を返す |
 | [002](/specs/houki-egov/get_law_file#spec-egov-get-law-file-002) | 時点（at）は URL の asof になる |

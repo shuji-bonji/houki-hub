@@ -1,6 +1,6 @@
 ---
 title: "db_schema — houki-egov-mcp の仕様"
-description: "houki-egov-mcp の db_schema（全文検索に使うローカル SQLite DB の置き場所とテーブル）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-egov-mcp の db_schema（全文検索に使うローカル SQLite DB の置き場所とテーブル）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # db_schema の仕様
@@ -15,9 +15,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/db_schema/spec.md` から自動生
 
 最後に仕様が変わったのは v0.20.0 の「ローカル DB の場所を、応答・起動時のログ・`--status` で確かめられるようにする（egov #108・#110、T6）」（2026-10-04 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - 利用者（CLI の `--bulk-download-everything` / `--sync` で DB を作り・最新化し、`--status` で中身を確かめ、sqlite3 で直接開くこともある人）
 - MCP クライアント（`search_fulltext` を呼ぶと、サーバーがこの DB を開いて引く）
@@ -36,9 +36,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/db_schema/spec.md` から自動生
 | CLI `--status`                              | 任意 | DB を読むだけ。DB のファイルを作らない（[SPEC-EGOV-DB-SCHEMA-025](#spec-egov-db-schema-025)）                                                                                                         |
 | ツール `search_fulltext`                    | 任意 | 呼び出しごとに DB を読むだけで開き、閉じる。DB のファイルを作らない（[SPEC-EGOV-DB-SCHEMA-025](#spec-egov-db-schema-025)）                                                                            |
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - DB を消したり中身を空にしたりする CLI やツールは無い（空にするには利用者がファイルを消す）
 - スキーマの版を 1 つずつ上げる移行（古い版の DB は `--bulk-download-everything` が作り直す。新しい版・読めない版の DB はどの入口も書き換えない。[SPEC-EGOV-DB-SCHEMA-025](#spec-egov-db-schema-025)）
@@ -67,9 +67,9 @@ flowchart TD
   H --> J["laws の行を消すと、その articles も消える（009）"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-egov-db-schema-001"></a>
 
@@ -404,9 +404,9 @@ CLI の出力でも同じ形にする（CLI を `HOUKI_EGOV_DB_PATH=… npx …`
 v0.19.x のコマンドは、どの場合も `houki-egov-mcp --bulk-download-everything`（グローバルにインストールしていないと `command not found`、`npx houki-egov-mcp` は npm に無い名前なので 404。houki-egov-mcp #108 の 2）。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

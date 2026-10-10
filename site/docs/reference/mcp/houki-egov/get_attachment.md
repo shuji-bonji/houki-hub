@@ -1,11 +1,11 @@
 ---
 title: "get_attachment — houki-egov-mcp のツール"
-description: "houki-egov-mcp の get_attachment：添付ファイル 1 件（src 指定）か、その法令履歴の添付ファイルをまとめた zip（src 省略）を取る。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-egov-mcp の get_attachment：添付ファイル 1 件（src 指定）か、その法令履歴の添付ファイルをまとめた zip（src 省略）を取る。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # get_attachment
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_attachment.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/get_attachment/spec.md、使いどころは scripts/spec-pages/houki-egov/get_attachment.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_attachment.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_attachment/spec.md、使いどころは scripts/spec-pages/houki-egov/get_attachment.md から。 -->
 
 ::: info
 houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_attachment/spec.md` から自動生成しました（仕様 ID 31 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_attachment/sp
 
 添付ファイル 1 件（src 指定）か、その法令履歴の添付ファイルをまとめた zip（src 省略）を取る。既定では e-Gov からファイルを取らず、URL とメタ情報（ファイル名・種別・置き場所）だけを返す。save: true のときだけファイルを取得してサーバー側の保存先（既定は XDG_CACHE_HOME か ~/.cache の下の houki-egov-mcp/files/。環境変数 HOUKI_EGOV_FILES_DIR で変更）に書き、絶対パスを返す。保存先はツールの引数では指定できない。base64 の中身は返さない。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`law_name` と、`list_attachments` で選んだ `src`（省けば添付全部の zip）を渡して、そのファイルの URL とメタ情報を受け取る。`save: true` を付けたときは、サーバーが保存したファイルの絶対パスを受け取る
 - MCP サーバーを起動する人。環境変数 `HOUKI_EGOV_FILES_DIR` で保存先のディレクトリを決める
@@ -100,9 +100,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_attachment/sp
 添付が 1 件も無い法令（民法）で呼んだときも `ATTACHMENT_NOT_FOUND` です。一覧にはあるのに e-Gov の `/attachment` が「存在しない」（code 404003）を返したときも同じ code で、`detail.cause` に e-Gov の応答本文が入ります。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - ファイルの中身（バイト列や base64）を応答に入れること
 - 保存先のパスやファイル名を引数で決めること（決めるのはサーバーを起動する人の環境変数だけ）
@@ -138,12 +138,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 31 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_attachment)で読めます。
+このツールの仕様項目 31 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_attachment)で読めます。
 
-::: details 約束の見出し（31 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（31 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/get_attachment#spec-egov-get-attachment-001) | save を付けないときは、ファイルを取らずに URL とメタ情報を返す |
 | [002](/specs/houki-egov/get_attachment#spec-egov-get-attachment-002) | src はファイル名だけでも、1 件に決まるなら引ける |

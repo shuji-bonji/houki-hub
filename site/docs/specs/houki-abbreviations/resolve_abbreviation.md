@@ -1,6 +1,6 @@
 ---
 title: "resolveAbbreviation — houki-abbreviations の仕様"
-description: "houki-abbreviations の resolveAbbreviation（略称・正式名称・別名から辞書のエントリを 1 件引く）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-abbreviations の resolveAbbreviation（略称・正式名称・別名から辞書のエントリを 1 件引く）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # resolveAbbreviation の仕様
@@ -17,9 +17,9 @@ houki-abbreviations **v0.7.0** の `specs/current/resolve_abbreviation/spec.md` 
 
 最後に仕様が変わったのは v0.6.1 の「テストが無いだけの振る舞いに仕様 ID を振る」（2026-09-27 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-hub family の MCP サーバー（houki-egov-mcp・houki-nta-mcp など）と、このパッケージを import する利用者のコード。`name` を渡して、その名前が辞書のどのエントリ（法令・通達）を指すかを受け取る
 
@@ -54,9 +54,9 @@ houki-abbreviations **v0.7.0** の `specs/current/resolve_abbreviation/spec.md` 
 
 例: `resolveAbbreviation('消法')` は `abbr: "消法"`、`formal: "消費税法"`、`law_id: "363AC0000000108"`、`law_num: "昭和六十三年法律第百八号"`、`law_type: "Act"`、`domain: "tax"`、`category: "law"`、`source_mcp_hint: "houki-egov"`、`aliases`（`消費税` / `インボイス` など 10 件）、`note` を持つエントリを返す。
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 部分一致で探すこと（`searchByName`）
 - 似た名前（打ち間違い）から探すこと（`findSimilar` / `suggestCorrection`）
@@ -92,9 +92,9 @@ flowchart TD
   I -- いいえ --> N
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-abbr-resolve-abbreviation-001"></a>
 
@@ -226,9 +226,9 @@ JavaScript から `name` に `null` または `undefined` を渡したときは�
 例: `resolveAbbreviation(null)`、`resolveAbbreviation(undefined)`、`resolveAbbreviation(null, { normalize: true })`、`resolveAbbreviation(undefined, { normalize: true })` はどれも `null`。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

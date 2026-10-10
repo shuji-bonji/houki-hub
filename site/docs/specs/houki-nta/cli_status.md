@@ -1,6 +1,6 @@
 ---
 title: "cli_status — houki-nta-mcp の仕様"
-description: "houki-nta-mcp の cli_status（`--status` で DB の場所と中身を確かめる）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-nta-mcp の cli_status（`--status` で DB の場所と中身を確かめる）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # cli_status の仕様
@@ -15,9 +15,9 @@ houki-nta-mcp **v0.27.0** の `specs/current/cli_status/spec.md` から自動生
 
 最後に仕様が変わったのは v0.27.0 の「置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）」（2026-10-09 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - 利用者（ターミナルから `houki-nta-mcp --status` を実行する人）。MCP サーバーと CLI が同じ DB を開いているか、DB に何がどれだけ入っているかを、DB を書き換えずに確かめたい
 - 案内の文（[SPEC-NTA-DB-SCHEMA-029](/specs/houki-nta/db_schema#spec-nta-db-schema-029) の「投入したはずの場合は、投入したシェルで … --status を実行し」）を読んで実行する人
@@ -32,9 +32,9 @@ houki-nta-mcp **v0.27.0** の `specs/current/cli_status/spec.md` から自動生
 | `--db-path=<path>` | 任意 | 確かめる DB のファイル（[SPEC-NTA-CLI-ENTRY-004](/specs/houki-nta/cli_entry#spec-nta-cli-entry-004)） |
 | 環境変数 `HOUKI_NTA_DB_PATH` / `XDG_CACHE_HOME` | 任意 | `--db-path` が無いときの DB の場所（[SPEC-NTA-DB-SCHEMA-026](/specs/houki-nta/db_schema#spec-nta-db-schema-026)） |
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - DB を作る・移行する・作り直すこと（投入のフラグか、DB を開くツールが行う。[SPEC-NTA-DB-SCHEMA-021](/specs/houki-nta/db_schema#spec-nta-db-schema-021)）
 - MCP サーバーが開いている DB を直接調べること（`--status` は実行したシェルの設定で DB を決める。MCP サーバーが開く DB は、起動時のログ（[SPEC-NTA-CLI-ENTRY-009](/specs/houki-nta/cli_entry#spec-nta-cli-entry-009)）と、`freshness.db_path`・`hint` の中のパスで分かる）
@@ -57,9 +57,9 @@ flowchart TD
   C -- 開けない --> H["[ERROR] DB を開けません を出して exit 1（007）"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-nta-cli-status-001"></a>
 
@@ -210,9 +210,9 @@ DB のパスがフォルダー、SQLite でないファイル、パスの途中�
 例: DB のファイルが無い場所、0 バイトのファイル、版 11 の DB、版 13 の DB のどれで `--status` を実行しても、実行の前後で DB のファイルの有無・大きさ・`schema_version`・各テーブルの行の数は変わらない。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 無し。

@@ -92,7 +92,7 @@ const T = {
   title: (name) => `${name} — ツールリファレンス`,
   generated: (v, n, date) => `**v${v}** の \`tools/list\` から自動生成しました（${n} ツール・${date}）。手で編集しないでください。${REGEN}`,
   roleNote: (guide) =>
-    '**このページは自動生成のリファレンスの入り口です。** ツールごとに 1 ページあり、何をするか・引数・実測の呼び出し例・できないことを、' +
+    '**このページは自動生成のリファレンスの入り口です。** ツールごとに 1 ページあり、何をするか・引数・実測の呼び出し例・扱わないことを、' +
     '動いているサーバーの `tools/list` と、各リポジトリの仕様書（`specs/current/`）から写しています。' +
     `サーバー全体の説明と導入は[解説ページ](${guide})にあります。`,
   toc: 'ツール一覧',
@@ -100,7 +100,7 @@ const T = {
   frontmatter: (name, v, n) => `${name} v${v} の全 ${n} ツールの一覧（tools/list から自動生成）`,
   /* ツールのページ */
   toolTitle: (tool, server) => `${tool} — ${server} のツール`,
-  toolFrontmatter: (tool, server, first) => `${server} の ${tool}：${first}（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）`,
+  toolFrontmatter: (tool, server, first) => `${server} の ${tool}：${first}（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）`,
   toolGenerated: (server, v, spec, ids, date) =>
     `${server} **v${v}** の \`tools/list\`${spec ? ` と \`specs/current/${spec}/spec.md\`` : ''} から自動生成しました（${
       spec ? `仕様 ID ${ids} 件` : '仕様書なし'
@@ -126,8 +126,8 @@ const T = {
  * - folded: 畳むときの details の題（Q28' の A。spec.md の処理の流れの図は大きいので畳む）
  */
 const SPEC_COPY = {
-  actor: { src: 'アクター', title: '使う人と受け取るもの', lead: (k) => `この${k}を誰が呼び、何を渡して何を受け取るかを示します。` },
-  cannot: { src: 'できないこと', title: 'できないこと', lead: (k) => `この${k}が引き受けないことです。` },
+  actor: { src: 'アクター', title: '利用者と得られる結果', lead: (k) => `この${k}の利用者と、利用者が渡すもの・得られる結果を示します。` },
+  cannot: { src: 'できないこと', title: '扱わないこと', lead: (k) => `この${k}が意図して扱わないことです。` },
   flow: {
     src: '処理の流れ',
     title: '処理の流れ',
@@ -145,24 +145,24 @@ function pushSpecSection(L, spec, f, def, kindLabel) {
   L.push(def.folded ? details(def.folded, text) : text, '');
 }
 
-/** 約束の見出しの一覧（畳む。各行は仕様書ページの ID へ） */
+/** 仕様項目の見出しの一覧（畳む。各行は仕様書ページの ID へ） */
 function pushPromises(L, spec, f, kindLabel) {
   const items = spec?.promises(f) ?? [];
   if (!items.length) return;
   const page = spec.specPage(f);
-  L.push('## 約束の一覧', '');
+  L.push('## 仕様項目の一覧', '');
   L.push(
-    `この${kindLabel}が守る約束 ${items.length} 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は${
+    `この${kindLabel}の仕様項目 ${items.length} 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は${
       page ? `[仕様書ページ](${page})` : '仕様書'
     }で読めます。`,
     ''
   );
-  const table = ['| 仕様 ID | 約束 |', '|---|---|'];
+  const table = ['| 仕様 ID | 仕様項目 |', '|---|---|'];
   for (const it of items) {
     const short = it.id.slice(-3);
     table.push(`| ${it.url ? `[${short}](${it.url})` : short} | ${it.heading.replace(/\|/g, '\\|')} |`);
   }
-  L.push(details(`約束の見出し（${items.length} 件）`, table.join('\n')), '');
+  L.push(details(`仕様項目の見出し（${items.length} 件）`, table.join('\n')), '');
 }
 
 /** 人が書く節（使いどころ。任意）を差し込む */
@@ -351,7 +351,7 @@ function renderIndexPage(server, cfg, info, tools, spec, specLinks) {
     const f = spec?.features.get(tool.name);
     const specPage = f ? spec.specPage(f) : specLinks.get(tool.name);
     const ids = f ? spec.promises(f).length : null;
-    const specCell = specPage ? `[仕様${ids != null ? `（約束 ${ids} 件）` : ''}](${specPage})` : '—';
+    const specCell = specPage ? `[仕様${ids != null ? `（仕様項目 ${ids} 件）` : ''}](${specPage})` : '—';
     L.push(
       `| [\`${tool.name}\`](${cfg.base}${toolPageDir(spec, tool.name)}) | ${cellSafe(firstSentence(tool.description ?? ''))} | ${specCell} |`
     );
@@ -376,7 +376,7 @@ function renderToolPage(server, cfg, info, tool, spec, specLinks) {
   L.push('');
   L.push(
     `<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/${server}/ja/${tool.name}.md${
-      f ? `、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/${f.dir}/spec.md、使いどころは scripts/spec-pages/${server}/${f.dir}.md` : ''
+      f ? `、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/${f.dir}/spec.md、使いどころは scripts/spec-pages/${server}/${f.dir}.md` : ''
     } から。 -->`
   );
   L.push('');
@@ -567,11 +567,11 @@ const LIB_T = {
   generated: (v, counts, date) => `**v${v}** の \`dist/index.d.ts\` から自動生成しました（${counts}・${date}）。手で編集しないでください。${REGEN}`,
   roleNote: (guide) =>
     '**このページは自動生成の API リファレンスの入り口です。** 関数と値は 1 つずつページがあり、シグネチャ・説明・例を' +
-    'パッケージの型定義（`dist/index.d.ts`）から、使う人と受け取るもの・できないこと・処理の流れを各機能の仕様書（`specs/current/`）から写しています。' +
-    `辞書の中身や設計上の約束は[解説ページ](${guide})にあります。`,
+    'パッケージの型定義（`dist/index.d.ts`）から、利用者と得られる結果・扱わないこと・処理の流れを各機能の仕様書（`specs/current/`）から写しています。' +
+    `辞書の中身や設計の方針は[解説ページ](${guide})にあります。`,
   /* 記号のページ */
   pageTitle: (name, pkg, kind) => `${name} — ${pkg} の${kind}`,
-  pageFrontmatter: (name, pkg, kind, first) => `${pkg} の${kind} ${name}：${first}（シグネチャ・例・できないこと・処理の流れ。自動生成）`,
+  pageFrontmatter: (name, pkg, kind, first) => `${pkg} の${kind} ${name}：${first}（シグネチャ・例・扱わないこと・処理の流れ。自動生成）`,
   pageGenerated: (pkg, v, spec, ids, date) =>
     `${pkg} **v${v}** の \`dist/index.d.ts\`${spec ? ` と \`specs/current/${spec}/spec.md\`` : ''} から自動生成しました（${
       spec ? `仕様 ID ${ids} 件` : '仕様書なし'
@@ -915,7 +915,7 @@ function renderLibSymbolPage(cfg, pkg, page, ctx) {
   L.push('');
   L.push(
     `<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import${
-      f ? `、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/${f.dir}/spec.md、使いどころは scripts/spec-pages/${cfg.specSite}/${f.dir}.md` : ''
+      f ? `、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/${f.dir}/spec.md、使いどころは scripts/spec-pages/${cfg.specSite}/${f.dir}.md` : ''
     } から。 -->`,
   );
   L.push('');

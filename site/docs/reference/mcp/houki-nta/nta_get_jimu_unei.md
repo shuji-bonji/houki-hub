@@ -1,11 +1,11 @@
 ---
 title: "nta_get_jimu_unei — houki-nta-mcp のツール"
-description: "houki-nta-mcp の nta_get_jimu_unei：事務運営指針の本文を docId で取得する（DB 経由）。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-nta-mcp の nta_get_jimu_unei：事務運営指針の本文を docId で取得する（DB 経由）。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # nta_get_jimu_unei
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_jimu_unei.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/nta_get_jimu_unei/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_jimu_unei.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_jimu_unei.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_get_jimu_unei/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_jimu_unei.md から。 -->
 
 ::: info
 houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_jimu_unei/spec.md` から自動生成しました（仕様 ID 11 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_jimu_unei/
 
 事務運営指針の本文を docId で取得する（DB 経由）。本文 + 添付 PDF URL（pdf-reader-mcp で読み取り推奨）を返す。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`docId` を渡して、ローカル DB に取り込んである国税庁の事務運営指針 1 件の本文と添付 PDF の一覧を受け取る
 
@@ -80,9 +80,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_jimu_unei/
 末尾の `【…】` は章・節の見出しです。様式（応接簿など）は `attachedPdfs` にあり、どれも `kind: "attachment"`（別紙・別表）です。`nta_inspect_pdf_meta` に `docType: "jimu-unei"` を指定すると、PDF ごとの読み方（`read_strategy` / `layout_note`）と pdf-reader-mcp の呼び出し例（`next_actions`）が返ります。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 国税庁サイトから事務運営指針を取ること（DB に無い文書はエラーになる。DB に入れるのは `--bulk-download-jimu-unei`）
 - 取得した文書を DB に書き戻すこと（ローカル DB だけを引くので書き戻しは起きない）
@@ -115,12 +115,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 11 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_jimu_unei)で読めます。
+このツールの仕様項目 11 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_jimu_unei)で読めます。
 
-::: details 約束の見出し（11 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（11 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-nta/nta_get_jimu_unei#spec-nta-get-jimu-unei-001) | 事務運営指針が DB に 1 件も無いときは投入を案内する |
 | [002](/specs/houki-nta/nta_get_jimu_unei#spec-nta-get-jimu-unei-002) | 事務運営指針はあるが docId が無いときは「見つかりません」と候補を返す |

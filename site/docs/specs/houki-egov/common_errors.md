@@ -1,6 +1,6 @@
 ---
 title: "common_errors — houki-egov-mcp の仕様"
-description: "houki-egov-mcp の common_errors（全ツールに共通するエラー応答の形と引数の検査、ツールの登録）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-egov-mcp の common_errors（全ツールに共通するエラー応答の形と引数の検査、ツールの登録）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # common_errors の仕様
@@ -15,9 +15,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/common_errors/spec.md` から自�
 
 最後に仕様が変わったのは v0.20.0 の「ローカル DB の場所を、応答・起動時のログ・`--status` で確かめられるようにする（egov #108・#110、T6）」（2026-10-04 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または MCP を呼ぶプログラム）。initialize でサーバーの名前と版を受け取り、tools/list で呼べるツールと inputSchema を確かめ、tools/call でツール名と引数を渡す。エラーのときは `isError: true` と JSON の本文を受け取って、`code` で失敗の種類を見分け、`hint` と `next_actions` で次に何をするかを決める
 
@@ -86,9 +86,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/common_errors/spec.md` から自�
 | `FILE_TOO_LARGE`                                                                     | `save: true` で取るファイルが上限（50 MB）を超えている（`get_attachment` / `get_law_file`）。pdf-reader-mcp と同じ code |
 | `INTERNAL_ERROR`                                                                     | サーバー内部の失敗（処理中の想定外の例外）。再試行しても結果は変わらない（`retryable: false`） |
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - ツール固有のエラー（`LAW_NOT_FOUND`・`ARTICLE_NOT_FOUND` など）をどの場面で返すかを決めること（各ツールの spec.md に書く）
 - inputSchema で表せない値の検査（空のキーワード、条番号の書き方など）。これは各ツールの処理で行い、各ツールの spec.md に書く
@@ -115,9 +115,9 @@ flowchart TD
   D -- "想定外の例外" --> E4["INTERNAL_ERROR を返す。retryable: false（007）"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-egov-common-errors-001"></a>
 
@@ -627,9 +627,9 @@ law_id を決めた後（略称辞書・法令名の検索・`verify_citations` 
 - `verify_citations` に `{ citations: [{ law_id: "503AC0000000035", article: "1" }], at: "2018-01-01" }` を渡すと、その件は `status: "not_found"`、`code: "LAW_NOT_FOUND"`、`reason: "503AC0000000035 は 2018-01-01 の時点の e-Gov に収録されていません"`（[SPEC-EGOV-VERIFY-CITATIONS-015](/specs/houki-egov/verify_citations#spec-egov-verify-citations-015)）。法令名で渡したとき（`law_name: "デジタル社会形成基本法"`、辞書に無い）は、`asof=2018-01-01` を付けた法令名の検索が 0 件になり、032 の 5 の `LAW_NOT_FOUND` になる
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

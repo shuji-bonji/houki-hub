@@ -1,11 +1,11 @@
 ---
 title: "nta_get_tsutatsu — houki-nta-mcp のツール"
-description: "houki-nta-mcp の nta_get_tsutatsu：基本通達の本文を取得する。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-nta-mcp の nta_get_tsutatsu：基本通達の本文を取得する。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # nta_get_tsutatsu
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_tsutatsu.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/nta_get_tsutatsu/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_tsutatsu.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_tsutatsu.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_get_tsutatsu/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_tsutatsu.md から。 -->
 
 ::: info
 houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_tsutatsu/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -25,9 +25,9 @@ houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_tsutatsu/s
 
 <!-- ここまで人が書いた節 -->
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`name` と `clause` を渡して、基本通達の条項 1 つの本文を受け取る
 
@@ -99,9 +99,9 @@ DB に無い条項は、基本通達 4 種とも国税庁サイトから取得�
 `base_laws` は、この通達が解釈している法律・政令・省令です（v0.11.0 から）。`next_actions` の `example` をそのまま houki-egov-mcp の `get_law` に渡すと、根拠になる法律の本文を引けます。条番号は付きません。本文中の「法第57条の2第4項」のような参照を読んで、`article` を足してください。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 通達の条項と法律の条番号の対応を示すこと（`base_laws` は法令名まで。条は付けない）
 - 条項本文の中の画像（算式の GIF）の内容を返すこと（alt テキストを `[画像: …]` として残す）
@@ -157,12 +157,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 18 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_tsutatsu)で読めます。
+このツールの仕様項目 18 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_tsutatsu)で読めます。
 
-::: details 約束の見出し（18 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（18 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-001) | 通達名を略称辞書で解決する |
 | [002](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-002) | houki-nta の管轄でない名前は取りに行かない |

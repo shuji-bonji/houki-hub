@@ -1,11 +1,11 @@
 ---
 title: "extractLawNames — houki-abbreviations の関数"
-description: "houki-abbreviations の関数 extractLawNames：入力テキスト中の **法令名らしき文字列** を辞書マッチで抽出する。（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の関数 extractLawNames：入力テキスト中の **法令名らしき文字列** を辞書マッチで抽出する。（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # extractLawNames
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/extract_law_names/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/extract_law_names.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/extract_law_names/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/extract_law_names.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/extract_law_names/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -15,9 +15,9 @@ houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/extract_
 
 入力テキスト中の **法令名らしき文字列** を辞書マッチで抽出する。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この関数を誰が呼び、何を渡して何を受け取るかを示します。
+この関数の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-abbreviations を import する側（MCP サーバー、LLM の出力を確かめるアプリ）。LLM が書いた文章などを渡して、その中に同梱の辞書にある法令名がどこにいくつ出てくるかを受け取る。受け取ったエントリの `source_mcp_hint` から、本文を取りに行く MCP を決めるのに使う
 
@@ -46,9 +46,9 @@ extractLawNames('消費税法と法人税法の改正について。インボイ
 ```
 :::
 
-## できないこと
+## 扱わないこと
 
-この関数が引き受けないことです。
+この関数が意図して扱わないことです。
 
 - 文脈を見て法令名かどうかを判断すること（`民法人の認可` の中の `民法` も一致として返す）
 - 語の区切りを見ること（キーが別の語の一部でも一致にする）
@@ -82,12 +82,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この関数が守る約束 19 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/extract_law_names)で読めます。
+この関数の仕様項目 19 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/extract_law_names)で読めます。
 
-::: details 約束の見出し（19 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（19 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/extract_law_names#spec-abbr-extract-law-names-001) | テキスト中の法令名を位置の順に返す |
 | [002](/specs/houki-abbreviations/extract_law_names#spec-abbr-extract-law-names-002) | 別名でも抜き出す |

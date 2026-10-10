@@ -1,11 +1,11 @@
 ---
 title: "validateAllEntries — houki-abbreviations の関数"
-description: "houki-abbreviations の関数 validateAllEntries：辞書全体の静的整合性をチェックする。（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の関数 validateAllEntries：辞書全体の静的整合性をチェックする。（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # validateAllEntries
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/validate_all_entries/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/validate_all_entries.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/validate_all_entries/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/validate_all_entries.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/validate_all_entries/spec.md` から自動生成しました（仕様 ID 17 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -15,9 +15,9 @@ houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/validate
 
 辞書全体の静的整合性をチェックする。CI 用途を想定。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この関数を誰が呼び、何を渡して何を受け取るかを示します。
+この関数の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-abbreviations の辞書を編集する人と CI。辞書にエントリを足したり直したりしたあとで呼び、同梱の辞書全件に重複・欠損・形の誤りが無いかを受け取る
 - `npm run validate`（`dist/index.js` の `validateAllEntries` を呼び、警告を `WARN:`、エラーを `ERROR:` で出力し、エラーがあれば終了コード 1 で終わる）
@@ -47,9 +47,9 @@ report.warnings.forEach((w) => console.warn(w.message));
 ```
 :::
 
-## できないこと
+## 扱わないこと
 
-この関数が引き受けないことです。
+この関数が意図して扱わないことです。
 
 - 利用者が用意したエントリの配列を渡して検査すること（公開する `validateAllEntries` は引数を取らず、同梱の辞書だけを検査する）
 - `law_id` の法令が e-Gov に実在するか、`formal` や `law_num` が e-Gov の値と一致するかを確かめること（e-Gov API を呼ぶ `scripts/verify-law-ids.mjs` で行う。パッケージには含まれない）
@@ -82,12 +82,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この関数が守る約束 17 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/validate_all_entries)で読めます。
+この関数の仕様項目 17 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/validate_all_entries)で読めます。
 
-::: details 約束の見出し（17 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（17 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/validate_all_entries#spec-abbr-validate-all-entries-001) | エラーが無ければ valid: true と空の errors を返す |
 | [002](/specs/houki-abbreviations/validate_all_entries#spec-abbr-validate-all-entries-002) | abbr の重複をエラーにする |

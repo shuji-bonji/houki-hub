@@ -1,11 +1,11 @@
 ---
 title: "get_law_revisions — houki-egov-mcp のツール"
-description: "houki-egov-mcp の get_law_revisions：法令の改正履歴を取得します。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-egov-mcp の get_law_revisions：法令の改正履歴を取得します。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # get_law_revisions
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_law_revisions.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/get_law_revisions/spec.md、使いどころは scripts/spec-pages/houki-egov/get_law_revisions.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_law_revisions.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_law_revisions/spec.md、使いどころは scripts/spec-pages/houki-egov/get_law_revisions.md から。 -->
 
 ::: info
 houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_law_revisions/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_law_revisions
 
 法令の改正履歴を取得します。e-Gov v2 の /law_revisions を使います。各改正の公布日・施行日・改正法令番号・状態（current_revision_status。CurrentEnforced=現行、PreviousEnforced=旧法、UnEnforced=未施行）等を返します。並びは施行日の新しい順で、まだ施行されていない改正も含みます。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`law_name` を渡して、その法令の改正の一覧（改正ごとの公布日・施行日・改正法令の番号と題名・その版の状態）を受け取る
 
@@ -83,9 +83,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_law_revisions
 `current_revision_status` が `UnEnforced` のものは公布済みで未施行です。`amendment_enforcement_comment` に「政令で定める日」とあるときは、`amendment_enforcement_date` は上限の見込みで、確定日ではありません。`total` は全改正数で、`latest` を省略すると全件が返ります。並びは施行日の新しい順です。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 改正前・改正後の条文の本文や、条ごとの新旧の差分を返すこと（時点の本文は `get_law` の `at`）
 - 改正法令そのものの本文を返すこと（`amendment_law_id` を `get_law` に渡す）
@@ -117,12 +117,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 18 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_law_revisions)で読めます。
+このツールの仕様項目 18 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_law_revisions)で読めます。
 
-::: details 約束の見出し（18 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（18 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/get_law_revisions#spec-egov-get-law-revisions-001) | get_law_revisions という名前のツールとして呼べる |
 | [002](/specs/houki-egov/get_law_revisions#spec-egov-get-law-revisions-002) | meta・total・revisions の形で改正履歴を返し、値の無いフィールドは null にする |

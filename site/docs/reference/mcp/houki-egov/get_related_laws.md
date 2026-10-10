@@ -1,11 +1,11 @@
 ---
 title: "get_related_laws — houki-egov-mcp のツール"
-description: "houki-egov-mcp の get_related_laws：法令名の規則で関連する法令を引きます。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-egov-mcp の get_related_laws：法令名の規則で関連する法令を引きます。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # get_related_laws
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_related_laws.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/get_related_laws/spec.md、使いどころは scripts/spec-pages/houki-egov/get_related_laws.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_related_laws.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_related_laws/spec.md、使いどころは scripts/spec-pages/houki-egov/get_related_laws.md から。 -->
 
 ::: info
 houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_related_laws/spec.md` から自動生成しました（仕様 ID 20 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_related_laws/
 
 法令名の規則で関連する法令を引きます。法律なら施行令・施行規則、施行令・施行規則なら親の法律と兄弟を、e-Gov に実在するものだけ返します（law_id 付き）。名前の末尾に「施行令」「施行規則」を付けた（落とした）候補だけを試すので、別の名前の下位法令や告示は返りません。法律でも施行令・施行規則でもない法令（省令・政令・規則など）からは候補を作らず、related を空にして note に理由を書きます。網羅性は主張しません。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`law_name` を渡して、その法令の施行令・施行規則（施行令・施行規則を渡したときは親の法律と兄弟）のうち e-Gov に実在するものを `law_id` 付きで受け取る
 
@@ -99,9 +99,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_related_laws/
 `related[]` は、法令名の末尾に「施行令」「施行規則」を付けた候補を e-Gov に問い合わせ、`law_title` が完全一致した 1 件だけです。無かった候補は `not_found[]` に残ります（民法なら `related` が空で `not_found` に 2 件）。`abbr` は略称辞書にあるときだけ付きます。施行令を渡すと `relation: "parent_act"` で親の法律と、兄弟の施行規則が返ります。「…の施行に関する省令」のような別の名前の下位法令は返らないので、`note` を citation に添えてください。法律でも施行令・施行規則でもない法令（省令・政令・規則など）を渡すと、候補を作らずに `related: []`・`not_found: []` を返し、`note` に理由を書きます（v0.18.0 から）。`meta.at` はこのツールが時点を受け取らないため常に `null` です。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 名前の末尾に「施行令」「施行規則」を付ける・落とす以外の規則で下位法令を探すこと（「…の施行に関する省令」「…施行細則」、複数の省令、告示は返さない）
 - 関連法令の条文や、どの条がどの条に委任しているかを返すこと（条単位の委任は `get_article_references`、目次は `get_toc`）
@@ -135,12 +135,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 20 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_related_laws)で読めます。
+このツールの仕様項目 20 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_related_laws)で読めます。
 
-::: details 約束の見出し（20 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（20 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/get_related_laws#spec-egov-get-related-laws-001) | 法律からは、実在する施行令と施行規則を law_id 付きで返す |
 | [002](/specs/houki-egov/get_related_laws#spec-egov-get-related-laws-002) | 施行令・施行規則からは、親の法律と兄弟を返す |

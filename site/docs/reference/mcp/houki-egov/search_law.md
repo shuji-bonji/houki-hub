@@ -1,11 +1,11 @@
 ---
 title: "search_law — houki-egov-mcp のツール"
-description: "houki-egov-mcp の search_law：日本の法令を、法令の題名のキーワードや略称で検索します。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-egov-mcp の search_law：日本の法令を、法令の題名のキーワードや略称で検索します。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # search_law
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/search_law.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/search_law/spec.md、使いどころは scripts/spec-pages/houki-egov/search_law.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/search_law.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/search_law/spec.md、使いどころは scripts/spec-pages/houki-egov/search_law.md から。 -->
 
 ::: info
 houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/search_law/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/search_law/spec.m
 
 日本の法令を、法令の題名のキーワードや略称で検索します。e-Gov 法令 API v2 を使い、略称は略称辞書で正式名称に直してから探します。total_count は e-Gov で一致した法令の総数で、results の件数（limit 以下）とは限りません。一致が 0 件のときは、条文の本文を探す search_fulltext と略称を確かめる resolve_abbreviation を hint と next_actions で案内します。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`keyword`（法令名の一部または略称）を渡して、e-Gov 法令API v2 で法令名が一致する法令の一覧（法令 ID・題名・法令番号・種別・e-Gov の URL）を受け取る
 
@@ -89,9 +89,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/search_law/spec.m
 `results[].law_id` をそのまま次の `get_law` / `get_toc` に渡せます。タイトル一致の検索なので、条文本文の中の語を探すときは `search_fulltext` を使ってください。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 条文の本文を検索すること（本文の全文検索は `search_fulltext`）
 - 条文を返すこと（条文の取得は `get_law`）
@@ -123,12 +123,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 18 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/search_law)で読めます。
+このツールの仕様項目 18 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/search_law)で読めます。
 
-::: details 約束の見出し（18 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（18 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/search_law#spec-egov-search-law-001) | 空の keyword は検索せずにエラー `INVALID_ARGUMENT` を返す |
 | [002](/specs/houki-egov/search_law#spec-egov-search-law-002) | 略称は正式名称に置き換えて検索し、`query.resolved` に正式名称を入れる |

@@ -1,11 +1,11 @@
 ---
 title: "search_fulltext — houki-egov-mcp のツール"
-description: "houki-egov-mcp の search_fulltext：法令の条文本文をキーワードで横断して全文検索します（ローカル SQLite FTS5）。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-egov-mcp の search_fulltext：法令の条文本文をキーワードで横断して全文検索します（ローカル SQLite FTS5）。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # search_fulltext
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/search_fulltext.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/search_fulltext/spec.md、使いどころは scripts/spec-pages/houki-egov/search_fulltext.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/search_fulltext.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/search_fulltext/spec.md、使いどころは scripts/spec-pages/houki-egov/search_fulltext.md から。 -->
 
 ::: info
 houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/search_fulltext/spec.md` から自動生成しました（仕様 ID 42 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/search_fulltext/s
 
 法令の条文本文をキーワードで横断して全文検索します（ローカル SQLite FTS5）。`npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` で構築した bulk DB を引きます。略称は正式名称にも展開し（例: "労基法" → "労基法" または "労働基準法"）、通称（例: "インボイス"）は元の語で条が当たらないときだけ正式名称で探し直します。展開したときは expanded_keywords を返します。各ヒットに条番号・snippet・score・DB の鮮度（freshness）を付けて返します。bulk DB が無いときと、DB の版がこの houki-egov-mcp と合わないときは search_law（法令名の題名の一致）に切り替え、その旨と次にすることを note で返します。DB は作らず、書き換えません。2 文字の語（「相殺」「時効」）は本文の索引（trigram）に載らないため既定では本文を引かず、何をして結果を出したかを応答の short_tokens に返します。keyword 全体が通達などの管轄外の略称（例: "消基通"）なら、DB も e-Gov も引かずに OUT_OF_SCOPE を返します。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`keyword` を渡して、ローカル DB（`--bulk-download-everything` で作ったもの）に入っている法令の条文本文から、キーワードを含む条の一覧を受け取る
 
@@ -99,9 +99,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/search_fulltext/s
 - `freshness.staleness` が `fresh` 以外なら、`npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` の再実行を検討してください
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 条文の本文を丸ごと返すこと（`snippet` だけ。本文は `get_law` / `get_law_range`）
 - ローカル DB を作ること・作り直すこと・更新すること（CLI の `--bulk-download-everything` / `--sync`。DB のファイルが無くても作らない。[SPEC-EGOV-SEARCH-FULLTEXT-039](/specs/houki-egov/search_fulltext#spec-egov-search-fulltext-039)）
@@ -148,12 +148,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 42 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/search_fulltext)で読めます。
+このツールの仕様項目 42 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/search_fulltext)で読めます。
 
-::: details 約束の見出し（42 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（42 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/search_fulltext#spec-egov-search-fulltext-001) | ローカル DB に条があれば DB を引いて返す |
 | [002](/specs/houki-egov/search_fulltext#spec-egov-search-fulltext-002) | ローカル DB に条が無いときは search_law に切り替える |

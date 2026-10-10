@@ -1,11 +1,11 @@
 ---
 title: "normalizeJpText — houki-abbreviations の関数"
-description: "houki-abbreviations の関数 normalizeJpText：日本語テキストの全角ゆらぎを保守的に半角化する。（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の関数 normalizeJpText：日本語テキストの全角ゆらぎを保守的に半角化する。（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # normalizeJpText
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/normalize_jp_text/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/normalize_jp_text.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/normalize_jp_text/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/normalize_jp_text.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/normalize_jp_text/spec.md` から自動生成しました（仕様 ID 13 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -26,9 +26,9 @@ v0.6.1 までは全角ハイフン `－` だけだった）。罫線 `─` と�
 
 入力が空文字や `null`/`undefined` 相当（`!input`）の場合は空文字を返す。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この関数を誰が呼び、何を渡して何を受け取るかを示します。
+この関数の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - このパッケージを import するコード（houki-hub family の MCP サーバーなど）。法令・通達の本文や利用者の入力を渡して、全角と半角の書き分けを揃えた文字列を受け取る。DB に入れる文字列と検索に使う文字列の両方に同じ関数を通して照合する
 - このパッケージの中では、`resolveAbbreviation(name, { normalize: true })` と `searchByName` / `findSimilar` の `normalize` がこの関数を使う
@@ -62,9 +62,9 @@ normalizeJpText('消　法');         // '消 法'（全角スペース → 半�
 ```
 :::
 
-## できないこと
+## 扱わないこと
 
-この関数が引き受けないことです。
+この関数が意図して扱わないことです。
 
 - 英大文字を小文字にすること、続いた空白を 1 つにまとめること（`normalizeSearchQuery`）
 - 漢数字を算用数字にすること（法令番号なら `normalizeLawNum`、漢数字だけの文字列なら `kanjiToNumber`）
@@ -91,12 +91,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この関数が守る約束 13 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/normalize_jp_text)で読めます。
+この関数の仕様項目 13 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/normalize_jp_text)で読めます。
 
-::: details 約束の見出し（13 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（13 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/normalize_jp_text#spec-abbr-normalize-jp-text-001) | 全角数字を半角数字にする |
 | [002](/specs/houki-abbreviations/normalize_jp_text#spec-abbr-normalize-jp-text-002) | 全角英字を半角英字にし、大文字小文字は変えない |

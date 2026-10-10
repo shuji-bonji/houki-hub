@@ -1,11 +1,11 @@
 ---
 title: "isValidLawId — houki-abbreviations の関数"
-description: "houki-abbreviations の関数 isValidLawId：e-Gov の `law_id` 形式が妥当かを判定する純粋関数。（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の関数 isValidLawId：e-Gov の `law_id` 形式が妥当かを判定する純粋関数。（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # isValidLawId
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/is_valid_law_id/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/is_valid_law_id.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/is_valid_law_id/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/is_valid_law_id.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/is_valid_law_id/spec.md` から自動生成しました（仕様 ID 15 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -40,9 +40,9 @@ v0.6.1 までは元号の桁・`M` の次の桁・`R` の機関番号・`CONSTIT
 `true`）。v0.5.x が受け付けていた `MO` / `RU` は e-Gov の実データに 1 件も無かったため
 v0.6.0 で外した（省令は `M`、規則は `M` か `R` で始まる）。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この関数を誰が呼び、何を渡して何を受け取るかを示します。
+この関数の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-abbreviations を import する側（houki-egov-mcp・houki-nta-mcp などの MCP サーバー、辞書を検査する `validateAllEntries`、辞書のテスト）。`law_id` を渡して、e-Gov の法令 ID として形が正しいかを `true` / `false` で受け取る
 
@@ -80,9 +80,9 @@ isValidLawId(' 363AC0000000108'); // false（前後空白は呼び出し側で t
 ```
 :::
 
-## できないこと
+## 扱わないこと
 
-この関数が引き受けないことです。
+この関数が意図して扱わないことです。
 
 - その `law_id` の法令が e-Gov に実在するかを確かめること（形だけを見る。実在の確認は e-Gov API を呼ぶ `scripts/verify-law-ids.mjs` で、パッケージには含まれない）
 - `law_id` から法令名やエントリを引くこと（`lookupByLawId`）
@@ -106,12 +106,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この関数が守る約束 15 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/is_valid_law_id)で読めます。
+この関数の仕様項目 15 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/is_valid_law_id)で読めます。
 
-::: details 約束の見出し（15 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（15 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/is_valid_law_id#spec-abbr-is-valid-law-id-001) | 法律・政令・勅令・太政官布告・太政官達・太政官布達の形を受け付ける |
 | [002](/specs/houki-abbreviations/is_valid_law_id#spec-abbr-is-valid-law-id-002) | 府省令の M の形と、機関の規則の R の形を受け付ける |

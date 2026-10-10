@@ -1,6 +1,6 @@
 ---
 title: "judgeStaleness — houki-abbreviations の仕様"
-description: "houki-abbreviations の judgeStaleness（経過日数から鮮度の段階を返す）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-abbreviations の judgeStaleness（経過日数から鮮度の段階を返す）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # judgeStaleness の仕様
@@ -17,9 +17,9 @@ houki-abbreviations **v0.7.0** の `specs/current/judge_staleness/spec.md` か�
 
 最後に仕様が変わったのは v0.7.0 の「引数の検査を「丸めない」に揃える（limit・取得時刻・law_id の形）」（2026-09-30 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - houki-hub family の MCP サーバー（houki-nta-mcp など）。`computeDaysSince` で得た経過日数を渡して鮮度の段階を受け取り、自分の応答（取得した文書がどれだけ古いか）に載せる。family のどの MCP サーバーも同じ境界で判定するためにこの関数を使う
 
@@ -45,9 +45,9 @@ houki-abbreviations **v0.7.0** の `specs/current/judge_staleness/spec.md` か�
 
 境界の日数は `STALENESS_THRESHOLDS`（`fresh_days: 7`、`stale_days: 30`）。
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 取得時刻から経過日数を数えること（`computeDaysSince`）
 - MCP サーバーごとに違う境界で判定すること（境界は `STALENESS_THRESHOLDS` の値に固定。違う境界が要る MCP サーバーは、この関数を使わずに自分の判定関数を書く）
@@ -66,9 +66,9 @@ flowchart TD
   C -- いいえ --> O["outdated を返す（003）"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-abbr-judge-staleness-001"></a>
 
@@ -130,9 +130,9 @@ flowchart TD
 例: `judgeStaleness(NaN)` は `RangeError`（v0.6.1 では `"outdated"`）。`judgeStaleness(Infinity)` と `judgeStaleness(-Infinity)` も `RangeError`（v0.6.1 では `"outdated"` と `"fresh"`）。`judgeStaleness('7')`、`judgeStaleness(null)`、`judgeStaleness(undefined)` は `TypeError`。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

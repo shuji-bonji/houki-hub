@@ -1,11 +1,11 @@
 ---
 title: "normalizeSearchQuery — houki-abbreviations の関数"
-description: "houki-abbreviations の関数 normalizeSearchQuery：検索クエリ向けの積極的な正規化。（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の関数 normalizeSearchQuery：検索クエリ向けの積極的な正規化。（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # normalizeSearchQuery
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/normalize_search_query/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/normalize_search_query.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/normalize_search_query/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/normalize_search_query.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/normalize_search_query/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -30,9 +30,9 @@ houki-nta-mcp の FTS5 検索のように、ユーザー入力の表記ゆれを
 （`PL法` のような大文字混じりエントリを正しく解決するため、
 width-only の `normalizeJpText` のみを使用）。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この関数を誰が呼び、何を渡して何を受け取るかを示します。
+この関数の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - このパッケージを import するコード（houki-hub family の MCP サーバーなど）。利用者が入力した検索語を渡して、全文検索にかける前の文字列を受け取る。検索の構文に使う記号（`"` `^` など）のエスケープは呼び出し側が別に行う
 - このパッケージの中ではどの関数もこの関数を使わない（`resolveAbbreviation` の `normalize` は大文字小文字を区別するため `normalizeJpText` を使う）
@@ -63,9 +63,9 @@ normalizeSearchQuery('１８３－２');     // '183-2'
 ```
 :::
 
-## できないこと
+## 扱わないこと
 
-この関数が引き受けないことです。
+この関数が意図して扱わないことです。
 
 - 大文字小文字を区別したまま揃えること（`normalizeJpText`）
 - 検索の構文に使う記号のエスケープ（呼び出し側が行う）
@@ -90,12 +90,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この関数が守る約束 8 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/normalize_search_query)で読めます。
+この関数の仕様項目 8 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/normalize_search_query)で読めます。
 
-::: details 約束の見出し（8 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（8 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/normalize_search_query#spec-abbr-normalize-search-query-001) | normalizeJpText と同じ全角→半角の変換をする |
 | [002](/specs/houki-abbreviations/normalize_search_query#spec-abbr-normalize-search-query-002) | 英大文字を小文字にする |

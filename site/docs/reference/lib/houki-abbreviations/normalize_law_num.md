@@ -1,11 +1,11 @@
 ---
 title: "normalizeLawNum — houki-abbreviations の関数"
-description: "houki-abbreviations の関数 normalizeLawNum：法令番号の表記を、照合に使える 1 つの形に揃える。（シグネチャ・例・できないこと・処理の流れ。自動生成）"
+description: "houki-abbreviations の関数 normalizeLawNum：法令番号の表記を、照合に使える 1 つの形に揃える。（シグネチャ・例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # normalizeLawNum
 
-<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/normalize_law_num/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/normalize_law_num.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/normalize_law_num/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/normalize_law_num.md から。 -->
 
 ::: info
 houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/normalize_law_num/spec.md` から自動生成しました（仕様 ID 16 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -38,9 +38,9 @@ houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/normaliz
 
 入力が空文字や `null`/`undefined` 相当（`!input`）の場合は空文字を返す。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この関数を誰が呼び、何を渡して何を受け取るかを示します。
+この関数の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - このパッケージを import するコード（houki-hub family の MCP サーバーなど）。漢数字・算用数字・全角数字のどれで書かれた法令番号でも、照合に使う 1 つの文字列を受け取る。比べる 2 つの法令番号の両方にこの関数を通してから比べる
 - このパッケージの中では `lookupByLawNum` が、入力と辞書の `law_num` の両方にこの関数を通してから比べる
@@ -75,9 +75,9 @@ normalizeLawNum('昭和二十一年憲法');             // '昭和21年憲法'
 ```
 :::
 
-## できないこと
+## 扱わないこと
 
-この関数が引き受けないことです。
+この関数が意図して扱わないことです。
 
 - 元号の別表記（`S25` / `昭25`）を元号名にすること、`第` や `号` を補うこと、法令の種別名（`法律` / `政令`）を補うこと（呼び出し側で揃える）
 - 万以上の単位を読むこと。`normalizeLawNum('第二万三千号')` は `'第二万3000号'` になり、`第23000号` とは一致しない（`kanjiToNumber` が万を読まないため。`二` は `万` に隣り合うので変えない）
@@ -105,12 +105,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-この関数が守る約束 16 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/normalize_law_num)で読めます。
+この関数の仕様項目 16 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-abbreviations/normalize_law_num)で読めます。
 
-::: details 約束の見出し（16 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（16 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-abbreviations/normalize_law_num#spec-abbr-normalize-law-num-001) | 漢数字・算用数字・全角数字の法令番号を同じ文字列にする |
 | [002](/specs/houki-abbreviations/normalize_law_num#spec-abbr-normalize-law-num-002) | 空白をすべて取り除く |

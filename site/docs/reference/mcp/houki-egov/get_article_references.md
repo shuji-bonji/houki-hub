@@ -1,11 +1,11 @@
 ---
 title: "get_article_references — houki-egov-mcp のツール"
-description: "houki-egov-mcp の get_article_references：条文本文が引用している参照を取り出します。（引数・実測の呼び出し例・できないこと・処理の流れ。自動生成）"
+description: "houki-egov-mcp の get_article_references：条文本文が引用している参照を取り出します。（引数・実測の呼び出し例・扱わないこと・処理の流れ。自動生成）"
 ---
 
 # get_article_references
 
-<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_article_references.md、使う人と受け取るもの・できないこと・処理の流れ・約束の一覧は specs/current/get_article_references/spec.md、使いどころは scripts/spec-pages/houki-egov/get_article_references.md から。 -->
+<!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_article_references.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_article_references/spec.md、使いどころは scripts/spec-pages/houki-egov/get_article_references.md から。 -->
 
 ::: info
 houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_article_references/spec.md` から自動生成しました（仕様 ID 52 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
@@ -13,9 +13,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_article_refer
 
 条文本文が引用している参照を取り出します。対象は本則の条だけです（附則の条の本文は get_law の suppl_index で読めます）。他法令の条（法令名と法令番号から law_id を解決）、同一法令内の条・項・号、本文の「附則第N条」（kind: "suppl"。どの附則の条かは特定しません）、「政令で定める」「財務省令で定める」の委任を返し、解決できた参照に get_law（条の無い他法令の参照には get_toc）の引数を next_actions で付けます。委任先は法令単位で、政令は施行令、省令・府令は施行規則を定めた命令の名前が委任の文言と合うときだけ付け、確かでないときは target_law: null にします。「前項」「同法」は解決しません。正規表現で取れた範囲だけを返し、網羅性は主張しません。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-このツールを誰が呼び、何を渡して何を受け取るかを示します。
+このツールの利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`law_name` と `article`（任意で `paragraph`・`at`）を渡して、その条（または項）の本文が引用している他法令の条・同一法令内の条項号・「政令で定める」などの委任を受け取り、`next_actions` で次に読む条を知る
 
@@ -228,9 +228,9 @@ houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_article_refer
 `kind` は 4 つです。`external` は他法令への参照で、`law_name`（法令番号）の形なら法令番号で、法令番号が無ければ候補名の完全一致で `law_id` を解決します（職業能力開発促進法がその例）。解決できなければ `resolved: false` のまま `law_name` に候補が入ります。`internal` は同一法令内の参照で、条も項も無い「第N号」にはその文が属する項の番号が付きます。`relative`（「前項」「同法第三十一条の十」「同号」）は解決しません。`suppl` は本文の「附則第N条」で、どの附則の条かは特定せず `resolved: false` で返します（v0.18.0 から。それまでは本則の条を指す `internal` にしていました）。この条の本文には附則への参照が無いので、例には出てきません。`delegations[]` の `target_law` は法令単位で、委任先が無いときや確かでないときは `null` です（省令・府令は、施行規則を定めた命令の名前が委任の文言と合うときだけ付きます。この例の施行規則の法令番号は `昭和四十年大蔵省令第十一号` で、`大蔵省令` は `財務省令` と同じ省に当たるものとして扱うので付いています）。どの条が受けているかは `next_actions` の `search_fulltext`（ローカル DB）か `get_toc` で探します。`next_actions[].example` はそのまま `get_law` の引数になります。
 :::
 
-## できないこと
+## 扱わないこと
 
-このツールが引き受けないことです。
+このツールが意図して扱わないことです。
 
 - 「前項」「同法」「同条」「次条」などが指す条・法令を特定すること（`relative` で `resolved: false` のまま返す）
 - 委任先の条を特定すること（`target_law` は法令単位。条は `search_fulltext` や `get_toc` で探す）
@@ -265,12 +265,12 @@ flowchart TD
 ```
 :::
 
-## 約束の一覧
+## 仕様項目の一覧
 
-このツールが守る約束 52 件の見出しです。約束は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_article_references)で読めます。
+このツールの仕様項目 52 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_article_references)で読めます。
 
-::: details 約束の見出し（52 件）
-| 仕様 ID | 約束 |
+::: details 仕様項目の見出し（52 件）
+| 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/get_article_references#spec-egov-get-article-references-001) | 「法令名（法令番号）第N条…」は法令番号で解決し、law_id 付きの external で返す |
 | [002](/specs/houki-egov/get_article_references#spec-egov-get-article-references-002) | 同じ本文に法令番号付きで出た法令名は、法令番号の無い参照でも同じ法令として解決する |

@@ -1,6 +1,6 @@
 ---
 title: "search_rules — houki-nta-mcp の仕様"
-description: "houki-nta-mcp の search_rules（検索系ツールに共通するキーワードの扱いと結果の付記）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-nta-mcp の search_rules（検索系ツールに共通するキーワードの扱いと結果の付記）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # search_rules の仕様
@@ -15,9 +15,9 @@ houki-nta-mcp **v0.27.0** の `specs/current/search_rules/spec.md` から自動�
 
 最後に仕様が変わったのは v0.27.0 の「置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）」（2026-10-09 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。検索系ツールに `keyword` を渡し、キーワードに合う条項・文書の一覧と、検索のしかたについての注記（`search_notes`）・関連度（`score` / `scoreReasons`）・DB の取得時点と DB のパス（`freshness`）・索引の状態（`index_status`）を受け取る
 - CLI の bulk download（`--bulk-download` など）。国税庁サイトから取った文字列を、検索のときと同じ揃え方で DB に入れる
@@ -37,9 +37,9 @@ houki-nta-mcp **v0.27.0** の `specs/current/search_rules/spec.md` から自動�
 
 ツールによって応答の形が違う点（`nta_search_tsutatsu` は `hits`・`count`・0 件のときの `message`、文書系 5 ツールは `results`）がある。統一するかは → houki-nta-mcp #71
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 表記の揺れ（ひらがなとカタカナ、送り仮名、漢数字と算用数字）を揃えること（揃えるのは全角と半角だけ）
 - 語の並び順や近さを条件にすること（語の AND だけ。フレーズや OR は指定できない）
@@ -73,9 +73,9 @@ flowchart TD
   O --> P["search_notes に短い語・通称の展開・索引から消えた件数の文を入れる（006・010・011）"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-nta-search-rules-001"></a>
 
@@ -453,9 +453,9 @@ v0.24.0 では、`oldest_fetched_at` が `2026-09-07T21:06:49.516Z` になり、
 例: ホームディレクトリが `/Users/bonji`、DB の場所の設定が `既定` で、質疑応答事例の取得日時が 2026-10-04 の DB で `nta_search_qa { keyword: "源泉徴収" }` を呼ぶと、`freshness` は `{ oldest_fetched_at: "2026-10-04T03:51:26.746Z", newest_fetched_at: "2026-10-04T04:26:15.744Z", staleness: "fresh", days_since_oldest: 0, db_path: "~/.cache/houki-nta-mcp/cache.db" }`。`HOUKI_NTA_DB_PATH=/tmp/x/cache.db` で起動すると `db_path: "/tmp/x/cache.db"`。[SPEC-NTA-SEARCH-RULES-017](#spec-nta-search-rules-017) の例 4 の `taxonomy: "hojin"` の呼び出しでは `freshness` は `{ oldest_fetched_at: null, newest_fetched_at: null, staleness: null, days_since_oldest: null, db_path: "~/.cache/houki-nta-mcp/cache.db" }`（v0.24.x では `freshness` のキーが無かった）。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

@@ -1,6 +1,6 @@
 ---
 title: "list_attachments — houki-egov-mcp の仕様"
-description: "houki-egov-mcp の list_attachments（法令の添付ファイルの一覧を返す）の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）"
+description: "houki-egov-mcp の list_attachments（法令の添付ファイルの一覧を返す）の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）"
 ---
 
 # list_attachments の仕様
@@ -17,9 +17,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/list_attachments/spec.md` から�
 
 最後に仕様が変わったのは v0.18.0 の「検索の件数・0 件の案内・通称の展開・管轄外の略称、法令種別の解説、附則の別表の図の置き場所（段階 5 検索と解説と添付）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
-## 使う人と受け取るもの
+## 利用者と得られる結果
 
-この機能を誰が呼び、何を渡して何を受け取るかを示します。
+この機能の利用者と、利用者が渡すもの・得られる結果を示します。
 
 - MCP クライアント（Claude などの LLM、または CLI から呼ぶ人）。`law_name`（と任意で `at`）を渡して、その法令履歴に付いている添付ファイル（別表・様式・別記の図。jpg / pdf）の一覧を受け取る。一覧の `url` をそのまま開くか、pdf-reader-mcp の `read_url` に渡すか、`get_attachment` で保存する
 
@@ -34,9 +34,9 @@ houki-egov-mcp **v0.20.0** の `specs/current/list_attachments/spec.md` から�
 
 inputSchema に無い引数を渡したときの扱いは common_errors に書く。
 
-## できないこと
+## 扱わないこと
 
-この機能が引き受けないことです。
+この機能が意図して扱わないことです。
 
 - 添付ファイルの中身（画像・pdf のバイト列や base64）を返すこと。返すのは URL だけで、取得・保存は `get_attachment` が行う
 - pdf の添付の本文を読むこと（pdf-reader-mcp の `read_url` に `url` を渡す）
@@ -61,9 +61,9 @@ flowchart TD
   H -- ある --> J["zip_url を付ける（005）。get_attachment と、pdf があれば read_url を next_actions に入れる（006）"]
 ```
 
-## 仕様 ID ごとの約束
+## 仕様項目
 
-この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
+この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。
 
 <a id="spec-egov-list-attachments-001"></a>
 
@@ -360,9 +360,9 @@ e-Gov の法令本文の取得（`https://laws.e-gov.go.jp/api/2/law_data/<law_i
 2026-10-03 10:15 JST に e-Gov の国民年金法（`334AC0000000141`）・厚生年金保険法（`329AC0000000115`）・所得税法（`340AC0000000033`）・地方税法（`325AC0000000226`）の本文に `SupplProvisionAppdxTable` と `SupplProvisionAppdxTableTitle` の要素があることを確かめた。この 4 法令の附則の別表の中に図（`Fig`）は無かった。`SupplProvisionAppdxStyle`・`SupplProvisionAppdxStyleTitle`・`SupplProvisionAppdx` の要素と、附則の別表・様式の中に図がある実際の法令は確かめていない（要素名は e-Gov の法令標準 XML スキーマの名前に合わせた）。
 :::
 
-## まだ決めていないこと
+## 検討中のこと
 
-仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。
+仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
 ::: details 仕様書の「未決」の節
 初版起こしで見つけた、意図か不具合かを人が決める項目です。決まったら「できること」に ID を振るか、`specs/changes/` の差分にします。

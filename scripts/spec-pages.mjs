@@ -90,7 +90,7 @@ const KINDS = [
   { kind: 'function', label: '関数', lead: 'パッケージを import して呼ぶ関数です。' },
   { kind: 'const', label: '値', lead: 'パッケージが公開している値です。' },
   { kind: 'common', label: '共通の規則', lead: '複数のツールに共通する規則（エラー応答の形や検索語の扱いなど）です。' },
-  { kind: 'db', label: 'ローカル DB', lead: 'ローカル DB の置き場所・版・中身についての約束です。' },
+  { kind: 'db', label: 'ローカル DB', lead: 'ローカル DB の置き場所・版・中身を決める仕様です。' },
   { kind: 'cli', label: 'コマンドライン', lead: 'コマンドラインから実行する機能（DB への投入や状態の確認など）です。' },
 ];
 const kindOf = (k) => KINDS.find((x) => x.kind === k) ?? { kind: k, label: k, lead: '' };
@@ -100,25 +100,27 @@ const kindOf = (k) => KINDS.find((x) => x.kind === k) ?? { kind: k, label: k, le
  * lead が null の節は、仕様書の本文が自分で目的の文を持っているので足さない。
  */
 const SPEC_SECTIONS = [
-  { src: 'アクター', title: '使う人と受け取るもの', lead: 'この機能を誰が呼び、何を渡して何を受け取るかを示します。' },
+  { src: 'アクター', title: '利用者と得られる結果', lead: 'この機能の利用者と、利用者が渡すもの・得られる結果を示します。' },
   { src: '入力', title: '入力', lead: '呼び出すときに渡す値です。' },
   { src: '戻り値', title: '戻り値', lead: '呼び出しが返す値です。' },
   { src: '値', title: '値', lead: 'このパッケージが公開している値と、その中身です。' },
   { src: '対象', title: '対象', lead: 'この共通の規則が当てはまる範囲です。' },
-  { src: 'できないこと', title: 'できないこと', lead: 'この機能が引き受けないことです。' },
+  { src: 'できないこと', title: '扱わないこと', lead: 'この機能が意図して扱わないことです。' },
   { src: '処理の流れ', title: '処理の流れ', lead: null },
   {
     src: 'できること',
-    title: '仕様 ID ごとの約束',
+    title: '仕様項目',
     lead:
-      'この機能が守る約束を、仕様 ID ごとに並べています。見出しは約束を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。' +
+      'この機能の仕様項目を、仕様 ID ごとに並べています。見出しは仕様項目を 1 文で表したもので、条件・応答の細部・例は「詳細」を開くと読めます。' +
       '仕様 ID はそれぞれ受入テストと対応していて、テストの無い ID があると各リポジトリの CI が止まります。',
     ids: true,
   },
   {
     src: '未決',
-    title: 'まだ決めていないこと',
-    lead: '仕様を書き起こしたときに見つかった項目のうち、扱いを決めている途中のものです。開くと、元の仕様書の記述をそのまま読めます。',
+    title: '検討中のこと',
+    lead:
+      '仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。' +
+      '開くと、元の仕様書の記述をそのまま読めます。',
     collapsed: '仕様書の「未決」の節',
   },
 ];
@@ -355,7 +357,7 @@ function renderSpecPage(ctx, cfg, f) {
   // 同じ名前の機能が複数のリポジトリにある（common_errors・resolve_abbreviation など）ので、題にリポジトリを入れる
   L.push(`title: ${JSON.stringify(`${f.name} — ${cfg.repo} の仕様`)}`);
   L.push(
-    `description: ${JSON.stringify(`${cfg.repo} の${isIdent(f.name) ? ' ' : ''}${f.h1}の仕様。目的・入力・処理の流れと、仕様 ID ごとの約束（specs/current から自動生成）`)}`
+    `description: ${JSON.stringify(`${cfg.repo} の${isIdent(f.name) ? ' ' : ''}${f.h1}の仕様。目的・入力・処理の流れと、仕様 ID ごとの仕様項目（specs/current から自動生成）`)}`
   );
   L.push('---');
   L.push('');
@@ -678,7 +680,7 @@ function renderSkillIndex(ctx, cfg, workflows, pages) {
   const rules = pick('鉄則');
   if (rules) {
     L.push(`## ${transformLine(rules.heading, {})}`, '');
-    L.push('どの workflow でも守る順序と約束です。見出しを開くと、SKILL.md の本文を読めます。', '');
+    L.push('どの workflow でも守る順序と決まりです。見出しを開くと、SKILL.md の本文を読めます。', '');
     const { pre, sections: items } = splitSections(rules.text, 3);
     if (pre.trim()) L.push(transformMarkdown(pre.trim(), tctx), '');
     for (const it of items) {
@@ -803,7 +805,7 @@ async function readSpecSources() {
  *   - features: 名前（ツール名・関数名）→ 機能。公開定数のように 1 つの仕様書に複数の名前があるときは、
  *     「値」の節の `### \`NAME\`` の見出しの名前も同じ機能に向ける
  *   - sectionOf(f, src): spec.md の ## 節を、変換して返す（無ければ null）
- *   - promises(f): 仕様 ID ごとの約束の見出し [{ id, heading, url }]
+ *   - promises(f): 仕様項目（仕様 ID ごと）の見出し [{ id, heading, url }]
  *   - overlay(f): 人が書く節（scripts/spec-pages/<site>/<dir>.md）。無ければ null。
  *     ページの中の仕様 ID の錨（`](#spec-…)`）は、仕様書ページの ID へ向け直す
  */
