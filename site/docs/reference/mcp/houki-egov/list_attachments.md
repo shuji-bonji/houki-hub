@@ -8,7 +8,7 @@ description: "houki-egov-mcp の list_attachments：法令に付いている添�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/list_attachments.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/list_attachments/spec.md、使いどころは scripts/spec-pages/houki-egov/list_attachments.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/list_attachments/spec.md` から自動生成しました（仕様 ID 25 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/list_attachments/spec.md` から自動生成しました（仕様 ID 25 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 法令に付いている添付ファイル（別表・様式・別記の図。jpg / pdf）の一覧を返す。各ファイルに、認証なしで開ける取得 URL と、法令の中の置き場所（「別表第一（第一条関係）」「附録第十一号様式」のような見出しと関係条文、条の中なら条番号）を付ける。get_law の条文には図の中身が入らないので、別表・様式の図が要るときにこのツールで URL を取る。pdf は pdf-reader-mcp の read_url に url を渡して読める。ファイルの中身は返さない。
@@ -216,4 +216,4 @@ flowchart TD
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [houki-egov-mcp のツール一覧](/reference/mcp/houki-egov/)
 - [list_attachments の仕様書ページ](/specs/houki-egov/list_attachments)
-- [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/list_attachments/spec.md)
+- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/list_attachments/spec.md)

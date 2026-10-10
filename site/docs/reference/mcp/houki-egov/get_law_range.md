@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_law_range：法令の編・章・節・款�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_law_range.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_law_range/spec.md、使いどころは scripts/spec-pages/houki-egov/get_law_range.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_law_range/spec.md` から自動生成しました（仕様 ID 35 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_law_range/spec.md` から自動生成しました（仕様 ID 35 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 法令の編・章・節・款・目のいずれか、または附則 1 本を範囲にして、その中の条を本文ごと取得する。1 条ずつ引く get_law と、目次だけを返す get_toc の間を埋める（民法・会社法・消費税法のように get_law で 1 条ずつ引くと手数がかかり、法令全体では長すぎる場合に使う）。範囲は条の単位で文字数の上限まで返し、入り切らなかったときは truncated と続きの条番号（next_from_article）を返す。返した範囲（パス・見出し・条の数・最初と最後の条）は応答の range に入る。
@@ -308,4 +308,4 @@ flowchart TD
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [houki-egov-mcp のツール一覧](/reference/mcp/houki-egov/)
 - [get_law_range の仕様書ページ](/specs/houki-egov/get_law_range)
-- [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/get_law_range/spec.md)
+- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/get_law_range/spec.md)

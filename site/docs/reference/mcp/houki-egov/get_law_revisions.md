@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_law_revisions：法令の改正履歴を取
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_law_revisions.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_law_revisions/spec.md、使いどころは scripts/spec-pages/houki-egov/get_law_revisions.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_law_revisions/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_law_revisions/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 法令の改正履歴を取得します。e-Gov v2 の /law_revisions を使います。各改正の公布日・施行日・改正法令番号・状態（current_revision_status。CurrentEnforced=現行、PreviousEnforced=旧法、UnEnforced=未施行）等を返します。並びは施行日の新しい順で、まだ施行されていない改正も含みます。
@@ -151,4 +151,4 @@ flowchart TD
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [houki-egov-mcp のツール一覧](/reference/mcp/houki-egov/)
 - [get_law_revisions の仕様書ページ](/specs/houki-egov/get_law_revisions)
-- [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/get_law_revisions/spec.md)
+- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/get_law_revisions/spec.md)

@@ -8,7 +8,7 @@ description: "houki-egov-mcp の search_fulltext：法令の条文本文をキ�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/search_fulltext.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/search_fulltext/spec.md、使いどころは scripts/spec-pages/houki-egov/search_fulltext.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/search_fulltext/spec.md` から自動生成しました（仕様 ID 42 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/search_fulltext/spec.md` から自動生成しました（仕様 ID 42 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 法令の条文本文をキーワードで横断して全文検索します（ローカル SQLite FTS5）。`npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` で構築した bulk DB を引きます。略称は正式名称にも展開し（例: "労基法" → "労基法" または "労働基準法"）、通称（例: "インボイス"）は元の語で条が当たらないときだけ正式名称で探し直します。展開したときは expanded_keywords を返します。各ヒットに条番号・snippet・score・DB の鮮度（freshness）を付けて返します。bulk DB が無いときと、DB の版がこの houki-egov-mcp と合わないときは search_law（法令名の題名の一致）に切り替え、その旨と次にすることを note で返します。DB は作らず、書き換えません。2 文字の語（「相殺」「時効」）は本文の索引（trigram）に載らないため既定では本文を引かず、何をして結果を出したかを応答の short_tokens に返します。keyword 全体が通達などの管轄外の略称（例: "消基通"）なら、DB も e-Gov も引かずに OUT_OF_SCOPE を返します。
@@ -206,4 +206,4 @@ flowchart TD
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [houki-egov-mcp のツール一覧](/reference/mcp/houki-egov/)
 - [search_fulltext の仕様書ページ](/specs/houki-egov/search_fulltext)
-- [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/search_fulltext/spec.md)
+- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/search_fulltext/spec.md)

@@ -8,7 +8,7 @@ description: "houki-abbreviations の関数 getAbbreviationStats：辞書全体�
 <!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_abbreviation_stats/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/get_abbreviation_stats.md から。 -->
 
 ::: info
-houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/get_abbreviation_stats/spec.md` から自動生成しました（仕様 ID 6 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-abbreviations **v0.7.1** の `dist/index.d.ts` と `specs/current/get_abbreviation_stats/spec.md` から自動生成しました（仕様 ID 6 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 *関数 ・ v0.1.0 で追加 ・ family では未使用*
@@ -79,4 +79,4 @@ flowchart TD
 - [houki-abbreviations の解説](/lib/houki-abbreviations)
 - [houki-abbreviations の API の一覧](/reference/lib/houki-abbreviations/)
 - [getAbbreviationStats の仕様書ページ](/specs/houki-abbreviations/get_abbreviation_stats)
-- [元の仕様書（GitHub、v0.7.0）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.0/specs/current/get_abbreviation_stats/spec.md)
+- [元の仕様書（GitHub、v0.7.1）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.1/specs/current/get_abbreviation_stats/spec.md)

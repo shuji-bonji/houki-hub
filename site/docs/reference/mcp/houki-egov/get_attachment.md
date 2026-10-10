@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_attachment：添付ファイル 1 件（src
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_attachment.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_attachment/spec.md、使いどころは scripts/spec-pages/houki-egov/get_attachment.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_attachment/spec.md` から自動生成しました（仕様 ID 31 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_attachment/spec.md` から自動生成しました（仕様 ID 31 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 添付ファイル 1 件（src 指定）か、その法令履歴の添付ファイルをまとめた zip（src 省略）を取る。既定では e-Gov からファイルを取らず、URL とメタ情報（ファイル名・種別・置き場所）だけを返す。save: true のときだけファイルを取得してサーバー側の保存先（既定は XDG_CACHE_HOME か ~/.cache の下の houki-egov-mcp/files/。環境変数 HOUKI_EGOV_FILES_DIR で変更）に書き、絶対パスを返す。保存先はツールの引数では指定できない。base64 の中身は返さない。
@@ -185,4 +185,4 @@ flowchart TD
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [houki-egov-mcp のツール一覧](/reference/mcp/houki-egov/)
 - [get_attachment の仕様書ページ](/specs/houki-egov/get_attachment)
-- [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/get_attachment/spec.md)
+- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/get_attachment/spec.md)

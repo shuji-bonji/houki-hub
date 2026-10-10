@@ -8,7 +8,7 @@ description: "houki-abbreviations の関数 extractLawNames：入力テキスト
 <!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/extract_law_names/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/extract_law_names.md から。 -->
 
 ::: info
-houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/extract_law_names/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-abbreviations **v0.7.1** の `dist/index.d.ts` と `specs/current/extract_law_names/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 *関数 ・ v0.5.0 で追加 ・ family では未使用*
@@ -117,4 +117,4 @@ flowchart TD
 - [houki-abbreviations の解説](/lib/houki-abbreviations)
 - [houki-abbreviations の API の一覧](/reference/lib/houki-abbreviations/)
 - [extractLawNames の仕様書ページ](/specs/houki-abbreviations/extract_law_names)
-- [元の仕様書（GitHub、v0.7.0）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.0/specs/current/extract_law_names/spec.md)
+- [元の仕様書（GitHub、v0.7.1）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.1/specs/current/extract_law_names/spec.md)

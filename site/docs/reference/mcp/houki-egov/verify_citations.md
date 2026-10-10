@@ -8,7 +8,7 @@ description: "houki-egov-mcp の verify_citations：LLM が組み立てた法令
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/verify_citations.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/verify_citations/spec.md、使いどころは scripts/spec-pages/houki-egov/verify_citations.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/verify_citations/spec.md` から自動生成しました（仕様 ID 48 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/verify_citations/spec.md` から自動生成しました（仕様 ID 48 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 LLM が組み立てた法令の引用リストを、1 回の呼び出しでまとめて実在確認します。件ごとに found / not_found / ambiguous を返し、リストの中に存在しない引用が混ざっていてもツール全体はエラーにしません。found の件には正式名称・法令番号・条見出し・law_id・URL を付けます。確かめるのは「その条（指定があれば項・号）が e-Gov の法令にあるか」だけで、引用が主張を支えるかどうかは判定しません。略称は略称辞書で正式名称に直してから照合し、法令名は完全一致だけを採ります。条は本則の中で確かめ、附則の条は suppl_index で附則を指してください。
@@ -275,4 +275,4 @@ flowchart TD
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [houki-egov-mcp のツール一覧](/reference/mcp/houki-egov/)
 - [verify_citations の仕様書ページ](/specs/houki-egov/verify_citations)
-- [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/verify_citations/spec.md)
+- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/verify_citations/spec.md)

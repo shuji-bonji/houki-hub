@@ -6,7 +6,7 @@
     "layer = 役割 / form = 配布形態（誰が起動するか）/ status = released・planned・concept。",
     "planned / concept は名前と束ねる単位を予約しているだけで、ディレクトリも npm も無い。"
   ],
-  "generatedAt": "2026-10-09T13:01:53.107Z",
+  "generatedAt": "2026-10-10T07:40:18.656Z",
   "generatedBy": "scripts/generate-stack.mjs",
   "npmScope": "@shuji-bonji",
   "repos": [
@@ -19,16 +19,16 @@
       "status": "released",
       "public": true,
       "note": "e-Gov 法令 API v2。法律・政令・省令の本文・目次・改正履歴 + ローカル SQLite FTS5 全文検索 + 章・節単位の範囲取得 + 添付ファイル（別表・様式の図）と xml / docx の本文ファイル。14 tools",
-      "published": "0.20.0",
+      "published": "0.20.1",
       "local": {
-        "version": "0.20.0",
-        "tag": "v0.20.0",
+        "version": "0.20.1",
+        "tag": "v0.20.1",
         "dirty": false,
         "unpushedCommits": 0
       },
       "consistency": {
         "status": "match",
-        "detail": "0.20.0"
+        "detail": "0.20.1"
       }
     },
     {
@@ -61,16 +61,16 @@
       "status": "released",
       "public": true,
       "note": "略称辞書 174 エントリ（6 分野）+ 全角ゆらぎ正規化 + 鮮度判定 + 逆引き + 検証ヘルパ。全 MCP が依存 (^0.4.1 指定のため MCP に入るのは 0.4.1。0.5 系で足した逆引き・検証は MCP 未使用)",
-      "published": "0.7.0",
+      "published": "0.7.1",
       "local": {
-        "version": "0.7.0",
-        "tag": "v0.7.0",
+        "version": "0.7.1",
+        "tag": "v0.7.1",
         "dirty": false,
         "unpushedCommits": 0
       },
       "consistency": {
         "status": "match",
-        "detail": "0.7.0"
+        "detail": "0.7.1"
       }
     },
     {
@@ -108,7 +108,7 @@
         "version": null,
         "tag": null,
         "dirty": true,
-        "unpushedCommits": null
+        "unpushedCommits": 0
       },
       "consistency": {
         "status": "not_published",

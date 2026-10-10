@@ -8,7 +8,7 @@ description: "houki-abbreviations の関数 findSimilar：あいまい一致 (Le
 <!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/find_similar/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/find_similar.md から。 -->
 
 ::: info
-houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/find_similar/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-abbreviations **v0.7.1** の `dist/index.d.ts` と `specs/current/find_similar/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 *関数 ・ v0.4.0 で追加 ・ family では未使用*
@@ -119,4 +119,4 @@ flowchart TD
 - [houki-abbreviations の解説](/lib/houki-abbreviations)
 - [houki-abbreviations の API の一覧](/reference/lib/houki-abbreviations/)
 - [findSimilar の仕様書ページ](/specs/houki-abbreviations/find_similar)
-- [元の仕様書（GitHub、v0.7.0）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.0/specs/current/find_similar/spec.md)
+- [元の仕様書（GitHub、v0.7.1）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.1/specs/current/find_similar/spec.md)

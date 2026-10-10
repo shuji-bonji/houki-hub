@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_article_references：条文本文が引用�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_article_references.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_article_references/spec.md、使いどころは scripts/spec-pages/houki-egov/get_article_references.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_article_references/spec.md` から自動生成しました（仕様 ID 52 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_article_references/spec.md` から自動生成しました（仕様 ID 52 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 条文本文が引用している参照を取り出します。対象は本則の条だけです（附則の条の本文は get_law の suppl_index で読めます）。他法令の条（法令名と法令番号から law_id を解決）、同一法令内の条・項・号、本文の「附則第N条」（kind: "suppl"。どの附則の条かは特定しません）、「政令で定める」「財務省令で定める」の委任を返し、解決できた参照に get_law（条の無い他法令の参照には get_toc）の引数を next_actions で付けます。委任先は法令単位で、政令は施行令、省令・府令は施行規則を定めた命令の名前が委任の文言と合うときだけ付け、確かでないときは target_law: null にします。「前項」「同法」は解決しません。正規表現で取れた範囲だけを返し、網羅性は主張しません。
@@ -333,4 +333,4 @@ flowchart TD
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [houki-egov-mcp のツール一覧](/reference/mcp/houki-egov/)
 - [get_article_references の仕様書ページ](/specs/houki-egov/get_article_references)
-- [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/get_article_references/spec.md)
+- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/get_article_references/spec.md)

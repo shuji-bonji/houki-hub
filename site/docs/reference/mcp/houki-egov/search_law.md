@@ -8,7 +8,7 @@ description: "houki-egov-mcp の search_law：日本の法令を、法令の題�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/search_law.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/search_law/spec.md、使いどころは scripts/spec-pages/houki-egov/search_law.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/search_law/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/search_law/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 日本の法令を、法令の題名のキーワードや略称で検索します。e-Gov 法令 API v2 を使い、略称は略称辞書で正式名称に直してから探します。total_count は e-Gov で一致した法令の総数で、results の件数（limit 以下）とは限りません。一致が 0 件のときは、条文の本文を探す search_fulltext と略称を確かめる resolve_abbreviation を hint と next_actions で案内します。
@@ -157,4 +157,4 @@ flowchart TD
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [houki-egov-mcp のツール一覧](/reference/mcp/houki-egov/)
 - [search_law の仕様書ページ](/specs/houki-egov/search_law)
-- [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/search_law/spec.md)
+- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/search_law/spec.md)

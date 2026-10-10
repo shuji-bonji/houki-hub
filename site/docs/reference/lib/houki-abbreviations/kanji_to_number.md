@@ -8,7 +8,7 @@ description: "houki-abbreviations の関数 kanjiToNumber：漢数字を数値�
 <!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/kanji_to_number/spec.md、使いどころは scripts/spec-pages/houki-abbreviations/kanji_to_number.md から。 -->
 
 ::: info
-houki-abbreviations **v0.7.0** の `dist/index.d.ts` と `specs/current/kanji_to_number/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-abbreviations **v0.7.1** の `dist/index.d.ts` と `specs/current/kanji_to_number/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 *関数 ・ v0.6.0 で追加 ・ family では未使用*
@@ -121,4 +121,4 @@ flowchart TD
 - [houki-abbreviations の解説](/lib/houki-abbreviations)
 - [houki-abbreviations の API の一覧](/reference/lib/houki-abbreviations/)
 - [kanjiToNumber の仕様書ページ](/specs/houki-abbreviations/kanji_to_number)
-- [元の仕様書（GitHub、v0.7.0）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.0/specs/current/kanji_to_number/spec.md)
+- [元の仕様書（GitHub、v0.7.1）](https://github.com/shuji-bonji/houki-abbreviations/blob/v0.7.1/specs/current/kanji_to_number/spec.md)

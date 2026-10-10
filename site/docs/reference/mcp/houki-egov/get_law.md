@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_law：日本の法令から条文を取得�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_law.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_law/spec.md、使いどころは scripts/spec-pages/houki-egov/get_law.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_law/spec.md` から自動生成しました（仕様 ID 43 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_law/spec.md` から自動生成しました（仕様 ID 43 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 日本の法令から条文を取得します。略称（消法・所法・労基法 等）に対応し、条・項・号の単位で指定できます。法令名は題名の完全一致だけを使い、一致しなければ候補を付けた LAW_NOT_FOUND を返します。article の条は本則の中から探し、附則の条は suppl_index で附則を指して取ります。章・節をまとめて取るときは get_law_range を使います。
@@ -350,4 +350,4 @@ flowchart TD
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [houki-egov-mcp のツール一覧](/reference/mcp/houki-egov/)
 - [get_law の仕様書ページ](/specs/houki-egov/get_law)
-- [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/get_law/spec.md)
+- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/get_law/spec.md)

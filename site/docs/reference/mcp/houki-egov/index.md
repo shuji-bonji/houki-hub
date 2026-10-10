@@ -1,6 +1,6 @@
 ---
 title: "houki-egov-mcp — ツールリファレンス"
-description: "houki-egov-mcp v0.20.0 の全 14 ツールの一覧（tools/list から自動生成）"
+description: "houki-egov-mcp v0.20.1 の全 14 ツールの一覧（tools/list から自動生成）"
 ---
 
 # houki-egov-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-egov-mcp v0.20.0 の全 14 ツールの一覧（tools/list �
 <!-- GENERATED FILE — 手で編集しない。一覧はサーバーの tools/list から。 -->
 
 ::: info
-**v0.20.0** の `tools/list` から自動生成しました（14 ツール・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.20.1** の `tools/list` から自動生成しました（14 ツール・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスの入り口です。** ツールごとに 1 ページあり、何をするか・引数・実測の呼び出し例・扱わないことを、動いているサーバーの `tools/list` と、各リポジトリの仕様書（`specs/current/`）から写しています。サーバー全体の説明と導入は[解説ページ](/mcp/houki-egov)にあります。

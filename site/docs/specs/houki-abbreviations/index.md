@@ -8,7 +8,7 @@ description: "houki-abbreviations の全 23 機能の仕様の一覧（specs/cur
 <!-- GENERATED FILE — 手で編集しない。houki-abbreviations の specs/current/ から生成。 -->
 
 ::: info
-houki-abbreviations **v0.7.0** の `specs/current/` から自動生成しました（23 機能・仕様 ID 259 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.1** の `specs/current/` から自動生成しました（23 機能・仕様 ID 259 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 houki-abbreviations が何をするかを、機能ごとに 1 ページで説明します。全体の使い方は[解説](/lib/houki-abbreviations)に、引数の一覧は[リファレンス](/reference/lib/houki-abbreviations/)にあります。

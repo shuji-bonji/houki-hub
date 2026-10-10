@@ -1,6 +1,6 @@
 ---
 title: "houki-abbreviations — API リファレンス"
-description: "houki-abbreviations v0.7.0 の公開 API（関数 21 個・定数 6 個・インターフェース 13 個・型 6 個）の一覧・追加された版・family での使用状況（dist/index.d.ts から自動生成）"
+description: "houki-abbreviations v0.7.1 の公開 API（関数 21 個・定数 6 個・インターフェース 13 個・型 6 個）の一覧・追加された版・family での使用状況（dist/index.d.ts から自動生成）"
 ---
 
 # houki-abbreviations — API リファレンス
@@ -8,7 +8,7 @@ description: "houki-abbreviations v0.7.0 の公開 API（関数 21 個・定数 
 <!-- GENERATED FILE — 手で編集しない。一覧は dist/index.d.ts、使用状況は mcp/*/src の import から。 -->
 
 ::: info
-**v0.7.0** の `dist/index.d.ts` から自動生成しました（関数 21 個・定数 6 個・インターフェース 13 個・型 6 個・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.7.1** の `dist/index.d.ts` から自動生成しました（関数 21 個・定数 6 個・インターフェース 13 個・型 6 個・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成の API リファレンスの入り口です。** 関数と値は 1 つずつページがあり、シグネチャ・説明・例をパッケージの型定義（`dist/index.d.ts`）から、利用者と得られる結果・扱わないこと・処理の流れを各機能の仕様書（`specs/current/`）から写しています。辞書の中身や設計の方針は[解説ページ](/lib/houki-abbreviations)にあります。

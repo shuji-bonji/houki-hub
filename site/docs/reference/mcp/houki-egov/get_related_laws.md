@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_related_laws：法令名の規則で関連�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_related_laws.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_related_laws/spec.md、使いどころは scripts/spec-pages/houki-egov/get_related_laws.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.20.0** の `tools/list` と `specs/current/get_related_laws/spec.md` から自動生成しました（仕様 ID 20 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_related_laws/spec.md` から自動生成しました（仕様 ID 20 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 法令名の規則で関連する法令を引きます。法律なら施行令・施行規則、施行令・施行規則なら親の法律と兄弟を、e-Gov に実在するものだけ返します（law_id 付き）。名前の末尾に「施行令」「施行規則」を付けた（落とした）候補だけを試すので、別の名前の下位法令や告示は返りません。法律でも施行令・施行規則でもない法令（省令・政令・規則など）からは候補を作らず、related を空にして note に理由を書きます。網羅性は主張しません。
@@ -171,4 +171,4 @@ flowchart TD
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [houki-egov-mcp のツール一覧](/reference/mcp/houki-egov/)
 - [get_related_laws の仕様書ページ](/specs/houki-egov/get_related_laws)
-- [元の仕様書（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.0/specs/current/get_related_laws/spec.md)
+- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/get_related_laws/spec.md)

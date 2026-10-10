@@ -1,6 +1,6 @@
 ---
 title: "型とインターフェース — houki-abbreviations"
-description: "houki-abbreviations v0.7.0 が公開している型とインターフェース（インターフェース 13 個・型 6 個）のシグネチャと説明（dist/index.d.ts から自動生成）"
+description: "houki-abbreviations v0.7.1 が公開している型とインターフェース（インターフェース 13 個・型 6 個）のシグネチャと説明（dist/index.d.ts から自動生成）"
 ---
 
 # 型とインターフェース
@@ -8,7 +8,7 @@ description: "houki-abbreviations v0.7.0 が公開している型とインター
 <!-- GENERATED FILE — 手で編集しない。シグネチャと説明は dist/index.d.ts、使用状況は mcp/*/src の import から。 -->
 
 ::: info
-**v0.7.0** の `dist/index.d.ts` から自動生成しました（インターフェース 13 個・型 6 個・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.7.1** の `dist/index.d.ts` から自動生成しました（インターフェース 13 個・型 6 個・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 関数の引数と戻り値、辞書のエントリの形に使われている型です。型には仕様書が無いので、型定義（`dist/index.d.ts`）の宣言と説明だけを写しています。
