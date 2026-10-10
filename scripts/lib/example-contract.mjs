@@ -302,12 +302,15 @@ export function parseJsoncPattern(text) {
  * 例の文字列の `…` を「ここは省いた」として読み、実際の文字列と比べる。
  * `…` で区切った断片が、先頭（`…` で始まらなければ前方一致）から順に現れ、
  * 最後の断片が末尾（`…` で終わらなければ後方一致）に来れば一致とする。
+ * 「…」の前後の空白（半角・全角）は「…」の一部として読み、断片には含めない。
  * 「…」を含まない文字列は完全一致。
  */
 export function globMatch(pattern, actual) {
   if (typeof pattern !== 'string' || typeof actual !== 'string') return false;
   if (!pattern.includes('…')) return pattern === actual;
-  const parts = pattern.split(/…+/);
+  // 「…」の前後の空白（半角・全角。改行は含めない）は省略の記号の一部として読む。例は「2 … 別紙2 … 令和8年」のように
+  // 空白を挟んで書くことが多いが、応答の本文では「別紙2「…」」のように空白が無い（2026-10-10 の照合で見つかった 2 例）
+  const parts = pattern.split(/[ \u3000]*…+[ \u3000]*/);
   let pos = 0;
   for (let k = 0; k < parts.length; k += 1) {
     const part = parts[k];
@@ -354,6 +357,7 @@ export const VOLATILE_RULES = [
   { path: '**.saved[].path', kind: 'home-path', why: '環境で変わる' },
   { path: '**.file_path', kind: 'home-path', why: '環境で変わる' },
   { path: '**.score', kind: 'tolerance', tolerance: 0.01, why: '本文の長さで少し動く' },
+  { path: '**.rank', kind: 'tolerance', tolerance: 0.01, why: 'FTS5 の bm25 の値。例は小数 2 桁に丸めて書く（2026-10-10 の照合、search_fulltext）' },
   { path: '**.effectiveDate', kind: 'data', why: '国税庁のページの更新で変わる' },
   { path: '**.basisDate', kind: 'data', why: '国税庁のページの更新で変わる' },
   { path: '**.bytes', kind: 'data', why: '国税庁・e-Gov のファイルの更新で変わる' },

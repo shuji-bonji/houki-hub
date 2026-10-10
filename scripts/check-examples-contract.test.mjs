@@ -166,6 +166,16 @@ test('globMatch: … を「省いた部分」として、断片が順に現れ�
   assert.equal(globMatch('…', ''), true);
 });
 
+test('globMatch: 「…」の前後の空白は省略の記号の一部（改行は含めない）', () => {
+  assert.equal(globMatch('【参考】… 新旧対応表 …（PDF/399KB）', '【参考】令和８年…の構成及び新旧対応表（令和７年４月１日）（PDF/399KB）'), true);
+  assert.equal(globMatch('2 … 別紙2 … 適用する。', '2 消費税法基本通達について、別紙2「…」のとおり…適用する。'), true);
+  assert.equal(globMatch('A　…　B', 'AxB'), true);
+  // 改行は省かない
+  assert.equal(globMatch('A\n…\nB', 'AxB'), false);
+  // 断片の中の空白は比べる
+  assert.equal(globMatch('…A B…', 'xAByy'), false);
+});
+
 /* ---------------- パス ---------------- */
 
 test('pathMatches: ** は任意の深さ、[] は配列の要素', () => {
@@ -445,4 +455,10 @@ test('applyVerified: 一致の例だけ、npx で起動したサーバーの版�
 
 test('todayJstDate: JST の日付', () => {
   assert.equal(todayJstDate(new Date('2026-10-10T15:30:00Z')), '2026-10-11');
+});
+
+test('comparePattern: rank は ±0.01（例は小数 2 桁に丸めて書く）', () => {
+  assert.deepEqual(comparePattern({ hits: [{ rank: -15.07 }] }, { hits: [{ rank: -15.070028182166215 }] }), []);
+  const far = comparePattern({ hits: [{ rank: -15.07 }] }, { hits: [{ rank: -14.5 }] });
+  assert.equal(far[0].category, 'data');
 });
