@@ -62,7 +62,31 @@ Markdown をそのまま貼るので、VitePress のコンテナが使えます�
   | `` - 照合: `taxAnswer.sections` はデータ `` | 違っても「データ側の差分」にする |
 
 - `- 版の照合: しない` の例は、照合のスクリプトでも「照合しない」にします
+- `- 確かめた版: vX（YYYY-MM-DD）` の行は、照合のスクリプトが `--write-verified` で書きます（手で書きません）。「一致」した例だけに、`- 実測:` の次の行に書きます。`node scripts/check-example-versions.mjs` は「実測」と「確かめた版」の新しいほうを公開版と比べます
+- 全部の例に `- ローカル DB:` の行を書きます。`あり…` か `不要…` で始めます。DB が要るかは、例の応答の `source` と、ツールの仕様（「検索の対象はローカル DB だけ」など）で決めます
+- `- 照合:` の行はツールのページに出しません（`generate-reference.mjs` が落とします）。`- ローカル DB:`・`- 版の照合:`・`- 確かめた版:` の行は出します
 - 配列の途中を省くときは、`// …計 8 件` のコメントか、`"…"` だけの要素を置きます。オブジェクトのキーを省くときは `/* … */` か `"…": "…"` を置きます。文字列の一部を省くときは `…` を使います
+
+## 公開の後に流す
+
+houki-egov-mcp・houki-nta-mcp を npm に公開した後（patch を含む）に、Mac で全部の例を流します。手順と結果の見方は `docs/notes/2026-10-10-procedure-contract-check-after-publish.md` にあります。
+
+```sh
+node scripts/generate-stack.mjs --readme                                   # stack.json を公開版に合わせる
+node scripts/check-examples-contract.mjs > /tmp/contract.md; head -8 /tmp/contract.md
+# 形の違い・データ側の差分の例を分けた後
+node scripts/check-examples-contract.mjs --write-verified > /tmp/contract-verified.md
+node scripts/check-example-versions.mjs                                    # 確かめていない例が残っていないか
+```
+
+| 判定 | すること |
+| --- | --- |
+| 一致 | `--write-verified` で「- 確かめた版:」を書く |
+| データ側の差分 | 例を取り直すかを決める（値が変わっただけなら、そのままでもよい） |
+| 形の違い | 公開した版の予定どおりの変更なら例を取り直す。予定外なら MCP の劣化として Issue の草案を `docs/notes/issues-<日付>-contract/` に置く。毎回変わる値を比べていたなら `VOLATILE_RULES` か `- 照合:` の行に足す |
+| 未確認 | 理由（起動の失敗など）を直して流し直す |
+
+DB の要らない例は、`.github/workflows/reference-regen.yml` が毎日 07:37 JST に `--db absent` で流し、結果を実行の要約とページを作り直す PR の本文に出します。DB の要る例は CI では流さないので、公開の後の Mac の照合は省きません。
 
 ## 実測の取り方
 
