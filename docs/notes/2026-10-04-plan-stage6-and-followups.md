@@ -861,3 +861,22 @@ Y8 の PR #58 が、意味が変わるので直さなかったもの（main `533
 > 士業者には、根拠になる条文・通達の引用と、検討すべき論点を返します。引用した条文が実在するかも確かめます。事実を要件に当てはめて結論を出し、その責任を負うのは、資格を持つ人です。
 
 段落の 2 文目（「出力の形は、資格を持つ人が確認して署名することを前提にします。」）は残す。
+
+2026-10-10 21:37 JST: 12 の文は案 A のまま（指示 Y9 の文）。shuji の所見として、文としては案 C（「士業者は、根拠になる条文・通達と検討すべき論点を受け取り、…」と受け取る側から書く形）の方が分かりやすい。利用者ごとの節を今後書き直すときは、受け取る側から書く形を候補にする。
+
+### spec-ids#9 の判断（2026-10-10 JST）
+
+spec-ids#9（`pr-scope` を `spec-ids pr-scope` として取り込む）は、段階 4 の後の 2 番目（Q25' の A）。Issue の「決めること」1〜7 に、Issue の「やること」2（`init` の `spec-gate.yml`）を 8 として足した。2026-10-10 JST に確かめたこと: spec-ids の origin の main は `12b3448`（0.3.0 の後、docs の PR #10・#11）。houki 系 3 リポジトリの `specs/changes/` は空で、`check-pr-scope.mjs`・`check-pr-scope.test.mjs` と ci.yml の `pr-scope` ジョブ（`npm ci` の後に動かす）がある。3 リポジトリとも `@shuji-bonji/spec-ids` は `^0.3.0`。
+
+| # | 何を | 案 | 勧める案と理由 |
+| --- | --- | --- | --- |
+| 1 | `onlyIdsAdded`（テスト名に ID を足すだけの変更か） | (A) egov・nta の形（前の ID がすべて残り、数が増えていれば通す） / (B) abbr の形（ID を除くと同じ行だけ） | **A**。1 つのテストが複数の仕様項目を確かめるとき、ID の付いたテスト名に別の ID を足すことがある。A でも、前の ID を消す・差し替える変更は止まる |
+| 2 | `specs/changes/.gitkeep` の除外 | (A) 入れる（abbr・egov） / (B) 入れない（nta） | **A**。差分を releases へ移した後も `.gitkeep` は残すので、これを差分のフォルダーと数えると誤って止まる |
+| 3 | 取り込み済み差分の `specs/changes/` の残りを消すことを許すか | (A) 許す（abbr・egov、`docs/operations.md` 7 章の片付け） / (B) 許さない（nta） | **A**。ブランチを積んで取り込んだときに残ったフォルダーを、別の PR で消す手順が operations.md にある。許すのは、`specs/releases/` に同じ ID がある差分だけ |
+| 4 | nta の変換の例外（Q23'） | (A) 取り込みのときに外す / (B) 残す | **A**（Q23' の決定のとおり）。nta の `specs/changes/` は空なので、例外が当たる proposal.md は無い |
+| 5 | テスト | 3 つのコピーのテスト（20・22・24 件）を spec-ids の `test/` に移して 1 つにまとめる | このとおり。1〜4 で止める側と通す側の両方のテストを残す |
+| 6 | 版 | (A) `migrate` を外す 0.4.0 と同じ版 / (B) 別の版（0.4.0 で `pr-scope`、0.5.0 で `migrate` を外す） | **A。ただし、houki 系の外（pdf 系、e-shiwake）で spec-ids を使っているリポジトリが 0.2.x の形のまま残っていないことを shuji が確かめてから**。残っていれば、そのリポジトリが 0.3.0 の `migrate` で変換するまで B にする。houki 系 3 リポジトリは変換済みで、A なら依存を上げる PR が 1 本で済む |
+| 7 | ブランチ名の接頭辞（`spec/`・`spec-init/`）を設定にするか | (A) 固定し、`docs/operations.md` に書く / (B) `specs/spec-ids.json` に出す | **A**。使っているのは houki 系 3 リポジトリで、どこも同じ接頭辞。ほかの名前が要るリポジトリが出たときに B を足せる（既定値を今の固定値にすれば互換を保てる） |
+| 8 | `init` が作る `spec-gate.yml` に `pr-scope` のジョブを足すか | (A) 足す（`pull_request` のときだけ、`fetch-depth: 0`） / (B) 足さず、README に足し方を書く | **A**。新しく導入するリポジトリが、最初から仕様 PR と実装 PR の分け方の検査を持てる。今の 3 リポジトリは ci.yml のジョブを `npx spec-ids pr-scope` に置き換える |
+
+進め方の案（#5 と同じ順）: (1) spec-ids の実装 PR（`spec-ids pr-scope`、テストの移植、`init` のテンプレート、`migrate` を外すかは 6 による、README・CHANGELOG・operations.md の 4・9・10 章）→ publish、(2) 3 リポジトリで `check-pr-scope.mjs` とテストを消し、ci.yml の `pr-scope` ジョブを `npx spec-ids pr-scope` にし、依存を上げる PR（各リポジトリ 1 本、publish しない）。#5 と違って設計の PR は置かない。決めることは上の 8 つで、Issue に書いてあり、ここで決めれば実装の PR に入れられるため。
