@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { describeFindings, judge, needsDb, precheck, renderContractTable, summarizeContract } from './check-examples-contract.mjs';
+import { applyVerified, describeFindings, judge, needsDb, precheck, renderContractTable, summarizeContract, todayJstDate } from './check-examples-contract.mjs';
 import {
   ANY,
   OMITTED,
@@ -19,6 +19,7 @@ import {
   statusOf,
   stripContractLines,
   valueAt,
+  writeVerifiedLines,
 } from './lib/example-contract.mjs';
 
 const FENCE = '```';
@@ -382,4 +383,66 @@ test('stripContractLines: 「- 照合:」の行だけを落とし、「- 版の�
     stripContractLines(text),
     ['::: details 呼び出し例 — 「x」', '- 実測: v0.27.0（2026-10-10）', '- ローカル DB: あり', '- 版の照合: しない（理由）', '', '**引数**', ':::'].join('\n'),
   );
+});
+
+const WRITE_SAMPLE = [
+  '::: details 呼び出し例 — A',            // 1
+  '- 実測: v0.25.0（2026-10-05）',          // 2
+  '- ローカル DB: 不要',                    // 3
+  ':::',                                    // 4
+  '',                                       // 5
+  '::: details 呼び出し例 — B',            // 6
+  '- 実測: v0.24.0（2026-10-04）',          // 7
+  '- 確かめた版: v0.25.0（2026-10-05）',    // 8
+  ':::',                                    // 9
+  '',                                       // 10
+  '::: details 呼び出し例 — C',            // 11
+  '- 実測: v0.27.0（2026-10-10）',          // 12
+  ':::',                                    // 13
+  '',                                       // 14
+  '::: details 呼び出し例 — D',            // 15
+  '- 確かめた版: v0.27.0（2026-10-09）',    // 16
+  ':::',                                    // 17
+  '::: details 呼び出し例 — E（実測の行が無い）', // 18
+  ':::',                                    // 19
+].join('\n');
+
+test('writeVerifiedLines: 実測の次に足す・置き換える・同じ版は変えない・実測と同じ版は書かない', () => {
+  const entries = [1, 6, 11, 15, 18].map((line) => ({ line, version: '0.27.0', date: '2026-10-10' }));
+  const { text, results } = writeVerifiedLines(WRITE_SAMPLE, entries);
+  assert.deepEqual(results.map((r) => r.action), ['inserted', 'replaced', 'same-as-measured', 'unchanged', 'no-measured']);
+  const lines = text.split('\n');
+  assert.equal(lines[2], '- 確かめた版: v0.27.0（2026-10-10）'); // A: 実測の次の行
+  assert.equal(lines[3], '- ローカル DB: 不要');
+  assert.equal(lines[8], '- 確かめた版: v0.27.0（2026-10-10）'); // B: 置き換え（行は 1 つずれる）
+  assert.ok(text.includes('- 確かめた版: v0.27.0（2026-10-09）')); // D: 最初に確かめた日を残す
+  assert.equal(lines.length, WRITE_SAMPLE.split('\n').length + 1);
+  // 書いた後も例として読める（見出しの行の並びは変わらない）
+  assert.equal(parseContractExamples(text).length, 5);
+  // entries に無い例は触らない
+  assert.equal(writeVerifiedLines(WRITE_SAMPLE, []).text, WRITE_SAMPLE);
+});
+
+test('applyVerified: 一致の例だけ、npx で起動したサーバーの版で書く', () => {
+  const files = { '/r/a.md': WRITE_SAMPLE };
+  const written = {};
+  const rows = [
+    { server: 'houki-nta', file: 'a.md', line: 1, heading: '呼び出し例 — A', status: 'match' },
+    { server: 'houki-nta', file: 'a.md', line: 6, heading: '呼び出し例 — B', status: 'data' },
+    { server: 'houki-egov', file: 'b.md', line: 1, heading: '呼び出し例 — X', status: 'match' },
+  ];
+  const out = applyVerified('/r', rows, { 'houki-nta': { mode: 'npx', version: '0.27.0' }, 'houki-egov': { mode: 'local', version: '0.20.1' } }, '2026-10-10', {
+    read: (f) => files[f],
+    write: (f, t) => {
+      written[f] = t;
+    },
+  });
+  assert.deepEqual(out.map((o) => [o.file, o.line, o.action]), [['b.md', 1, 'not-published'], ['a.md', 1, 'inserted']]);
+  assert.ok(written['/r/a.md'].includes('- 実測: v0.25.0（2026-10-05）\n- 確かめた版: v0.27.0（2026-10-10）'));
+  // データ側の差分の例（B）は書かない
+  assert.ok(written['/r/a.md'].includes('- 確かめた版: v0.25.0（2026-10-05）'));
+});
+
+test('todayJstDate: JST の日付', () => {
+  assert.equal(todayJstDate(new Date('2026-10-10T15:30:00Z')), '2026-10-11');
 });

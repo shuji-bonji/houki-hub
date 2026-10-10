@@ -115,6 +115,61 @@ export function stripContractLines(text) {
     .join('\n');
 }
 
+/* ========================= 確かめた版の書き戻し ========================= */
+
+const VERIFIED_LINE_RE = /^-\s*確かめた版:\s*v?(\d+\.\d+\.\d+)/;
+
+/**
+ * 「一致」した例に「- 確かめた版: vX（YYYY-MM-DD）」の行を書く（Q14 の案 B、houki-hub#44 のやること 4）。
+ * entries の line は parseContractExamples の line（`::: details` の行、1 始まり）。
+ * - 既に「- 確かめた版:」の行があれば置き換える。版が同じなら日付も含めて変えない（最初に確かめた日を残す）
+ * - 無ければ「- 実測:」の行の次に足す。実測と同じ版なら足さない（実測が確かめた版を兼ねる）
+ * - 「- 実測:」の行が無い例は書かない
+ * @param {string} text 例のファイルの本文
+ * @param {{ line: number, version: string, date: string }[]} entries
+ * @returns {{ text: string, results: { line: number, action: 'inserted'|'replaced'|'unchanged'|'same-as-measured'|'no-measured' }[] }}
+ */
+export function writeVerifiedLines(text, entries) {
+  const eol = text.includes('\r\n') ? '\r\n' : '\n';
+  const lines = text.split(/\r?\n/);
+  const byLine = new Map(entries.map((e) => [e.line, e]));
+  const out = [];
+  const results = [];
+  let i = 0;
+  while (i < lines.length) {
+    const entry = byLine.get(i + 1);
+    if (!entry || !DETAILS_RE.test(lines[i])) {
+      out.push(lines[i]);
+      i += 1;
+      continue;
+    }
+    // この例の範囲（次の ::: まで）
+    let end = i + 1;
+    while (end < lines.length && lines[end].trim() !== ':::') end += 1;
+    const block = lines.slice(i, end);
+    const newLine = `- 確かめた版: v${entry.version}（${entry.date}）`;
+    const vIdx = block.findIndex((l) => VERIFIED_LINE_RE.test(l));
+    const mIdx = block.findIndex((l) => MEASURED_RE.test(l));
+    if (vIdx >= 0) {
+      if (block[vIdx].match(VERIFIED_LINE_RE)[1] === entry.version) results.push({ line: entry.line, action: 'unchanged' });
+      else {
+        block[vIdx] = newLine;
+        results.push({ line: entry.line, action: 'replaced' });
+      }
+    } else if (mIdx < 0) {
+      results.push({ line: entry.line, action: 'no-measured' });
+    } else if (block[mIdx].match(MEASURED_RE)[1] === entry.version) {
+      results.push({ line: entry.line, action: 'same-as-measured' });
+    } else {
+      block.splice(mIdx + 1, 0, newLine);
+      results.push({ line: entry.line, action: 'inserted' });
+    }
+    out.push(...block);
+    i = end;
+  }
+  return { text: out.join(eol), results };
+}
+
 /* ========================= jsonc をパターンとして読む ========================= */
 
 /** どんな値でもよい（例の `…` / `...` の値） */

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * stack.json の公開版と npm の最新版を突き合わせ、ずれを houki-hub 自身の Issue にする（houki-hub#5 の①）。
- * 同じ Issue に、古い版で測ったままの呼び出し例の一覧（#5 の③、scripts/check-example-versions.mjs）も載せる。
+ * 同じ Issue の別の節に、現行版で確かめていない呼び出し例の一覧（#5 の③、scripts/check-example-versions.mjs）も載せる。
+ * 2 つは直し方が違う。stack.json のずれは generate-stack.mjs で、確かめていない例は check-examples-contract.mjs で直す。
  *
  * .github/workflows/stack-check.yml から毎日呼ばれる。GitHub への書き込みは GITHUB_TOKEN（issues: write）で足りる。
  *
@@ -125,7 +126,10 @@ export function nowJst(date = new Date()) {
 }
 
 /**
- * Issue の本文。ずれの表 + 直し方 + 古い版で測ったままの呼び出し例。末尾に fingerprint の印。
+ * Issue の本文。2 つの節に分ける（houki-hub#44 のやること 4）。
+ *   「stack.json のずれ」: ずれの表と直し方（generate-stack.mjs）
+ *   「確かめていない呼び出し例」: 実測・確かめた版が現行版より前の例と、直し方（check-examples-contract.mjs --write-verified）
+ * 末尾に fingerprint の印。
  * @param {{ drift: any[], staleRows: any[], currentByServer: Record<string,string|null>, checkedAt?: string, runUrl?: string|null }} p
  */
 export function buildIssueBody({ drift, staleRows, currentByServer, checkedAt = nowJst(), runUrl = null }) {
@@ -133,13 +137,13 @@ export function buildIssueBody({ drift, staleRows, currentByServer, checkedAt = 
   L.push('`stack.json` の `published`（公開版）と npm の最新版（`dist-tags.latest`）が違います。');
   L.push(`\`.github/workflows/stack-check.yml\` が ${checkedAt} に検出しました${runUrl ? `（[実行ログ](${runUrl})）` : ''}。`);
   L.push('');
-  L.push('## ずれ');
+  L.push('## stack.json のずれ');
   L.push('');
   L.push('| リポジトリ | npm パッケージ | stack.json | npm |');
   L.push('| --- | --- | --- | --- |');
   for (const d of drift) L.push(`| ${d.name} | \`${d.npm}\` | ${d.stackVersion ?? '—'} | ${d.npmVersion} |`);
   L.push('');
-  L.push('## 直し方');
+  L.push('### 直し方');
   L.push('');
   L.push('`stack.json` と README の版表は `npm view` の実測から生成するので、手元（Mac）で回して commit します。CI には `mcp/` などの clone が無いので、CI では生成しません。');
   L.push('');
@@ -150,11 +154,11 @@ export function buildIssueBody({ drift, staleRows, currentByServer, checkedAt = 
   L.push('');
   L.push('main に push すると `stack-check.yml` が再検査し、ずれが無ければこの Issue を閉じます。');
   L.push('');
-  L.push('## 古い版で測ったままの呼び出し例');
+  L.push('## 確かめていない呼び出し例');
   L.push('');
   const sum = summarize(staleRows);
   const cur = Object.entries(currentByServer).map(([s, v]) => `${s} ${v ? `v${v}` : '（不明）'}`).join(' / ');
-  L.push(`\`node scripts/check-example-versions.mjs\` の結果です（現行版は npm の最新版: ${cur}）。呼び出し例の JSON は人が呼んで取り直すしかないので、ここでは一覧だけ出します。取り直す手順は \`docs/notes/2026-09-21-regression-check.md\` の「契約の確認」と同じです。`);
+  L.push(`\`node scripts/check-example-versions.mjs\` の結果です（現行版は npm の最新版: ${cur}）。「前の版で実測」は、例の「実測」と「確かめた版」の新しいほうが現行版より前という意味で、版番号を比べただけです。応答が変わったかどうかは表しません。`);
   L.push('');
   const stale = staleRows.filter((r) => r.status !== 'current');
   L.push(summaryLine(sum));
@@ -166,8 +170,16 @@ export function buildIssueBody({ drift, staleRows, currentByServer, checkedAt = 
     L.push(renderTable(stale));
     L.push('');
     L.push('</details>');
+    L.push('');
+    L.push('### 直し方');
+    L.push('');
+    L.push('`stack.json` を直した後に、手元（Mac。DB の要る例は手元のローカル DB を引くため）で照合のスクリプトを流します。「一致」の例には `- 確かめた版:` の行が書かれます。「形の違い」と「データ側の差分」の例は、例を取り直すか Issue にするかを人が決めます（`scripts/reference-examples/README.md` の「公開の後に流す」）。');
+    L.push('');
+    L.push('```sh');
+    L.push('node scripts/check-examples-contract.mjs --write-verified > /tmp/contract.md; head -8 /tmp/contract.md');
+    L.push('```');
   } else {
-    L.push('古い版で測ったままの例はありません。');
+    L.push('現行版で確かめていない例はありません。');
   }
   L.push('');
   L.push(`<!-- stack-drift: ${fingerprintOf(drift)} -->`);
@@ -238,11 +250,11 @@ async function main(argv) {
   for (const d of drift) console.log(`  ⚠ ${d.name}: stack.json ${d.stackVersion} ≠ npm ${d.npmVersion}`);
   for (const u of unmeasured) console.log(`  ・${u.name}: npm registry が応答しなかった`);
 
-  // 2. 古い版で測ったままの呼び出し例（現行版は npm の最新版）
+  // 2. 現行版で確かめていない呼び出し例（現行版は npm の最新版）
   const currentByServer = currentByServerFromLatest(stack, latestByPkg);
   const staleRows = classifyExamples(collectExamples(root), currentByServer);
   const sum = summarize(staleRows);
-  console.log(`# 呼び出し例 ${sum.total} 件のうち 古い版で測ったまま ${sum.stale} 件`);
+  console.log(`# 呼び出し例 ${sum.total} 件のうち 前の版で実測 ${sum.stale} 件`);
 
   // 3. Issue
   const runUrl =

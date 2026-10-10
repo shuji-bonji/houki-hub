@@ -80,7 +80,7 @@ test('decideAction: create / update / close / none', () => {
   assert.equal(decideAction({ drift: [], unmeasured: [{ name: 'houki-egov-mcp' }], openIssue: { number: 9, body: sameBody } }).action, 'none');
 });
 
-test('buildIssueBody: ずれの表、直し方のコマンド、古い例の一覧、印', () => {
+test('buildIssueBody: stack.json のずれと確かめていない例を別の節にし、それぞれの直し方と印を書く', () => {
   const body = buildIssueBody({
     drift: [{ name: 'houki-nta-mcp', npm: '@shuji-bonji/houki-nta-mcp', stackVersion: '0.21.2', npmVersion: '0.21.3' }],
     staleRows: [
@@ -95,9 +95,15 @@ test('buildIssueBody: ずれの表、直し方のコマンド、古い例の一�
   assert.match(body, /node scripts\/generate-stack\.mjs --readme/);
   assert.match(body, /chore: stack\.json を npm の版に揃える（nta 0\.21\.3）/);
   assert.match(body, /\[実行ログ\]\(https:\/\/github\.com\/shuji-bonji\/houki-hub\/actions\/runs\/1\)/);
-  assert.match(body, /例 2 件のうち 古い 1 \/ 現行 1/);
+  assert.match(body, /例 2 件のうち 前の版で実測 1 \/ 現行 1/);
+  // 2 つの節と、それぞれの直し方
+  const drift = body.indexOf('## stack.json のずれ');
+  const examples = body.indexOf('## 確かめていない呼び出し例');
+  assert.ok(drift >= 0 && examples > drift);
+  assert.ok(body.indexOf('generate-stack.mjs') < examples);
+  assert.ok(body.indexOf('check-examples-contract.mjs --write-verified') > examples);
   assert.match(body, /<summary>一覧（1 件）<\/summary>/);
-  assert.match(body, /\| houki-nta \| `houki-nta\/ja\/nta_search_qa\.md` \| 「テレワーク」 \| v0\.10\.4 \| v0\.21\.3 \| 古い \|/);
+  assert.match(body, /\| houki-nta \| `houki-nta\/ja\/nta_search_qa\.md` \| 「テレワーク」 \| v0\.10\.4 \| — \| v0\.21\.3 \| 前の版で実測 \|/);
   assert.doesNotMatch(body, /get_law\.md/); // 現行の例は載せない
   assert.ok(body.trimEnd().endsWith('<!-- stack-drift: houki-nta-mcp@0.21.2->0.21.3 -->'));
 });
@@ -131,4 +137,15 @@ test('githubClient.findOpenIssue: 題名が一致する open の Issue だけ。
   assert.equal(found.number, 7);
   assert.equal(calls[0].url, 'https://api.github.com/repos/shuji-bonji/houki-hub/issues?state=open&labels=stack-drift&per_page=100');
   assert.equal(calls[0].method, 'GET');
+});
+
+test('buildIssueBody: 確かめていない例が無ければ、その節は 1 行だけで直し方を書かない', () => {
+  const body = buildIssueBody({
+    drift: [{ name: 'houki-nta-mcp', npm: '@shuji-bonji/houki-nta-mcp', stackVersion: '0.21.2', npmVersion: '0.21.3' }],
+    staleRows: [],
+    currentByServer: { 'houki-nta': '0.21.3' },
+    checkedAt: 'x',
+  });
+  assert.match(body, /現行版で確かめていない例はありません。/);
+  assert.doesNotMatch(body, /--write-verified/);
 });

@@ -20,14 +20,20 @@
  *   node scripts/check-examples-contract.mjs --launch local           # mcp/<repo>/dist を起動（公開前のビルドを試す）
  *   node scripts/check-examples-contract.mjs --json                   # 機械可読
  *   node scripts/check-examples-contract.mjs --strict                 # 形の違いがあれば exit 1
+ *   node scripts/check-examples-contract.mjs --write-verified         # 「一致」の例に「- 確かめた版: vX（日付）」を書く
  *
  * 起動の仕方は環境変数 HOUKI_MCP_LAUNCH があればそれに従い、無ければ npx（このスクリプトの既定）。
  * 結果は表（Markdown）か JSON で標準出力に出す。docs/notes/<日付>-contract-check-….md に貼る想定。
  *
+ * --write-verified（Q14 の案 B）: 「一致」の例だけ、例のファイルの「- 実測:」の次の行に「- 確かめた版: vX（YYYY-MM-DD）」を書く
+ * （既にあれば置き換える。版が同じなら変えない。実測と同じ版なら書かない）。版は起動したサーバーの serverInfo.version。
+ * 公開版を確かめた記録なので、npx で起動したときだけ書く（--launch local では書かない）。
+ * 「データ側の差分」の例は、例の値を書き直すかを人が決めるので書かない。
+ *
  * 依存なし（Node 22+）。
  */
 
-import { existsSync, mkdtempSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -44,6 +50,7 @@ import {
   parseJsoncPattern,
   statusOf,
   valueAt,
+  writeVerifiedLines,
 } from './lib/example-contract.mjs';
 import { isolatedDbEnv, isolatedPathAliases, launchConfig, MCP_SERVERS, McpStdioClient, parseVersionList } from './lib/mcp-client.mjs';
 
@@ -171,6 +178,49 @@ export function summarizeContract(rows) {
   return { total: rows.length, match: count('match'), data: count('data'), shape: count('shape'), unverified: count('unverified'), skipped: count('skipped') };
 }
 
+/** 今日の日付（JST、YYYY-MM-DD） */
+export function todayJstDate(date = new Date()) {
+  return date.toLocaleString('sv-SE', { timeZone: 'Asia/Tokyo' }).slice(0, 10);
+}
+
+/**
+ * 「一致」の例に確かめた版を書く。launched は server ごとの { mode, version }。
+ * npx で起動していないサーバーの例は書かない（公開版を確かめた記録にするため）。
+ * @returns {{ file: string, line: number, heading: string, action: string }[]}
+ */
+export function applyVerified(root, rows, launched, date, { read = (f) => readFileSync(f, 'utf8'), write = (f, t) => writeFileSync(f, t) } = {}) {
+  const out = [];
+  const byFile = new Map();
+  for (const r of rows) {
+    if (r.status !== 'match') continue;
+    const l = launched[r.server];
+    if (!l?.version) continue;
+    if (l.mode !== 'npx') {
+      out.push({ file: r.file, line: r.line, heading: r.heading, action: 'not-published' });
+      continue;
+    }
+    if (!byFile.has(r.file)) byFile.set(r.file, []);
+    byFile.get(r.file).push({ line: r.line, version: l.version, date, heading: r.heading });
+  }
+  for (const [file, entries] of byFile) {
+    const path = join(root, file);
+    const before = read(path);
+    const { text, results } = writeVerifiedLines(before, entries);
+    if (text !== before) write(path, text);
+    for (const res of results) out.push({ file, line: res.line, heading: entries.find((e) => e.line === res.line)?.heading ?? '', action: res.action });
+  }
+  return out;
+}
+
+const VERIFIED_ACTION_JA = {
+  inserted: '足した',
+  replaced: '置き換えた',
+  unchanged: '同じ版の行があるので変えない',
+  'same-as-measured': '実測と同じ版なので書かない',
+  'no-measured': '「- 実測:」の行が無いので書かない',
+  'not-published': 'npx で起動していないので書かない',
+};
+
 export function contractSummaryLine(s) {
   return `例 ${s.total} 件のうち 一致 ${s.match} / データ側の差分 ${s.data} / 形の違い ${s.shape} / 未確認 ${s.unverified} / 照合しない ${s.skipped}`;
 }
@@ -233,7 +283,7 @@ async function main(argv) {
       for (const ex of runnable) rows.push({ ...ex, status: 'unverified', reason: `起動に失敗: ${e.message.split('\n')[0]}`, findings: [], notes: [] });
       continue;
     }
-    launched[server] = { label: launch.label, version: client.serverInfo?.version ?? null };
+    launched[server] = { label: launch.label, mode: launch.mode, version: client.serverInfo?.version ?? null };
     client.timeoutMs = 120_000;
     for (const ex of runnable) {
       let callArgs;
@@ -260,9 +310,10 @@ async function main(argv) {
   // 例の並び（ファイル・行の順）に戻す
   rows.sort((a, b) => (a.file === b.file ? a.line - b.line : a.file < b.file ? -1 : 1));
   const sum = summarizeContract(rows);
+  const verifiedWrites = flag('write-verified') ? applyVerified(root, rows, launched, todayJstDate()) : null;
   if (flag('json')) {
     const slim = rows.map(({ argsText, expectedText, markdownText, checkLines, ...r }) => r);
-    console.log(JSON.stringify({ launched, db, summary: sum, examples: slim }, null, 2));
+    console.log(JSON.stringify({ launched, db, summary: sum, examples: slim, ...(verifiedWrites ? { verifiedWrites } : {}) }, null, 2));
   } else {
     const at = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Tokyo' }).slice(0, 16);
     const who = Object.entries(launched)
@@ -277,6 +328,12 @@ async function main(argv) {
     if (noted.length) {
       console.log('\n## 注記\n');
       for (const r of noted) console.log(`- \`${r.file}\` ${r.line} 行目: ${r.notes.join(' / ')}`);
+    }
+    if (verifiedWrites) {
+      console.log('\n## 確かめた版の書き戻し（--write-verified）\n');
+      const changed = verifiedWrites.filter((w) => w.action === 'inserted' || w.action === 'replaced').length;
+      console.log(`「一致」の例 ${verifiedWrites.length} 件のうち、行を書いた例 ${changed} 件。\n`);
+      for (const w of verifiedWrites) console.log(`- \`${w.file}\` ${w.line} 行目（${w.heading.replace(/^呼び出し例\s*[—–-]\s*/, '')}）: ${VERIFIED_ACTION_JA[w.action] ?? w.action}`);
     }
   }
   if (flag('strict') && sum.shape > 0) process.exit(1);

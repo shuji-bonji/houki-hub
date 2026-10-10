@@ -7,6 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   classifyExamples,
   compareVersions,
+  effectiveVersion,
   currentVersionsFromStack,
   isMainModule,
   parseCurrentOverrides,
@@ -50,6 +51,8 @@ test('parseExamples: ::: details ごとに 1 例、直後の「実測: vX（日�
     line: 5,
     measured: '0.5.3',
     measuredAt: '2026-09-08',
+    verified: null,
+    verifiedAt: null,
     excluded: false,
     excludedReason: null,
   });
@@ -120,7 +123,7 @@ test('renderTable: 見出しの「呼び出し例 — 」を落とし、ファ�
   ]);
   const lines = table.split('\n');
   assert.equal(lines.length, 3);
-  assert.equal(lines[2], '| houki-nta | `houki-nta/ja/nta_search_qa.md` | 「テレワーク」 | v0.10.4 | v0.21.2 | 古い |');
+  assert.equal(lines[2], '| houki-nta | `houki-nta/ja/nta_search_qa.md` | 「テレワーク」 | v0.10.4 | — | v0.21.2 | 前の版で実測 |');
 });
 
 test('isMainModule: シンボリックリンクを通して起動しても、実体が同じなら true', () => {
@@ -180,13 +183,13 @@ test('classifyExamples: excluded は版を比べない。--strict が数える s
   assert.equal(rows[0].current, '0.24.0');
   const sum = summarize(rows);
   assert.deepEqual(sum, { total: 3, stale: 1, current: 0, ahead: 0, unknown: 0, excluded: 2 });
-  assert.equal(summaryLine(sum), '例 3 件のうち 古い 1 / 現行 0 / 現行より新しい 0 / 判定不能 0 / 照合しない 2');
+  assert.equal(summaryLine(sum), '例 3 件のうち 前の版で実測 1 / 現行 0 / 現行より新しい 0 / 判定不能 0 / 照合しない 2');
 });
 
 test('renderTable / statusLabel: 照合しない例は理由を括弧で添えて表に残す', () => {
   assert.equal(statusLabel({ status: 'excluded', excludedReason: 'DB を用意できない' }), '照合しない（DB を用意できない）');
   assert.equal(statusLabel({ status: 'excluded', excludedReason: null }), '照合しない');
-  assert.equal(statusLabel({ status: 'stale' }), '古い');
+  assert.equal(statusLabel({ status: 'stale' }), '前の版で実測');
   const table = renderTable([
     {
       server: 'houki-nta',
@@ -200,6 +203,42 @@ test('renderTable / statusLabel: 照合しない例は理由を括弧で添え�
   ]);
   assert.equal(
     table.split('\n')[2],
-    '| houki-nta | `houki-nta/ja/nta_search_tsutatsu.md` | DB が古いとき | v0.10.2 | v0.24.0 | 照合しない（a\\|b） |',
+    '| houki-nta | `houki-nta/ja/nta_search_tsutatsu.md` | DB が古いとき | v0.10.2 | — | v0.24.0 | 照合しない（a\\|b） |',
   );
+});
+
+const VERIFIED_SAMPLE = `::: details 呼び出し例 — 前の版で実測し、現行版で確かめた例
+- 実測: v0.25.0（2026-10-05）
+- 確かめた版: v0.27.0（2026-10-10）
+:::
+
+::: details 呼び出し例 — 確かめた版も前の版
+- 実測: v0.24.0（2026-10-04）
+- 確かめた版: v0.25.0（2026-10-05）
+:::
+
+::: details 呼び出し例 — 確かめた版が実測より前（書き違い。新しいほうを使う）
+- 実測: v0.27.0（2026-10-10）
+- 確かめた版: v0.25.0（2026-10-05）
+:::
+`;
+
+test('parseExamples / effectiveVersion: 「- 確かめた版:」を読み、実測との新しいほうを使う', () => {
+  const ex = parseExamples(VERIFIED_SAMPLE);
+  assert.equal(ex[0].verified, '0.27.0');
+  assert.equal(ex[0].verifiedAt, '2026-10-10');
+  assert.equal(effectiveVersion(ex[0]), '0.27.0');
+  assert.equal(effectiveVersion(ex[2]), '0.27.0');
+  assert.equal(effectiveVersion({ measured: null, verified: null }), null);
+  assert.equal(effectiveVersion({ measured: null, verified: '0.1.0' }), '0.1.0');
+});
+
+test('classifyExamples: 確かめた版が現行版なら現行、どちらも前の版なら「前の版で実測」', () => {
+  const rows = classifyExamples(
+    parseExamples(VERIFIED_SAMPLE).map((e) => ({ server: 'houki-nta', file: 'x.md', ...e })),
+    { 'houki-nta': '0.27.0' },
+  );
+  assert.deepEqual(rows.map((r) => r.status), ['current', 'stale', 'current']);
+  assert.equal(statusLabel(rows[1]), '前の版で実測');
+  assert.equal(renderTable([rows[1]]).split('\n')[2], '| houki-nta | `x.md` | 確かめた版も前の版 | v0.24.0 | v0.25.0 | v0.27.0 | 前の版で実測 |');
 });
