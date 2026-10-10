@@ -36,6 +36,9 @@
 | Y4 | 段階 4 | 人が書くページのコンテナと図（Q28' の A） | 済（hub PR #50、main `2d3d92e`） |
 | Z1 | 段階 4 | hub#5 ② と呼び出し例の照合のスクリプト（#44）の設計と試作 | 済（hub PR #51、main `e664481`） |
 | Y5 | 段階 4 | scope-by-audience の (1)・(2) と houki-nta.md の `--tsutatsu` の説明 | 済（hub PR #52、main `2eb0dc1`） |
+| Y6 | 段階 4 | scope-by-audience の (3)（業法の線の言い回し、Q33'-1・-2 の B） | すぐ（2026-10-10 に追加。P1・Z2 と並行できる） |
+| P1 | 段階 4 | houki-egov-mcp 0.20.1・houki-abbreviations 0.7.1 の patch（振る舞いの変更なし、Q35' の A） | すぐ（2026-10-10 に追加。Y6・Z2 と並行できる） |
+| Z2 | 段階 4 | hub#5 ② の有効化と #44 の全部の例（Q34'〜Q38' の A） | すぐ始めてよい。マージは P1 の publish と Q39' の設定の後（2026-10-10 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1830,4 +1833,118 @@ houki-hub の人が書くページ 2 つ（guide/scope-by-audience.md と mcp/ho
 - 確かめること: 組み立て（npm run docs:build か、リポジトリの決まったコマンド）、変えた 2 ページのリンクとアンカーが全部開くこと（指示 Y3 と同じ方法）
 - コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る
 - 報告: ブランチ・コミット、変えた文の前後（3 か所とも）、足したリンクと錨、組み立てとリンクの確認の結果、迷った点、PR 本文の草案（Refs #27。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 Y6: scope-by-audience の (3)（業法の線の言い回し）
+
+2026-10-10 JST に shuji が Q33'-1・Q33'-2 を案 B に決めました（計画書の「Z1・Y5 の後」）。P1・Z2 とは触るファイルが重ならないので並行できます。
+
+```text
+houki-hub の人が書くページ site/docs/guide/scope-by-audience.md の、業法の線に触れる 2 か所の文を直してください。この会話の役は、文書の作業者です。生成したページ（reference/・specs/）は変えません。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub（Cowork の device_bash では $HOME/mnt/houki-hub）
+- 起点: main。作業の前に git ls-remote https://github.com/shuji-bonji/houki-hub refs/heads/main で origin と同じか確かめる（Y5 の PR #52 が入った後）
+- ブランチ: docs/<作業日の yyyymmdd>-scope-by-audience-legal-line（site/ を変えるので PR にする）
+
+## 最初に読むもの（この順）
+
+1. docs/notes/2026-10-04-plan-stage6-and-followups.md の「Z1・Y5 の後」の Q33'-1・Q33'-2
+2. site/docs/guide/scope-by-audience.md の全体（とくに「専門家の仕事の中での位置」の表、その下の段落、法律・コスト・技術の線の図と箇条書き）
+3. houki-hub の README.md と site/docs/guide/disclaimer.md の、独占業務（弁護士法 72 条・税理士法 52 条など）を想定しないと書いている箇所（言葉をそろえるため）
+
+## やること
+
+1. 「専門家の仕事の中での位置」の表の当てはめの行の「法規シリーズが担う範囲」の列を、ほかの行と同じく「担いません」で始める形にする（Q33'-1 の B）。案: 「担いません。LLM が一般論として要件を示すことはありますが、個別の事実に当てはめた結論は返しません」。担い手の列（「LLM（限られた範囲）」）がこの文と食い違わないかを確かめ、食い違うなら直す案を報告に挙げる（列は変えない）
+2. 図の A3 を「不特定多数に個別の結論を提供する: 業法の独占業務に触れるおそれ・提供する側が範囲を決める」にする（Q33'-2 の B）。Mermaid のノードの中に「:」と「・」を使ってよいか（今の A1〜A3 と同じ書き方で描けるか）を確かめる
+3. 同じページの中で、1・2 と食い違う文を探す。とくに表の下の段落（「法源への到達は…」）、技術の線の C3（「当てはめの検証」）、箇条書きの士業者・設計者の行（「不特定多数に結論を提供するかどうかの線は…」）。食い違いがあれば、直す案を報告に挙げる（1・2 のほかは変えない）
+
+## 守ること・報告すること
+
+- 公開文書の文は「〜します」「〜です」。比喩を使わず、何が起きるかを書く。法令に触れるかどうかを言い切らない（「おそれ」「範囲」の言い方を保つ）
+- 確かめること: 組み立て（vitepress build docs）、変えたページのリンクとアンカー、Mermaid の図が描けること（幅 390 でも読めるか）
+- コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る
+- 報告: ブランチ・コミット、2 か所の文の前後、3 で見つけた食い違いと直す案、組み立てと確認の結果、PR 本文の草案（Refs #27。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 P1: houki-egov-mcp 0.20.1・houki-abbreviations 0.7.1 の patch（振る舞いの変更なし）
+
+2026-10-10 JST に shuji が Q35' を案 A に決めました。Z1 で、公開版のタグの spec.md に front matter が無いため、公開版から作り直すと 2 つの仕様書ページから「承認の履歴」が消えることが分かりました。2 つの main は公開版より先にあり、その差は spec-ids 0.3.0 への変換・CI・AGENTS.md・日付の誤記の直しだけです（2026-10-10 JST に GitHub の compare で確かめました。abbr の `src/validate.ts` は import の並びとコメントの日付だけ）。npm の中身（`dist`）は変わりません。
+
+```text
+houki-egov-mcp 0.20.1 と houki-abbreviations 0.7.1 を、振る舞いの変更が無い patch として出す PR を 1 本ずつ作ってください。目的は、各リポジトリの main にある spec.md の front matter（spec-ids 0.3.0 の形の承認の記録）を、公開版のタグに含めることです。この会話の役は Publisher です。コードと specs/ は変えません。
+
+## 場所
+
+- houki-egov-mcp: /Users/bonji/workspace/shuji-bonji/houki-hub/mcp/houki-egov-mcp（Cowork の device_bash では $HOME/mnt/houki-hub/mcp/houki-egov-mcp。houki-hub の .gitignore で除いた、独立したリポジトリ）
+- houki-abbreviations: /Users/bonji/workspace/shuji-bonji/houki-hub/lib/houki-abbreviations（$HOME/mnt/houki-hub/lib/houki-abbreviations）
+- 起点: それぞれ main。作業の前に git ls-remote https://github.com/shuji-bonji/<repo> refs/heads/main で origin と同じか確かめる（egov は 0cadfe8、abbr は 2b3bbe1 の見込み）
+- ブランチ: それぞれ release/<作業日の yyyymmdd>-v0.20.1、release/<作業日の yyyymmdd>-v0.7.1
+
+## 最初に読むもの（この順）
+
+1. houki-hub の docs/notes/2026-10-04-plan-stage6-and-followups.md の「Z1・Y5 の後」の Q35'
+2. houki-hub の docs/notes/2026-10-10-design-hub5-regen-and-examples-check.md の 3 章の「見つかったこと」
+3. 各リポジトリの AGENTS.md（Publisher の手順と、承認の記録）、CHANGELOG.md の先頭の 2 版、.github/workflows/publish.yml・ci.yml、.github/scripts/ の pr-scope の判定（このブランチ名の PR で止まらないか）
+4. git log --oneline v0.20.0..main（egov）、v0.7.0..main（abbr）と git diff --stat v<版>..main。src/ の差分がコメントと import の並びだけであることを、自分でも確かめる
+
+## やること
+
+1. 版を上げる。egov は package.json・package-lock.json（2 か所）・server.json（version と packages[].version の 2 か所）。abbr は package.json・package-lock.json。ほかに版を書いた場所が無いかを grep で確かめる（README・docs の「0.20.0 から」のような、その版で変わったことを示す文は変えない）
+2. CHANGELOG.md に 0.20.1・0.7.1 の節を足す。書くこと: 振る舞いの変更は無いこと、specs/ の承認の記録を spec-ids 0.3.0 の front matter に移したこと（egov #117・abbr #38）、CI の pr-scope の判定を front matter に替えたこと、abbr は CHANGELOG と README の誤記の直しと verify-law-ids の定期実行の日の変更（#35）。日付は publish する日（JST）。この版を出す理由（houki-hub のサイトの仕様書ページを公開版から作り直すため）を 1 文で書く
+3. specs/changes/ が空であることを確かめる（取り込む差分が無いので specs/releases/ は作らない）。spec-ids の check と、各リポジトリの lint・format:check・test・build が通ることを確かめる
+4. abbr 0.7.1 は、egov・nta の依存の指定（package.json の houki-abbreviations の範囲）に入るかを確かめる（0.x の ^ は minor を跨がないので、^0.7.0 なら入る）。入らなければ報告に挙げる
+
+## 守ること・報告すること
+
+- コードと specs/ は変えない。変えるのは版と CHANGELOG だけ
+- コミットを作るところまで。署名・push・PR・タグ・publish は私が行う。git を使う前に、houki-hub フォルダーの削除の許可を取る（mcp/・lib/ は houki-hub の下にある）。VM の git が .git にロックファイル（HEAD.lock・next-index-*.lock・maintenance.lock・tmp_obj_*）を残したら、許可を取ってから消して進める
+- 報告: 2 つのブランチとコミット、版を書き換えた場所の一覧、CHANGELOG の節の文、確かめたこと（src の差分、lint・test・build・spec-ids check、依存の範囲）、publish の後に私がすること（タグ、npm の latest の確認、egov の MCP Registry、claude-plugins の更新が要るか）、PR 本文の草案 2 本（末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 Z2: hub#5 ② の有効化と #44 の全部の例
+
+2026-10-10 JST に shuji が Q34'〜Q38' を案 A に決めました。Z1（hub PR #51）の設計の文書の 9 章「Z2 に渡すこと」を、この決定で進めます。作業は今始めてよいですが、PR のマージは、P1 の 2 つの publish と Q39'（Actions が PR を開けるようにする設定）の後にします。schedule が main に入った時点で、毎日 07:37 JST に PR を開こうとするためです。
+
+```text
+houki-hub#5 の②（CI でリファレンスと仕様書ページを作り直す）を定期実行として有効にし、houki-hub#44（呼び出し例の照合）を全部の例に広げてください。設計と試作は hub PR #51 で main に入っています。この会話では、設計の文書の勧める案（shuji が 2026-10-10 JST に Q34'〜Q38' を案 A に決めた）で作ります。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub（Cowork の device_bash では $HOME/mnt/houki-hub）
+- 起点: main。作業の前に git ls-remote https://github.com/shuji-bonji/houki-hub refs/heads/main で origin と同じか確かめる
+- ブランチ: feat/<作業日の yyyymmdd>-hub5-enable-and-examples（.github/ と scripts/ を変えるので PR にする）
+
+## 最初に読むもの（この順）
+
+1. docs/notes/2026-10-10-design-hub5-regen-and-examples-check.md の全体（とくに 5 章の決めること 8〜10、7 章、9 章）
+2. docs/notes/2026-10-04-plan-stage6-and-followups.md の「Z1・Y5 の後」（Q34'〜Q39' と、決まった順）
+3. houki-hub#44 の本文（curl https://api.github.com/repos/shuji-bonji/houki-hub/issues/44）の「やること」4・5
+4. .github/workflows/reference-regen.yml・stack-check.yml、.github/scripts/stack-drift-issue.mjs、scripts/check-example-versions.mjs、scripts/check-examples-contract.mjs、scripts/lib/example-contract.mjs、scripts/generate-reference.mjs、scripts/reference-examples/README.md
+
+## やること
+
+1. reference-regen.yml に schedule（cron: '37 22 * * *'、07:37 JST）を足す。schedule で動いたときは PR を開く（open_pr: true と同じ）。workflow_dispatch の open_pr の既定は false のまま
+2. DB の要らない例を、reference-regen.yml の中で check-examples-contract.mjs --db absent で流し、結果の表を実行の要約と PR の本文に載せる（Q38'）。「形の違い」があっても workflow は失敗にせず、PR の本文の先頭に件数を出す（失敗にするかは、運用を見てから決める）
+3. 例の `- 照合:` の行を、generate-reference.mjs でツールのページに出さないようにする（Q37'）。`- ローカル DB:` の行は出したまま。生成し直して、ツールのページの差分が `- 照合:` の行を落とした 1 か所（nta_search_tax_answer）だけであることを確かめる
+4. 全部の例に `- ローカル DB:` の行をそろえる（残り 3 例: nta_get_qa の 33/02、nta_search_bunshokaitou の「別紙の本文にしかない語で引く」、nta_search_tsutatsu の「DB が古いとき」）。DB が要るかは、例の応答の source と、ツールの仕様（specs/houki-nta の該当ページ）で判断する
+5. 確かめた版の書き戻し（Q14 の案 B、設計の決めること 9）: check-examples-contract.mjs に --write-verified を足し、「一致」の例だけ `- 実測:` の次の行に `- 確かめた版: vX（YYYY-MM-DD）` を書く（既にあれば置き換える）。check-example-versions.mjs は「実測」と「確かめた版」の新しいほうを公開版と比べ、表示の「古い」を「前の版で実測」にする。stack-check.yml の Issue（stack-drift-issue.mjs）は、stack.json のずれと、確かめていない例を別の節にする。テストを足す
+6. Mac で全 48 例を流す（設計の文書 8 章のコマンド 2）。VM には DB が無いので、私に回すコマンドを渡し、出力を貼ってもらう。結果の「形の違い」「データ側の差分」の例を、規則で吸収するもの（VOLATILE_RULES に足す）と、例を直すもの（取り直し）と、Issue にするもの（MCP の劣化）に分ける。例の取り直しはこの PR で行ってよい。劣化と見たものは Issue の草案を docs/notes/issues-<作業日>-contract/ に置く（起票は私）
+7. 公開の手順に照合のスクリプトを入れる（#44 のやること 5）: scripts/reference-examples/README.md と、docs/notes の契約の確認の手順（2026-09-21-regression-check.md の手順の節。直さずに新しい手順の文書を置く方がよければそうする）に、各 MCP の publish の後（patch を含む）に流すコマンドと、結果の見方を書く。各 MCP リポジトリの AGENTS.md の Publisher の手順に足すかは、報告で案を挙げる（この PR では MCP のリポジトリを変えない）
+8. 設計の文書の 7 章（確かめていない点）のうち、この会話で確かめたものを埋める。確かめた結果は設計の文書の末尾に節を足して書く
+
+## 守ること・報告すること
+
+- 生成したページ（site/docs/reference/・site/docs/specs/）は手で変えない。生成し直した差分は、やること 3・6 によるものだけにする
+- 公開文書（site/）の人が書くページは変えない
+- egov・abbr の公開版（0.20.1・0.7.1、指示 P1）がまだ出ていないうちは、公開版から作り直すと「承認の履歴」が消える。この PR に、公開版から作り直したページを入れない
+- コミットを作るところまで。署名・push・PR・マージは私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る
+- 報告: ブランチ・コミット、やること 1〜8 の結果、Mac での全 48 例の結果の表と分け方、Issue の草案、マージの前後に私がすること（Q39' の設定、P1 の publish の確認、open_pr: true での最初の実行、#5・#44 を閉じる時期）、PR 本文の草案（Refs #5 #44。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```

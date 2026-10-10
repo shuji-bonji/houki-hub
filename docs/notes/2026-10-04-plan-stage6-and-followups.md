@@ -750,3 +750,12 @@ Q35' を A にする場合、egov 0.20.1・abbr 0.7.1 の publish は Z2 の前�
 | # | 何を | 案 | 勧める案と理由 |
 | --- | --- | --- | --- |
 | Q39' | Actions が PR を開けない設定 | (A) 「Allow GitHub Actions to create and approve pull requests」だけを有効にする。`default_workflow_permissions` は `read` のまま（`gh api -X PUT repos/shuji-bonji/houki-hub/actions/permissions/workflow -f default_workflow_permissions=read -F can_approve_pull_request_reviews=true`） / (B) 設定は変えず、workflow は `bot/reference-regen` に push するだけにし、PR は shuji が要約の比較の URL から開く / (C) PAT か GitHub App のトークンで PR を開く | **A**。書き込みの権限を持つのは `permissions:` で宣言した `reference-regen.yml` だけで、ほかの workflow（`stack-check.yml`・`deploy.yml`）は既定の `read` のまま。有効にすると Actions が PR を承認することもできるようになるが、houki-hub には PR を承認する workflow も、承認を求める branch protection も無い。B は毎回人が PR を開く手間が残る。C は #5 ④ で取らないと決めた形（リポジトリを跨ぐトークンの管理） |
+
+2026-10-10 15:26 JST に shuji が決めたこと: Q33'-1・Q33'-2 は案 B、Q34'〜Q38' は案 A。Q39'（Actions が PR を開けない設定）は未回答。
+
+これで決まった順:
+
+1. 指示 Y6: scope-by-audience の (3)（Q33'-1・-2 の B）。houki-hub の site/ の小さな PR。ほかと並行できる
+2. 指示 P1: houki-egov-mcp 0.20.1・houki-abbreviations 0.7.1 の patch（振る舞いの変更なし。CHANGELOG と版だけの PR を 2 本）→ shuji がタグを打って publish。Y6・Z2 と並行できる
+3. 指示 Z2: hub#5 ② の有効化と #44 の全部の例（Q34'〜Q38' の A）。作業は今始めてよい。PR のマージは、P1 の 2 つの publish と、Q39' の設定の後にする（schedule が main に入った時点で、毎日 07:37 JST に PR を開こうとするため）
+4. Z2 のマージの後、shuji が `reference-regen.yml` を `open_pr: true` で 1 回回し、最初の PR（egov・abbr の承認の履歴が残ることを確かめる）を見てマージする。houki-hub#5・#44 はその後に閉じる
