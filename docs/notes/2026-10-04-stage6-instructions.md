@@ -34,6 +34,7 @@
 | Y2 | 段階 4 | #27 の仕様書ページの全部の生成と公開 | 済（hub PR #47、main `eff9bd9`） |
 | Y3 | 段階 4 | ツールごとのページ（リファレンスを分ける。Q27' の B、houki-hub#48） | 済（hub PR #49、main `e518da9`） |
 | Y4 | 段階 4 | 人が書くページのコンテナと図（Q28' の A） | 済（hub PR #50、main `2d3d92e`） |
+| Z1 | 段階 4 | hub#5 ② と呼び出し例の照合のスクリプト（#44）の設計と試作 | すぐ（2026-10-10 に追加） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1724,3 +1725,64 @@ houki-hub の人が書くページに、決まった使い分けでカスタム�
 - 報告: ブランチ・コミット、ページごとに足したコンテナと図、文を変えた箇所の前後、slugify を変えた影響（id が変わったページの数、外から張られているかもしれない錨）、組み立てと確認の結果、houki-nta.md の `--tsutatsu` の直す案、「約束」を置き換えた箇所の数と、節の名前を変えた箇所の数、置き換えに迷った文（「仕様項目」と「振る舞い」のどちらか決めにくいもの）、PR 本文の草案（Refs #27。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```
 
+
+---
+
+## 指示 Z1: hub#5 ② と呼び出し例の照合のスクリプト（#44）の設計と試作
+
+段階 4 の残りです（計画書の 6e・6f）。#27 と同じく、最初の会話は設計と試作に分けます。Y3 でリファレンスがツールごとのページに分かれ、ページの作り直しは `scripts/generate-reference.mjs`（MCP の `tools/list`、houki-abbreviations の `dist/index.d.ts`、`scripts/spec-pages.mjs` 経由の各リポジトリの `specs/current/`、Skill の `workflows/`）に集まりました。2026-10-10 JST に、houki-hub の origin の main が `2d3d92e`（Y4）の後であることを確かめました。
+
+調べて分かっている前提（2026-10-10 JST）:
+
+- 3 つの npm パッケージ（houki-egov-mcp・houki-nta-mcp・houki-abbreviations）の `files` は `dist` だけで、`specs/` は npm に入っていない。CI で仕様書ページを作り直すには、各リポジトリを GitHub から取る必要がある（Skill も npm に無い）
+- 呼び出し例の多くはローカル DB を前提にしている（egov の DB は数 GB）。#44 の照合を CI で回すのは難しく、shuji の Mac で回す形が出発点になる
+- `stack-check.yml`（毎日・Issue を立てる）と `scripts/check-example-versions.mjs`（呼び出し例の「実測: vX」と npm の版の照合）は動いている（hub#5 の①③）
+
+```text
+houki-hub#5 の②（CI でリファレンスと仕様書ページを作り直し、差分があれば PR を開く。サイトと各リポジトリの版のずれを検出する）と、houki-hub#44（呼び出し例を同じ引数で流し、例と同じ応答が返るかを機械で確かめる）の設計と試作をしてください。この会話では、設計の文書と試作のスクリプトを作るところまでを行い、定期実行の有効化と全部の例の書き換えは行いません。
+
+## 場所
+
+- リポジトリ: /Users/bonji/workspace/shuji-bonji/houki-hub（Cowork の device_bash では $HOME/mnt/houki-hub）
+- 起点: main。作業の前に git ls-remote https://github.com/shuji-bonji/houki-hub refs/heads/main で origin と同じか確かめる
+- ブランチ: feat/<作業日の yyyymmdd>-hub5-regen-and-examples-check（.github/ と scripts/ を変えるので PR にする）
+
+## 最初に読むもの（この順）
+
+1. houki-hub#5 の本文（curl https://api.github.com/repos/shuji-bonji/houki-hub/issues/5）と docs/notes/2026-10-01-hub5-change-detection.md（①③の経緯）
+2. houki-hub#44 の本文（/issues/44）と、草案 docs/notes/issues-2026-10-06-hub43/issue-example-check-script.md、docs/notes/issues-2026-10-06-hub43/comment-example-versions.md
+3. docs/notes/2026-10-04-plan-stage6-and-followups.md の 4 章の段階 4（6e・6f）、Q14（「確かめた版」を書き戻す案 B）、「Y2 の後」の表の「サイトと各リポジトリの版のずれの検出」、末尾の「Y4 の後」
+4. scripts/generate-reference.mjs（REGISTRY・LIB_REGISTRY・stdio の起動）、scripts/spec-pages.mjs（SPEC_REGISTRY の入力の場所）、scripts/check-example-versions.mjs、scripts/reference-examples/README.md と例のファイル、.github/workflows/stack-check.yml・deploy.yml、.github/scripts/stack-drift-issue.mjs
+5. docs/notes/2026-09-21-regression-check.md（今の手作業の契約の確認の手順）と、最近の記録 docs/notes/2026-10-05-regression-check-egov-0.20.0-nta-0.25.0.md
+
+## 決めること（案を並べて勧める案を書き、試作はその案で作る）
+
+hub#5 ②（CI での作り直し）:
+1. 入力の取り方。MCP の tools/list は npx -y @shuji-bonji/<pkg>@<版> で起動するか、各リポジトリを最新の公開タグで checkout して build するか。specs/ と Skill の workflows/ は GitHub から取るしかない（npm に無い）ので、checkout に揃える案と、tools/list だけ npx にする案を比べる。houki-nta-mcp の better-sqlite3 が CI の上で tools/list まで動くかを確かめる
+2. どの版で作るか（npm の latest と各リポジトリの最新のタグが同じことを前提にするか、stack.json の published に合わせるか）
+3. 差分があったときの出し方（PR を開く／既存の PR を更新する／Issue にする）と、使うトークン（GITHUB_TOKEN で PR を開けるか。PR からの CI が動かない制約）
+4. 版のずれの検出（生成したページの冒頭の版と、各リポジトリの最新の公開タグを比べる）を stack-check.yml に足すか、新しい workflow にするか
+5. いつ回すか（毎日・タグの push を受けて・手動）
+
+#44（呼び出し例の照合）:
+6. 置き場所と回す場所（勧める案: scripts/check-examples-contract.mjs を shuji の Mac で回す。ローカル DB が要るため CI では回さない）。MCP の起動は generate-reference.mjs の REGISTRY と stdio のクライアントを使い回す（共通部分を scripts/lib/ に分けるか）
+7. 比べ方の規則（草案の「比べ方の規則」の表: 書いてあるキーがあるか、値が同じか、「…」と /* … */ と途中で切った配列の扱い、毎回変わる値のパスの一覧、データ側の差分と形の違いの分け方）
+8. 例ごとの例外の書き方（草案の「- 照合:」の行）と、今の例の前提の行（「- ローカル DB:」「- 版の照合: しない」）との関係
+9. 「一致」した例に「確かめた版」を書き戻すか（Q14 の案 B）と、check-example-versions.mjs と stack-check.yml の Issue がそれを読む形
+10. 結果の出し方（表の Markdown と JSON。docs/notes の regression-check の記録と同じ形にするか）
+
+## 試作するもの
+
+- 設計の文書: docs/notes/<作業日>-design-hub5-regen-and-examples-check.md（決めること 1〜10 の案と勧める案、確かめた値、確かめていない点）
+- hub#5 ②: CI の workflow の試作（workflow_dispatch だけで動く形。schedule は付けない）と、REGISTRY の起動を環境変数で npx か checkout に切り替える変更。VM から npm の registry に届かない場合は、私が Mac で確かめるコマンドを書く
+- #44: scripts/check-examples-contract.mjs の試作。比べ方の規則のうち、キーの有無・値の一致・「…」の扱い・毎回変わる値の一覧までを実装し、ローカル DB の要らない例（resolve_abbreviation、get_law の e-Gov API を引く例など。DB の要る例は私の Mac で回す）を 3〜5 例流して結果の表を出す。テストは scripts/*.test.mjs の形で、比べ方の規則の関数に付ける
+- 例のファイルの書き換え（「- 照合:」の行を足すなど）は、試作で 1〜2 例だけにする
+
+## 守ること・報告すること
+
+- .github/workflows/ を足す・変えるときは workflow_dispatch だけにし、schedule と push のトリガーは付けない（有効にするのは私が試作を見てから）
+- 生成したページ（site/docs/reference/・site/docs/specs/）は手で変えない
+- 公開文書（site/）は変えない。設計の文書は docs/notes/ に置く
+- コミットを作るところまで。署名・push・PR は私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る（この文書の「共通」と同じ）
+- 報告: ブランチ・コミット、決めること 1〜10 の案と勧める案（試作に使った案）、試作で確かめたこと（CI で npx の起動が通るか、照合のスクリプトで流した例と結果）、私が Mac で回すコマンド、Z2（有効化と全部の例）に渡すこと、PR 本文の草案（Refs #5 #44。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
