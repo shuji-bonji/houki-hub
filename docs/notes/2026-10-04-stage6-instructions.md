@@ -39,7 +39,7 @@
 | Y6 | 段階 4 | scope-by-audience の (3)（業法の線の言い回し、Q33'-1・-2 の B） | 済（hub PR #53、main `be6f92a`） |
 | P1 | 段階 4 | houki-egov-mcp 0.20.1・houki-abbreviations 0.7.1 の patch（振る舞いの変更なし、Q35' の A） | 済（egov PR #118・abbr PR #41、2026-10-10 に publish） |
 | Z2 | 段階 4 | hub#5 ② の有効化と #44 の全部の例（Q34'〜Q38' の A） | 作業中。マージは Q39' の設定の後（P1 の publish は済） |
-| Y7 | 段階 4 | scope-by-audience の食い違い 5 か所と、Mermaid の最後の行が欠けること（Q40'・Q41'） | Q40'・Q41' の決定の後（2026-10-10 に追加） |
+| Y7 | 段階 4 | scope-by-audience の食い違い 5 か所と、Mermaid の最後の行が欠けること（Q40'・Q41'） | すぐ（2026-10-10 18:59 JST に Q40'・Q41' を案 A に決めた。Z2 と並行できる） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -1954,7 +1954,7 @@ houki-hub#5 の②（CI でリファレンスと仕様書ページを作り直�
 
 ## 指示 Y7: scope-by-audience の食い違い 5 か所と、Mermaid の最後の行が欠けること
 
-Y6（hub PR #53）の「残っていること」の 2 つです。計画書の「Y6・P1 の後」の Q40'・Q41' を勧める案（A）で書いています。決定が変わったら、この指示を直してから渡します。
+Y6（hub PR #53）の「残っていること」の 2 つです。計画書の「Y6・P1 の後」の Q40'・Q41' は、2026-10-10 JST に shuji が案 A に決めました。Z2 とは触るファイルが重ならないので並行できます（Z2 は scripts/・.github/・呼び出し例、Y7 は scope-by-audience.md と theme の custom.css）。
 
 ```text
 houki-hub のサイトで、2 つの直しを別々の PR にしてください。この会話の役は、文書の作業者です。生成したページ（reference/・specs/）は変えません。
