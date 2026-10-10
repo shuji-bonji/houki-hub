@@ -224,7 +224,7 @@ flowchart TB
 npx -y @shuji-bonji/houki-nta-mcp@latest --quickstart
 ```
 
-消費税法基本通達 1 本を約 3〜5 分で取り込みます。終わると、その通達に対して `nta_search_tsutatsu` と `nta_get_tsutatsu` が使えます。別の通達にしたいときは `--quickstart --tsutatsu=所得税基本通達` のように指定します。
+消費税法基本通達 1 本を約 3〜5 分で取り込みます。終わると、その通達に対して `nta_search_tsutatsu` と `nta_get_tsutatsu` が使えます。別の通達にしたいときは `--quickstart --tsutatsu=所得税基本通達` のように指定します。`--tsutatsu` に渡せるのは、基本通達 4 種（消費税法基本通達・所得税基本通達・法人税基本通達・相続税法基本通達）の正式名だけです。略称（`消基通` など）やほかの通達の名前を渡すと、取り込みを始めずに、使える値を表示してエラー（終了コード 2）で終わります（[SPEC-NTA-CLI-BULK-DOWNLOAD-011](/specs/houki-nta/cli_bulk_download#spec-nta-cli-bulk-download-011)）。
 
 6 種別をまとめて取り込むときは次を実行します。国税庁サイトを 1 ページずつ取りに行くので約 100 分かかります。開始前に、種別ごとの件数と所要時間の目安を表示します。
 
@@ -236,10 +236,10 @@ npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-everything
 
 | コマンド | 対象 | 目安 |
 | --- | --- | --- |
-| `--quickstart` | 通達 1 本（既定: 消基通。`--tsutatsu=<正式名>` で変更） | 約 3〜5 分 |
+| `--quickstart` | 通達 1 本（既定: 消基通。`--tsutatsu=<正式名>` で変更。基本通達 4 種だけ） | 約 3〜5 分 |
 | `--bulk-download-everything` | 6 種別すべて。開始前に目安を表示 | 約 100 分 |
 | `--bulk-download-all` | 基本通達 4 種（消基通・所基通・法基通・相基通） | 10〜15 分 |
-| `--bulk-download` | `--tsutatsu=<正式名>` で指定した 1 つの通達 | — |
+| `--bulk-download` | `--tsutatsu=<正式名>` で指定した 1 つの通達（基本通達 4 種だけ） | — |
 | `--bulk-download-kaisei` | 改正通達（基本通達 4 種分の一覧） | — |
 | `--bulk-download-jimu-unei` | 事務運営指針 | — |
 | `--bulk-download-bunshokaitou` | 文書回答事例 | 全税目で 30 分超 |
