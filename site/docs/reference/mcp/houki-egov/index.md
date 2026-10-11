@@ -1,6 +1,6 @@
 ---
 title: "houki-egov-mcp — ツールリファレンス"
-description: "houki-egov-mcp v0.20.1 の全 14 ツールの一覧（tools/list から自動生成）"
+description: "houki-egov-mcp v0.21.0 の全 14 ツールの一覧（tools/list から自動生成）"
 ---
 
 # houki-egov-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-egov-mcp v0.20.1 の全 14 ツールの一覧（tools/list �
 <!-- GENERATED FILE — 手で編集しない。一覧はサーバーの tools/list から。 -->
 
 ::: info
-**v0.20.1** の `tools/list` から自動生成しました（14 ツール・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.21.0** の `tools/list` から自動生成しました（14 ツール・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスの入り口です。** ツールごとに 1 ページあり、何をするか・引数・実測の呼び出し例・扱わないことを、動いているサーバーの `tools/list` と、各リポジトリの仕様書（`specs/current/`）から写しています。サーバー全体の説明と導入は[解説ページ](/mcp/houki-egov)にあります。
@@ -23,7 +23,7 @@ description: "houki-egov-mcp v0.20.1 の全 14 ツールの一覧（tools/list �
 |---|---|---|
 | [`search_law`](/reference/mcp/houki-egov/search_law) | 日本の法令を、法令の題名のキーワードや略称で検索します。 | [仕様（仕様項目 18 件）](/specs/houki-egov/search_law) |
 | [`get_law`](/reference/mcp/houki-egov/get_law) | 日本の法令から条文を取得します。 | [仕様（仕様項目 43 件）](/specs/houki-egov/get_law) |
-| [`get_toc`](/reference/mcp/houki-egov/get_toc) | 法令の目次（編・章・節・条の構造）のみを取得する。 | [仕様（仕様項目 28 件）](/specs/houki-egov/get_toc) |
+| [`get_toc`](/reference/mcp/houki-egov/get_toc) | 法令の目次（編・章・節・条の構造）のみを取得する。 | [仕様（仕様項目 29 件）](/specs/houki-egov/get_toc) |
 | [`get_law_range`](/reference/mcp/houki-egov/get_law_range) | 法令の編・章・節・款・目のいずれか、または附則 1 本を範囲にして、その中の条を本文ごと取得する。 | [仕様（仕様項目 35 件）](/specs/houki-egov/get_law_range) |
 | [`search_fulltext`](/reference/mcp/houki-egov/search_fulltext) | 法令の条文本文をキーワードで横断して全文検索します（ローカル SQLite FTS5）。 | [仕様（仕様項目 42 件）](/specs/houki-egov/search_fulltext) |
 | [`resolve_abbreviation`](/reference/mcp/houki-egov/resolve_abbreviation) | 略称・通称から正式な法令名と law_id を解決する。 | [仕様（仕様項目 13 件）](/specs/houki-egov/resolve_abbreviation) |

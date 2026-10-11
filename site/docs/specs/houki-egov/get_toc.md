@@ -8,14 +8,14 @@ description: "houki-egov-mcp の get_toc（法令の目次を、本則と附則�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/get_toc/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/get_toc/spec.md` から自動生成しました（仕様 ID 28 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.21.0** の `specs/current/get_toc/spec.md` から自動生成しました（仕様 ID 29 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 法令の目次を、本則と附則に分けて返す
 
 使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-egov/get_toc)にあります。
 
-最後に仕様が変わったのは v0.18.0 の「法令名・条・委任先を、確かなときだけ 1 つに決める（段階 5 法令の引き当て）」（2026-10-03 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
+最後に仕様が変わったのは v0.21.0 の「`get_toc` の `truncated` に、刈った理由を示す `truncated_by` を添える（egov #121）」（2026-10-12 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
 ## 利用者と得られる結果
 
@@ -43,6 +43,7 @@ houki-egov-mcp **v0.20.1** の `specs/current/get_toc/spec.md` から自動生�
 - 附則の中に `path` を付けること（附則は `suppl_provisions[].index` で指す）
 - 題名が e-Gov の改正履歴に無い古い改正法に、題名を付けること
 - `format` を選ぶこと（応答は markdown と構造化した目次の両方を常に返す）
+- 応答の大きさや文字数で目次を打ち切ること（`truncated` は `depth` で刈ったときだけ `true`。文字数の上限で打ち切るのは `get_law_range` の `range.truncated`）
 
 ## 処理の流れ
 
@@ -54,7 +55,7 @@ flowchart TD
   B --> C["本則の目次を toc に、附則を suppl_provisions に分ける（001・002）"]
   C --> D["本則の構造ノードに path を付ける（003）"]
   D --> E{"depth があるか"}
-  E -- ある --> F["本則を上から depth 階層で打ち切り、truncated: true（010）"]
+  E -- ある --> F["本則を上から depth 階層で打ち切り、truncated: true・truncated_by: #quot;depth#quot;（010・030）"]
   E -- 無い --> G{"suppl"}
   F --> G
   G -- "list（既定）" --> H["附則は見出しと条数だけ（004・005）"]
@@ -201,9 +202,11 @@ flowchart TD
 ### SPEC-EGOV-GET-TOC-010 `depth` で本則の階層を上から打ち切る
 
 ::: details 詳細
-`depth` に 1 以上の数を渡したとき、本則の構造階層（編・章・節・款・目）を上から `depth` 階層までにし、それより下は `children` を空配列にする。条は階層として数えない（`depth` が構造階層の深さ以上なら条まで残る）。枝を刈ったときは応答の `truncated` を `true` にする。附則の本数（`suppl_provisions` の件数）は `depth` で変わらない。
+`depth` に 1 以上の数を渡したとき、本則の構造階層（編・章・節・款・目）を上から `depth` 階層までにし、それより下は `children` を空配列にする。条は階層として数えない（`depth` が構造階層の深さ以上なら条まで残る）。枝を刈ったときは応答の `truncated` を `true` にし、`truncated_by` を `"depth"` にする（[SPEC-EGOV-GET-TOC-030](#spec-egov-get-toc-030)）。附則の本数（`suppl_provisions` の件数）は `depth` で変わらない。
 
-例: 編 > 章 > 節 > 条の法令で、`depth: 1` は編だけ（編の `children` は空配列）、`depth: 2` は編と章、`depth: 3` は節まで（節の `children` は空配列）、`depth: 4` は条まで返す。章だけの法令に `depth: 1` を渡すと、章の `children` が空配列になり `truncated: true`。
+`truncated` が `true` になるのは `depth` で枝を刈ったときだけで、応答の大きさや文字数では打ち切らない。`get_law_range` の `range.truncated`（`max_chars` の文字数の上限で条を打ち切った印。[SPEC-EGOV-GET-LAW-RANGE-017](/specs/houki-egov/get_law_range#spec-egov-get-law-range-017)）とは意味が違い、続きを取る引数や `next_actions` は付かない。全階層が要るときは `depth` を省いて呼び直す。
+
+例: 編 > 章 > 節 > 条の法令で、`depth: 1` は編だけ（編の `children` は空配列）、`depth: 2` は編と章、`depth: 3` は節まで（節の `children` は空配列）、`depth: 4` は条まで返す。章だけの法令に `depth: 1` を渡すと、章の `children` が空配列になり `truncated: true`、`truncated_by: "depth"`。`{ law_name: "民法", depth: 1, suppl: "none" }` は編 5 件だけを返し、`node_count: 5`、`truncated: true`、`truncated_by: "depth"` で、`next_actions` は無い（2026-10-12 JST に houki-egov-dev 0.20.1 で確かめたときは `truncated_by` が無かった）。
 :::
 
 <a id="spec-egov-get-toc-011"></a>
@@ -286,7 +289,7 @@ flowchart TD
 ::: details 詳細
 応答の `node_count` は、返した `toc` のノード（編・章・節・款・目と条）を入れ子の中まで数えた数である。附則のノードは数えない。`depth` で刈ったときは、刈った後の `toc` のノード数になる。
 
-例: 第一編 > 第一章（第1条・第2条）・第二章 > 第一節（第3条）の本則と附則 2 本を持つ法令では、`node_count: 7`（編 1・章 2・節 1・条 3）、`truncated: false`。同じ法令に `depth: 1` を渡すと、`node_count: 1`、`truncated: true`。
+例: 第一編 > 第一章（第1条・第2条）・第二章 > 第一節（第3条）の本則と附則 2 本を持つ法令では、`node_count: 7`（編 1・章 2・節 1・条 3）、`truncated: false`、`truncated_by: null`。同じ法令に `depth: 1` を渡すと、`node_count: 1`、`truncated: true`、`truncated_by: "depth"`。
 :::
 
 <a id="spec-egov-get-toc-017"></a>
@@ -409,6 +412,16 @@ tools/list の inputSchema の `depth` は `type: "integer"`、`minimum: 1` を�
 例: `{ law_name: "消費税法", at: "2000-01-01" }` は、2026-10-03 の e-Gov が 400・`400044` を返すので `code: "INVALID_ARGUMENT"`・`tool: "get_toc"`（v0.17.0 では `SOURCE_API_ERROR`・`retryable: false`）。法令本文の取得が 404・`404004` になる状態で `{ law_name: "消費税法" }` を呼ぶと `code: "LAW_NOT_FOUND"`。
 :::
 
+<a id="spec-egov-get-toc-030"></a>
+
+### SPEC-EGOV-GET-TOC-030 `truncated_by` で、`truncated` の理由を返す
+
+::: details 詳細
+応答の最上位に `truncated_by` を常に置く。`depth` で本則の枝を刈って `truncated` が `true` のときは `"depth"`、刈らなかった（`truncated` が `false`）ときは `null`。`depth` を省いたとき、および `depth` が構造階層の深さ以上で何も刈らなかったときは `null`（キーは無くならない）。値は `"depth"` と `null` の 2 つだけで、応答の大きさや文字数を理由にした値は無い。`markdown` には刈ったことを書かない。
+
+例: 編 > 章 > 節 > 条の法令に `depth: 2` を渡すと `truncated: true`、`truncated_by: "depth"`。同じ法令に `depth: 99` を渡すと条まで返して `truncated: false`、`truncated_by: null`。`depth` を省いても `truncated: false`、`truncated_by: null`。`suppl: "full", depth: 1` のように附則の中の目次も刈ったとき（[SPEC-EGOV-GET-TOC-019](#spec-egov-get-toc-019)）も、本則を刈っていれば `truncated_by: "depth"`。
+:::
+
 ## 実装する人に向けた情報
 
 ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
@@ -434,18 +447,19 @@ tools/list の inputSchema の `depth` は `type: "integer"`、`minimum: 1` を�
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history get_toc` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 
-::: details 承認の履歴（10 件）
+::: details 承認の履歴（11 件）
 | 承認日 | 版 | 変更 | 仕様 PR |
 |---|---|---|---|
-| 2026-10-03 | v0.18.0 | [法令名・条・委任先を、確かなときだけ 1 つに決める（段階 5 法令の引き当て）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/releases/v0.18.0/20261003-law-resolution/proposal.md) | [#95](https://github.com/shuji-bonji/houki-egov-mcp/pull/95) |
-| 2026-10-03 | v0.17.0 | [README・使い方・tool description と実際の動きの食い違いを、行ごとに直す（T5 文書と実装の食い違い）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/releases/v0.17.0/20261003-t5-docs-mismatch/proposal.md) | [#92](https://github.com/shuji-bonji/houki-egov-mcp/pull/92) |
-| 2026-10-03 | v0.17.0 | [値の無いフィールドを null にし、meta の時点を常に返す（T4 応答の形）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/releases/v0.17.0/20261003-t4-response-shape/proposal.md) | [#91](https://github.com/shuji-bonji/houki-egov-mcp/pull/91) |
-| 2026-10-01 | v0.16.0 | [T1 の差分の書き残しを直す（和の型の message、max_chars の例、REMOVED を指す未決）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/releases/v0.16.0/20261002-t1-followups/proposal.md) | [#89](https://github.com/shuji-bonji/houki-egov-mcp/pull/89) |
-| 2026-10-01 | v0.16.0 | [全角・半角・ダッシュ類の揃え方を houki-abbreviations 0.7.0 に一本化する（T3）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/releases/v0.16.0/20261001-t3-normalize/proposal.md) | [#86](https://github.com/shuji-bonji/houki-egov-mcp/pull/86) |
-| 2026-10-01 | v0.16.0 | [「見つからない」と「取得元の失敗」の code を分ける（T2）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/releases/v0.16.0/20261001-t2-error-codes/proposal.md) | [#85](https://github.com/shuji-bonji/houki-egov-mcp/pull/85) |
-| 2026-10-01 | v0.16.0 | [引数の検査を inputSchema に書き、丸めずに `INVALID_ARGUMENT` にする（T1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/releases/v0.16.0/20261001-t1-argument-guards/proposal.md) | [#84](https://github.com/shuji-bonji/houki-egov-mcp/pull/84) |
-| 2026-09-28 | v0.15.2 | [テストが無いだけの振る舞いに仕様 ID を振る](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/releases/v0.15.2/20260928-untested-behaviors/proposal.md) | [#76](https://github.com/shuji-bonji/houki-egov-mcp/pull/76) |
-| 2026-09-28 | v0.15.2 | [「未決」のうち判断が要る 85 件を Issue に移す](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/releases/v0.15.2/20260928-undecided-to-issues/proposal.md) | [#68](https://github.com/shuji-bonji/houki-egov-mcp/pull/68) |
+| 2026-10-12 | v0.21.0 | [`get_toc` の `truncated` に、刈った理由を示す `truncated_by` を添える（egov #121）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/releases/v0.21.0/20261012-toc-truncated-by/proposal.md) | [#122](https://github.com/shuji-bonji/houki-egov-mcp/pull/122) |
+| 2026-10-03 | v0.18.0 | [法令名・条・委任先を、確かなときだけ 1 つに決める（段階 5 法令の引き当て）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/releases/v0.18.0/20261003-law-resolution/proposal.md) | [#95](https://github.com/shuji-bonji/houki-egov-mcp/pull/95) |
+| 2026-10-03 | v0.17.0 | [README・使い方・tool description と実際の動きの食い違いを、行ごとに直す（T5 文書と実装の食い違い）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/releases/v0.17.0/20261003-t5-docs-mismatch/proposal.md) | [#92](https://github.com/shuji-bonji/houki-egov-mcp/pull/92) |
+| 2026-10-03 | v0.17.0 | [値の無いフィールドを null にし、meta の時点を常に返す（T4 応答の形）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/releases/v0.17.0/20261003-t4-response-shape/proposal.md) | [#91](https://github.com/shuji-bonji/houki-egov-mcp/pull/91) |
+| 2026-10-01 | v0.16.0 | [T1 の差分の書き残しを直す（和の型の message、max_chars の例、REMOVED を指す未決）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/releases/v0.16.0/20261002-t1-followups/proposal.md) | [#89](https://github.com/shuji-bonji/houki-egov-mcp/pull/89) |
+| 2026-10-01 | v0.16.0 | [全角・半角・ダッシュ類の揃え方を houki-abbreviations 0.7.0 に一本化する（T3）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/releases/v0.16.0/20261001-t3-normalize/proposal.md) | [#86](https://github.com/shuji-bonji/houki-egov-mcp/pull/86) |
+| 2026-10-01 | v0.16.0 | [「見つからない」と「取得元の失敗」の code を分ける（T2）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/releases/v0.16.0/20261001-t2-error-codes/proposal.md) | [#85](https://github.com/shuji-bonji/houki-egov-mcp/pull/85) |
+| 2026-10-01 | v0.16.0 | [引数の検査を inputSchema に書き、丸めずに `INVALID_ARGUMENT` にする（T1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/releases/v0.16.0/20261001-t1-argument-guards/proposal.md) | [#84](https://github.com/shuji-bonji/houki-egov-mcp/pull/84) |
+| 2026-09-28 | v0.15.2 | [テストが無いだけの振る舞いに仕様 ID を振る](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/releases/v0.15.2/20260928-untested-behaviors/proposal.md) | [#76](https://github.com/shuji-bonji/houki-egov-mcp/pull/76) |
+| 2026-09-28 | v0.15.2 | [「未決」のうち判断が要る 85 件を Issue に移す](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/releases/v0.15.2/20260928-undecided-to-issues/proposal.md) | [#68](https://github.com/shuji-bonji/houki-egov-mcp/pull/68) |
 | 2026-09-28 | — | 初版 | [#50](https://github.com/shuji-bonji/houki-egov-mcp/pull/50) |
 :::
 
@@ -456,4 +470,4 @@ tools/list の inputSchema の `depth` は `type: "integer"`、`minimum: 1` を�
 - [houki-egov-mcp の仕様の一覧](/specs/houki-egov/)
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [get_toc のツールのページ（リファレンス）](/reference/mcp/houki-egov/get_toc)
-- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/get_toc/spec.md)
+- [元の仕様書（GitHub、v0.21.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/current/get_toc/spec.md)

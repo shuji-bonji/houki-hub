@@ -8,7 +8,7 @@ description: "houki-egov-mcp の全 20 機能の仕様の一覧（specs/current 
 <!-- GENERATED FILE — 手で編集しない。houki-egov-mcp の specs/current/ から生成。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/` から自動生成しました（20 機能・仕様 ID 559 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.21.0** の `specs/current/` から自動生成しました（20 機能・仕様 ID 560 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 houki-egov-mcp が何をするかを、機能ごとに 1 ページで説明します。全体の使い方は[解説](/mcp/houki-egov)に、引数の一覧は[リファレンス](/reference/mcp/houki-egov/)にあります。
@@ -27,7 +27,7 @@ MCP クライアント（Claude などの LLM）から呼ぶツールです。
 | [`get_law_range`](/specs/houki-egov/get_law_range) | 編・章・節、または附則 1 本を範囲にして、条を本文ごと返す | 35 |
 | [`get_law_revisions`](/specs/houki-egov/get_law_revisions) | 法令の改正履歴を取得する | 18 |
 | [`get_related_laws`](/specs/houki-egov/get_related_laws) | 法令名の規則で施行令・施行規則、または親の法律を引く | 20 |
-| [`get_toc`](/specs/houki-egov/get_toc) | 法令の目次を、本則と附則に分けて返す | 28 |
+| [`get_toc`](/specs/houki-egov/get_toc) | 法令の目次を、本則と附則に分けて返す | 29 |
 | [`list_attachments`](/specs/houki-egov/list_attachments) | 法令の添付ファイルの一覧を返す | 25 |
 | [`resolve_abbreviation`](/specs/houki-egov/resolve_abbreviation) | 略称から略称辞書のエントリを引く | 13 |
 | [`search_fulltext`](/specs/houki-egov/search_fulltext) | 法令の条文本文をキーワードで横断検索する | 42 |

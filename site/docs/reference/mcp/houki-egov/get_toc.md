@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_toc：法令の目次（編・章・節・�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_toc.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_toc/spec.md、使いどころは scripts/spec-pages/houki-egov/get_toc.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_toc/spec.md` から自動生成しました（仕様 ID 28 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.21.0** の `tools/list` と `specs/current/get_toc/spec.md` から自動生成しました（仕様 ID 29 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 法令の目次（編・章・節・条の構造）のみを取得する。トークン節約用。本則は `toc`、附則は改正法ごとに `suppl_provisions` へ分けて返す（現行の規定と、改正法ごとの施行日・経過措置を混ぜないため）。既定では附則は見出しと条数だけを返し、`suppl: "full"` で附則の中の条まで返す。depth で階層を浅く打ち切れる（民法・会社法のような大規模法令の概観把握向け）。応答の toc[].path（例 "Part3/Chapter2"）は get_law_range にそのまま渡せる。
@@ -113,6 +113,7 @@ houki-egov-mcp **v0.20.1** の `tools/list` と `specs/current/get_toc/spec.md` 
 - 附則の中に `path` を付けること（附則は `suppl_provisions[].index` で指す）
 - 題名が e-Gov の改正履歴に無い古い改正法に、題名を付けること
 - `format` を選ぶこと（応答は markdown と構造化した目次の両方を常に返す）
+- 応答の大きさや文字数で目次を打ち切ること（`truncated` は `depth` で刈ったときだけ `true`。文字数の上限で打ち切るのは `get_law_range` の `range.truncated`）
 
 ## 処理の流れ
 
@@ -127,7 +128,7 @@ flowchart TD
   B --> C["本則の目次を toc に、附則を suppl_provisions に分ける（001・002）"]
   C --> D["本則の構造ノードに path を付ける（003）"]
   D --> E{"depth があるか"}
-  E -- ある --> F["本則を上から depth 階層で打ち切り、truncated: true（010）"]
+  E -- ある --> F["本則を上から depth 階層で打ち切り、truncated: true・truncated_by: #quot;depth#quot;（010・030）"]
   E -- 無い --> G{"suppl"}
   F --> G
   G -- "list（既定）" --> H["附則は見出しと条数だけ（004・005）"]
@@ -145,9 +146,9 @@ flowchart TD
 
 ## 仕様項目の一覧
 
-このツールの仕様項目 28 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_toc)で読めます。
+このツールの仕様項目 29 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-egov/get_toc)で読めます。
 
-::: details 仕様項目の見出し（28 件）
+::: details 仕様項目の見出し（29 件）
 | 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-egov/get_toc#spec-egov-get-toc-001) | 本則を `toc`、附則を `suppl_provisions` に分けて返す |
@@ -178,6 +179,7 @@ flowchart TD
 | [027](/specs/houki-egov/get_toc#spec-egov-get-toc-027) | `law_name` の全角英数字・ダッシュ類・全角空白は半角に揃えてから略称辞書と照合する |
 | [028](/specs/houki-egov/get_toc#spec-egov-get-toc-028) | 法令名が完全一致しないときは、目次を返さず候補を付けた `LAW_NOT_FOUND` を返す |
 | [029](/specs/houki-egov/get_toc#spec-egov-get-toc-029) | 法令本文の取得で e-Gov が 404・時点の 400 を返したときは `LAW_NOT_FOUND`・`INVALID_ARGUMENT` |
+| [030](/specs/houki-egov/get_toc#spec-egov-get-toc-030) | `truncated_by` で、`truncated` の理由を返す |
 :::
 
 ## 関連ページ
@@ -187,4 +189,4 @@ flowchart TD
 - [houki-egov-mcp の解説](/mcp/houki-egov)
 - [houki-egov-mcp のツール一覧](/reference/mcp/houki-egov/)
 - [get_toc の仕様書ページ](/specs/houki-egov/get_toc)
-- [元の仕様書（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.20.1/specs/current/get_toc/spec.md)
+- [元の仕様書（GitHub、v0.21.0）](https://github.com/shuji-bonji/houki-egov-mcp/blob/v0.21.0/specs/current/get_toc/spec.md)
