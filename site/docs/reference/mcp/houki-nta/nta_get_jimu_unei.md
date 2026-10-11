@@ -8,7 +8,7 @@ description: "houki-nta-mcp の nta_get_jimu_unei：事務運営指針の本文�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_jimu_unei.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_get_jimu_unei/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_jimu_unei.md から。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_jimu_unei/spec.md` から自動生成しました（仕様 ID 11 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-nta-mcp **v0.27.1** の `tools/list` と `specs/current/nta_get_jimu_unei/spec.md` から自動生成しました（仕様 ID 11 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 事務運営指針の本文を docId で取得する（DB 経由）。本文 + 添付 PDF URL（pdf-reader-mcp で読み取り推奨）を返す。
@@ -143,4 +143,4 @@ flowchart TD
 - [houki-nta-mcp の解説](/mcp/houki-nta)
 - [houki-nta-mcp のツール一覧](/reference/mcp/houki-nta/)
 - [nta_get_jimu_unei の仕様書ページ](/specs/houki-nta/nta_get_jimu_unei)
-- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/nta_get_jimu_unei/spec.md)
+- [元の仕様書（GitHub、v0.27.1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/current/nta_get_jimu_unei/spec.md)

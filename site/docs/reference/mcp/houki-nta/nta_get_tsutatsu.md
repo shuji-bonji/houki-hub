@@ -8,7 +8,7 @@ description: "houki-nta-mcp の nta_get_tsutatsu：基本通達の本文を取�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_tsutatsu.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_get_tsutatsu/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_tsutatsu.md から。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_tsutatsu/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-nta-mcp **v0.27.1** の `tools/list` と `specs/current/nta_get_tsutatsu/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 基本通達の本文を取得する。略称（消基通・所基通・法基通・相基通）対応、条項指定可能。DB に条項があれば DB から返す。無ければ、bulk download（`--bulk-download-all`）済みの通達はエラー ARTICLE_NOT_FOUND、それ以外は国税庁サイトの目次から候補ページを選んで取る（1 回の呼び出しで 10 ページまで。取ったページは DB に書き戻す）。応答に解釈の対象になる法律（base_laws）を付け、next_actions で houki-egov-mcp の get_law を案内する。
@@ -160,16 +160,16 @@ flowchart TD
 
 ## 仕様項目の一覧
 
-このツールの仕様項目 18 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_tsutatsu)で読めます。
+このツールの仕様項目 19 件の見出しです。仕様項目は受入テストと 1 対 1 で対応していて、条件と例は[仕様書ページ](/specs/houki-nta/nta_get_tsutatsu)で読めます。
 
-::: details 仕様項目の見出し（18 件）
+::: details 仕様項目の見出し（19 件）
 | 仕様 ID | 仕様項目 |
 |---|---|
 | [001](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-001) | 通達名を略称辞書で解決する |
 | [002](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-002) | houki-nta の管轄でない名前は取りに行かない |
 | [003](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-003) | clause が無ければ何も取りに行かない |
 | [004](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-004) | ローカル DB にある条項は DB から返す |
-| [005](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-005) | DB に通達はあるが条項が無いときは、国税庁サイトから取らない通達なら番号の候補を返す |
+| [005](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-005) | DB に通達はあるが条項が無いときは、国税庁サイトから取らない通達なら番号の候補と探し方を返す |
 | [006](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-006) | DB に無い基本通達 4 種の条項は国税庁サイトから取る |
 | [007](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-007) | DB に無く、ライブ取得にも対応していない通達は、今は取り込めないことを返す |
 | [008](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-008) | 国税庁サイトから取るときは、clause をその通達の番号の形で読む |
@@ -183,6 +183,7 @@ flowchart TD
 | [016](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-016) | 本文に画像がある条項には、画像を読めない旨の注記を付ける |
 | [017](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-017) | name が空文字・空白だけのときは略称辞書と DBを引かずに `INVALID_ARGUMENT` を返す |
 | [018](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-018) | `name` の全角英数字・ダッシュ類・全角空白は半角に揃えてから略称辞書で引く |
+| [019](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-019) | `available_clauses` を返すときは元になった条項の総数を `available_clauses_total` に付け、上限で切れたときは `hint` に書く |
 :::
 
 ## 関連ページ
@@ -192,4 +193,4 @@ flowchart TD
 - [houki-nta-mcp の解説](/mcp/houki-nta)
 - [houki-nta-mcp のツール一覧](/reference/mcp/houki-nta/)
 - [nta_get_tsutatsu の仕様書ページ](/specs/houki-nta/nta_get_tsutatsu)
-- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/nta_get_tsutatsu/spec.md)
+- [元の仕様書（GitHub、v0.27.1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/current/nta_get_tsutatsu/spec.md)

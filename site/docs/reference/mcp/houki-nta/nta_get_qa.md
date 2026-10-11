@@ -8,7 +8,7 @@ description: "houki-nta-mcp の nta_get_qa：国税庁の質疑応答事例 1 �
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_get_qa.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_get_qa/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_get_qa.md から。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_get_qa/spec.md` から自動生成しました（仕様 ID 16 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-nta-mcp **v0.27.1** の `tools/list` と `specs/current/nta_get_qa/spec.md` から自動生成しました（仕様 ID 16 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 国税庁の質疑応答事例 1 件を取得する。URL 形式: /law/shitsugi/{topic}/{category}/{id}.htm。国税庁サイトにそのページが無いときはエラー DOC_NOT_FOUND を返し、nta_search_qa を案内する。format=json では【関係法令通達】を法令（related_laws）と通達（related_tsutatsu）に分け、next_actions で houki-egov-mcp の get_law と nta_get_tsutatsu を案内する。
@@ -216,4 +216,4 @@ flowchart TD
 - [houki-nta-mcp の解説](/mcp/houki-nta)
 - [houki-nta-mcp のツール一覧](/reference/mcp/houki-nta/)
 - [nta_get_qa の仕様書ページ](/specs/houki-nta/nta_get_qa)
-- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/nta_get_qa/spec.md)
+- [元の仕様書（GitHub、v0.27.1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/current/nta_get_qa/spec.md)

@@ -8,12 +8,12 @@ description: "houki-nta-mcp の db_schema（通達と文書を持つローカル
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/db_schema/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/db_schema/spec.md` から自動生成しました（仕様 ID 30 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.1** の `specs/current/db_schema/spec.md` から自動生成しました（仕様 ID 30 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 通達と文書を持つローカル SQLite DB の版・移行・書き戻し
 
-最後に仕様が変わったのは v0.27.0 の「置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）」（2026-10-09 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
+最後に仕様が変わったのは v0.27.1 の「`nta_get_tsutatsu` の DB の経路の `ARTICLE_NOT_FOUND` の案内を国税庁サイトの経路とそろえ、`available_clauses` の打ち切りを応答で示す（nta #164）」（2026-10-12 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
 ## 利用者と得られる結果
 
@@ -463,19 +463,19 @@ MCP の応答と CLI の出力で利用者に実行を勧めるコマンドは�
 
 | 出る場所 | 箇所 | 仕様 ID |
 | --- | --- | --- |
-| MCP の応答 | `next_actions[]` のうち `action: "cli_bulk_download"` の `example.command` | [SPEC-NTA-DB-SCHEMA-029](#spec-nta-db-schema-029)、[SPEC-NTA-COMMON-ERRORS-017](/specs/houki-nta/common_errors#spec-nta-common-errors-017)、[SPEC-NTA-GET-TSUTATSU-010](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-010) |
+| MCP の応答 | `next_actions[]` のうち `action: "cli_bulk_download"` の `example.command` | [SPEC-NTA-DB-SCHEMA-029](#spec-nta-db-schema-029)、[SPEC-NTA-COMMON-ERRORS-017](/specs/houki-nta/common_errors#spec-nta-common-errors-017)、[SPEC-NTA-GET-TSUTATSU-005](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-005)、[SPEC-NTA-GET-TSUTATSU-010](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-010) |
 | MCP の応答 | 「DB に 1 件も無い」ときの `hint` と、版の合わない DB の `hint` の中のコマンド | [SPEC-NTA-DB-SCHEMA-029](#spec-nta-db-schema-029)、021 の注 2 |
 | MCP の応答 | DB を開けないときの `hint` の中の `--status` のコマンド | [SPEC-NTA-DB-SCHEMA-029](#spec-nta-db-schema-029) |
 | MCP の応答 | 税目を絞って追加する案内のコマンド | [SPEC-NTA-SEARCH-QA-005](/specs/houki-nta/nta_search_qa#spec-nta-search-qa-005)、[SPEC-NTA-SEARCH-BUNSHOKAITOU-002](/specs/houki-nta/nta_search_bunshokaitou#spec-nta-search-bunshokaitou-002) |
 | MCP の応答 | 「DB を投入した後に公開された文書は、`<コマンド>` をもう一度実行すると取り込めます」 | [SPEC-NTA-GET-KAISEI-TSUTATSU-002](/specs/houki-nta/nta_get_kaisei_tsutatsu#spec-nta-get-kaisei-tsutatsu-002)、[SPEC-NTA-GET-JIMU-UNEI-002](/specs/houki-nta/nta_get_jimu_unei#spec-nta-get-jimu-unei-002)、[SPEC-NTA-GET-BUNSHOKAITOU-003](/specs/houki-nta/nta_get_bunshokaitou#spec-nta-get-bunshokaitou-003) |
 | MCP の応答 | 取得時点を読めないときの `hint` | [SPEC-NTA-COMMON-ERRORS-017](/specs/houki-nta/common_errors#spec-nta-common-errors-017) |
-| MCP の応答 | `nta_get_tsutatsu` の `hint` の `--bulk-download --tsutatsu="<正式名>"` を付けたコマンド（基本通達 4 種で、候補ページに条項が無いとき。ライブ取得に対応していない通達（[SPEC-NTA-GET-TSUTATSU-007](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-007)）にはコマンドを案内しない） | [SPEC-NTA-GET-TSUTATSU-010](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-010) |
+| MCP の応答 | `nta_get_tsutatsu` の `hint` の `--bulk-download --tsutatsu="<正式名>"` を付けたコマンド（基本通達 4 種で、候補ページに条項が無いとき（[SPEC-NTA-GET-TSUTATSU-010](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-010)）と、bulk download 済みの通達に条項が無いとき（[SPEC-NTA-GET-TSUTATSU-005](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-005)）。ライブ取得に対応していない通達（[SPEC-NTA-GET-TSUTATSU-007](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-007)）と、基本通達 4 種以外の通達の条項が DB に残っているとき（005 の (b)）にはコマンドを案内しない） | [SPEC-NTA-GET-TSUTATSU-005](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-005)、[SPEC-NTA-GET-TSUTATSU-010](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-010) |
 | MCP の応答 | `freshness.warning` の中のコマンド | [SPEC-NTA-SEARCH-RULES-017](/specs/houki-nta/search_rules#spec-nta-search-rules-017) |
 | CLI の出力 | [SPEC-NTA-DB-SCHEMA-021](#spec-nta-db-schema-021) の CLI のエラーの文の中のコマンド、`--status` の `(DB がまだありません — …)` の行 | [SPEC-NTA-DB-SCHEMA-021](#spec-nta-db-schema-021)、[SPEC-NTA-CLI-STATUS-004](/specs/houki-nta/cli_status#spec-nta-cli-status-004) |
 
 CLI の出力でも同じ形にする（CLI を `HOUKI_NTA_DB_PATH=… npx …` のように 1 回だけ変数を付けて実行した人や、`--db-path` を付けて実行した人が、案内のコマンドをそのまま実行して同じ DB を開けるようにするため）。
 
-次の箇所はこの形にしない: `--help` の使い方（[SPEC-NTA-CLI-ENTRY-002](/specs/houki-nta/cli_entry#spec-nta-cli-entry-002)）、[SPEC-NTA-DB-SCHEMA-029](#spec-nta-db-schema-029) の「その種別が 1 件も無い」ときの文の「投入したシェルで `npx -y @shuji-bonji/houki-nta-mcp@latest --status` を実行し」（MCP サーバーの設定ではなく、投入したシェルの設定で開く DB を確かめるためのコマンドなので、変数も `--db-path` も付けない。029 の DB を開けないときの文の `--status` は、MCP サーバーが開こうとした DB を確かめるためのものなので、この形にする）、`--quickstart` が終わった後の「次に試すこと」の行（[SPEC-NTA-CLI-BULK-DOWNLOAD-007](/specs/houki-nta/cli_bulk_download#spec-nta-cli-bulk-download-007)）、tools/list のツールの説明（フラグだけを書いている）、フラグだけを書いた文（`nta_get_tsutatsu` の `ARTICLE_NOT_FOUND` の `` `--bulk-download` で再取得してください``、[SPEC-NTA-INSPECT-PDF-META-001](/specs/houki-nta/nta_inspect_pdf_meta#spec-nta-inspect-pdf-meta-001) の DB はあるがその文書が無いときの `hint`、[SPEC-NTA-DB-SCHEMA-021](#spec-nta-db-schema-021) の CLI のエラーの文の `か --bulk-download-all で作ってください` の `--bulk-download-all`）。
+次の箇所はこの形にしない: `--help` の使い方（[SPEC-NTA-CLI-ENTRY-002](/specs/houki-nta/cli_entry#spec-nta-cli-entry-002)）、[SPEC-NTA-DB-SCHEMA-029](#spec-nta-db-schema-029) の「その種別が 1 件も無い」ときの文の「投入したシェルで `npx -y @shuji-bonji/houki-nta-mcp@latest --status` を実行し」（MCP サーバーの設定ではなく、投入したシェルの設定で開く DB を確かめるためのコマンドなので、変数も `--db-path` も付けない。029 の DB を開けないときの文の `--status` は、MCP サーバーが開こうとした DB を確かめるためのものなので、この形にする）、`--quickstart` が終わった後の「次に試すこと」の行（[SPEC-NTA-CLI-BULK-DOWNLOAD-007](/specs/houki-nta/cli_bulk_download#spec-nta-cli-bulk-download-007)）、tools/list のツールの説明（フラグだけを書いている）、フラグだけを書いた文（[SPEC-NTA-INSPECT-PDF-META-001](/specs/houki-nta/nta_inspect_pdf_meta#spec-nta-inspect-pdf-meta-001) の DB はあるがその文書が無いときの `hint`、[SPEC-NTA-DB-SCHEMA-021](#spec-nta-db-schema-021) の CLI のエラーの文の `か --bulk-download-all で作ってください` の `--bulk-download-all`）。
 
 例（ホームディレクトリが `/Users/bonji`）:
 
@@ -486,6 +486,8 @@ CLI の出力でも同じ形にする（CLI を `HOUKI_NTA_DB_PATH=… npx …` 
 | `HOUKI_NTA_DB_PATH=/tmp/x/cache.db` | `HOUKI_NTA_DB_PATH='/tmp/x/cache.db' npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-qa` |
 | `XDG_CACHE_HOME=/Users/bonji/Library/Caches` | `XDG_CACHE_HOME="$HOME/Library/Caches" npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-qa` |
 | CLI に `--db-path=/Users/bonji/dev$1/cache.db`（`'…'` で囲んで渡す） | `npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-qa --db-path="$HOME"'/dev$1/cache.db'` |
+
+v0.27.0 までは、`nta_get_tsutatsu` の DB の経路の `ARTICLE_NOT_FOUND`（[SPEC-NTA-GET-TSUTATSU-005](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-005)）の `hint`（`` `--bulk-download` で再取得してください``）も「フラグだけを書いた文」としてこの形の外に置いていた。#164 で 005 の `hint` と `next_actions` を [SPEC-NTA-GET-TSUTATSU-010](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-010) とそろえ、上の表に入れた（0.27.1）。
 
 v0.24.x のコマンドは、どの場合も `houki-nta-mcp --bulk-download-qa`（グローバルにインストールしていないと `command not found`、`npx houki-nta-mcp` は npm に無い名前で 404。houki-egov-mcp #108 の 2 と同じ）。
 :::
@@ -604,16 +606,17 @@ DB を開けないときは、`hint` のほかに次のようにする（v0.25.x
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history db_schema` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 
-::: details 承認の履歴（8 件）
+::: details 承認の履歴（9 件）
 | 承認日 | 版 | 変更 | 仕様 PR |
 |---|---|---|---|
-| 2026-10-09 | v0.27.0 | [置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.27.0/20261009-db-folder-access-and-tsutatsu-guide/proposal.md) | [#160](https://github.com/shuji-bonji/houki-nta-mcp/pull/160) |
-| 2026-10-09 | v0.27.0 | [nta_inspect_pdf_meta の仕様から、inputSchema が受け付けない docType "qa-jirei" の行と例を外す（#156）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.27.0/20261009-inspect-pdf-meta-qa-jirei/proposal.md) | [#157](https://github.com/shuji-bonji/houki-nta-mcp/pull/157) |
-| 2026-10-06 | v0.26.0 | [ローカル DB を開けないときの読むだけのツールと書き戻すツールの応答、`--bulk-download-tax-answer` が索引を保存できないときの終わり方（nta #144・#145）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.26.0/20261006-db-failure-paths/proposal.md) | [#152](https://github.com/shuji-bonji/houki-nta-mcp/pull/152) |
-| 2026-10-05 | v0.25.0 | [ローカル DB の場所を、応答・起動時のログ・`--status` で確かめられるようにし、保存したタックスアンサーの索引を読めないことをログに残す（nta #138・#137、T6）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.25.0/20261004-db-location/proposal.md) | [#142](https://github.com/shuji-bonji/houki-nta-mcp/pull/142) |
-| 2026-10-04 | v0.24.0 | [ローカル DB の版の扱い・作る入口・doc_type の制約・タックスアンサーの索引の保存と、CLI の引数の検査（段階 5 DB と CLI）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.24.0/20261003-db-cli/proposal.md) | [#135](https://github.com/shuji-bonji/houki-nta-mcp/pull/135) |
-| 2026-10-01 | v0.22.0 | [全角・半角・ダッシュ類の揃え方を houki-abbreviations 0.7.0 に一本化する（T3）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.22.0/20261001-t3-normalize/proposal.md) | [#119](https://github.com/shuji-bonji/houki-nta-mcp/pull/119) |
-| 2026-09-30 | v0.22.0 | [CLI・DB の初版の「未決」のうち判断が要る 12 件を Issue に移す（#75 の続き）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.22.0/20260930-cli-db-undecided-to-issues/proposal.md) | [#114](https://github.com/shuji-bonji/houki-nta-mcp/pull/114) |
+| 2026-10-12 | v0.27.1 | [`nta_get_tsutatsu` の DB の経路の `ARTICLE_NOT_FOUND` の案内を国税庁サイトの経路とそろえ、`available_clauses` の打ち切りを応答で示す（nta #164）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.27.1/20261012-tsutatsu-db-not-found-guide/proposal.md) | [#165](https://github.com/shuji-bonji/houki-nta-mcp/pull/165) |
+| 2026-10-09 | v0.27.0 | [置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.27.0/20261009-db-folder-access-and-tsutatsu-guide/proposal.md) | [#160](https://github.com/shuji-bonji/houki-nta-mcp/pull/160) |
+| 2026-10-09 | v0.27.0 | [nta_inspect_pdf_meta の仕様から、inputSchema が受け付けない docType "qa-jirei" の行と例を外す（#156）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.27.0/20261009-inspect-pdf-meta-qa-jirei/proposal.md) | [#157](https://github.com/shuji-bonji/houki-nta-mcp/pull/157) |
+| 2026-10-06 | v0.26.0 | [ローカル DB を開けないときの読むだけのツールと書き戻すツールの応答、`--bulk-download-tax-answer` が索引を保存できないときの終わり方（nta #144・#145）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.26.0/20261006-db-failure-paths/proposal.md) | [#152](https://github.com/shuji-bonji/houki-nta-mcp/pull/152) |
+| 2026-10-05 | v0.25.0 | [ローカル DB の場所を、応答・起動時のログ・`--status` で確かめられるようにし、保存したタックスアンサーの索引を読めないことをログに残す（nta #138・#137、T6）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.25.0/20261004-db-location/proposal.md) | [#142](https://github.com/shuji-bonji/houki-nta-mcp/pull/142) |
+| 2026-10-04 | v0.24.0 | [ローカル DB の版の扱い・作る入口・doc_type の制約・タックスアンサーの索引の保存と、CLI の引数の検査（段階 5 DB と CLI）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.24.0/20261003-db-cli/proposal.md) | [#135](https://github.com/shuji-bonji/houki-nta-mcp/pull/135) |
+| 2026-10-01 | v0.22.0 | [全角・半角・ダッシュ類の揃え方を houki-abbreviations 0.7.0 に一本化する（T3）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.22.0/20261001-t3-normalize/proposal.md) | [#119](https://github.com/shuji-bonji/houki-nta-mcp/pull/119) |
+| 2026-09-30 | v0.22.0 | [CLI・DB の初版の「未決」のうち判断が要る 12 件を Issue に移す（#75 の続き）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.22.0/20260930-cli-db-undecided-to-issues/proposal.md) | [#114](https://github.com/shuji-bonji/houki-nta-mcp/pull/114) |
 | 2026-09-29 | — | 初版 | [#103](https://github.com/shuji-bonji/houki-nta-mcp/pull/103) |
 :::
 
@@ -623,4 +626,4 @@ DB を開けないときは、`hint` のほかに次のようにする（v0.25.x
 
 - [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
 - [houki-nta-mcp の解説](/mcp/houki-nta)
-- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/db_schema/spec.md)
+- [元の仕様書（GitHub、v0.27.1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/current/db_schema/spec.md)

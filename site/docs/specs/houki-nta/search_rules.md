@@ -8,7 +8,7 @@ description: "houki-nta-mcp の search_rules（検索系ツールに共通する
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/search_rules/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/search_rules/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.1** の `specs/current/search_rules/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 検索系ツールに共通するキーワードの扱いと結果の付記
@@ -479,17 +479,17 @@ v0.24.0 では、`oldest_fetched_at` が `2026-09-07T21:06:49.516Z` になり、
 ::: details 承認の履歴（12 件）
 | 承認日 | 版 | 変更 | 仕様 PR |
 |---|---|---|---|
-| 2026-10-09 | v0.27.0 | [置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.27.0/20261009-db-folder-access-and-tsutatsu-guide/proposal.md) | [#160](https://github.com/shuji-bonji/houki-nta-mcp/pull/160) |
-| 2026-10-05 | v0.25.0 | [ローカル DB の場所を、応答・起動時のログ・`--status` で確かめられるようにし、保存したタックスアンサーの索引を読めないことをログに残す（nta #138・#137、T6）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.25.0/20261004-db-location/proposal.md) | [#142](https://github.com/shuji-bonji/houki-nta-mcp/pull/142) |
-| 2026-10-04 | v0.24.1 | [検索の `freshness` の範囲から、国税庁の索引から消えた文書を外す（nta #139）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.24.1/20261004-freshness-orphaned/proposal.md) | [#140](https://github.com/shuji-bonji/houki-nta-mcp/pull/140) |
-| 2026-10-03 | v0.24.0 | [国税庁サイトから取る経路（通信の失敗の code・タックスアンサーの URL と 8xxx 帯）と、事務運営指針の legal_status.note（段階 5）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.24.0/20261003-source-paths/proposal.md) | [#134](https://github.com/shuji-bonji/houki-nta-mcp/pull/134) |
-| 2026-10-03 | v0.24.0 | [検索の英字の大文字と小文字・3 文字未満の略称・nta_search_qa の domain（段階 5 検索規則）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.24.0/20261003-search-rules/proposal.md) | [#133](https://github.com/shuji-bonji/houki-nta-mcp/pull/133) |
-| 2026-10-03 | v0.23.0 | [値の無いフィールドを null にし、検索の結果に発出日と法令時点を揃えて返す（T4 応答の形）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.23.0/20261003-t4-response-shape/proposal.md) | [#125](https://github.com/shuji-bonji/houki-nta-mcp/pull/125) |
-| 2026-10-01 | v0.22.0 | [全角・半角・ダッシュ類の揃え方を houki-abbreviations 0.7.0 に一本化する（T3）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.22.0/20261001-t3-normalize/proposal.md) | [#119](https://github.com/shuji-bonji/houki-nta-mcp/pull/119) |
-| 2026-10-01 | v0.22.0 | [引数の検査を inputSchema に書き、丸めずに `INVALID_ARGUMENT` にする（T1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.22.0/20261001-t1-argument-guards/proposal.md) | [#117](https://github.com/shuji-bonji/houki-nta-mcp/pull/117) |
-| 2026-09-27 | v0.21.1 | [絞り込んで 0 件になったときの応答と、`freshness` の段階に仕様 ID を振る](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.21.1/20260927-search-zero-hits/proposal.md) | [#90](https://github.com/shuji-bonji/houki-nta-mcp/pull/90) |
-| 2026-09-27 | v0.21.1 | [キーワードの扱い（短い語・略称と通称の展開・全角の揃え方）を、検索系 6 ツールの応答として確かめる](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.21.1/20260927-search-keyword-rules/proposal.md) | [#86](https://github.com/shuji-bonji/houki-nta-mcp/pull/86) |
-| 2026-09-27 | v0.21.1 | [検索でヒットしたときの応答の形に仕様 ID を振る](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.21.1/20260927-search-hit-responses/proposal.md) | [#85](https://github.com/shuji-bonji/houki-nta-mcp/pull/85) |
+| 2026-10-09 | v0.27.0 | [置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.27.0/20261009-db-folder-access-and-tsutatsu-guide/proposal.md) | [#160](https://github.com/shuji-bonji/houki-nta-mcp/pull/160) |
+| 2026-10-05 | v0.25.0 | [ローカル DB の場所を、応答・起動時のログ・`--status` で確かめられるようにし、保存したタックスアンサーの索引を読めないことをログに残す（nta #138・#137、T6）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.25.0/20261004-db-location/proposal.md) | [#142](https://github.com/shuji-bonji/houki-nta-mcp/pull/142) |
+| 2026-10-04 | v0.24.1 | [検索の `freshness` の範囲から、国税庁の索引から消えた文書を外す（nta #139）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.24.1/20261004-freshness-orphaned/proposal.md) | [#140](https://github.com/shuji-bonji/houki-nta-mcp/pull/140) |
+| 2026-10-03 | v0.24.0 | [国税庁サイトから取る経路（通信の失敗の code・タックスアンサーの URL と 8xxx 帯）と、事務運営指針の legal_status.note（段階 5）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.24.0/20261003-source-paths/proposal.md) | [#134](https://github.com/shuji-bonji/houki-nta-mcp/pull/134) |
+| 2026-10-03 | v0.24.0 | [検索の英字の大文字と小文字・3 文字未満の略称・nta_search_qa の domain（段階 5 検索規則）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.24.0/20261003-search-rules/proposal.md) | [#133](https://github.com/shuji-bonji/houki-nta-mcp/pull/133) |
+| 2026-10-03 | v0.23.0 | [値の無いフィールドを null にし、検索の結果に発出日と法令時点を揃えて返す（T4 応答の形）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.23.0/20261003-t4-response-shape/proposal.md) | [#125](https://github.com/shuji-bonji/houki-nta-mcp/pull/125) |
+| 2026-10-01 | v0.22.0 | [全角・半角・ダッシュ類の揃え方を houki-abbreviations 0.7.0 に一本化する（T3）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.22.0/20261001-t3-normalize/proposal.md) | [#119](https://github.com/shuji-bonji/houki-nta-mcp/pull/119) |
+| 2026-10-01 | v0.22.0 | [引数の検査を inputSchema に書き、丸めずに `INVALID_ARGUMENT` にする（T1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.22.0/20261001-t1-argument-guards/proposal.md) | [#117](https://github.com/shuji-bonji/houki-nta-mcp/pull/117) |
+| 2026-09-27 | v0.21.1 | [絞り込んで 0 件になったときの応答と、`freshness` の段階に仕様 ID を振る](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.21.1/20260927-search-zero-hits/proposal.md) | [#90](https://github.com/shuji-bonji/houki-nta-mcp/pull/90) |
+| 2026-09-27 | v0.21.1 | [キーワードの扱い（短い語・略称と通称の展開・全角の揃え方）を、検索系 6 ツールの応答として確かめる](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.21.1/20260927-search-keyword-rules/proposal.md) | [#86](https://github.com/shuji-bonji/houki-nta-mcp/pull/86) |
+| 2026-09-27 | v0.21.1 | [検索でヒットしたときの応答の形に仕様 ID を振る](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.21.1/20260927-search-hit-responses/proposal.md) | [#85](https://github.com/shuji-bonji/houki-nta-mcp/pull/85) |
 | 2026-09-27 | — | 初版 | [#78](https://github.com/shuji-bonji/houki-nta-mcp/pull/78) |
 :::
 
@@ -499,4 +499,4 @@ v0.24.0 では、`oldest_fetched_at` が `2026-09-07T21:06:49.516Z` になり、
 
 - [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
 - [houki-nta-mcp の解説](/mcp/houki-nta)
-- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/search_rules/spec.md)
+- [元の仕様書（GitHub、v0.27.1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/current/search_rules/spec.md)

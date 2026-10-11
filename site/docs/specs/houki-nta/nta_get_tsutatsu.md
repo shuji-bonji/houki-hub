@@ -8,14 +8,14 @@ description: "houki-nta-mcp の nta_get_tsutatsu（基本通達の条項を 1 �
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/nta_get_tsutatsu/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/nta_get_tsutatsu/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.1** の `specs/current/nta_get_tsutatsu/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 基本通達の条項を 1 つ取得する
 
 使いどころ・引数・実測の呼び出し例は、[ツールのページ](/reference/mcp/houki-nta/nta_get_tsutatsu)にあります。
 
-最後に仕様が変わったのは v0.27.0 の「置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）」（2026-10-09 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
+最後に仕様が変わったのは v0.27.1 の「`nta_get_tsutatsu` の DB の経路の `ARTICLE_NOT_FOUND` の案内を国税庁サイトの経路とそろえ、`available_clauses` の打ち切りを応答で示す（nta #164）」（2026-10-12 承認）です。それまでの経緯は[承認の履歴](#承認の履歴)にあります。
 
 ## 利用者と得られる結果
 
@@ -132,15 +132,25 @@ flowchart TD
 
 <a id="spec-nta-get-tsutatsu-005"></a>
 
-### SPEC-NTA-GET-TSUTATSU-005 DB に通達はあるが条項が無いときは、国税庁サイトから取らない通達なら番号の候補を返す
+### SPEC-NTA-GET-TSUTATSU-005 DB に通達はあるが条項が無いときは、国税庁サイトから取らない通達なら番号の候補と探し方を返す
 
 ::: details 詳細
-求められた条項が DB に無く、その通達の条項が DB に 1 件でもあり、次のどちらかに当たるときは、エラー `ARTICLE_NOT_FOUND` を返し、`available_clauses` にその通達の条項番号（最大 50 件）を入れる。この場合は国税庁サイトには取りに行かない。
+求められた条項が DB に無く、その通達の条項が DB に 1 件でもあり、次のどちらかに当たるときは、エラー `ARTICLE_NOT_FOUND` を返す。この場合は国税庁サイトには取りに行かない。
 
-- その通達を bulk download で全節取り込んである（章を絞った実行や、国税庁サイトから取った分の書き戻しではない）
-- 国税庁サイトから取れる通達（[SPEC-NTA-GET-TSUTATSU-006](#spec-nta-get-tsutatsu-006) の 4 通達）ではない
+- (a) その通達を bulk download で全節取り込んである（章を絞った実行や、国税庁サイトから取った分の書き戻しではない）
+- (b) 国税庁サイトから取れる通達（[SPEC-NTA-GET-TSUTATSU-006](#spec-nta-get-tsutatsu-006) の 4 通達）ではない
 
-4 通達のうち bulk download 済みでない通達（書き戻した節しか無い通達を含む）は、DB に無い条項を国税庁サイトから取る経路（[SPEC-NTA-GET-TSUTATSU-006](#spec-nta-get-tsutatsu-006)）へ進む。
+応答は次のとおり。`hint` と `next_actions` の組み立ては、国税庁サイトの経路（[SPEC-NTA-GET-TSUTATSU-010](#spec-nta-get-tsutatsu-010)）と同じにする。
+
+- `error` は今までどおり `clause "<入力の clause>" は DB 内の "<正式名>" に見つかりません`
+- `available_clauses` に、DB にあるその通達の条項番号を DB に入れた順に最大 50 件入れる。`available_clauses_total` と、上限で切れたときの `hint` の文は [SPEC-NTA-GET-TSUTATSU-019](#spec-nta-get-tsutatsu-019) のとおり
+- (a) 基本通達 4 種のとき: `hint` は `<正式名>の番号の形は <その通達の番号の形>（例: <例>）。番号の形を確かめてください。\`nta_search_tsutatsu\` で条項を検索するか、\`<コマンド>\` で全節を取り直すと、DB に投入した後の改正を反映できます`。`<コマンド>` は [SPEC-NTA-DB-SCHEMA-027](/specs/houki-nta/db_schema#spec-nta-db-schema-027) の形で `--bulk-download --tsutatsu="<正式名>"` を付けたもの（DB の場所の設定に応じて `HOUKI_NTA_DB_PATH=…` などを前に付ける）。`next_actions` は `nta_search_tsutatsu`（`example.keyword` は入力の `clause`）と `cli_bulk_download`（`example.command` は `hint` と同じコマンド）の 2 件
+- (b) 基本通達 4 種でないとき: `hint` は `この通達（<正式名>）は国税庁サイトから取れず、投入のフラグ（--bulk-download の --tsutatsu）でも DB に入れられません（入れられるのは基本通達 4 種だけです）。DB にある条項は available_clauses のとおりです。\`nta_search_tsutatsu\` で条項を検索してください`。`next_actions` は `nta_search_tsutatsu` の 1 件。投入のコマンドを書かない（[SPEC-NTA-GET-TSUTATSU-007](#spec-nta-get-tsutatsu-007) と同じ理由。`--tsutatsu` は基本通達 4 種の正式名しか受け付けない）
+- `retryable` と `detail` は付けない（今までどおり）
+
+4 通達のうち bulk download 済みでない通達（書き戻した節しか無い通達を含む）は、DB に無い条項を国税庁サイトから取る経路（[SPEC-NTA-GET-TSUTATSU-006](#spec-nta-get-tsutatsu-006)）へ進む。ローカル DB を開けないとき（[SPEC-NTA-DB-SCHEMA-030](/specs/houki-nta/db_schema#spec-nta-db-schema-030)）は、DB を空として扱うので条項が 1 件も無く、この経路には来ない。
+
+例: 消費税法基本通達を bulk download で全節取り込んだ DB で `{ name: "消基通", clause: "99-9-9", format: "json" }` を呼ぶと、`code: "ARTICLE_NOT_FOUND"`、`hint` は `消費税法基本通達の番号の形は 章-節-条（例: 5-1-9 / 1-4-13の2）。番号の形を確かめてください。\`nta_search_tsutatsu\` で条項を検索するか、\`npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download --tsutatsu="消費税法基本通達"\` で全節を取り直すと、DB に投入した後の改正を反映できます。available_clauses は先頭 50 件です（全 <DB にある条項の数> 件）`、`next_actions` は `nta_search_tsutatsu` と `cli_bulk_download` の 2 件、`available_clauses` は 50 件（v0.27.0 では、`hint` が ``別の clause 番号を試すか、`--bulk-download` で再取得してください（最新の改正反映用）`` で、`next_actions` が無く、一覧が全件か途中までかを応答から読み取れなかった。#164）。
 :::
 
 <a id="spec-nta-get-tsutatsu-006"></a>
@@ -208,11 +218,11 @@ flowchart TD
 ### SPEC-NTA-GET-TSUTATSU-010 候補ページのどれにも条項が無いときは、見たページの番号（最大 50 件）と URL を返す
 
 ::: details 詳細
-候補ページを取得したがどれにも条項が無いとき（[SPEC-NTA-GET-TSUTATSU-014](#spec-nta-get-tsutatsu-014) の目次の取り直しの後も同じとき）は、エラー `ARTICLE_NOT_FOUND` を返す。`available_clauses` に取得したページにある条項番号を、取得したページの順・ページの中の順に最大 50 件入れ、`searched_urls` に取得したページの URL を入れる。件数の上限は、DB の経路（[SPEC-NTA-GET-TSUTATSU-005](#spec-nta-get-tsutatsu-005)）の 50 件と同じにする。`hint` に、番号の形の確認と `nta_search_tsutatsu` での検索、`--bulk-download` で全節を DB に入れる方法を書く。`next_actions` は `nta_search_tsutatsu` と bulk download の案内（`cli_bulk_download`）の 2 件。
+候補ページを取得したがどれにも条項が無いとき（[SPEC-NTA-GET-TSUTATSU-014](#spec-nta-get-tsutatsu-014) の目次の取り直しの後も同じとき）は、エラー `ARTICLE_NOT_FOUND` を返す。`available_clauses` に取得したページにある条項番号を、取得したページの順・ページの中の順に最大 50 件入れ、`searched_urls` に取得したページの URL を入れる。件数の上限は、DB の経路（[SPEC-NTA-GET-TSUTATSU-005](#spec-nta-get-tsutatsu-005)）の 50 件と同じにする。`available_clauses_total` と、上限で切れたときの `hint` の文は [SPEC-NTA-GET-TSUTATSU-019](#spec-nta-get-tsutatsu-019) のとおり。`hint` に、番号の形の確認と `nta_search_tsutatsu` での検索、`--bulk-download` で全節を DB に入れる方法（[SPEC-NTA-DB-SCHEMA-027](/specs/houki-nta/db_schema#spec-nta-db-schema-027) の形のコマンド）を書く。`next_actions` は `nta_search_tsutatsu` と bulk download の案内（`cli_bulk_download`）の 2 件。
 
-ローカル DB を開けないとき（[SPEC-NTA-DB-SCHEMA-030](/specs/houki-nta/db_schema#spec-nta-db-schema-030)）は、`hint` の `--bulk-download` で全節を DB に入れる方法の文を書かず、`next_actions` に `cli_bulk_download` を入れない（`nta_search_tsutatsu` の 1 件）。`code`・`available_clauses`・`searched_urls` は同じ。
+ローカル DB を開けないとき（[SPEC-NTA-DB-SCHEMA-030](/specs/houki-nta/db_schema#spec-nta-db-schema-030)）は、`hint` の `--bulk-download` で全節を DB に入れる方法の文を書かず、`next_actions` に `cli_bulk_download` を入れない（`nta_search_tsutatsu` の 1 件）。`code`・`available_clauses`・`available_clauses_total`・`searched_urls` は同じ。
 
-例: 取得した 3 ページに条項が合わせて 80 件あり、どれも求めた条項でないとき、`available_clauses` は 1 ページ目の先頭から数えて 50 件（v0.22.0 では 80 件すべて）、`searched_urls` は 3 件。同じ場面で DB を開けないときは、`hint` に `--bulk-download` を含まず、`next_actions` は `nta_search_tsutatsu` の 1 件（v0.25.x では DB を開くところで `INTERNAL_ERROR` になり、国税庁サイトには取りに行かなかった）。
+例: 取得した 3 ページに条項が合わせて 80 件あり、どれも求めた条項でないとき、`available_clauses` は 1 ページ目の先頭から数えて 50 件（v0.22.0 では 80 件すべて）、`available_clauses_total` は 80、`searched_urls` は 3 件。同じ場面で DB を開けないときは、`hint` に `--bulk-download` を含まず、`next_actions` は `nta_search_tsutatsu` の 1 件（v0.25.x では DB を開くところで `INTERNAL_ERROR` になり、国税庁サイトには取りに行かなかった）。
 :::
 
 <a id="spec-nta-get-tsutatsu-011"></a>
@@ -311,6 +321,22 @@ DB に保存してあった目次を使った呼び出しで次のどれかが�
 例: `{ name: "消基通　", clause: "５－１－９" }` は `{ name: "消基通", clause: "5-1-9" }` と同じ応答（v0.21.3 では `name` が辞書に無い扱いで `ABBREVIATION_NOT_FOUND` だった）。
 :::
 
+<a id="spec-nta-get-tsutatsu-019"></a>
+
+### SPEC-NTA-GET-TSUTATSU-019 `available_clauses` を返すときは元になった条項の総数を `available_clauses_total` に付け、上限で切れたときは `hint` に書く
+
+::: details 詳細
+`ARTICLE_NOT_FOUND` で `available_clauses` を返すとき（[SPEC-NTA-GET-TSUTATSU-005](#spec-nta-get-tsutatsu-005)・010）は、`available_clauses_total` に、一覧の元になった条項の総数を数値で付ける。
+
+- DB の経路（005）では、DB にあるその通達の条項の数
+- 国税庁サイトの経路（010）では、取得した候補ページにある条項の数（上限の 10 ページで見ていない候補ページの分は数えない）
+- 総数が 50 を超えるときは、`available_clauses` は先頭 50 件で、`hint` の末尾に `available_clauses は先頭 50 件です（全 <総数> 件）` の文を足す（`hint` の文は `。` でつなぐ）
+- 総数が 50 以下のときは、`available_clauses` が全件で、この文を書かない
+- `available_clauses` を返さないエラーには、`available_clauses_total` も付けない
+
+例: DB に `1-1-1`〜`1-1-60` の 60 件があり、どれも求めた条項でないとき、`available_clauses` は 50 件、`available_clauses_total` は `60`、`hint` の末尾は `available_clauses は先頭 50 件です（全 60 件）`。DB に 3 件のときは、`available_clauses` は 3 件、`available_clauses_total` は `3` で、`hint` にこの文は無い（v0.27.0 では `available_clauses_total` が無く、60 件のときも 3 件のときも一覧が全件か途中までかを応答から読み取れなかった。#164）。
+:::
+
 ## 実装する人に向けた情報
 
 ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
@@ -332,23 +358,24 @@ DB に保存してあった目次を使った呼び出しで次のどれかが�
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history nta_get_tsutatsu` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 
-::: details 承認の履歴（15 件）
+::: details 承認の履歴（16 件）
 | 承認日 | 版 | 変更 | 仕様 PR |
 |---|---|---|---|
-| 2026-10-09 | v0.27.0 | [置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.27.0/20261009-db-folder-access-and-tsutatsu-guide/proposal.md) | [#160](https://github.com/shuji-bonji/houki-nta-mcp/pull/160) |
-| 2026-10-06 | v0.26.0 | [ローカル DB を開けないときの読むだけのツールと書き戻すツールの応答、`--bulk-download-tax-answer` が索引を保存できないときの終わり方（nta #144・#145）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.26.0/20261006-db-failure-paths/proposal.md) | [#152](https://github.com/shuji-bonji/houki-nta-mcp/pull/152) |
-| 2026-10-03 | v0.24.0 | [国税庁サイトから取る経路（通信の失敗の code・タックスアンサーの URL と 8xxx 帯）と、事務運営指針の legal_status.note（段階 5）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.24.0/20261003-source-paths/proposal.md) | [#134](https://github.com/shuji-bonji/houki-nta-mcp/pull/134) |
-| 2026-10-03 | v0.24.0 | [0.22.0 の取り込みで直し漏れた specs/current の文を、取り込んだ本文に合わせる（#123）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.24.0/20261003-specs-current-catchup/proposal.md) | [#132](https://github.com/shuji-bonji/houki-nta-mcp/pull/132) |
-| 2026-10-03 | v0.23.0 | [値の無いフィールドを null にし、検索の結果に発出日と法令時点を揃えて返す（T4 応答の形）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.23.0/20261003-t4-response-shape/proposal.md) | [#125](https://github.com/shuji-bonji/houki-nta-mcp/pull/125) |
-| 2026-10-01 | v0.22.0 | [全角・半角・ダッシュ類の揃え方を houki-abbreviations 0.7.0 に一本化する（T3）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.22.0/20261001-t3-normalize/proposal.md) | [#119](https://github.com/shuji-bonji/houki-nta-mcp/pull/119) |
-| 2026-10-01 | v0.22.0 | [引数の検査を inputSchema に書き、丸めずに `INVALID_ARGUMENT` にする（T1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.22.0/20261001-t1-argument-guards/proposal.md) | [#117](https://github.com/shuji-bonji/houki-nta-mcp/pull/117) |
-| 2026-09-27 | v0.21.1 | [取得系ツールと nta_inspect_pdf_meta の応答の形に仕様 ID を振る](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.21.1/20260927-get-responses/proposal.md) | [#89](https://github.com/shuji-bonji/houki-nta-mcp/pull/89) |
-| 2026-09-27 | v0.21.1 | [DB から返すか国税庁サイトから取るかの分かれ目に、仕様 ID とテストを足す](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.21.1/20260927-fetch-paths/proposal.md) | [#88](https://github.com/shuji-bonji/houki-nta-mcp/pull/88) |
-| 2026-09-27 | v0.21.1 | [引数の検査と、国税庁のページの解析の失敗のエラーに仕様 ID を振る](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.21.1/20260927-argument-and-parse-errors/proposal.md) | [#84](https://github.com/shuji-bonji/houki-nta-mcp/pull/84) |
-| 2026-09-26 | v0.21.1 | [「未決」のうち判断が要る 45 件を Issue に移す](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.21.1/20260926-undecided-to-issues/proposal.md) | [#74](https://github.com/shuji-bonji/houki-nta-mcp/pull/74) |
-| 2026-09-26 | v0.21.1 | [全 14 ツールの spec.md に「処理の流れ」の節を足す](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.21.1/20260926-processing-flow/proposal.md) | [#63](https://github.com/shuji-bonji/houki-nta-mcp/pull/63) |
-| 2026-09-25 | v0.21.0 | [nta_get_tsutatsu の国税庁サイトからの取得を基本通達 4 種で成立させる](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.21.0/20260925-tsutatsu-live-toc/proposal.md) | [#59](https://github.com/shuji-bonji/houki-nta-mcp/pull/59) |
-| 2026-09-24 | v0.20.3 | [nta_get_tsutatsu の clause の形を通達ごとに書き分ける](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.20.3/20260924-tsutatsu-clause-forms/proposal.md) | [#53](https://github.com/shuji-bonji/houki-nta-mcp/pull/53) |
+| 2026-10-12 | v0.27.1 | [`nta_get_tsutatsu` の DB の経路の `ARTICLE_NOT_FOUND` の案内を国税庁サイトの経路とそろえ、`available_clauses` の打ち切りを応答で示す（nta #164）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.27.1/20261012-tsutatsu-db-not-found-guide/proposal.md) | [#165](https://github.com/shuji-bonji/houki-nta-mcp/pull/165) |
+| 2026-10-09 | v0.27.0 | [置き場所のフォルダーに入る権限が無いときを「開けない DB」にそろえる（nta #154）、ライブ取得に対応していない通達に実行できない投入のコマンドを案内しない（nta #155）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.27.0/20261009-db-folder-access-and-tsutatsu-guide/proposal.md) | [#160](https://github.com/shuji-bonji/houki-nta-mcp/pull/160) |
+| 2026-10-06 | v0.26.0 | [ローカル DB を開けないときの読むだけのツールと書き戻すツールの応答、`--bulk-download-tax-answer` が索引を保存できないときの終わり方（nta #144・#145）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.26.0/20261006-db-failure-paths/proposal.md) | [#152](https://github.com/shuji-bonji/houki-nta-mcp/pull/152) |
+| 2026-10-03 | v0.24.0 | [国税庁サイトから取る経路（通信の失敗の code・タックスアンサーの URL と 8xxx 帯）と、事務運営指針の legal_status.note（段階 5）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.24.0/20261003-source-paths/proposal.md) | [#134](https://github.com/shuji-bonji/houki-nta-mcp/pull/134) |
+| 2026-10-03 | v0.24.0 | [0.22.0 の取り込みで直し漏れた specs/current の文を、取り込んだ本文に合わせる（#123）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.24.0/20261003-specs-current-catchup/proposal.md) | [#132](https://github.com/shuji-bonji/houki-nta-mcp/pull/132) |
+| 2026-10-03 | v0.23.0 | [値の無いフィールドを null にし、検索の結果に発出日と法令時点を揃えて返す（T4 応答の形）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.23.0/20261003-t4-response-shape/proposal.md) | [#125](https://github.com/shuji-bonji/houki-nta-mcp/pull/125) |
+| 2026-10-01 | v0.22.0 | [全角・半角・ダッシュ類の揃え方を houki-abbreviations 0.7.0 に一本化する（T3）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.22.0/20261001-t3-normalize/proposal.md) | [#119](https://github.com/shuji-bonji/houki-nta-mcp/pull/119) |
+| 2026-10-01 | v0.22.0 | [引数の検査を inputSchema に書き、丸めずに `INVALID_ARGUMENT` にする（T1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.22.0/20261001-t1-argument-guards/proposal.md) | [#117](https://github.com/shuji-bonji/houki-nta-mcp/pull/117) |
+| 2026-09-27 | v0.21.1 | [取得系ツールと nta_inspect_pdf_meta の応答の形に仕様 ID を振る](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.21.1/20260927-get-responses/proposal.md) | [#89](https://github.com/shuji-bonji/houki-nta-mcp/pull/89) |
+| 2026-09-27 | v0.21.1 | [DB から返すか国税庁サイトから取るかの分かれ目に、仕様 ID とテストを足す](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.21.1/20260927-fetch-paths/proposal.md) | [#88](https://github.com/shuji-bonji/houki-nta-mcp/pull/88) |
+| 2026-09-27 | v0.21.1 | [引数の検査と、国税庁のページの解析の失敗のエラーに仕様 ID を振る](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.21.1/20260927-argument-and-parse-errors/proposal.md) | [#84](https://github.com/shuji-bonji/houki-nta-mcp/pull/84) |
+| 2026-09-26 | v0.21.1 | [「未決」のうち判断が要る 45 件を Issue に移す](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.21.1/20260926-undecided-to-issues/proposal.md) | [#74](https://github.com/shuji-bonji/houki-nta-mcp/pull/74) |
+| 2026-09-26 | v0.21.1 | [全 14 ツールの spec.md に「処理の流れ」の節を足す](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.21.1/20260926-processing-flow/proposal.md) | [#63](https://github.com/shuji-bonji/houki-nta-mcp/pull/63) |
+| 2026-09-25 | v0.21.0 | [nta_get_tsutatsu の国税庁サイトからの取得を基本通達 4 種で成立させる](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.21.0/20260925-tsutatsu-live-toc/proposal.md) | [#59](https://github.com/shuji-bonji/houki-nta-mcp/pull/59) |
+| 2026-09-24 | v0.20.3 | [nta_get_tsutatsu の clause の形を通達ごとに書き分ける](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.20.3/20260924-tsutatsu-clause-forms/proposal.md) | [#53](https://github.com/shuji-bonji/houki-nta-mcp/pull/53) |
 | 2026-09-22 | — | 初版 | [#49](https://github.com/shuji-bonji/houki-nta-mcp/pull/49) |
 :::
 
@@ -359,4 +386,4 @@ DB に保存してあった目次を使った呼び出しで次のどれかが�
 - [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
 - [houki-nta-mcp の解説](/mcp/houki-nta)
 - [nta_get_tsutatsu のツールのページ（リファレンス）](/reference/mcp/houki-nta/nta_get_tsutatsu)
-- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/nta_get_tsutatsu/spec.md)
+- [元の仕様書（GitHub、v0.27.1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/current/nta_get_tsutatsu/spec.md)

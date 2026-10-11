@@ -8,7 +8,7 @@ description: "houki-nta-mcp の cli_refresh（取り込み済みの通達と文�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/cli_refresh/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/cli_refresh/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.1** の `specs/current/cli_refresh/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 取り込み済みの通達と文書の取り直し
@@ -162,9 +162,9 @@ flowchart TD
 ::: details 承認の履歴（4 件）
 | 承認日 | 版 | 変更 | 仕様 PR |
 |---|---|---|---|
-| 2026-10-04 | v0.24.0 | [ローカル DB の版の扱い・作る入口・doc_type の制約・タックスアンサーの索引の保存と、CLI の引数の検査（段階 5 DB と CLI）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.24.0/20261003-db-cli/proposal.md) | [#135](https://github.com/shuji-bonji/houki-nta-mcp/pull/135) |
-| 2026-10-03 | v0.23.0 | [hint・next_actions・説明文・CLI の使い方と実際の動きの食い違いを、行ごとに直す（T5 文書と実装の食い違い）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.23.0/20261003-t5-docs-mismatch/proposal.md) | [#126](https://github.com/shuji-bonji/houki-nta-mcp/pull/126) |
-| 2026-09-30 | v0.22.0 | [CLI・DB の初版の「未決」のうち判断が要る 12 件を Issue に移す（#75 の続き）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.22.0/20260930-cli-db-undecided-to-issues/proposal.md) | [#114](https://github.com/shuji-bonji/houki-nta-mcp/pull/114) |
+| 2026-10-04 | v0.24.0 | [ローカル DB の版の扱い・作る入口・doc_type の制約・タックスアンサーの索引の保存と、CLI の引数の検査（段階 5 DB と CLI）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.24.0/20261003-db-cli/proposal.md) | [#135](https://github.com/shuji-bonji/houki-nta-mcp/pull/135) |
+| 2026-10-03 | v0.23.0 | [hint・next_actions・説明文・CLI の使い方と実際の動きの食い違いを、行ごとに直す（T5 文書と実装の食い違い）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.23.0/20261003-t5-docs-mismatch/proposal.md) | [#126](https://github.com/shuji-bonji/houki-nta-mcp/pull/126) |
+| 2026-09-30 | v0.22.0 | [CLI・DB の初版の「未決」のうち判断が要る 12 件を Issue に移す（#75 の続き）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.22.0/20260930-cli-db-undecided-to-issues/proposal.md) | [#114](https://github.com/shuji-bonji/houki-nta-mcp/pull/114) |
 | 2026-09-29 | — | 初版 | [#103](https://github.com/shuji-bonji/houki-nta-mcp/pull/103) |
 :::
 
@@ -174,4 +174,4 @@ flowchart TD
 
 - [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
 - [houki-nta-mcp の解説](/mcp/houki-nta)
-- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/cli_refresh/spec.md)
+- [元の仕様書（GitHub、v0.27.1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/current/cli_refresh/spec.md)

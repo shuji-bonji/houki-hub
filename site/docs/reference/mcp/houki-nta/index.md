@@ -1,6 +1,6 @@
 ---
 title: "houki-nta-mcp — ツールリファレンス"
-description: "houki-nta-mcp v0.27.0 の全 14 ツールの一覧（tools/list から自動生成）"
+description: "houki-nta-mcp v0.27.1 の全 14 ツールの一覧（tools/list から自動生成）"
 ---
 
 # houki-nta-mcp — ツールリファレンス
@@ -8,7 +8,7 @@ description: "houki-nta-mcp v0.27.0 の全 14 ツールの一覧（tools/list �
 <!-- GENERATED FILE — 手で編集しない。一覧はサーバーの tools/list から。 -->
 
 ::: info
-**v0.27.0** の `tools/list` から自動生成しました（14 ツール・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+**v0.27.1** の `tools/list` から自動生成しました（14 ツール・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 **このページは自動生成のリファレンスの入り口です。** ツールごとに 1 ページあり、何をするか・引数・実測の呼び出し例・扱わないことを、動いているサーバーの `tools/list` と、各リポジトリの仕様書（`specs/current/`）から写しています。サーバー全体の説明と導入は[解説ページ](/mcp/houki-nta)にあります。
@@ -22,7 +22,7 @@ description: "houki-nta-mcp v0.27.0 の全 14 ツールの一覧（tools/list �
 | ツールのページ | 一言 | 仕様書ページ |
 |---|---|---|
 | [`nta_search_tsutatsu`](/reference/mcp/houki-nta/nta_search_tsutatsu) | 国税庁の基本通達（消基通・所基通・法基通・相基通の 4 通達）を FTS5 でキーワード検索する。 | [仕様（仕様項目 11 件）](/specs/houki-nta/nta_search_tsutatsu) |
-| [`nta_get_tsutatsu`](/reference/mcp/houki-nta/nta_get_tsutatsu) | 基本通達の本文を取得する。 | [仕様（仕様項目 18 件）](/specs/houki-nta/nta_get_tsutatsu) |
+| [`nta_get_tsutatsu`](/reference/mcp/houki-nta/nta_get_tsutatsu) | 基本通達の本文を取得する。 | [仕様（仕様項目 19 件）](/specs/houki-nta/nta_get_tsutatsu) |
 | [`nta_search_qa`](/reference/mcp/houki-nta/nta_search_qa) | 国税庁の質疑応答事例（9 税目: 所得税/源泉所得税/譲渡所得/相続税・贈与税/財産の評価/法人税/消費税/印紙税/法定調書）を FTS5 でキーワード検索する。 | [仕様（仕様項目 8 件）](/specs/houki-nta/nta_search_qa) |
 | [`nta_get_qa`](/reference/mcp/houki-nta/nta_get_qa) | 国税庁の質疑応答事例 1 件を取得する。 | [仕様（仕様項目 16 件）](/specs/houki-nta/nta_get_qa) |
 | [`nta_search_tax_answer`](/reference/mcp/houki-nta/nta_search_tax_answer) | タックスアンサー（一般納税者向け解説、約 750 件）を FTS5 でキーワード検索する。 | [仕様（仕様項目 6 件）](/specs/houki-nta/nta_search_tax_answer) |

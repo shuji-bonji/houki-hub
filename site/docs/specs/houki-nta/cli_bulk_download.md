@@ -8,7 +8,7 @@ description: "houki-nta-mcp の cli_bulk_download（国税庁サイトから通�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/cli_bulk_download/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/cli_bulk_download/spec.md` から自動生成しました（仕様 ID 14 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.1** の `specs/current/cli_bulk_download/spec.md` から自動生成しました（仕様 ID 14 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 国税庁サイトから通達と文書を取得してローカル DB に入れる
@@ -261,10 +261,10 @@ v0.25.x では、`--bulk-download-tax-answer` は記事を 1 件も取らずに�
 ::: details 承認の履歴（5 件）
 | 承認日 | 版 | 変更 | 仕様 PR |
 |---|---|---|---|
-| 2026-10-06 | v0.26.0 | [ローカル DB を開けないときの読むだけのツールと書き戻すツールの応答、`--bulk-download-tax-answer` が索引を保存できないときの終わり方（nta #144・#145）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.26.0/20261006-db-failure-paths/proposal.md) | [#152](https://github.com/shuji-bonji/houki-nta-mcp/pull/152) |
-| 2026-10-04 | v0.24.0 | [ローカル DB の版の扱い・作る入口・doc_type の制約・タックスアンサーの索引の保存と、CLI の引数の検査（段階 5 DB と CLI）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.24.0/20261003-db-cli/proposal.md) | [#135](https://github.com/shuji-bonji/houki-nta-mcp/pull/135) |
-| 2026-10-03 | v0.24.0 | [国税庁サイトから取る経路（通信の失敗の code・タックスアンサーの URL と 8xxx 帯）と、事務運営指針の legal_status.note（段階 5）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.24.0/20261003-source-paths/proposal.md) | [#134](https://github.com/shuji-bonji/houki-nta-mcp/pull/134) |
-| 2026-09-30 | v0.22.0 | [CLI・DB の初版の「未決」のうち判断が要る 12 件を Issue に移す（#75 の続き）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/releases/v0.22.0/20260930-cli-db-undecided-to-issues/proposal.md) | [#114](https://github.com/shuji-bonji/houki-nta-mcp/pull/114) |
+| 2026-10-06 | v0.26.0 | [ローカル DB を開けないときの読むだけのツールと書き戻すツールの応答、`--bulk-download-tax-answer` が索引を保存できないときの終わり方（nta #144・#145）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.26.0/20261006-db-failure-paths/proposal.md) | [#152](https://github.com/shuji-bonji/houki-nta-mcp/pull/152) |
+| 2026-10-04 | v0.24.0 | [ローカル DB の版の扱い・作る入口・doc_type の制約・タックスアンサーの索引の保存と、CLI の引数の検査（段階 5 DB と CLI）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.24.0/20261003-db-cli/proposal.md) | [#135](https://github.com/shuji-bonji/houki-nta-mcp/pull/135) |
+| 2026-10-03 | v0.24.0 | [国税庁サイトから取る経路（通信の失敗の code・タックスアンサーの URL と 8xxx 帯）と、事務運営指針の legal_status.note（段階 5）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.24.0/20261003-source-paths/proposal.md) | [#134](https://github.com/shuji-bonji/houki-nta-mcp/pull/134) |
+| 2026-09-30 | v0.22.0 | [CLI・DB の初版の「未決」のうち判断が要る 12 件を Issue に移す（#75 の続き）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/releases/v0.22.0/20260930-cli-db-undecided-to-issues/proposal.md) | [#114](https://github.com/shuji-bonji/houki-nta-mcp/pull/114) |
 | 2026-09-29 | — | 初版 | [#103](https://github.com/shuji-bonji/houki-nta-mcp/pull/103) |
 :::
 
@@ -274,4 +274,4 @@ v0.25.x では、`--bulk-download-tax-answer` は記事を 1 件も取らずに�
 
 - [houki-nta-mcp の仕様の一覧](/specs/houki-nta/)
 - [houki-nta-mcp の解説](/mcp/houki-nta)
-- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/cli_bulk_download/spec.md)
+- [元の仕様書（GitHub、v0.27.1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/current/cli_bulk_download/spec.md)

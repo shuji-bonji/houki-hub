@@ -8,7 +8,7 @@ description: "houki-nta-mcp の全 22 機能の仕様の一覧（specs/current �
 <!-- GENERATED FILE — 手で編集しない。houki-nta-mcp の specs/current/ から生成。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/` から自動生成しました（22 機能・仕様 ID 276 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.1** の `specs/current/` から自動生成しました（22 機能・仕様 ID 277 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 houki-nta-mcp が何をするかを、機能ごとに 1 ページで説明します。全体の使い方は[解説](/mcp/houki-nta)に、引数の一覧は[リファレンス](/reference/mcp/houki-nta/)にあります。
@@ -24,7 +24,7 @@ MCP クライアント（Claude などの LLM）から呼ぶツールです。
 | [`nta_get_kaisei_tsutatsu`](/specs/houki-nta/nta_get_kaisei_tsutatsu) | 改正通達を docId で 1 件取得する | 11 |
 | [`nta_get_qa`](/specs/houki-nta/nta_get_qa) | 質疑応答事例を 1 件取得する | 16 |
 | [`nta_get_tax_answer`](/specs/houki-nta/nta_get_tax_answer) | タックスアンサーを番号で 1 件取得する | 18 |
-| [`nta_get_tsutatsu`](/specs/houki-nta/nta_get_tsutatsu) | 基本通達の条項を 1 つ取得する | 18 |
+| [`nta_get_tsutatsu`](/specs/houki-nta/nta_get_tsutatsu) | 基本通達の条項を 1 つ取得する | 19 |
 | [`nta_inspect_pdf_meta`](/specs/houki-nta/nta_inspect_pdf_meta) | 文書の添付 PDF の一覧と読み方を返す | 20 |
 | [`nta_search_bunshokaitou`](/specs/houki-nta/nta_search_bunshokaitou) | 文書回答事例をキーワードで検索する | 8 |
 | [`nta_search_jimu_unei`](/specs/houki-nta/nta_search_jimu_unei) | 事務運営指針をキーワードで検索する | 8 |

@@ -8,7 +8,7 @@ description: "houki-nta-mcp の nta_search_tsutatsu：国税庁の基本通達�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_search_tsutatsu.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_search_tsutatsu/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_search_tsutatsu.md から。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_search_tsutatsu/spec.md` から自動生成しました（仕様 ID 11 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-nta-mcp **v0.27.1** の `tools/list` と `specs/current/nta_search_tsutatsu/spec.md` から自動生成しました（仕様 ID 11 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 国税庁の基本通達（消基通・所基通・法基通・相基通の 4 通達）を FTS5 でキーワード検索する。事前に `--bulk-download-all` で DB 投入が必要。結果に現れた通達ごとに、解釈の対象になる法律の対応表（base_laws_by_tsutatsu）と、houki-egov-mcp の get_law を案内する next_actions を付ける。
@@ -206,4 +206,4 @@ flowchart TD
 - [houki-nta-mcp の解説](/mcp/houki-nta)
 - [houki-nta-mcp のツール一覧](/reference/mcp/houki-nta/)
 - [nta_search_tsutatsu の仕様書ページ](/specs/houki-nta/nta_search_tsutatsu)
-- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/nta_search_tsutatsu/spec.md)
+- [元の仕様書（GitHub、v0.27.1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/current/nta_search_tsutatsu/spec.md)

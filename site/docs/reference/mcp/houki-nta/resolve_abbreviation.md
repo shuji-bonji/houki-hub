@@ -8,7 +8,7 @@ description: "houki-nta-mcp の resolve_abbreviation：略称・通称から hou
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/resolve_abbreviation.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/resolve_abbreviation/spec.md、使いどころは scripts/spec-pages/houki-nta/resolve_abbreviation.md から。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/resolve_abbreviation/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-nta-mcp **v0.27.1** の `tools/list` と `specs/current/resolve_abbreviation/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 略称・通称から houki-abbreviations 経由でエントリを解決する。houki-nta-mcp 管轄外（法令系等）の場合は「他 MCP に誘導」のヒントを返す。
@@ -131,4 +131,4 @@ flowchart TD
 - [houki-nta-mcp の解説](/mcp/houki-nta)
 - [houki-nta-mcp のツール一覧](/reference/mcp/houki-nta/)
 - [resolve_abbreviation の仕様書ページ](/specs/houki-nta/resolve_abbreviation)
-- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/resolve_abbreviation/spec.md)
+- [元の仕様書（GitHub、v0.27.1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/current/resolve_abbreviation/spec.md)

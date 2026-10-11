@@ -8,7 +8,7 @@ description: "houki-nta-mcp の nta_inspect_pdf_meta：指定した文書の添�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-nta/ja/nta_inspect_pdf_meta.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/nta_inspect_pdf_meta/spec.md、使いどころは scripts/spec-pages/houki-nta/nta_inspect_pdf_meta.md から。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `tools/list` と `specs/current/nta_inspect_pdf_meta/spec.md` から自動生成しました（仕様 ID 20 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-nta-mcp **v0.27.1** の `tools/list` と `specs/current/nta_inspect_pdf_meta/spec.md` から自動生成しました（仕様 ID 20 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
 指定した文書の添付 PDF の一覧を返す。本文は読まない。各 PDF に kind（comparison=新旧対照表 / attachment=別紙・別表 / qa-pdf / related / notice / unknown）と、読み方（read_strategy: tables=表として取る / text=本文として読む / sample=先頭を見て決める、layout_note: 紙面の組み方）を付ける。save: true のときだけ PDF をサーバー側の保存先（既定は XDG_CACHE_HOME か ~/.cache の下の houki-nta-mcp/files/。環境変数 HOUKI_NTA_FILES_DIR で変更）に取得し、saved[] に絶対パスを返す。next_actions に pdf-reader-mcp の呼び出し例（保存済みなら extract_tables / read_text に file_path、未保存なら read_url に url）と、他の PDF 読み取りツール向けの汎用の 1 件を置く。読み手は固定しない。`nta_get_*` で全文を取得すると重い場合や、PDF だけを確認したい時に使う。
@@ -246,4 +246,4 @@ flowchart TD
 - [houki-nta-mcp の解説](/mcp/houki-nta)
 - [houki-nta-mcp のツール一覧](/reference/mcp/houki-nta/)
 - [nta_inspect_pdf_meta の仕様書ページ](/specs/houki-nta/nta_inspect_pdf_meta)
-- [元の仕様書（GitHub、v0.27.0）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.0/specs/current/nta_inspect_pdf_meta/spec.md)
+- [元の仕様書（GitHub、v0.27.1）](https://github.com/shuji-bonji/houki-nta-mcp/blob/v0.27.1/specs/current/nta_inspect_pdf_meta/spec.md)
