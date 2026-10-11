@@ -8,7 +8,7 @@ description: "houki-research Skill の目的・責務・鉄則と、問いの形
 <!-- GENERATED FILE — 手で編集しない。houki-research-skill の skills/houki-research/SKILL.md と workflows/ から生成。 -->
 
 ::: info
-houki-research Skill **v0.20.1** の `skills/houki-research/SKILL.md` と `workflows/` から自動生成しました（workflow 2 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-research Skill **v0.21.0** の `skills/houki-research/SKILL.md` と `workflows/` から自動生成しました（workflow 2 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 Skill には実行するコードが無く、SKILL.md の文章そのものが仕様です。そのため MCP のような仕様 ID と承認の履歴は無く、このページと workflow のページは SKILL.md と workflows/ の本文を言い換えずに写しています。
@@ -35,7 +35,7 @@ graph TB
   class R1,R2,R3,R4 r
 ```
 
-詳細はそれぞれ [`docs/BUSINESS-LAW.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/BUSINESS-LAW.md) / [`docs/ARCHITECTURE.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/ARCHITECTURE.md) / [`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/CITATION.md) を参照。
+詳細はそれぞれ [`docs/BUSINESS-LAW.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/BUSINESS-LAW.md) / [`docs/ARCHITECTURE.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/ARCHITECTURE.md) / [`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/CITATION.md) を参照。
 
 ## workflow の一覧
 
@@ -66,7 +66,7 @@ graph TB
 
 文献調査・制度の概観・条文の引用・改正履歴の説明は **適法な情報提供の範囲**として実施可能。最終判断は税理士・弁護士・司法書士・社労士などの有資格者の関与が必要であることをユーザーに案内する。
 
-何を返し、何を返さないかは [`docs/BUSINESS-LAW.md` の応答型](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/BUSINESS-LAW.md#応答型) に固定してある。**回答を書く前にこの表を見る。**
+何を返し、何を返さないかは [`docs/BUSINESS-LAW.md` の応答型](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/BUSINESS-LAW.md#応答型) に固定してある。**回答を書く前にこの表を見る。**
 
 | | 内容 |
 | --- | --- |
@@ -119,7 +119,7 @@ sequenceDiagram
 | 法令名すら不確か | `search_law` → `get_law` | `{ "keyword": "適格請求書" }` で法令名を探す |
 | 「どの法令の何条に書いてあるか」自体が不明 | `search_fulltext` → `get_law` | `{ "keyword": "民法 不法行為" }` で条文本文を横断検索 |
 
-`search_fulltext` はローカル DB (`npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` で構築) を引く。DB を引けないとき (DB が無い・まだ法令が取り込まれていない・開けないとき、また houki-egov-mcp v0.19.0 以上では DB の版がこの houki-egov-mcp と合わないとき) は、応答の `source` が `"api-fallback"` になり、`search_law` の結果が `fallback` に入って返る。このときは **本文検索ができていない**ので、回答で「法令名の一致で探した」と明示し、`note` の案内をユーザーに伝える。`next_actions` に `bulk_download_everything` があればその `example.command` (DB の構築・作り直し) を、無ければ `note` の続きの文 (houki-egov-mcp の更新、DB ファイルを消してからの構築、DB のパスの確認) を案内する。houki-egov-mcp v0.20.0 以上では、`note` の先頭に MCP サーバーが開こうとした DB のパスが入る。先頭の文ごとの DB の状態と、投入したはずなのに DB が見つからないときに `--status` で DB の場所を確かめる手順は、[`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/ERROR-HANDLING.md) の「`search_fulltext` の `api-fallback`」と「MCP サーバーが開いている DB を確かめる」にある。
+`search_fulltext` はローカル DB (`npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` で構築) を引く。DB を引けないとき (DB が無い・まだ法令が取り込まれていない・開けないとき、また houki-egov-mcp v0.19.0 以上では DB の版がこの houki-egov-mcp と合わないとき) は、応答の `source` が `"api-fallback"` になり、`search_law` の結果が `fallback` に入って返る。このときは **本文検索ができていない**ので、回答で「法令名の一致で探した」と明示し、`note` の案内をユーザーに伝える。`next_actions` に `bulk_download_everything` があればその `example.command` (DB の構築・作り直し) を、無ければ `note` の続きの文 (houki-egov-mcp の更新、DB ファイルを消してからの構築、DB のパスの確認) を案内する。houki-egov-mcp v0.20.0 以上では、`note` の先頭に MCP サーバーが開こうとした DB のパスが入る。先頭の文ごとの DB の状態と、投入したはずなのに DB が見つからないときに `--status` で DB の場所を確かめる手順は、[`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/ERROR-HANDLING.md) の「`search_fulltext` の `api-fallback`」と「MCP サーバーが開いている DB を確かめる」にある。
 
 #### 通達や質疑応答事例を先に引いたら、法律本文へ戻る (houki-nta-mcp v0.11.0 以上。質疑応答事例は v0.12.0 以上)
 
@@ -131,6 +131,8 @@ sequenceDiagram
 | `nta_search_tsutatsu` | `base_laws_by_tsutatsu` | 結果に現れた通達ごとの同じ配列 (`hits[].tsutatsu` をキーに引く) |
 | `nta_get_qa` (`format: "json"`) | `related_laws` / `related_tsutatsu` | 【関係法令通達】欄を分けたもの。法令は `law_name` / `article` / `paragraph` / `item`、通達は `name` / `clause`。元の文字列は `raw` |
 | 上のすべて | `next_actions` | `{ "action": "delegate_to_mcp", "example": { "mcp": "houki-egov", "tool": "get_law", … } }`。質疑応答事例では `nta_get_tsutatsu` への案内も入る。**エラーでなくても付く** |
+
+houki-nta-mcp の検索 6 ツールのうち、`nta_search_tsutatsu` だけは結果を `hits` に入れる (文書系 5 ツール `nta_search_kaisei_tsutatsu` / `nta_search_jimu_unei` / `nta_search_bunshokaitou` / `nta_search_qa` / `nta_search_tax_answer` は `results`)。キーワードに合うものが無いときの応答の形も違う。`nta_search_tsutatsu` は `count: 0`・`hits: []` と `message` (`"<keyword>" にマッチする clause はありません`) を返し、`hint`・`next_actions`・`base_laws_by_tsutatsu` は付かない (SPEC-NTA-SEARCH-TSUTATSU-005)。文書系 5 ツールは `results: []` と、検索した件数を書いた `hint` を返す。どちらもエラーではなく、「その語を含む文書は無い」という検索結果として扱う。`hint` が無いことを不備と取らない。ただし `search_notes` が付いているとき (2 文字の語を部分一致で補った、通称を法令名に広げた) は、その文のとおりに語を変えて検索し直してから「無い」と判断する ([`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/ERROR-HANDLING.md) の「`next_actions` が `cli_bulk_download` の …」の節の末尾)。
 
 `example` の読み方に注意する。`mcp` と `tool` は **どの MCP のどの tool を呼ぶか**を示すもので、引数ではない。houki-egov-mcp v0.6.0 以上と houki-nta-mcp v0.14.0 以上は inputSchema に無い引数を `INVALID_ARGUMENT` で返すので、`example` をそのまま渡すと `mcp, tool: inputSchema に無い引数です` になる。**`mcp` と `tool` を除いた残りを引数にする**。
 
@@ -205,7 +207,7 @@ flowchart TB
 - `comparison` が複数あるときは、どれが本文の新旧対照表でどれが章の構成（通達番号）の対応表かをタイトルで見分ける。改正点の根拠にするのは本文の新旧対照表（「別紙 N」）で、対応表は通達番号の付け替えを確かめるのに使う
 - 見出し行の下に「（注）アンダーラインを付した箇所が改正した箇所である。」と書かれているので、その文があれば下線が差分の印だと分かる
 - 表として取れなかった（`extract_tables` が 0 件、タグ無し）ときは `read_text` / `read_url` に `split_columns: 2` を付けて左右を分ける。1 列として読むと改正後と改正前の文が交互に混ざる
-- citation には、読んだ PDF の `url`、`kind`、どの読み手で読んだか（表として取れたか、本文として読んだか）を書く（[`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/CITATION.md)）
+- citation には、読んだ PDF の `url`、`kind`、どの読み手で読んだか（表として取れたか、本文として読んだか）を書く（[`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/CITATION.md)）
 
 houki-nta-mcp が v0.18.x 以前だと `read_strategy` / `layout_note` / `saved` / `next_actions` は無く、代わりに `reader_hints.examples` が付く。その `args: { url }` を `extract_tables` にそのまま渡すと失敗する（`extract_tables` は `file_path` しか受け取らない）。`url` を `read_url` に渡し、新旧対照表なら `split_columns: 2` を付ける。
 
@@ -216,7 +218,7 @@ houki-nta-mcp が v0.18.x 以前だと `read_strategy` / `layout_note` / `saved`
 - 検索結果から除外はされない。索引にある文書と同じ形で並び、`search_notes` に「N 件のうち M 件は索引から外れています」の行が入る
 - `sourceUrl` は 404 になることがある。本文はローカル DB に残っているので `nta_get_*` では読める
 - 現在の取扱いを問われているなら、同じ論点の現行の文書を探し直す。見つからなければ「索引から外れた文書しか見つからなかった」と書き、断定しない
-- citation では、`index_status` が `"removed_from_index"` であることと `orphaned_at` を注に残す ([`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/CITATION.md))
+- citation では、`index_status` が `"removed_from_index"` であることと `orphaned_at` を注に残す ([`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/CITATION.md))
 
 `freshness` の `stale` / `outdated` とは別のことを指す。`freshness` は「最後に取得してから日が経った」で、`index_status` は「国税庁の索引から外れた」。ローカル DB が新しくても印は付く。houki-nta-mcp v0.24.1 以上では、索引から外れた文書は `freshness` の範囲に入らないので、投入をやり直せば `freshness` は `fresh` に戻る (v0.24.0 以前は、索引から外れた文書の古い取得日時のせいで `stale` / `outdated` のまま残ることがあった)。
 
@@ -232,9 +234,9 @@ houki-nta-mcp が v0.16.x 以前だと `index_status` は付かない。その�
 ### 鉄則 4: citation は階層を明示する
 
 ::: details 詳細
-回答の末尾に **「Sources:」** セクションを設け、各情報の階層を必ず示す。詳細は [`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/CITATION.md)。
+回答の末尾に **「Sources:」** セクションを設け、各情報の階層を必ず示す。詳細は [`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/CITATION.md)。
 
-書き出す前に、法律・政令・省令の引用を `verify_citations` にまとめて渡して実在を確かめる (houki-egov-mcp v0.11.0 以上)。`summary.all_found` が true のときだけ「引用はすべて実在を確認した」と書ける。`not_found` の件は citation から外して引き直し、`ambiguous` の件は `candidates[]` から選び直す。判定ごとの扱いは [`docs/CITATION.md` の「引用を書き出す前に確かめる」](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/CITATION.md#引用を書き出す前に確かめる-verify_citations)。
+書き出す前に、法律・政令・省令の引用を `verify_citations` にまとめて渡して実在を確かめる (houki-egov-mcp v0.11.0 以上)。`summary.all_found` が true のときだけ「引用はすべて実在を確認した」と書ける。`not_found` の件は citation から外して引き直し、`ambiguous` の件は `candidates[]` から選び直す。判定ごとの扱いは [`docs/CITATION.md` の「引用を書き出す前に確かめる」](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/CITATION.md#引用を書き出す前に確かめる-verify_citations)。
 
 ```markdown
 ## Sources
@@ -258,23 +260,23 @@ houki-nta-mcp が v0.16.x 以前だと `index_status` は付かない。その�
 ### 鉄則 5: エラー時はフォールバックして citation で注記する
 
 ::: details 詳細
-各 MCP は family 共通の `code` 語彙でエラーを返す。LLM はエラーコードをユーザーに直接見せず、[`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/ERROR-HANDLING.md) のフォールバック方針に従って代替経路を試み、citation で「PDF 抽出失敗のため HTML で代替」のように注記する。どの MCP がどの code を返すかは [`docs/ERROR-CODES.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/ERROR-CODES.md) の一覧（正本は各 MCP の仕様）を、3 MCP 横断の具体的フォールバック例は [`examples/error-recovery-patterns.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/examples/error-recovery-patterns.md) を参照。
+各 MCP は family 共通の `code` 語彙でエラーを返す。LLM はエラーコードをユーザーに直接見せず、[`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/ERROR-HANDLING.md) のフォールバック方針に従って代替経路を試み、citation で「PDF 抽出失敗のため HTML で代替」のように注記する。どの MCP がどの code を返すかは [`docs/ERROR-CODES.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/ERROR-CODES.md) の一覧（正本は各 MCP の仕様）を、3 MCP 横断の具体的フォールバック例は [`examples/error-recovery-patterns.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/examples/error-recovery-patterns.md) を参照。
 
 | 典型エラー                              | 対応                                       |
 | --------------------------------------- | ------------------------------------------ |
 | `LAW_NOT_FOUND` / `*_NOT_FOUND`         | 略称解決 → 検索 → 目次の順でフォールバック |
 | `DOC_NOT_FOUND` / `TSUTATSU_NOT_FOUND` で `next_actions` が `cli_bulk_download` | その種別の文書がローカル DB に無い。**「該当なし」と答えない**。フォールバックせず、`next_actions` の投入コマンドをユーザーに案内する (検索ツールは houki-nta-mcp v0.13.0 以上、取得ツールは v0.14.1 以上)。v0.26.x 以前の `nta_get_tsutatsu` で基本通達 4 種以外の通達を求めたときは除く (下の「今は取り込めません」の行) |
-| `DOC_NOT_FOUND` / `TSUTATSU_NOT_FOUND` で `hint` が `ローカル DB（<パス>）を開けません` で始まる | ローカル DB のファイルを開けない (houki-nta-mcp v0.26.0 以上)。**「該当なし」と答えない**。検索でのフォールバックも投入の案内もせず、`hint` のパスと確かめること、`--status` のコマンドをユーザーに伝える (v0.25.x 以前は同じ場面が `INTERNAL_ERROR`。[`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/ERROR-HANDLING.md) の `INTERNAL_ERROR` の節) |
-| `TSUTATSU_NOT_FOUND` で `hint` が `この通達（<正式名>）は、今は取り込めません` で始まる (`nta_get_tsutatsu`) | 基本通達 4 種 (消基通・所基通・法基通・相基通) 以外の通達 (`電帳法取通` など) は houki-nta-mcp では取れない (houki-nta-mcp v0.27.0 以上。SPEC-NTA-GET-TSUTATSU-007)。**「通達は無い」と答えない**。略称解決・検索でのフォールバックも投入の案内もせず、通達なしで、法律本文と国税庁サイトの案内までで部分回答し、「houki-nta-mcp の対象外」と書く。v0.26.x 以前は同じ場面で `next_actions` が `cli_bulk_download` (`--bulk-download --tsutatsu=…`) になるが、実行しても終了コード 2 で止まるので実行させない。`error` が `ライブ取得用 URL も未登録です` で終わることで見分ける ([`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/ERROR-HANDLING.md) の `TSUTATSU_NOT_FOUND` の節) |
+| `DOC_NOT_FOUND` / `TSUTATSU_NOT_FOUND` で `hint` が `ローカル DB（<パス>）を開けません` で始まる | ローカル DB のファイルを開けない (houki-nta-mcp v0.26.0 以上)。**「該当なし」と答えない**。検索でのフォールバックも投入の案内もせず、`hint` のパスと確かめること、`--status` のコマンドをユーザーに伝える (v0.25.x 以前は同じ場面が `INTERNAL_ERROR`。[`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/ERROR-HANDLING.md) の `INTERNAL_ERROR` の節) |
+| `TSUTATSU_NOT_FOUND` で `hint` が `この通達（<正式名>）は、今は取り込めません` で始まる (`nta_get_tsutatsu`) | 基本通達 4 種 (消基通・所基通・法基通・相基通) 以外の通達 (`電帳法取通` など) は houki-nta-mcp では取れない (houki-nta-mcp v0.27.0 以上。SPEC-NTA-GET-TSUTATSU-007)。**「通達は無い」と答えない**。略称解決・検索でのフォールバックも投入の案内もせず、通達なしで、法律本文と国税庁サイトの案内までで部分回答し、「houki-nta-mcp の対象外」と書く。v0.26.x 以前は同じ場面で `next_actions` が `cli_bulk_download` (`--bulk-download --tsutatsu=…`) になるが、実行しても終了コード 2 で止まるので実行させない。`error` が `ライブ取得用 URL も未登録です` で終わることで見分ける ([`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/ERROR-HANDLING.md) の `TSUTATSU_NOT_FOUND` の節) |
 | 取得ツールの `DOC_NOT_FOUND` で `available_doc_ids` が付く | docId の誤り。投入は案内しない。`available_doc_ids` から選ぶか、`next_actions` の検索ツールで docId を探し直す (houki-nta-mcp v0.14.1 以上。v0.21.x までは `nta_get_kaisei_tsutatsu` / `nta_get_jimu_unei` の code が `TSUTATSU_NOT_FOUND`) |
 | `SOURCE_TIMEOUT` / `SOURCE_UNAVAILABLE` | 1 回のエラーにつき retry は 1 回、同じセッションで合わせて 2 回まで。失敗時は平易に説明 |
 | `SOURCE_RATE_LIMITED`                   | 当該セッションで同種呼び出しを停止         |
 | `INVALID_PDF` / `ENCRYPTED_PDF`         | HTML 版や別添付に切替、citation に注記     |
 | `INVALID_ARGUMENT`                      | `detail.issues[].path` の引数を直して呼び直す。ユーザーに見せない |
-| `verify_citations` の件ごとの `not_found` / `ambiguous` | ツール全体のエラーではない。`results[]` の件ごとに扱う ([`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/CITATION.md#引用を書き出す前に確かめる-verify_citations))。`not_found` の引用は citation から外し、`ambiguous` は `candidates[]` から選び直す |
+| `verify_citations` の件ごとの `not_found` / `ambiguous` | ツール全体のエラーではない。`results[]` の件ごとに扱う ([`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/CITATION.md#引用を書き出す前に確かめる-verify_citations))。`not_found` の引用は citation から外し、`ambiguous` は `candidates[]` から選び直す |
 :::
 
 ## 関連ページ
 
 - [houki-research Skill の解説](/skills/houki-research)
-- [元の SKILL.md（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/SKILL.md)
+- [元の SKILL.md（GitHub、v0.21.0）](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/SKILL.md)

@@ -1,6 +1,6 @@
 ---
 title: 現状と予定
-description: houki-hub family の各部品の版と、次に取り組む順序（2026-10-11 時点）
+description: houki-hub family の各部品の版と、次に取り組む順序（2026-10-12 時点）
 ---
 
 <!-- 「公開済みの部品」の表の版の列と「時点」の日付は、scripts/generate-reference.mjs（syncRoadmapVersions）が stack.json から揃える。手で直さなくてよい -->
@@ -8,7 +8,7 @@ description: houki-hub family の各部品の版と、次に取り組む順序�
 # 現状と予定
 
 ::: info 時点
-2026-10-11（JST）時点の状態です。版は npm の公開版（Skill は GitHub の最新タグ）です。版はリファレンス・仕様書のページにも出ますが、それらは生成した時点の版なので、この表と一致しないことがあります。最新の版は npm のページで確かめてください。
+2026-10-12（JST）時点の状態です。版は npm の公開版（Skill は GitHub の最新タグ）です。版はリファレンス・仕様書のページにも出ますが、それらは生成した時点の版なので、この表と一致しないことがあります。最新の版は npm のページで確かめてください。
 :::
 
 いま開いている項目の一覧はリポジトリの [docs/ROADMAP.md](https://github.com/shuji-bonji/houki-hub/blob/main/docs/ROADMAP.md) に、済んだことの経緯は各リポジトリの CHANGELOG と houki-hub の `docs/notes/` にあります。
@@ -20,7 +20,7 @@ description: houki-hub family の各部品の版と、次に取り組む順序�
 | [houki-egov-mcp](/mcp/houki-egov) | 0.20.1 | 法律・政令・省令の検索・本文取得・目次・改正履歴。施行令・施行規則の関連付けと条文内の参照抽出。ローカル DB を作れば条文本文の全文検索 |
 | [houki-nta-mcp](/mcp/houki-nta) | 0.27.0 | 国税庁の基本通達 4 種（消基通・所基通・法基通・相基通）・改正通達・事務運営指針・文書回答事例・タックスアンサー・質疑応答事例の検索と取得。基本通達と質疑応答事例の応答から、根拠になる法律を houki-egov-mcp で引くよう案内します。検索が 0 件のときと、取得で docId が見つからないときは、DB に無いのか該当が無いのかを分けて返します。取得ツールはどれもローカル DB を先に引き、応答の `source` でどちらから返したかが分かります。国税庁の索引から消えた文書は消さずに残し、検索結果で現行の文書と区別できます |
 | [houki-abbreviations](/lib/houki-abbreviations) | 0.7.1 | 略称 174 エントリの解決、正規化、鮮度判定、法令 ID からの逆引き |
-| [houki-research](/skills/houki-research) | 0.20.0 | 問いの形で選ぶ手順（実装前に仕様が法令のどこに触れるかを確かめる feasibility-check、通達から根拠条文へ戻る tax-research）、citation 書式、エラー契約、業法の注意喚起。個別の事案への当てはめを求められたときに返すもの・返さないものを表で定めています。通達や質疑応答事例を引いたら、houki-nta-mcp の案内に従って法律本文へ戻る手順があります。国税庁の索引から外れた文書を、現在の取扱いの根拠にしない手順もあります |
+| [houki-research](/skills/houki-research) | 0.20.1 | 問いの形で選ぶ手順（実装前に仕様が法令のどこに触れるかを確かめる feasibility-check、通達から根拠条文へ戻る tax-research）、citation 書式、エラー契約、業法の注意喚起。個別の事案への当てはめを求められたときに返すもの・返さないものを表で定めています。通達や質疑応答事例を引いたら、houki-nta-mcp の案内に従って法律本文へ戻る手順があります。国税庁の索引から外れた文書を、現在の取扱いの根拠にしない手順もあります |
 
 ## 予定している部品
 

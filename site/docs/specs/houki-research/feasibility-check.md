@@ -8,7 +8,7 @@ description: "houki-research Skill の workflow「実装する前に、その仕
 <!-- GENERATED FILE — 手で編集しない。本文は houki-research-skill の skills/houki-research/workflows/feasibility-check.md の写し。 -->
 
 ::: info
-houki-research Skill **v0.20.1** の `skills/houki-research/workflows/feasibility-check.md` から自動生成しました（ステップ 7 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-research Skill **v0.21.0** の `skills/houki-research/workflows/feasibility-check.md` から自動生成しました（ステップ 7 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 このページは、houki-research Skill の workflow（問いの形ごとの手順）「実装する前に、その仕様が法令のどこに触れるかを条文で確かめる」の説明です。Skill を読み込んだ LLM は、この順で MCP のツールを呼びます。「関連ページ」の前までは、workflow の本文を言い換えずに写しています。
@@ -27,7 +27,7 @@ houki-research-skill が想定する **実現可能性調査のワークフロ�
 
 該当しないケース:
 
-- 「この仕様は適法か」「この設計で問題ないか」→ 可否の判定は返さない（[`docs/BUSINESS-LAW.md` の応答型](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/BUSINESS-LAW.md#応答型)）。触れる条文と、その条文が求めることまでを返し、判断は利用者に返す
+- 「この仕様は適法か」「この設計で問題ないか」→ 可否の判定は返さない（[`docs/BUSINESS-LAW.md` の応答型](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/BUSINESS-LAW.md#応答型)）。触れる条文と、その条文が求めることまでを返し、判断は利用者に返す
 - 「この取扱いの根拠と、今も有効か」（通達から入る問い）→ [`tax-research.md`](/specs/houki-research/tax-research)
 - 「この改正はいつから、何が変わるか」→ `revision-tracking.md`（予定）。本ワークフローのステップ ⑥ で施行日は見るが、改正前後の差分は扱わない
 - 「私の場合はどうなるか」（個別の事案）→ 応答型の「返さないもの」に従う
@@ -71,7 +71,7 @@ sequenceDiagram
 ### ステップ ①: 業法判定
 
 ::: details 詳細
-[`docs/BUSINESS-LAW.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/BUSINESS-LAW.md) の §2 に照らす。仕様の確認は **自己の事務** なので、そのまま進める。
+[`docs/BUSINESS-LAW.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/BUSINESS-LAW.md) の §2 に照らす。仕様の確認は **自己の事務** なので、そのまま進める。
 
 ただし問いの中に「この仕様で問題ないか」「適法か」が含まれていたら、回答冒頭で **可否は返さないこと** を 1 文で書く。触れる条文と要件は返す。
 
@@ -239,7 +239,7 @@ houki-egov-mcp が v0.10.0 より前のときは、上の 2 ツールが無い�
 
 保存・記載・申告に関わる仕様なら、houki-nta-mcp で通達・Q&A・タックスアンサーを引き、**`legal_status` を付けて別の行に置く**。通達は税務職員を拘束するが国民を拘束しないので、法律の要件と同じ列に混ぜない。
 
-houki-nta-mcp v0.18.x の基本通達は消基通・所基通・法基通・相基通の 4 種で、**電子帳簿保存法の取扱通達は入っていない**。電帳法の Q&A（一問一答）はタックスアンサー・質疑応答事例に部分的にある。無いときは「houki-nta-mcp の対象外」と回答に書き、国税庁サイトの URL を案内する。`nta_get_tsutatsu` で 4 種以外の通達を求めると `TSUTATSU_NOT_FOUND` が返る（houki-nta-mcp v0.27.0 以上は `hint` が `この通達（<正式名>）は、今は取り込めません。` で始まる。v0.26.x 以前は投入のコマンドを案内するが、実行しても終了コード 2 で止まるので実行させない。[`../docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/ERROR-HANDLING.md)）。
+houki-nta-mcp v0.18.x の基本通達は消基通・所基通・法基通・相基通の 4 種で、**電子帳簿保存法の取扱通達は入っていない**。電帳法の Q&A（一問一答）はタックスアンサー・質疑応答事例に部分的にある。無いときは「houki-nta-mcp の対象外」と回答に書き、国税庁サイトの URL を案内する。`nta_get_tsutatsu` で 4 種以外の通達を求めると `TSUTATSU_NOT_FOUND` が返る（houki-nta-mcp v0.27.0 以上は `hint` が `この通達（<正式名>）は、今は取り込めません。` で始まる。v0.26.x 以前は投入のコマンドを案内するが、実行しても終了コード 2 で止まるので実行させない。[`../docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/ERROR-HANDLING.md)）。
 :::
 
 ### ステップ ⑥: 施行日と未施行の改正
@@ -280,7 +280,7 @@ houki-nta-mcp v0.18.x の基本通達は消基通・所基通・法基通・相�
 - **施行日**: `get_law_revisions` の値と、取得日時
 - **未確認**: 探したが見つからなかったもの、houki family の対象外のもの、探すべきだが探していないもの
 
-表の後ろに、**探した語と探せなかった語** を書く（ステップ ②）。最後に [`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/CITATION.md) の形で `## Sources` を置く。
+表の後ろに、**探した語と探せなかった語** を書く（ステップ ②）。最後に [`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/docs/CITATION.md) の形で `## Sources` を置く。
 
 返さないもの（応答型）:
 
@@ -311,7 +311,7 @@ houki-nta-mcp v0.18.x の基本通達は消基通・所基通・法基通・相�
 
 実際のやり取りの例です。
 
-[`../examples/electronic-bookkeeping.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/examples/electronic-bookkeeping.md) — 「メールで届いた領収書の PDF を保存する機能」を題材にした実測（2026-09-19、egov 0.6.1 / nta 0.18.1）。電帳法 7 条 → 施行規則 4 条 → 準用先の 2 条 6 項 5 号 → 法人税法施行規則 59 条（保存期間）→ 2027-01-01 施行の未施行改正、まで 12 回の呼び出しで揃える。同じ ⑤ を egov 0.10.1 の `get_related_laws` / `get_article_references` で通した再実測を末尾に置いた。
+[`../examples/electronic-bookkeeping.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/examples/electronic-bookkeeping.md) — 「メールで届いた領収書の PDF を保存する機能」を題材にした実測（2026-09-19、egov 0.6.1 / nta 0.18.1）。電帳法 7 条 → 施行規則 4 条 → 準用先の 2 条 6 項 5 号 → 法人税法施行規則 59 条（保存期間）→ 2027-01-01 施行の未施行改正、まで 12 回の呼び出しで揃える。同じ ⑤ を egov 0.10.1 の `get_related_laws` / `get_article_references` で通した再実測を末尾に置いた。
 
 ## アンチパターン
 
@@ -335,4 +335,4 @@ houki-nta-mcp v0.18.x の基本通達は消基通・所基通・法基通・相�
 
 - [houki-research Skill の仕様の一覧](/specs/houki-research/)
 - [houki-research Skill の解説](/skills/houki-research)
-- [元の workflow（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/workflows/feasibility-check.md)
+- [元の workflow（GitHub、v0.21.0）](https://github.com/shuji-bonji/houki-research-skill/blob/v0.21.0/skills/houki-research/workflows/feasibility-check.md)
