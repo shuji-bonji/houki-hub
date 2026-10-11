@@ -8,7 +8,7 @@ description: "houki-research Skill の workflow「税務リサーチの基本フ
 <!-- GENERATED FILE — 手で編集しない。本文は houki-research-skill の skills/houki-research/workflows/tax-research.md の写し。 -->
 
 ::: info
-houki-research Skill **v0.20.0** の `skills/houki-research/workflows/tax-research.md` から自動生成しました（ステップ 10 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-research Skill **v0.20.1** の `skills/houki-research/workflows/tax-research.md` から自動生成しました（ステップ 10 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 このページは、houki-research Skill の workflow（問いの形ごとの手順）「税務リサーチの基本フロー」の説明です。Skill を読み込んだ LLM は、この順で MCP のツールを呼びます。「関連ページ」の前までは、workflow の本文を言い換えずに写しています。
@@ -26,7 +26,7 @@ houki-research-skill が想定する **税務リサーチの典型ワークフ�
 該当しないケース:
 
 - 略称の意味だけ知りたい → houki-abbreviations の `resolve_abbreviation` だけで十分
-- 個別事案の判断 → [`docs/BUSINESS-LAW.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/docs/BUSINESS-LAW.md) の境界 ② を参照し有資格者へ案内
+- 個別事案の判断 → [`docs/BUSINESS-LAW.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/BUSINESS-LAW.md) の境界 ② を参照し有資格者へ案内
 
 ## フロー全体像
 
@@ -89,7 +89,7 @@ sequenceDiagram
 ### ステップ ①: 業法独占判定
 
 ::: details 詳細
-ユーザーの問いを読み、[`docs/BUSINESS-LAW.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/docs/BUSINESS-LAW.md) の §2「3 つの境界」のどこに該当するかを判定する。
+ユーザーの問いを読み、[`docs/BUSINESS-LAW.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/BUSINESS-LAW.md) の §2「3 つの境界」のどこに該当するかを判定する。
 
 | 境界 | 行動 |
 |---|---|
@@ -150,7 +150,7 @@ houki-nta-mcp v0.23.0 以上では、houki-egov の管轄のエントリ（`in_s
 
 `get_law` の応答は条文本文と `meta`（`law_id` / `title` / `law_num` / `retrieved_at` / `url`。houki-egov-mcp v0.17.0 以上では `at` も常にあり、時点を渡さなかったときは `null`）で、`legal_status` は付かない。法律が国民を拘束すること（`binds_citizens: true`）は `explain_law_type { "name": "法律" }` の応答を根拠にする（houki-egov-mcp v0.15.1、2026-09-21 実測。`binds_courts` は返さない）。
 
-`search_fulltext` の応答で `source` が `"api-fallback"` なら本文検索は行われていない（`search_law` の結果が `fallback` に入っている）。ローカル DB が無い・開けないときのほか、houki-egov-mcp v0.19.0 以上では DB の版が合わないとき（v0.18.x 以前に作った古い版、新しい版、版を読めない DB）もこうなる。その場合は `note` の案内をユーザーに伝え（`next_actions` に `bulk_download_everything` があればその `example.command`。v0.20.0 以上では `npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` の形。無ければ `note` の続きの文が案内する houki-egov-mcp の更新や DB のパスの確認）、回答には「法令名の一致で探した」と書く。`note` の先頭の文ごとの DB の状態と、投入したはずのときに DB の場所を確かめる手順は [`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/docs/ERROR-HANDLING.md) の「`search_fulltext` の `api-fallback`」にある。
+`search_fulltext` の応答で `source` が `"api-fallback"` なら本文検索は行われていない（`search_law` の結果が `fallback` に入っている）。ローカル DB が無い・開けないときのほか、houki-egov-mcp v0.19.0 以上では DB の版が合わないとき（v0.18.x 以前に作った古い版、新しい版、版を読めない DB）もこうなる。その場合は `note` の案内をユーザーに伝え（`next_actions` に `bulk_download_everything` があればその `example.command`。v0.20.0 以上では `npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` の形。無ければ `note` の続きの文が案内する houki-egov-mcp の更新や DB のパスの確認）、回答には「法令名の一致で探した」と書く。`note` の先頭の文ごとの DB の状態と、投入したはずのときに DB の場所を確かめる手順は [`docs/ERROR-HANDLING.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/ERROR-HANDLING.md) の「`search_fulltext` の `api-fallback`」にある。
 
 これが citation の **「法律 (法的根拠)」** セクションになる。
 :::
@@ -219,7 +219,7 @@ houki-nta-mcp v0.11.0 以上では、応答に解釈の対象になる法律と�
 
 1. `nta_get_qa` は **`format: "json"` を指定する** (既定の markdown には `related_laws` などが出ない)
 2. `next_actions[].example` から `mcp` と `tool` を除いた残りを渡す。通達と違い、条・項・号まで入っている。`nta_get_tsutatsu` への案内の `example` は `name` と `clause` だけなので、そのまま渡せる
-3. `next_actions` が付かない参照 (租税条約・「旧」「改正前」の条文・条番号の無い法令・基本通達 4 種以外の通達) は、`related_laws` / `related_tsutatsu` の `raw` を読んで [`SKILL.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/SKILL.md) 鉄則 3 の表のとおり扱う
+3. `next_actions` が付かない参照 (租税条約・「旧」「改正前」の条文・条番号の無い法令・基本通達 4 種以外の通達) は、`related_laws` / `related_tsutatsu` の `raw` を読んで [`SKILL.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/SKILL.md) 鉄則 3 の表のとおり扱う
 
 houki-nta-mcp v0.12.0 の応答の抜粋 (2026-09-11、`{ "topic": "shohi", "category": "02", "id": "19", "format": "json" }`):
 
@@ -246,7 +246,7 @@ houki-nta-mcp v0.12.0 の応答の抜粋 (2026-09-11、`{ "topic": "shohi", "cat
 
 枝番号の号 (「法人税法第2条第12号の8」) は、houki-nta-mcp v0.14.0 以上で `item: "12の8"` の文字列になる。`get_law` が文字列の `item` を受け付けるのは houki-egov-mcp v0.6.0 以上。項が 1 つだけの条 (法人税法 2 条など) は `paragraph` なしの `item` でも引ける (houki-egov-mcp v0.6.0 以上)。
 
-citation では、引いた条文を「法律 (法的根拠)」、通達を「行政解釈」、質疑応答事例を「参考情報 (拘束力なし)」に置き、`qa.basisDate` と `qa.notice` の趣旨を注に書く ([`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/docs/CITATION.md))。
+citation では、引いた条文を「法律 (法的根拠)」、通達を「行政解釈」、質疑応答事例を「参考情報 (拘束力なし)」に置き、`qa.basisDate` と `qa.notice` の趣旨を注に書く ([`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/CITATION.md))。
 
 タックスアンサー (`nta_get_tax_answer`) には構造化された根拠法令が無い。本文の「根拠法令等」の節を読み、挙がっている法令を `get_law` で引く。
 
@@ -310,7 +310,7 @@ flowchart TB
 ### ステップ ⑧: 階層を明示した citation 付き回答
 
 ::: details 詳細
-[`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/docs/CITATION.md) のフォーマットに従って、本文の末尾に `## Sources` セクションを置く。
+[`docs/CITATION.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/docs/CITATION.md) のフォーマットに従って、本文の末尾に `## Sources` セクションを置く。
 :::
 
 ## この手順で使うツール
@@ -337,7 +337,7 @@ flowchart TB
 
 実際のやり取りの例です。
 
-具体的な session 例は [`../examples/invoice-registration.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/examples/invoice-registration.md) を参照。
+具体的な session 例は [`../examples/invoice-registration.md`](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/examples/invoice-registration.md) を参照。
 
 ## アンチパターン
 
@@ -363,4 +363,4 @@ flowchart TB
 
 - [houki-research Skill の仕様の一覧](/specs/houki-research/)
 - [houki-research Skill の解説](/skills/houki-research)
-- [元の workflow（GitHub、v0.20.0）](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.0/skills/houki-research/workflows/tax-research.md)
+- [元の workflow（GitHub、v0.20.1）](https://github.com/shuji-bonji/houki-research-skill/blob/v0.20.1/skills/houki-research/workflows/tax-research.md)
