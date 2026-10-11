@@ -923,3 +923,42 @@ spec-ids#8（spec-ids 自身の `specs/` の初版起こし、Q21 の A'、Q25' 
 | 4 | `spec-gate` で使う「1 つ前の版」 | (A) workflow に版を書いて固定する（今なら `npx -y @shuji-bonji/spec-ids@0.4.0 check`）。publish の後、次の PR で必要なら上げる / (B) npm の `latest` | **A**。B は publish の直後に、検査する側が検査される側と同じ版になる。A は、PR の中で `check` を変えても、自分の `specs/` を検査するのはいつも publish 済みの決まった版になる。spec.md の形を変える変更は、publish してから版を上げる 2 段階になる |
 | 5 | `pr-scope` を spec-ids 自身にも入れるか | (A) 入れる。4 と同じ固定の版で `npx -y @shuji-bonji/spec-ids@0.4.0 pr-scope` / (B) 入れない | **A**。#9 で `spec-ids pr-scope` ができたので、Issue の「別の Issue の後」の条件を満たしている。仕様 PR と実装 PR を分ける運用を、spec-ids 自身にも当てる |
 | 6 | 進め方 | (A) PR を 2 本: ① 実装 PR（`feat/`）で `specs/spec-ids.json`・空の `specs/{current,changes,releases}/`・spec-gate の workflow（4・5 の固定の版）を足す。② 初版起こし PR（`spec-init/`）で 8 つの spec.md とテスト名の仕様 ID。② は ① の workflow の `pr-scope` に検査される / (B) 1 本にまとめる | **A**。`spec-init/` の PR が変えてよいのは `specs/current/<dir>/spec.md` とテスト名の ID だけ（operations.md 2.2）なので、設定と workflow は先に別の PR で入れる。② は、operations.md 2.2 の流れ（承認の空欄で RED、人が `approved` と `pr` を書いて GREEN）をそのまま spec-ids で試すことになる |
+
+2026-10-11 12:33 JST: houki-abbreviations#35 を shuji が閉じた（12:30 JST）。この計画の 2.3 の割り付けの項目は、計画の外とした nta #116 を除いてすべて済んだ。同じ時刻に shuji が、spec-ids#8 の判断 1〜6 を勧める案のとおりに決めた。
+
+指示を書く前に見つかったこと: spec-ids の `check` は、テストファイルの `describe`・`it`・`test` の文字列から仕様 ID を拾う（`TEST_NAME_RE`、領域では絞らない）。spec-ids 自身のテストは、検査の見本として `it('SPEC-NTA-GET-TSUTATSU-001 a', …)` のような文字列をソースに書いている（main `5ad662c` で `test/check.test.mjs` 8 行、`test/pr-scope.test.mjs` 9 行、`test/helpers.mjs` 2 行）。このまま spec-ids 自身に `check` をかけると、見本の ID を「テストにあって仕様に無い ID」として止まる。手当て: 見本の文字列を実行時に組み立てる形（例: `itLine('SPEC-NTA-…')` が `it('…')` を返す関数）に書き換える。期待値と `check` の振る舞いは変えない。`spec-init/` の PR で変えてよいテストの変更は「テスト名に ID を足すだけ」なので、この書き換えは 1 本目（`feat/`）の PR に入れる。`check` に別の領域の ID を無視する設定を足す案は、振る舞いの変更になり、houki 系で別の領域の ID の打ち間違いを見逃すようになるので取らない。
+
+指示 S8a（1 本目、`feat/`）と S8b（2 本目、`spec-init/`）を書いた。
+
+2026-10-11 19:29 JST: S8a は spec-ids PR #13 で main に入った（`58b3ce5`、19:28 JST。PR と main の spec-gate・CI は success）。`specs/spec-ids.json`（`domain: SPECIDS`、`dirPrefix: ""`、`tests: ["test/*.test.mjs"]`）、空の `specs/`、`.github/workflows/spec-gate.yml`（`env.SPEC_IDS_VERSION: 0.4.0`）、`AGENTS.md`、テストの見本 19 行を `test/helpers.mjs` の `itLine(name)` で組み立てる形に（期待値と件数 107 件は同じ）、README と operations.md 10 章。作業ツリーの `check` と 0.4.0 の `check` は、どちらも current 0 files・tests 9 files 0 IDs で OK。
+
+S8a で見つかったこと: spec-ids のリポジトリの中で `npx -y @shuji-bonji/spec-ids@0.4.0` を実行すると、npm がルートの `package.json`（同じ名前・同じ版）を入っているとみなし、bin が無いので `spec-ids: not found`（終了コード 127）で止まる。workflow は、決まった版を `$RUNNER_TEMP/spec-ids` に `npm install --prefix … --no-save` で入れ、`$RUNNER_TEMP/spec-ids/node_modules/.bin/spec-ids` を呼ぶ。手元で決まった版を動かすときも、リポジトリの外のフォルダーに入れて呼ぶ。指示 S8b の確かめ方をこの形に直した。
+
+2026-10-11 21:58 JST: S8b は spec-ids PR #14 で main に入った（`1132520`、21:58 JST。PR の最初の push は承認の空欄で spec-gate が failure、shuji が承認を書いた後は success）。8 つの spec.md（check 20・next 4・init 4・history 11・pr-scope 23・format 5・config 6・frontmatter 19、計 92 件）、front matter は `approved: 2026-10-11`・`pr: 14`。テスト 107 件のうち 106 件の名前に ID（`test/cli.test.mjs` の USAGE のテストだけ ID 無し）。「## 未決」は意図か不具合かを決めるものと、テストが無いため ID を振らなかったもの。承認のときに一部を決めた（format の 1・2 は意図として「できないこと」へ。README の直しが残る）。spec-ids#8 を閉じるコメントの文は `docs/notes/issues-2026-10-11-spec-ids-8-close/spec-ids-8-close.md`。
+
+## 10. この計画の締め（2026-10-11 JST）
+
+この計画の作業は終わった。2.3 の割り付けの項目（計画の外とした nta #116 を除く）と、計画の途中で足した spec-ids#5・#9・#8 は、すべて済んだ（spec-ids#8 は閉じるコメントの投稿だけが残る）。
+
+| まとまり | 主な PR | 結果 |
+| --- | --- | --- |
+| 段階 0〜3（期限のある不具合と T6） | egov #112〜#118、nta #140〜#161 | egov 0.19.1・0.20.0・0.20.1、nta 0.24.1〜0.27.0、abbr 0.7.1 |
+| 承認の記録の形（spec-ids#5） | spec-ids #6・#7・#10・#11、egov #117、nta #159、abbr #38 | spec-ids 0.3.0、3 リポジトリを front matter に変換 |
+| 段階 4（#27 の仕様書ページ、hub#5 ②、#44） | hub #46〜#59 | 仕様書ページ 67 枚とツールのページ、毎日の作り直しの PR と例の照合、scope-by-audience の言い方 |
+| `pr-scope` の取り込み（spec-ids#9） | spec-ids #12、egov #119、nta #162、abbr #42 | spec-ids 0.4.0、3 リポジトリのコピーを 1 つの実装に |
+| spec-ids 自身の `specs/`（spec-ids#8） | spec-ids #13・#14 | 仕様 ID 92 件、spec-gate は publish 済みの版で検査 |
+
+次の計画へ引き継ぐもの:
+
+| # | 内容 | 置き場所の案 |
+| --- | --- | --- |
+| 1 | spec-ids の「## 未決」の残り（意図か不具合かを決めるもの、README の直し、テストを足して ID を振るもの） | spec-ids の新しい Issue（spec-ids#8 のコメントに書いた） |
+| 2 | houki-nta-mcp の spec.md の Mermaid 3 か所（cli_health_check・cli_refresh・search_rules） | nta の次の仕様 PR（ID の無い節の直し） |
+| 3 | `site/docs/lib/houki-abbreviations.md` の古い文（「houki-egov-mcp 0.6.0 と houki-nta-mcp 0.17.0 が取り込んでいるのは 0.4.1」） | houki-hub の次の site の PR |
+| 4 | houki-nta-mcp の `doc-search-zero-hit.test.ts` が、`TMPDIR` がホームの下にあると落ちる | nta のテストの PR（仕様の変更なし） |
+| 5 | common_errors の「エラー応答のフィールド」の表（next_actions の形）に仕様 ID を付けるか | egov・nta の次の仕様 PR で検討（Q32' の (2)） |
+| 6 | scope-by-audience の利用者ごとの節を、受け取る側から書く形（12 の案 C の書き方）にするか | 次に書き直すときの候補（shuji の所見） |
+| 7 | nta #116（基本通達の範囲） | 立場（Discussion #24）が決まってから。この計画の外 |
+| 8 | houki-hub の open の Issue（#3・#6・#7・#8・#10・#22） | 次の計画で扱うかを決める |
+
+このコントロールの会話の引き継ぎの文書（`2026-10-10-control-handover.md`）は、この節で置き換わる。次の計画を立てるときは、この節の表から始める。

@@ -44,6 +44,8 @@
 | Y9 | 段階 4 | scope-by-audience の 10〜12（法令上の評価を言い切る文と「全工程」、Q43'） | 済（hub PR #59、main `19ab3e7`） |
 | R9 | 段階 4 の後 | spec-ids 0.4.0 の実装 PR（`spec-ids pr-scope`、`migrate` を外す、spec-ids#9） | 済（spec-ids PR #12、main `5ad662c`、#9 を閉じた。v0.4.0 を 2026-10-11 00:02 JST に publish） |
 | C9 | 段階 4 の後 | houki 系 3 リポジトリの `check-pr-scope.mjs` を `npx spec-ids pr-scope` に置き換える PR | 済（egov PR #119・nta PR #162・abbr PR #42） |
+| S8a | 段階 4 の後 | spec-ids 自身の `specs/` の置き場・設定・spec-gate（固定の版）と、テストの見本の書き換え（spec-ids#8 の 1 本目） | 済（spec-ids PR #13、main `58b3ce5`） |
+| S8b | 段階 4 の後 | spec-ids 自身の初版起こし（8 つの spec.md とテスト名の仕様 ID、spec-ids#8 の 2 本目） | 済（spec-ids PR #14、main `1132520`、承認 2026-10-11） |
 | V | 3 | houki-egov-mcp 0.20.0 の実装 PR（#108・#110） | 済（v0.20.0 を 2026-10-04 に publish） |
 | S | 2 | 全 47 例の契約の確認（C）と呼び出し例の取り直し（6a） | 済（hub PR #38・#39、記録 `2026-10-04-regression-check-egov-0.19.1-nta-0.24.0.md`、劣化 0） |
 
@@ -2167,4 +2169,100 @@ houki-egov-mcp・houki-nta-mcp・houki-abbreviations の 3 リポジトリで、
 - src/ と specs/ は変えない
 - コミットを作るところまで。署名・push・PR は私が行う。git を使う前に houki-hub フォルダーの削除の許可を取る（mcp/・lib/ は houki-hub の下にある）
 - 報告: 3 つのブランチとコミット、消したファイル、ci.yml の前後、確かめた結果、PR 本文の草案 3 本（Refs shuji-bonji/spec-ids#9。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 S8a: spec-ids 自身の specs/ の置き場と spec-gate（spec-ids#8 の 1 本目）
+
+2026-10-11 12:33 JST に shuji が、spec-ids#8 の判断 1〜6 を勧める案で決めました（計画書の「spec-ids#8 の判断」と、その後の「指示を書く前に見つかったこと」）。2 本の PR のうち 1 本目です。
+
+```text
+spec-ids に、自分自身の仕様を置く場所と設定、spec-gate の workflow（1 つ前に publish した版で検査する）を足す実装 PR を作ってください。仕様（spec.md）はこの PR では書きません（2 本目の初版起こし PR で書きます）。この会話の役は、実装者です。
+
+## 場所
+
+- spec-ids: /Users/bonji/workspace/shuji-bonji/spec-ids（Cowork の device_bash では $HOME/mnt/spec-ids）。未追跡の "Claude outputs/" は触らない
+- 起点: main。作業の前に git ls-remote https://github.com/shuji-bonji/spec-ids refs/heads/main で origin と同じか確かめる（5ad662c = v0.4.0 の見込み）。今の作業コピーが別のブランチなら main に切り替える
+- ブランチ: feat/<作業日の yyyymmdd>-own-specs
+
+## 最初に読むもの（この順）
+
+1. spec-ids#8 の本文（curl https://api.github.com/repos/shuji-bonji/spec-ids/issues/8）
+2. houki-hub の docs/notes/2026-10-04-plan-stage6-and-followups.md の「spec-ids#8 の判断」と、その後の「指示を書く前に見つかったこと」
+3. spec-ids の README（init・check・pr-scope の節、終了コード）、docs/operations.md（1.2、2.2、4 章、9 章、10 章）、templates/spec-gate.yml・agents-section.md、src/init.mjs・format.mjs（TEST_NAME_RE）・check.mjs、.github/workflows/ci.yml
+4. test/check.test.mjs・test/pr-scope.test.mjs・test/helpers.mjs で、it(…)・test(…)・describe(…) の文字列に SPEC- の ID を書いている箇所（main の時点で 19 行）
+
+## 決まったこと
+
+- 領域は SPECIDS、dirPrefix は ""（ID は SPEC-SPECIDS-CHECK-001 の形）
+- spec-gate の check と pr-scope は、作業ツリーの bin/ ではなく、publish 済みの決まった版で動かす: npx -y @shuji-bonji/spec-ids@0.4.0 check と npx -y @shuji-bonji/spec-ids@0.4.0 pr-scope。版は workflow の 1 か所（env など）に書き、publish の後に必要なら次の PR で上げる。npm の latest は使わない
+- pr-scope は spec-ids 自身にも入れる（PR のときだけ、fetch-depth: 0、env の BASE_REF・HEAD_REF は templates/spec-gate.yml と同じ）
+- check の正しさは、今までどおり test/*.test.mjs（fixture に対して関数を呼ぶテスト）で守る
+
+## やること
+
+1. specs/spec-ids.json を足す（npx spec-ids init --domain SPECIDS で作るか、手で書くかは init の出力を見て決める。tests の glob は test/*.test.mjs にする。helpers.mjs は含めない）。specs/current・specs/changes・specs/releases に .gitkeep を置く
+2. .github/workflows/spec-gate.yml を足す（templates/spec-gate.yml をもとに、npx spec-ids の 2 か所を、決まった版の npx -y @shuji-bonji/spec-ids@<版> に替える。npm ci は、check・pr-scope が spec-ids 自身の node_modules を要らないなら外してよい）。既存の ci.yml は変えない
+3. テストの見本の書き換え: test/ の中で、検査の見本として it(…)・test(…)・describe(…) の文字列に SPEC- の ID をそのまま書いている箇所を、ソースに TEST_NAME_RE が当たらない形（例: helpers.mjs に itLine(name) を置き、実行時に `it('${name}', () => {});` を組み立てる）に書き換える。期待値は変えない。書き換えた後、作業ツリーの bin/spec-ids.mjs check と npx -y @shuji-bonji/spec-ids@0.4.0 check の両方で、テストから拾う ID が 0 件であることを確かめる
+4. AGENTS.md を足す（init が表示する節をもとに、spec-ids 自身の規則として: 仕様の正本は specs/current、仕様 PR と実装 PR の分け方、spec-gate は決まった版で動くこと、版を上げる手順）。README の「ファイルの表」や docs/operations.md の 10 章の「spec-ids 自身の specs/」の行を、置き場ができたことと、初版起こしは spec-init/ の PR で行うことに直す
+5. npm test・lint・format:check、作業ツリーの check と決まった版の check（current 0 files で OK になるか）、このブランチを実装 PR とした決まった版の pr-scope が通ることを確かめる。check が current 0 件で止まるなら、その出力を報告に書き、どうするか（空のまま通す形にするか、S8b と順を入れ替えるか）の案を挙げる
+
+## 守ること・報告すること
+
+- src/ と bin/ の振る舞いは変えない。テストは見本の組み立て方だけを変え、期待値と件数は変えない（件数が変わるなら理由を書く）
+- 版は上げない。publish しない
+- コミットを作るところまで。署名・push・PR は私が行う。git を使う前に spec-ids フォルダーの削除の許可を取る。VM の git が .git にロックファイルを残したら、許可を取ってから消して進める
+- 報告: ブランチ・コミット、spec-ids.json と spec-gate.yml の中身、書き換えたテストの箇所と書き換え方、確かめた結果（とくに 3 と 5）、S8b に渡すこと、PR 本文の草案（Refs #8。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
+```
+
+---
+
+## 指示 S8b: spec-ids 自身の初版起こし（spec-ids#8 の 2 本目）
+
+S8a（spec-ids PR #13、main `58b3ce5`）の後に渡します。S8a で分かった、決まった版の動かし方（リポジトリの外に入れて呼ぶ）を「守ること」に書きました。
+
+```text
+spec-ids 自身の仕様を、specs/current/<dir>/spec.md として初版起こししてください。あわせて、既存のテストの名前に仕様 ID を足します（期待値は変えない）。この会話の役は、Steward です（docs/operations.md の 2.2「初版を起こす」と 6 章の Steward）。
+
+## 場所
+
+- spec-ids: /Users/bonji/workspace/shuji-bonji/spec-ids（$HOME/mnt/spec-ids）。未追跡の "Claude outputs/" は触らない
+- 起点: main（S8a が入った後、58b3ce5 の見込み）。作業の前に git ls-remote https://github.com/shuji-bonji/spec-ids refs/heads/main で origin と同じか確かめる
+- ブランチ: spec-init/<作業日の yyyymmdd>-initial（spec-init/ の PR が変えてよいのは、specs/current/<dir>/spec.md の追加と、テスト名に仕様 ID を足すだけの変更）
+
+## 最初に読むもの（この順）
+
+1. houki-hub の docs/notes/2026-10-04-plan-stage6-and-followups.md の「spec-ids#8 の判断」
+2. spec-ids の docs/operations.md の 2.2・3.2・5 章・6 章の Steward、README（全サブコマンドの節、終了コード、設定）、AGENTS.md と .github/workflows/spec-gate.yml（S8a で足したもの）、test/helpers.mjs の itLine
+3. 見本の spec.md: houki-abbreviations の specs/current/find_similar/spec.md（関数の仕様）と、houki-egov-mcp の specs/current/cli_status/spec.md（CLI の仕様）。節の名前（## アクター・## できないこと・## 未決 など）と、仕様 ID の見出し（### SPEC-…）の書き方をそろえる
+4. src/ と bin/spec-ids.mjs、test/ の全部
+
+## 書くもの
+
+8 つの機能（ディレクトリ名と front matter の kind）:
+
+| dir | kind | 範囲 |
+| --- | --- | --- |
+| check | cli | spec-ids check の入力・検査 1〜7・出力・終了コード |
+| next | cli | spec-ids next の採番 |
+| init | cli | spec-ids init が作るもの・作らないもの・表示する節 |
+| history | cli | spec-ids history の出力（全体と機能ごと） |
+| pr-scope | cli | spec-ids pr-scope の PR の種類ごとの範囲・承認の空欄・入力の決め方・終了コード |
+| format | common | ID の形式と見出し・テスト名からの拾い方 |
+| config | common | specs/spec-ids.json のキーと既定値 |
+| frontmatter | common | front matter の読み方と、承認の記録のキー（current と proposal.md） |
+
+- front matter は spec_id: SPECIDS、kind、approved と pr は空（人が承認のときに書く）
+- 仕様 ID は今の振る舞い（README と src/ とテスト）から書く。テストで確かめられていない振る舞いも書いてよいが、その ID にはテストが要るので、テストが無いものは「## 未決」に回すか、テストを足す必要があることを報告に書く（spec-init/ の PR ではテストの中身は足せない）
+- 不具合に見える振る舞いは「できること」に入れず「## 未決」に書く
+- テスト名に仕様 ID を足す（describe/it/test の文字列の先頭に ID を足す形。既存の文は消さない。itLine で組み立てている検査の見本には足さない）。作業ツリーの node bin/spec-ids.mjs check と、決まった版（spec-gate.yml の SPEC_IDS_VERSION）の check の両方で、仕様とテストの ID が一致すること
+
+## 守ること・報告すること
+
+- src/・bin/・テストの期待値は変えない。spec-init/ の範囲の外のファイルは変えない（変えたくなったら報告に挙げる）
+- 決まった版は、リポジトリの中で npx -y @shuji-bonji/spec-ids@<版> を使うと、ルートの package.json と同じ名前のため spec-ids: not found で止まる。spec-gate.yml と同じく、リポジトリの外のフォルダーに npm install --prefix <外のフォルダー> --no-save @shuji-bonji/spec-ids@<版> で入れ、<外のフォルダー>/node_modules/.bin/spec-ids を呼ぶ
+- 決まった版の pr-scope（BASE_REF=origin/main、HEAD_REF=このブランチ名）が、承認の空欄だけで止まることを確かめる（承認は私が書く）
+- コミットを作るところまで。署名・push・PR・承認の記入は私が行う。git を使う前に spec-ids フォルダーの削除の許可を取る
+- 報告: ブランチ・コミット、機能ごとの仕様 ID の件数、ID を足したテストの件数と、ID が付かなかったテスト、「## 未決」に書いたもの（人が意図か不具合かを決めるもの）、PR 本文の草案（Refs #8。人が判断する項目と未決の件数を書く。末尾に 🤖 Generated with [Claude Code](https://claude.com/claude-code)）
 ```
