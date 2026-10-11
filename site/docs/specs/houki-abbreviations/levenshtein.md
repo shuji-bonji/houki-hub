@@ -8,7 +8,7 @@ description: "houki-abbreviations の levenshtein（2 つの文字列の編集�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/levenshtein/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.1** の `specs/current/levenshtein/spec.md` から自動生成しました（仕様 ID 5 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.1** の `specs/current/levenshtein/spec.md` から自動生成しました（仕様 ID 5 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 2 つの文字列の編集距離を返す
@@ -116,7 +116,11 @@ flowchart TD
 例: `levenshtein('𠮷', '吉')` は 1（v0.6.1 では 2）。`levenshtein('𠮷野家', '吉野家')` は 1。`levenshtein('𠮷', '')` は 1。`findSimilar` と `suggestCorrection` の `distance` もこの数え方になる。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -129,7 +133,7 @@ flowchart TD
 2. **テストの describe 名が「内部 helper」。** （テストを直した。v0.6.1）
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history levenshtein` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

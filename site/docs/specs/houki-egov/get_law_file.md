@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_law_file（法令本文を 1 つのファ�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/get_law_file/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/get_law_file/spec.md` から自動生成しました（仕様 ID 23 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/get_law_file/spec.md` から自動生成しました（仕様 ID 23 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 法令本文を 1 つのファイルで取る URL を返し、求められたら保存する
@@ -356,7 +356,11 @@ flowchart TD
 例: `{ law_name: "所得税法施行", file_type: "xml" }` は `code: "LAW_NOT_FOUND"`、`next_actions` の先頭は `{ action: "get_law_file", example: { law_name: "所得税法施行令", file_type: "xml" } }`。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -373,7 +377,7 @@ flowchart TD
 10. **既定の保存先と、同じファイルの上書き。** → [SPEC-EGOV-GET-LAW-FILE-016](#spec-egov-get-law-file-016)・[SPEC-EGOV-GET-LAW-FILE-017](#spec-egov-get-law-file-017)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history get_law_file` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

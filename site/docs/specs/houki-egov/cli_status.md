@@ -8,7 +8,7 @@ description: "houki-egov-mcp の cli_status（ローカル DB の同期の状態
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/cli_status/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/cli_status/spec.md` から自動生成しました（仕様 ID 14 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/cli_status/spec.md` から自動生成しました（仕様 ID 14 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 ローカル DB の同期の状態と件数を表示する
@@ -272,7 +272,11 @@ DB のファイルが無いとき（置き場所のフォルダーも無いと�
 例: `~/.cache/houki-egov-mcp/` に `laws.db`（DB のファイル）と、`laws.v3.db`（2,048 バイト、最終更新 2026-10-04 12:00）・`laws.db-wal`・`files/` があるとき、環境変数を付けずに `--status` を実行すると、3 行目の次に `[WARN] 同じフォルダーに、この DB のほかに laws*.db のファイルがあります: laws.v3.db (2.0 KB, 2026-10-04 12:00)。MCP サーバーと CLI が別のファイルを開いていないか確かめてください` を出す。`HOUKI_EGOV_DB_PATH` が `~/.cache/houki-egov-mcp/laws.v3.db`（無いファイル）を指し、同じフォルダーに `laws.db` があるとき（2026-10-04 に `laws.v3.db` を `laws.db` に名前を変えた後の houki-egov-dev の場面）は、`  (DB がまだありません — …)` の行の前に、`laws.db` を挙げた `[WARN]` を出して終了コード 0。`laws.db` だけのフォルダーでは出さない（v0.19.x では、別のファイルがあっても何も出さなかった。houki-egov-mcp #110）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -285,7 +289,7 @@ DB のファイルが無いとき（置き場所のフォルダーも無いと�
 2. **`fresh` / `stale` で 1 日以上たっていれば `--sync` を案内する。** → [SPEC-EGOV-CLI-STATUS-007](#spec-egov-cli-status-007)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history cli_status` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

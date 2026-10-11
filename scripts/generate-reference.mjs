@@ -1165,6 +1165,48 @@ function syncLibVersion(name, cfg, pkg) {
   return [`lib/${name}.md`];
 }
 
+/* ---------------- 現状と予定（guide/roadmap.md）の版を揃える ----------------
+ *
+ * guide/roadmap.md の「公開済みの部品」の表の版の列は手書きだったので、リファレンス・仕様書ページの版と
+ * ずれていた（2026-10-11 に egov 0.10.1 / nta 0.18.1 のまま残っていた）。ここで stack.json の値に揃える。
+ * 版の出どころは syncLibVersion と同じ stack.json（正典は npm の published。npm に無い Skill は local.tag）。
+ * 版の列を 1 つでも動かしたときは「YYYY-MM-DD（JST）時点」の日付も今日にする。数字と日付だけ動かし、文章は触らない。
+ */
+const ROADMAP_ROWS = {
+  'houki-egov-mcp': 'houki-egov-mcp',
+  'houki-nta-mcp': 'houki-nta-mcp',
+  'houki-abbreviations': 'houki-abbreviations',
+  'houki-research-skill': 'houki-research',
+};
+function syncRoadmapVersions() {
+  const roadmapPath = join(SITE, 'guide/roadmap.md');
+  const stackPath = join(ROOT, 'stack.json');
+  if (!existsSync(roadmapPath) || !existsSync(stackPath)) return [];
+  const repos = JSON.parse(readFileSync(stackPath, 'utf8')).repos ?? [];
+  const before = readFileSync(roadmapPath, 'utf8');
+  let after = before;
+  for (const [stackName, rowName] of Object.entries(ROADMAP_ROWS)) {
+    const r = repos.find((x) => x.name === stackName);
+    const version = r?.published ?? r?.local?.tag?.replace(/^v/, '') ?? null;
+    if (!version) {
+      console.warn(`  ⚠ stack.json に ${stackName} の版が無い（node scripts/generate-stack.mjs を Mac で回す）。roadmap の版を揃えられない`);
+      continue;
+    }
+    // "| [houki-egov-mcp](/mcp/houki-egov) | 0.20.1 |"
+    const pattern = new RegExp(`(^\\|\\s*\\[${rowName}\\]\\([^)]*\\)\\s*\\|\\s*)[0-9][^|\\s]*(\\s*\\|)`, 'm');
+    if (!pattern.test(after)) {
+      console.warn(`  ⚠ guide/roadmap.md: 「| [${rowName}](…) | X.Y.Z |」の行が見つからない。版の同期を飛ばした`);
+      continue;
+    }
+    after = after.replace(pattern, `$1${version}$2`);
+  }
+  if (after === before) return [];
+  const today = todayJst();
+  after = after.replace(/\d{4}-\d{2}-\d{2}（JST）時点/, `${today}（JST）時点`).replace(/（\d{4}-\d{2}-\d{2} 時点）/, `（${today} 時点）`);
+  writeFileSync(roadmapPath, after);
+  return ['guide/roadmap.md'];
+}
+
 /* ---------------- main ---------------- */
 
 const targets = process.argv.slice(2);
@@ -1230,3 +1272,4 @@ for (const name of names.filter((n) => n in REGISTRY)) {
   );
   for (const edited of syncVersions(name, cfg, serverInfo, tools.length)) console.log(`  synced version in ${edited}`);
 }
+for (const edited of syncRoadmapVersions()) console.log(`synced versions in ${edited}`);

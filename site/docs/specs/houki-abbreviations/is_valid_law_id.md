@@ -8,7 +8,7 @@ description: "houki-abbreviations の isValidLawId（文字列が e-Gov の law_
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/is_valid_law_id/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.1** の `specs/current/is_valid_law_id/spec.md` から自動生成しました（仕様 ID 15 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.1** の `specs/current/is_valid_law_id/spec.md` から自動生成しました（仕様 ID 15 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 文字列が e-Gov の law_id の形をしているかを判定する
@@ -224,7 +224,11 @@ flowchart TD
 例: `322R0000000A001` と `322RA000000A001` は `false`（v0.6.1 では `true`）。`322R00000001001` は `true`。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -239,7 +243,7 @@ flowchart TD
 4. **全角の英数字は `false`。** → [SPEC-ABBR-IS-VALID-LAW-ID-012](#spec-abbr-is-valid-law-id-012)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history is_valid_law_id` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

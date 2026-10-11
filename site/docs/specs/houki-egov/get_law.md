@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_law（法令の条・項・号を 1 つ取�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/get_law/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/get_law/spec.md` から自動生成しました（仕様 ID 43 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/get_law/spec.md` から自動生成しました（仕様 ID 43 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 法令の条・項・号を 1 つ取得する。条を省くと目次を返す
@@ -589,7 +589,11 @@ tools/list の inputSchema の `suppl_index` は `type: "integer"`、`minimum: 1
 例: `{ law_name: "消費税法", article: "100", suppl_index: 27 }` の `markdown` は `# 消費税法 附則(27) 第100条` で始まり、2 行目は `附則(27) 平成八年六月一四日法律第八二号（抄）`、3 行目は `（消費税法の一部改正に伴う経過措置）`。`{ law_name: "消費税法", article: "100", suppl_index: 27, format: "json" }` の `data.suppl_index` は `27`、`{ law_name: "消費税法", article: "30", format: "json" }` の `data.suppl_index` は `null`。`{ law_name: "消費税法", article: "100", suppl_index: 999 }` は `RANGE_NOT_FOUND`、`hint` に `附則は 168 本`（2026-10-03 の本数）。`{ law_name: "消費税法", suppl_index: 27 }` は `INVALID_ARGUMENT`。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -611,7 +615,7 @@ tools/list の inputSchema の `suppl_index` は `type: "integer"`、`minimum: 1
 11. **`at` による時点指定。** → [SPEC-EGOV-GET-LAW-034](#spec-egov-get-law-034)・[SPEC-EGOV-GET-LAW-035](#spec-egov-get-law-035)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history get_law` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

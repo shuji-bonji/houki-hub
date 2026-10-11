@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_attachment（添付ファイル 1 件か、
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/get_attachment/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/get_attachment/spec.md` から自動生成しました（仕様 ID 31 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/get_attachment/spec.md` から自動生成しました（仕様 ID 31 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 添付ファイル 1 件か、まとめた zip の URL を返し、求められたら保存する
@@ -413,7 +413,11 @@ pdf のファイルを `save: true` で保存したときは、`content_type` �
 例: `{ law_name: "民法", src: "./pict/a.jpg", at: "2000-01-01" }` は、法令本文の取得に e-Gov が 400・`400044` を返すので `code: "INVALID_ARGUMENT"`、`tool: "get_attachment"`。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -431,7 +435,7 @@ pdf のファイルを `save: true` で保存したときは、`content_type` �
 12. **応答の `updated`。** → [SPEC-EGOV-GET-ATTACHMENT-022](#spec-egov-get-attachment-022)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history get_attachment` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

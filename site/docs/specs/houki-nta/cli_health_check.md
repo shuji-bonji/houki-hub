@@ -8,7 +8,7 @@ description: "houki-nta-mcp の cli_health_check（国税庁サイトの代表�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/cli_health_check/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/cli_health_check/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/cli_health_check/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 国税庁サイトの代表ページの確認と、基準（baseline）との比較
@@ -152,7 +152,11 @@ bulk download が終わったときの記録は、その種別の baseline フ�
 例: 今の代表ページ 9 件（判定の対象は基本通達 4 種と改正通達の索引の 5 件）で目次に問題が無ければ、まとめの行は `[drift-check] 5/5 OK, drift=0, 対象外=4 (<秒>s)`（v0.23.x では `[drift-check] 9/9 OK, drift=0 (<秒>s)`。#111）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -167,7 +171,7 @@ bulk download が終わったときの記録は、その種別の baseline フ�
 5. **目次の項目のうち、コメントの中にある旧版のリンクは拾わない。** 目次には世代移行した旧版のリンクが HTML のコメントの中に残っているが、判定には使わない（ブラウザーの表示と同じ）。テストは目次の解析の単位（`src/services/menu-parser.test.ts`）にある。ID を振るのは受入テストを書いてから。
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history cli_health_check` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

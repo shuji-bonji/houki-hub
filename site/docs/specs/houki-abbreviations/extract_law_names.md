@@ -8,7 +8,7 @@ description: "houki-abbreviations の extractLawNames（テキストの中から
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/extract_law_names/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.1** の `specs/current/extract_law_names/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.1** の `specs/current/extract_law_names/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 テキストの中から辞書にある法令名・略称・別名を位置付きで抜き出す
@@ -282,7 +282,11 @@ v0.6.0 の同梱辞書には、別のエントリどうしで同じキーが無�
 例: `酒税法`（`abbr` と `formal` がどちらも `酒税法`）→ 1 件。`matchedKey: "酒税法"`、`position: 0`、`length: 3`（v0.6.1 では同じ一致を 2 件返していた）。`公認会計士法の規定` → `公認会計士法` の 1 件。`民法の解釈` → `民法` の 1 件。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -301,7 +305,7 @@ v0.6.0 の同梱辞書には、別のエントリどうしで同じキーが無�
 8. **`text` が文字列でないとき。** → [SPEC-ABBR-EXTRACT-LAW-NAMES-014](#spec-abbr-extract-law-names-014)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history extract_law_names` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

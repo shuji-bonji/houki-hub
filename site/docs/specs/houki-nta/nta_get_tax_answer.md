@@ -8,7 +8,7 @@ description: "houki-nta-mcp の nta_get_tax_answer（タックスアンサーを
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/nta_get_tax_answer/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/nta_get_tax_answer/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/nta_get_tax_answer/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 タックスアンサーを番号で 1 件取得する
@@ -413,7 +413,11 @@ v0.25.0 では `概要`（4）・`対象者または対象物`（3）・`計算�
 例 4（v0.25.0 以前に入れた行）: 2026-10-04 に 0.25.0 で取り込んだ No.6101 の行（節は `概要`・`根拠法令等`・`関連リンク` の 3 つ）を DB から返すと、`taxAnswer.sections` は同じ 3 つで、どれも `level: 2` になる（`source: "db"`）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -423,7 +427,7 @@ v0.25.0 では `概要`（4）・`対象者または対象物`（3）・`計算�
 意図か不具合かの判断が要る項目は houki-nta-mcp の Issue に移し、ここには題と Issue の番号だけを残します。今の振る舞いのままでよくテストが無いだけの項目は、受入テストを書いてから「できること」に ID を振ります。
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history nta_get_tax_answer` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

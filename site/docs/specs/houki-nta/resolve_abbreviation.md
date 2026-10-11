@@ -8,7 +8,7 @@ description: "houki-nta-mcp の resolve_abbreviation（略称・通称から辞�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/resolve_abbreviation/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/resolve_abbreviation/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/resolve_abbreviation/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 略称・通称から辞書のエントリを 1 件解決する
@@ -169,7 +169,11 @@ v0.21.3 では空文字・空白だけの `abbr` に `resolved: null` と `note`
 例: `abbr: "ＰＬ法"` は `resolved.formal: "製造物責任法"`・`in_scope: false` で、応答の `abbr` は `"ＰＬ法"`（v0.21.3 では `resolved: null` だった）。`abbr: "消基通　"`（末尾が全角空白）は `消費税法基本通達`・`in_scope: true`。`abbr: "pl法"` は大文字小文字が違うので `resolved: null` のまま。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -181,7 +185,7 @@ v0.21.3 では空文字・空白だけの `abbr` に `resolved: null` と `note`
 4. **`hint` が案内する MCP 名。** → [SPEC-NTA-RESOLVE-ABBREVIATION-003](#spec-nta-resolve-abbreviation-003)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history resolve_abbreviation` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

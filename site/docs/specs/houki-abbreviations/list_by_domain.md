@@ -8,7 +8,7 @@ description: "houki-abbreviations の listByDomain（指定した分野のエン
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/list_by_domain/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.1** の `specs/current/list_by_domain/spec.md` から自動生成しました（仕様 ID 5 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.1** の `specs/current/list_by_domain/spec.md` から自動生成しました（仕様 ID 5 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 指定した分野のエントリをすべて返す
@@ -119,7 +119,11 @@ JavaScript から `DOMAINS` に無い値を渡したときは、例外を投げ�
 例: `listByDomain('xxx')` と `listByDomain('')` は `[]`。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -135,7 +139,7 @@ JavaScript から `DOMAINS` に無い値を渡したときは、例外を投げ�
 5. **`DOMAINS` に無い値。** → [SPEC-ABBR-LIST-BY-DOMAIN-005](#spec-abbr-list-by-domain-005)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history list_by_domain` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

@@ -8,7 +8,7 @@ description: "houki-nta-mcp の nta_inspect_pdf_meta（文書の添付 PDF の�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/nta_inspect_pdf_meta/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/nta_inspect_pdf_meta/spec.md` から自動生成しました（仕様 ID 20 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/nta_inspect_pdf_meta/spec.md` から自動生成しました（仕様 ID 20 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 文書の添付 PDF の一覧と読み方を返す
@@ -330,7 +330,11 @@ DB にある文書の添付 PDF の記録が JSON として読めないときは
 例: `{ docType: "kaisei", docId: "００２６００３―０６７" }` は `{ docType: "kaisei", docId: "0026003-067" }` と同じ応答（v0.21.3 では全角のまま DB を引いて「DB に無い」だった）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -340,7 +344,7 @@ DB にある文書の添付 PDF の記録が JSON として読めないときは
 意図か不具合かの判断が要る項目は houki-nta-mcp の Issue に移し、ここには題と Issue の番号だけを残します。今の振る舞いのままでよくテストが無いだけの項目は、受入テストを書いてから「できること」に ID を振ります。
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history nta_inspect_pdf_meta` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

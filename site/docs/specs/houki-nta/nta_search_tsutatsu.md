@@ -8,7 +8,7 @@ description: "houki-nta-mcp の nta_search_tsutatsu（基本通達の条項を�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/nta_search_tsutatsu/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/nta_search_tsutatsu/spec.md` から自動生成しました（仕様 ID 11 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/nta_search_tsutatsu/spec.md` から自動生成しました（仕様 ID 11 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 基本通達の条項をキーワードで検索する
@@ -227,7 +227,11 @@ tools/list の inputSchema の `limit` は `type: "integer"`、`minimum: 1`、`m
 例: `{ keyword: "軽減税率", limit: 0 }` は `code: "INVALID_ARGUMENT"`、`detail.issues` は `[{ path: "limit", message: "1 以上で指定してください" }]` で、DB は引かない（v0.21.3 では 1 件に丸めていた）。`limit: 100` は `[{ path: "limit", message: "50 以下で指定してください" }]`（v0.21.3 では 50 件）。`limit: 2.5` と `limit: "10"` は `整数で指定してください`。`limit: 50` は検査を通り、最大 50 件を返す。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -239,7 +243,7 @@ tools/list の inputSchema の `limit` は `type: "integer"`、`minimum: 1`、`m
 8. **`TSUTATSU_NOT_FOUND` の案内するフラグ。** → [SPEC-NTA-SEARCH-TSUTATSU-003](#spec-nta-search-tsutatsu-003)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history nta_search_tsutatsu` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

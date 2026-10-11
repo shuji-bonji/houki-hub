@@ -3,6 +3,8 @@ title: 現状と予定
 description: houki-hub family の各部品の版と、次に取り組む順序（2026-10-11 時点）
 ---
 
+<!-- 「公開済みの部品」の表の版の列と「時点」の日付は、scripts/generate-reference.mjs（syncRoadmapVersions）が stack.json から揃える。手で直さなくてよい -->
+
 # 現状と予定
 
 ::: info 時点

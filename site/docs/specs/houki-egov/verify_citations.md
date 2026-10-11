@@ -8,7 +8,7 @@ description: "houki-egov-mcp の verify_citations（法令の引用のリスト�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/verify_citations/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/verify_citations/spec.md` から自動生成しました（仕様 ID 48 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/verify_citations/spec.md` から自動生成しました（仕様 ID 48 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 法令の引用のリストをまとめて実在確認する
@@ -603,7 +603,11 @@ tools/list の inputSchema の `citations.items.properties.paragraph` は `type:
 例（2026-10-03 10:12 JST に houki-egov-dev 0.17.0 で確かめた）: `{ citations: [{ law_name: "所得税法", article: "9" }], at: "2000-01-01" }` は `code: "INVALID_ARGUMENT"`、`detail.issues[0].path: "at"` で、`results` を持たない。v0.17.0 では、その件が `code: "LAW_NOT_FOUND"`、`reason: "e-Gov に law_id 340AC0000000033 の法令がありません"` の `not_found` で、所得税法が e-Gov に無いと読める応答だった。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -629,7 +633,7 @@ tools/list の inputSchema の `citations.items.properties.paragraph` は `type:
 18. **略称辞書に law_id が無い法令名の完全一致。** → [SPEC-EGOV-VERIFY-CITATIONS-039](#spec-egov-verify-citations-039)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history verify_citations` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

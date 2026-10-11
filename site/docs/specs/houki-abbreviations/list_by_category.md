@@ -8,7 +8,7 @@ description: "houki-abbreviations の listByCategory（指定した種別のエ�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/list_by_category/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.1** の `specs/current/list_by_category/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.1** の `specs/current/list_by_category/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 指定した種別のエントリをすべて返す
@@ -147,7 +147,11 @@ JavaScript から `CATEGORIES` に無い値を渡したときは、例外を投�
 例: `listByCategory('ministerial-ordinance')` は `所規`（`formal: "所得税法施行規則"`）・`労基則`・`会社規` などを含む 16 件、`listByCategory('rule')` は `民訴規`（`formal: "民事訴訟規則"`）と `刑訴規`（`formal: "刑事訴訟規則"`）の 2 件、`listByCategory('kobetsu-tsutatsu')` は `電帳法取通`（`formal: "電子計算機を使用して作成する国税関係帳簿書類の保存方法等の特例に関する法律の取扱通達"`）の 1 件を返す。どの要素もそれぞれの `category` を持つ。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -163,7 +167,7 @@ JavaScript から `CATEGORIES` に無い値を渡したときは、例外を投�
 5. **`kobetsu-tsutatsu` と `rule` と `ministerial-ordinance` の中身。** → [SPEC-ABBR-LIST-BY-CATEGORY-007](#spec-abbr-list-by-category-007)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history list_by_category` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

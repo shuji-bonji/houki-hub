@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_article_references（条文本文が引用�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/get_article_references/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/get_article_references/spec.md` から自動生成しました（仕様 ID 52 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/get_article_references/spec.md` から自動生成しました（仕様 ID 52 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 条文本文が引用している参照と委任を取り出す
@@ -666,7 +666,11 @@ tools/list の inputSchema の `paragraph` は `type: "integer"`、`minimum: 1` 
 例: `{ law_name: "所得税法施行規則", article: "3" }` の参照 `日本国との平和条約に基づき日本の国籍を離脱した者等の出入国管理に関する特例法（平成三年法律第七十一号）`（`law_id: "403AC0000000071"`、`article` 無し）からは、`{ action: "get_toc", reason: "引用先の法令の目次を見られます", example: { law_name: "日本国との平和条約に基づき日本の国籍を離脱した者等の出入国管理に関する特例法" } }` を入れる。v0.17.0 では `{ action: "get_law", example: { law_name: "日本国との平和条約…特例法", article: "3" } }` で、特例法の第3条を指していた（2026-10-03 10:14 JST に houki-egov-dev 0.17.0 で確かめた。houki-egov-mcp #98）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -687,7 +691,7 @@ tools/list の inputSchema の `paragraph` は `type: "integer"`、`minimum: 1` 
 10. **応答のフィールドのうちテストで確かめていないもの。** → [SPEC-EGOV-GET-ARTICLE-REFERENCES-034](#spec-egov-get-article-references-034)・[SPEC-EGOV-GET-ARTICLE-REFERENCES-035](#spec-egov-get-article-references-035)・[SPEC-EGOV-GET-ARTICLE-REFERENCES-036](#spec-egov-get-article-references-036)・[SPEC-EGOV-GET-ARTICLE-REFERENCES-037](#spec-egov-get-article-references-037)・[SPEC-EGOV-GET-ARTICLE-REFERENCES-038](#spec-egov-get-article-references-038)（一部は約束にしていない。差分 `20260928-untested-behaviors` の proposal.md を参照）
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history get_article_references` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

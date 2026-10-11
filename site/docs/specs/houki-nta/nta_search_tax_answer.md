@@ -8,7 +8,7 @@ description: "houki-nta-mcp の nta_search_tax_answer（タックスアンサー
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/nta_search_tax_answer/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/nta_search_tax_answer/spec.md` から自動生成しました（仕様 ID 6 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/nta_search_tax_answer/spec.md` から自動生成しました（仕様 ID 6 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 タックスアンサーをキーワードで検索する
@@ -152,7 +152,11 @@ v0.21.3 では空の `keyword` に `results: []` と「該当なし」の `hint`
 例: `{ keyword: "医療費控除" }` で `results[0].docId` が `"1131"` のとき、`next_actions` は `[{ action: "nta_get_tax_answer", reason: "記事の本文を読めます", example: { no: "1131" } }]`（v0.22.0 では `next_actions` が無かった）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -164,7 +168,7 @@ v0.21.3 では空の `keyword` に `results: []` と「該当なし」の `hint`
 8. **`nta_get_tax_answer` へ進む案内が無い。** → [SPEC-NTA-SEARCH-TAX-ANSWER-006](#spec-nta-search-tax-answer-006)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history nta_search_tax_answer` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

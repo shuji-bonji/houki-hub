@@ -8,7 +8,7 @@ description: "houki-nta-mcp の cli_entry（`houki-nta-mcp` コマンドの起�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/cli_entry/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/cli_entry/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/cli_entry/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 `houki-nta-mcp` コマンドの起動と引数の振り分け
@@ -243,7 +243,11 @@ v0.23.x では、処理を選ぶフラグが 2 つ以上あると決まった順
 例: 環境変数を付けずに、ホームディレクトリが `/Users/bonji` の環境で起動すると、`started` の行の次に `{"ts":"…","level":"info","scope":"server","msg":"DB: /Users/bonji/.cache/houki-nta-mcp/cache.db（DB の場所の設定: 既定）","meta":{"db_path":"/Users/bonji/.cache/houki-nta-mcp/cache.db","setting":"既定"}}`。`HOUKI_NTA_DB_PATH=/Users/bonji/.cache/houki-nta-mcp/cache.dev.db` を付けて起動すると `msg` は `DB: /Users/bonji/.cache/houki-nta-mcp/cache.dev.db（DB の場所の設定: HOUKI_NTA_DB_PATH）`（v0.24.x では `started` の 1 行だけで、どのファイルを開くかはログから分からなかった。houki-nta-mcp #138）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -256,7 +260,7 @@ v0.23.x では、処理を選ぶフラグが 2 つ以上あると決まった順
 6. **`--db-path` の既定の決め方。** `HOUKI_NTA_DB_PATH` → `$XDG_CACHE_HOME/houki-nta-mcp/cache.db` → `~/.cache/houki-nta-mcp/cache.db` の順で、テストが無い。db_schema の未決 1 と同じ。
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history cli_entry` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

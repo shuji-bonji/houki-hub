@@ -8,7 +8,7 @@ description: "houki-egov-mcp の cli_entry（`houki-egov-mcp` コマンドの起
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/cli_entry/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/cli_entry/spec.md` から自動生成しました（仕様 ID 12 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/cli_entry/spec.md` から自動生成しました（仕様 ID 12 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 `houki-egov-mcp` コマンドの起動と引数の振り分け
@@ -212,7 +212,11 @@ v0.18.x では 2 番目以降の引数を見なかったので、上の 4 行目
 例: 環境変数を付けずに、ホームディレクトリが `/Users/bonji` の環境で起動すると、標準エラー出力は `[server] @shuji-bonji/houki-egov-mcp v0.20.0 started` の次に `[server] DB: /Users/bonji/.cache/houki-egov-mcp/laws.db（DB の場所の設定: 既定）`。`HOUKI_EGOV_DB_PATH=/Users/bonji/.cache/houki-egov-mcp/laws.v3.db` を付けて起動すると `[server] DB: /Users/bonji/.cache/houki-egov-mcp/laws.v3.db（DB の場所の設定: HOUKI_EGOV_DB_PATH）`（v0.19.x では `… started` の 1 行だけで、どのファイルを開くかはログから分からなかった。houki-egov-mcp #108 の追記）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -225,7 +229,7 @@ v0.18.x では 2 番目以降の引数を見なかったので、上の 4 行目
 3. **MCP サーバーの終わり方。** → [SPEC-EGOV-CLI-ENTRY-006](#spec-egov-cli-entry-006)・[SPEC-EGOV-CLI-ENTRY-007](#spec-egov-cli-entry-007)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history cli_entry` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

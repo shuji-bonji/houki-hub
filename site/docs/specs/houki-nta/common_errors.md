@@ -8,7 +8,7 @@ description: "houki-nta-mcp の common_errors（全ツールに共通するエ�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/common_errors/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/common_errors/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/common_errors/spec.md` から自動生成しました（仕様 ID 19 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 全ツールに共通するエラー応答の形と引数の検査
@@ -432,7 +432,11 @@ houki-egov-mcp の [SPEC-EGOV-COMMON-ERRORS-027](/specs/houki-egov/common_errors
 例: `fetch` が `TypeError("fetch failed")` を投げ、その `cause` が `{ code: "ENOTFOUND", hostname: "www.nta.go.jp" }` のとき、DB に無い記事を `nta_get_tax_answer` に `{ no: "6101" }` で求めると、`code: "SOURCE_UNAVAILABLE"`、`retryable: true`、`detail.cause: "ENOTFOUND"`（v0.23.0 では `SOURCE_API_ERROR`、`detail.status` 無し）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -449,7 +453,7 @@ houki-egov-mcp の [SPEC-EGOV-COMMON-ERRORS-027](/specs/houki-egov/common_errors
 8. **値の無いフィールドを付けない規則。** `hint` が空文字のとき、`next_actions` が空の配列のときは付けない。`retryable` は値を決めたエラーにだけ付き、付かないエラーを「再試行しても変わらない」と読んでよいかは決めていない。テストが無い。ID を振るのは受入テストを書いてから。
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history common_errors` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

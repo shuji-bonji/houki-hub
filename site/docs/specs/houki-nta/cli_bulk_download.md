@@ -8,7 +8,7 @@ description: "houki-nta-mcp の cli_bulk_download（国税庁サイトから通�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/cli_bulk_download/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/cli_bulk_download/spec.md` から自動生成しました（仕様 ID 14 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/cli_bulk_download/spec.md` から自動生成しました（仕様 ID 14 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 国税庁サイトから通達と文書を取得してローカル DB に入れる
@@ -235,7 +235,11 @@ flowchart TD
 v0.25.x では、`--bulk-download-tax-answer` は記事を 1 件も取らずに止まり、SQLite の例外が MCP サーバーの入口まで伝わって `fatal error` のログを出し、終了コード 1 で終わる。`--bulk-download-everything` では `(5/6) タックスアンサー 失敗: table tax_answer_index has no column named url` を出してタックスアンサーを飛ばし、質疑応答事例へ進んで終了コード 0 で終わる（proposal.md の「今の動き」）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -250,7 +254,7 @@ v0.25.x では、`--bulk-download-tax-answer` は記事を 1 件も取らずに�
 6. **投入した節・文書の文字列の揃え方。** DB に入れる題名・本文は [SPEC-NTA-SEARCH-RULES-007](/specs/houki-nta/search_rules#spec-nta-search-rules-007) の揃え方で入る。種別ごとの証拠は search_rules の未決 7 と同じ。
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history cli_bulk_download` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

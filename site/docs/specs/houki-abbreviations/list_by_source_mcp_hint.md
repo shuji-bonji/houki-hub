@@ -8,7 +8,7 @@ description: "houki-abbreviations の listBySourceMcpHint（指定した MCP が
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/list_by_source_mcp_hint/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.1** の `specs/current/list_by_source_mcp_hint/spec.md` から自動生成しました（仕様 ID 5 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.1** の `specs/current/list_by_source_mcp_hint/spec.md` から自動生成しました（仕様 ID 5 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 指定した MCP が本文を持つエントリをすべて返す
@@ -124,7 +124,11 @@ JavaScript から `SOURCE_MCP_HINTS` に無い値を渡したときは、例外�
 例: `listBySourceMcpHint('xxx')` と `listBySourceMcpHint('HOUKI-EGOV')` は `[]`。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -140,7 +144,7 @@ JavaScript から `SOURCE_MCP_HINTS` に無い値を渡したときは、例外�
 5. **`houki-jaish` と `houki-saiketsu`。** → [SPEC-ABBR-LIST-BY-SOURCE-MCP-HINT-002](#spec-abbr-list-by-source-mcp-hint-002)（テストを足した）
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history list_by_source_mcp_hint` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

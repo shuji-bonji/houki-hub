@@ -8,7 +8,7 @@ description: "houki-nta-mcp の search_rules（検索系ツールに共通する
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/search_rules/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/search_rules/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/search_rules/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 検索系ツールに共通するキーワードの扱いと結果の付記
@@ -453,7 +453,11 @@ v0.24.0 では、`oldest_fetched_at` が `2026-09-07T21:06:49.516Z` になり、
 例: ホームディレクトリが `/Users/bonji`、DB の場所の設定が `既定` で、質疑応答事例の取得日時が 2026-10-04 の DB で `nta_search_qa { keyword: "源泉徴収" }` を呼ぶと、`freshness` は `{ oldest_fetched_at: "2026-10-04T03:51:26.746Z", newest_fetched_at: "2026-10-04T04:26:15.744Z", staleness: "fresh", days_since_oldest: 0, db_path: "~/.cache/houki-nta-mcp/cache.db" }`。`HOUKI_NTA_DB_PATH=/tmp/x/cache.db` で起動すると `db_path: "/tmp/x/cache.db"`。[SPEC-NTA-SEARCH-RULES-017](#spec-nta-search-rules-017) の例 4 の `taxonomy: "hojin"` の呼び出しでは `freshness` は `{ oldest_fetched_at: null, newest_fetched_at: null, staleness: null, days_since_oldest: null, db_path: "~/.cache/houki-nta-mcp/cache.db" }`（v0.24.x では `freshness` のキーが無かった）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -468,7 +472,7 @@ v0.24.0 では、`oldest_fetched_at` が `2026-09-07T21:06:49.516Z` になり、
 12. **部分一致だけで当たったものの `score`。** 2 文字の語だけのとき（[SPEC-NTA-SEARCH-RULES-003](#spec-nta-search-rules-003)）は全文検索の順位が無いので、全件に同じ仮の順位を与え、`score` は種別の重み × 約 0.09 の同じ値になる。並びは DB に入れた順になる。この値と並びを確かめるテストが無い。ID を振るのは受入テストを書いてから。
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history search_rules` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

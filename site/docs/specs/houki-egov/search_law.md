@@ -8,7 +8,7 @@ description: "houki-egov-mcp の search_law（法令をタイトルのキーワ�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/search_law/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/search_law/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/search_law/spec.md` から自動生成しました（仕様 ID 18 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 法令をタイトルのキーワード・略称で検索する
@@ -276,7 +276,11 @@ tools/list の `search_law` の inputSchema の `law_type` は、`enum: ["Consti
 2026-10-03 10:18 JST に e-Gov の `/laws?law_type=<値>&limit=1` で確かめた値: `Constitution` 1 件、`ImperialOrder` 74 件、`Rule` 453 件（いずれも 200）、`ImperialOrdinance` は 400・`{"code":"400001","message":"法令種別（law_type、law_num_type）が誤っています。"}`。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -292,7 +296,7 @@ tools/list の `search_law` の inputSchema の `law_type` は、`enum: ["Consti
 8. **e-Gov への問い合わせに失敗したときのエラー。** → [SPEC-EGOV-SEARCH-LAW-009](#spec-egov-search-law-009)・[SPEC-EGOV-SEARCH-LAW-010](#spec-egov-search-law-010)・[SPEC-EGOV-SEARCH-LAW-011](#spec-egov-search-law-011)・[SPEC-EGOV-SEARCH-LAW-012](#spec-egov-search-law-012)（一部は約束にしていない。差分 `20260928-untested-behaviors` の proposal.md を参照）
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history search_law` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

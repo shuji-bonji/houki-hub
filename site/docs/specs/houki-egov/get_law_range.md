@@ -8,7 +8,7 @@ description: "houki-egov-mcp の get_law_range（編・章・節、または附�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/get_law_range/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/get_law_range/spec.md` から自動生成しました（仕様 ID 35 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/get_law_range/spec.md` から自動生成しました（仕様 ID 35 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 編・章・節、または附則 1 本を範囲にして、条を本文ごと返す
@@ -485,7 +485,11 @@ tools/list の inputSchema の `suppl_index` は `type: "integer"`、`minimum: 1
 例: `{ law_name: "消費税法", chapter: 1, at: "2000-01-01" }` は `code: "INVALID_ARGUMENT"`、`detail.issues: [{ path: "at", message: "e-Gov が受け付ける時点の範囲の外です" }]`。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -503,7 +507,7 @@ tools/list の inputSchema の `suppl_index` は `type: "integer"`、`minimum: 1
 7. **候補が 6 か所以上に当たるとき。** → [SPEC-EGOV-GET-LAW-RANGE-028](#spec-egov-get-law-range-028)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history get_law_range` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

@@ -8,7 +8,7 @@ description: "houki-nta-mcp の db_schema（通達と文書を持つローカル
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/db_schema/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/db_schema/spec.md` から自動生成しました（仕様 ID 30 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/db_schema/spec.md` から自動生成しました（仕様 ID 30 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 通達と文書を持つローカル SQLite DB の版・移行・書き戻し
@@ -580,7 +580,11 @@ DB を開けないときは、`hint` のほかに次のようにする（v0.25.x
 置き場所のフォルダーに入る権限が無いとき（[SPEC-NTA-DB-SCHEMA-021](#spec-nta-db-schema-021) の開けない行）も同じで、`meta.cause` は `EACCES: パスの途中のフォルダーに入る権限がありません (<そのフォルダーの絶対パス>)`（v0.26.x では「ファイルが無い」と判定し、国税庁サイトから取った後に DB に書こうとして書けず、`warn` も出さなかった）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -596,7 +600,7 @@ DB を開けないときは、`hint` のほかに次のようにする（v0.25.x
 8. **`tsutatsu_toc` の使い方。** 目次の URL を鍵に、`nta_get_tsutatsu` が候補ページを決めるために使い回す。使い回す期間は無く、条項が見つからないときにだけ条件付き取得で取り直す（[SPEC-NTA-GET-TSUTATSU-014](/specs/houki-nta/nta_get_tsutatsu#spec-nta-get-tsutatsu-014)）。表ができること以外（行の中身・取り直し）はこの文書ではテストと結び付けていない。ID を振るのは受入テストを書いてから。
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history db_schema` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

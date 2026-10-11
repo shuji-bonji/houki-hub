@@ -8,7 +8,7 @@ description: "houki-nta-mcp の cli_refresh（取り込み済みの通達と文�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-nta-mcp の specs/current/cli_refresh/spec.md の写し。 -->
 
 ::: info
-houki-nta-mcp **v0.27.0** の `specs/current/cli_refresh/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-nta-mcp **v0.27.0** の `specs/current/cli_refresh/spec.md` から自動生成しました（仕様 ID 7 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 取り込み済みの通達と文書の取り直し
@@ -138,7 +138,11 @@ flowchart TD
 例: 消費税法基本通達の節が 60 日前の取得で、国税庁サイトがその節に 304 を返す DB で `--refresh-stale=30 --apply --refresh` を実行すると、その節は 200 で取り直されて入れ直され、`fetched_at`・`last_modified`・`etag` が新しい値になる（v0.23.x では `--refresh` が `--apply` の取り直しに渡らず、304 で `fetched_at` だけが更新された。#109）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -151,7 +155,7 @@ flowchart TD
 5. **`--refresh-stale` の表示。** 標準エラー出力に `[refresh-stale] DB: <DB の場所> (<日数> 日より古い section を対象)`、`[refresh-stale] 該当: <件数> sections`、dry-run なら `[refresh-stale] dry-run（--apply で再 DL を実行）`、`--apply` なら `[refresh-stale] 再 DL 対象通達: <通達名を / で並べたもの>` を出す。テストが無い。ID を振るのは受入テストを書いてから。
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history cli_refresh` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

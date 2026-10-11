@@ -8,7 +8,7 @@ description: "houki-egov-mcp の db_schema（全文検索に使うローカル S
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/db_schema/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/db_schema/spec.md` から自動生成しました（仕様 ID 28 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/db_schema/spec.md` から自動生成しました（仕様 ID 28 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 全文検索に使うローカル SQLite DB の置き場所とテーブル
@@ -404,7 +404,11 @@ CLI の出力でも同じ形にする（CLI を `HOUKI_EGOV_DB_PATH=… npx …`
 v0.19.x のコマンドは、どの場合も `houki-egov-mcp --bulk-download-everything`（グローバルにインストールしていないと `command not found`、`npx houki-egov-mcp` は npm に無い名前なので 404。houki-egov-mcp #108 の 2）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -420,7 +424,7 @@ v0.19.x のコマンドは、どの場合も `houki-egov-mcp --bulk-download-eve
 9. **取り込み中の読み取り。** → [SPEC-EGOV-DB-SCHEMA-022](#spec-egov-db-schema-022)・[SPEC-EGOV-DB-SCHEMA-023](#spec-egov-db-schema-023)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history db_schema` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

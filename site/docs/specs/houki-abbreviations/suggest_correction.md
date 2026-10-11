@@ -8,7 +8,7 @@ description: "houki-abbreviations の suggestCorrection（誤った名前に近�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/suggest_correction/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.1** の `specs/current/suggest_correction/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.1** の `specs/current/suggest_correction/spec.md` から自動生成しました（仕様 ID 9 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 誤った名前に近いエントリの正式名称を並べて返す
@@ -154,7 +154,11 @@ flowchart TD
 例: `suggestCorrection('民法')` は `['民事訴訟法', '民事執行法', '民事保全法']` で、`民法` は入らない（v0.6.1 では先頭が `民法` だった）。`suggestCorrection('労働基準法')` は `[]`。`suggestCorrection('労基側')` は `['労働基準法', '労働基準法施行規則']`。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -170,7 +174,7 @@ flowchart TD
 5. **`limit` に `NaN` を渡したときの扱いと上限。** → [SPEC-ABBR-SUGGEST-CORRECTION-004](#spec-abbr-suggest-correction-004)、[SPEC-ABBR-SUGGEST-CORRECTION-006](#spec-abbr-suggest-correction-006)、[SPEC-ABBR-SUGGEST-CORRECTION-007](#spec-abbr-suggest-correction-007)、[SPEC-ABBR-SUGGEST-CORRECTION-008](#spec-abbr-suggest-correction-008)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history suggest_correction` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

@@ -8,7 +8,7 @@ description: "houki-egov-mcp の cli_bulk_download（e-Gov の一括ダウンロ
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/cli_bulk_download/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/cli_bulk_download/spec.md` から自動生成しました（仕様 ID 33 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/cli_bulk_download/spec.md` から自動生成しました（仕様 ID 33 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 e-Gov の一括ダウンロードの zip を取得してローカル DB に取り込む
@@ -497,7 +497,11 @@ v0.19.0（main `f3b7fc1`）の件数は、09-02 が `upserted: 26`、09-17 が `
 例: [SPEC-EGOV-CLI-BULK-DOWNLOAD-031](#spec-egov-cli-bulk-download-031) の表の「v0.19.0 の取り込み後の状態」の DB に、2026-10-02 以降の全件の zip（`…_20261001_…` が未施行の欄が空、`…_20270401_…` が `○`、`…_20260814_…` と `…_20260917_…` は入っていない）を取り込むと、`…_20261001_…` は 031 で `CurrentEnforced` に、`…_20260814_…` は 016 で `PreviousEnforced` に、`…_20260917_…` はこの規則で `PreviousEnforced` になり、4 版とも表の「この規則での状態」になる（全件の zip の中身はこの 1 法令については確かめていない。Issue の「全件 zip の配り方」からの推定）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -510,7 +514,7 @@ v0.19.0（main `f3b7fc1`）の件数は、09-02 が `upserted: 26`、09-17 が `
 7. **法令種別が XML に無いときの決め方。** → [SPEC-EGOV-CLI-BULK-DOWNLOAD-026](#spec-egov-cli-bulk-download-026)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history cli_bulk_download` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

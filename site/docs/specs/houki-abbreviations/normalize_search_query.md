@@ -8,7 +8,7 @@ description: "houki-abbreviations の normalizeSearchQuery（検索語を半角�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-abbreviations の specs/current/normalize_search_query/spec.md の写し。 -->
 
 ::: info
-houki-abbreviations **v0.7.1** の `specs/current/normalize_search_query/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-abbreviations **v0.7.1** の `specs/current/normalize_search_query/spec.md` から自動生成しました（仕様 ID 8 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 検索語を半角・小文字・単一の空白に揃える
@@ -149,7 +149,11 @@ flowchart TD
 例: `normalizeSearchQuery('Ⅰ Α À PL')` は `'Ⅰ Α À pl'`（v0.6.1 では `'ⅰ α à pl'`）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -162,7 +166,7 @@ flowchart TD
 2. **`null` / `undefined` を渡したとき。** → [SPEC-ABBR-NORMALIZE-SEARCH-QUERY-007](#spec-abbr-normalize-search-query-007)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history normalize_search_query` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

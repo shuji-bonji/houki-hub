@@ -8,7 +8,7 @@ description: "houki-egov-mcp の explain_law_type（法令種別の制定主体�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/explain_law_type/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/explain_law_type/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/explain_law_type/spec.md` から自動生成しました（仕様 ID 22 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 法令種別の制定主体・階層・拘束力を解説する
@@ -305,7 +305,11 @@ e-Gov の `law_type` の値（2026-10-03 10:18 JST に `/laws?law_type=<値>&lim
 例: `name: "Constitution"` は `found: true`・`info.name: "憲法"`。`name: "Rule"` は `found: true`・`info.name: "規則"`。v0.17.0 ではどちらも `found: false` だった。`name: "ImperialOrder"` は `found: false`（2026-10-03 10:19 JST に houki-egov-dev 0.17.0 でも `found: false`）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -322,7 +326,7 @@ e-Gov の `law_type` の値（2026-10-03 10:18 JST に `/laws?law_type=<値>&lim
 8. **別名の一覧。** → [SPEC-EGOV-EXPLAIN-LAW-TYPE-017](#spec-egov-explain-law-type-017)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history explain_law_type` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

@@ -8,7 +8,7 @@ description: "houki-egov-mcp の list_attachments（法令の添付ファイル�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/list_attachments/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/list_attachments/spec.md` から自動生成しました（仕様 ID 25 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/list_attachments/spec.md` から自動生成しました（仕様 ID 25 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 法令の添付ファイルの一覧を返す
@@ -360,7 +360,11 @@ e-Gov の法令本文の取得（`https://laws.e-gov.go.jp/api/2/law_data/<law_i
 2026-10-03 10:15 JST に e-Gov の国民年金法（`334AC0000000141`）・厚生年金保険法（`329AC0000000115`）・所得税法（`340AC0000000033`）・地方税法（`325AC0000000226`）の本文に `SupplProvisionAppdxTable` と `SupplProvisionAppdxTableTitle` の要素があることを確かめた。この 4 法令の附則の別表の中に図（`Fig`）は無かった。`SupplProvisionAppdxStyle`・`SupplProvisionAppdxStyleTitle`・`SupplProvisionAppdx` の要素と、附則の別表・様式の中に図がある実際の法令は確かめていない（要素名は e-Gov の法令標準 XML スキーマの名前に合わせた）。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -377,7 +381,7 @@ e-Gov の法令本文の取得（`https://laws.e-gov.go.jp/api/2/law_data/<law_i
 8. **法令本文の取得に失敗したときの code。** → [SPEC-EGOV-LIST-ATTACHMENTS-018](#spec-egov-list-attachments-018)・[SPEC-EGOV-LIST-ATTACHMENTS-019](#spec-egov-list-attachments-019)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history list_attachments` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

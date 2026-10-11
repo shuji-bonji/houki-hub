@@ -8,7 +8,7 @@ description: "houki-egov-mcp の search_fulltext（法令の条文本文をキ�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/search_fulltext/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/search_fulltext/spec.md` から自動生成しました（仕様 ID 42 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/search_fulltext/spec.md` から自動生成しました（仕様 ID 42 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 法令の条文本文をキーワードで横断検索する
@@ -610,7 +610,11 @@ DB を引かずに `search_law` に切り替えたとき（[SPEC-EGOV-SEARCH-FUL
 - `HOUKI_EGOV_DB_PATH` に既存のフォルダー `/tmp/d` を指定したとき: `note` は `ローカル DB (/tmp/d) を開けなかったため、` で始まり、`--bulk-download-everything` を含まず、`next_actions` は `search_law` の 1 件だけ（v0.19.x では `bulk DB を開けなかったため` で始まり、`--bulk-download-everything` を案内していた。`--bulk-download-everything` もこの DB では取得の前に止まる。[SPEC-EGOV-CLI-BULK-DOWNLOAD-029](/specs/houki-egov/cli_bulk_download#spec-egov-cli-bulk-download-029)）
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -626,7 +630,7 @@ DB を引かずに `search_law` に切り替えたとき（[SPEC-EGOV-SEARCH-FUL
 9. **`keyword` の前後の空白。** → [SPEC-EGOV-SEARCH-FULLTEXT-032](#spec-egov-search-fulltext-032)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history search_fulltext` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

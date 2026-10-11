@@ -8,7 +8,7 @@ description: "houki-egov-mcp の cli_sync（全件取り込み済みのローカ
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/cli_sync/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/cli_sync/spec.md` から自動生成しました（仕様 ID 21 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/cli_sync/spec.md` から自動生成しました（仕様 ID 21 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 全件取り込み済みのローカル DB を日次差分で最新化する
@@ -324,7 +324,11 @@ v0.19.0 で、施行日の翌日以降の `--sync` まで進めた DB は、そ�
 例: 2026-10-05 に施行日を迎える未施行の版が 5 つある DB を、v0.19.0 の `--sync` で 2026-10-06 まで進め（`last_sync_date: 2026-10-06`）、0.19.1 以降に上げて 2026-10-07 に環境変数を付けずに `--sync` を実行すると、10-06 と 10-07 の差分だけを確かめるので 5 版は `UnEnforced` のまま残り、`[WARN] 施行日が last_sync_date (2026-10-07) より前なのに未施行 (UnEnforced) のままの版が 5 件あります。npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything を 1 回実行すると直ります（…）` を出して終了コード 0（件数は 2026-10-04 JST に shuji の DB で数えた施行日 2026-10-05 の版の数を当てはめたもの。実行した値ではない。v0.19.1 ではコマンドが `houki-egov-mcp --bulk-download-everything`）。`HOUKI_EGOV_DB_PATH=/Users/bonji/.cache/houki-egov-mcp/laws.dev.db` を付けて実行したとき（ホームディレクトリが `/Users/bonji`）は、コマンドが `HOUKI_EGOV_DB_PATH="$HOME/.cache/houki-egov-mcp/laws.dev.db" npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything` になる。全件の zip から作った直後の DB（2026-10-03 作成）では、施行日が 2026-10-04 以前の `UnEnforced` の版は 0 件だった（houki-egov-mcp #107 の本文）ので、この行は出ない。
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -344,7 +348,7 @@ v0.19.0 で、施行日の翌日以降の `--sync` まで進めた DB は、そ�
 4. **`last_sync_date` が今日より後の日付のとき。** → [SPEC-EGOV-CLI-SYNC-018](#spec-egov-cli-sync-018)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history cli_sync` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

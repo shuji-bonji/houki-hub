@@ -8,7 +8,7 @@ description: "houki-egov-mcp の common_errors（全ツールに共通するエ�
 <!-- GENERATED FILE — 手で編集しない。本文は houki-egov-mcp の specs/current/common_errors/spec.md の写し。 -->
 
 ::: info
-houki-egov-mcp **v0.20.1** の `specs/current/common_errors/spec.md` から自動生成しました（仕様 ID 33 件・2026-10-10）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
+houki-egov-mcp **v0.20.1** の `specs/current/common_errors/spec.md` から自動生成しました（仕様 ID 33 件・2026-10-11）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs specs` です。
 :::
 
 全ツールに共通するエラー応答の形と引数の検査、ツールの登録
@@ -627,7 +627,11 @@ law_id を決めた後（略称辞書・法令名の検索・`verify_citations` 
 - `verify_citations` に `{ citations: [{ law_id: "503AC0000000035", article: "1" }], at: "2018-01-01" }` を渡すと、その件は `status: "not_found"`、`code: "LAW_NOT_FOUND"`、`reason: "503AC0000000035 は 2018-01-01 の時点の e-Gov に収録されていません"`（[SPEC-EGOV-VERIFY-CITATIONS-015](/specs/houki-egov/verify_citations#spec-egov-verify-citations-015)）。法令名で渡したとき（`law_name: "デジタル社会形成基本法"`、辞書に無い）は、`asof=2018-01-01` を付けた法令名の検索が 0 件になり、032 の 5 の `LAW_NOT_FOUND` になる
 :::
 
-## 検討中のこと
+## 実装する人に向けた情報
+
+ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。
+
+### 検討中のこと
 
 仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。開くと、元の仕様書の記述をそのまま読めます。
 
@@ -644,7 +648,7 @@ law_id を決めた後（略称辞書・法令名の検索・`verify_citations` 
 9. **`hint` が空文字のときは付けない。** → [SPEC-EGOV-COMMON-ERRORS-019](#spec-egov-common-errors-019)
 :::
 
-## 承認の履歴
+### 承認の履歴
 
 この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。各リポジトリの `npx spec-ids history common_errors` と同じ内容です。変更の名前から、変更の理由と前後の振る舞いを書いた文書（GitHub）を開けます。
 

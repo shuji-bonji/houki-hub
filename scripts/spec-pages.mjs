@@ -123,6 +123,7 @@ const SPEC_SECTIONS = [
       '仕様を書き起こしたときに見つかった項目のうち、扱いを Issue で検討しているものです。ここに挙げたことは、今後の版で変わることがあります。' +
       '開くと、元の仕様書の記述をそのまま読めます。',
     collapsed: '仕様書の「未決」の節',
+    forImplementers: true,
   },
 ];
 
@@ -398,11 +399,18 @@ function renderSpecPage(ctx, cfg, f) {
     L.push('');
   }
 
+  // 利用者向けの節を ## で出し、実装する人向けの節（検討中のこと・承認の履歴）は最後に 1 つの ## の下に ### で束ねる
+  // （初めて読む人が、承認の履歴や未決の項目を見て「内部の設計ノート」と受け取らないように。2026-10-11）
   const used = new Set();
+  const implementerSections = [];
   for (const def of SPEC_SECTIONS) {
     const sec = f.sections.find((s) => s.heading === def.src);
     if (!sec) continue;
     used.add(def.src);
+    if (def.forImplementers) {
+      implementerSections.push({ def, sec });
+      continue;
+    }
     L.push(`## ${def.title}`);
     L.push('');
     if (def.lead) {
@@ -432,8 +440,27 @@ function renderSpecPage(ctx, cfg, f) {
     L.push(`## ${transformLine(s.heading, {})}`, '', transformMarkdown(s.text, tctx), '');
   }
 
+  if (implementerSections.length || rows?.length) {
+    L.push('## 実装する人に向けた情報');
+    L.push('');
+    L.push(
+      'ここから下は、この機能を実装する人と、仕様の変更を追う人に向けた節です。使い方を知りたいだけなら、読まなくて構いません。'
+    );
+    L.push('');
+  }
+  for (const { def, sec } of implementerSections) {
+    L.push(`### ${def.title}`);
+    L.push('');
+    if (def.lead) {
+      L.push(def.lead);
+      L.push('');
+    }
+    L.push(def.collapsed ? details(def.collapsed, transformMarkdown(sec.text, tctx)) : transformMarkdown(sec.text, tctx));
+    L.push('');
+  }
+
   if (rows?.length) {
-    L.push('## 承認の履歴');
+    L.push('### 承認の履歴');
     L.push('');
     L.push(
       'この機能の仕様が、いつ、どの変更で承認されたかを新しい順に並べています。' +
