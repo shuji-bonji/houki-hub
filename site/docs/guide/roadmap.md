@@ -11,7 +11,7 @@ description: houki-hub family の各部品の版と、次に取り組む順序�
 2026-10-11（JST）時点の状態です。版は npm の公開版（Skill は GitHub の最新タグ）です。版はリファレンス・仕様書のページにも出ますが、それらは生成した時点の版なので、この表と一致しないことがあります。最新の版は npm のページで確かめてください。
 :::
 
-判断の経緯を含む詳しい記録はリポジトリの [docs/ROADMAP.md](https://github.com/shuji-bonji/houki-hub/blob/main/docs/ROADMAP.md) にあります。
+いま開いている項目の一覧はリポジトリの [docs/ROADMAP.md](https://github.com/shuji-bonji/houki-hub/blob/main/docs/ROADMAP.md) に、済んだことの経緯は各リポジトリの CHANGELOG と houki-hub の `docs/notes/` にあります。
 
 ## 公開済みの部品
 
@@ -28,10 +28,12 @@ description: houki-hub family の各部品の版と、次に取り組む順序�
 timeline
     title 着手の順序（時期は未定）
     公開済み : houki-egov-mcp : houki-nta-mcp : houki-abbreviations : houki-research
-    次 : houki-nta-mcp v1.0 : houki-research の workflow 追加 (revision-tracking)
-    その後 : houki-metadata-mcp (公布→施行ラグ) : houki-abbreviations v0.6 (synonym 展開)
+    次 : houki-nta-mcp v1.0
+    その後 : houki-metadata-mcp (公布→施行ラグ) : houki-research の workflow 追加 (revision-tracking) : houki-abbreviations の synonym 展開
     構想 : houki-mhlw-mcp : houki-saiketsu-mcp : houki-court-mcp : houki-specialist-plugin
 ```
+
+順序の根拠は次のとおりです。houki-nta-mcp は Phase 6 まで終わっていて v1.0 の判定だけが残っています。houki-metadata-mcp は 3 つ目の MCP で、revision-tracking（改正の追跡）の workflow はこの MCP と対になるので同じ時期に書きます。synonym 展開は houki-nta-mcp#3 と連動していて、houki-abbreviations 0.7.1 にはまだ入っていません。
 
 | 部品 | 状態 | 束ねる単位と初版の範囲 |
 | --- | --- | --- |

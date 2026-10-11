@@ -175,7 +175,7 @@ houki-hub/
 ├── .github/              stack-check.yml（毎日の照合と Issue 化）とそのスクリプト
 ├── stack.json            構成の正典（実測値）
 ├── docs/
-│   ├── ROADMAP.md        現状と予定（リポジトリ横断）
+│   ├── ROADMAP.md        いま開いている項目（リポジトリ横断。版は stack.json、予定はサイト）
 │   ├── DECISIONS.md      決定事項・未決事項
 │   ├── reports/          定点観測レポート
 │   └── notes/            議論メモ（射程・業法境界など）
@@ -211,7 +211,7 @@ marketplace（`claude-plugins`）側の版は、そのリポジトリの `script
 ## ドキュメント
 
 - サイト: <https://shuji-bonji.github.io/houki-hub/>（`site/`。手元では `cd site && npm install && npm run dev`）
-- 現状と予定: [docs/ROADMAP.md](docs/ROADMAP.md)
+- いま開いている項目: [docs/ROADMAP.md](docs/ROADMAP.md)（版は `stack.json`、利用者向けの予定は[サイトの現状と予定](https://shuji-bonji.github.io/houki-hub/guide/roadmap)）
 - 決定事項: [docs/DECISIONS.md](docs/DECISIONS.md)
 - 紹介記事: Zenn（family 全体の紹介）/ Qiita（houki-egov-mcp 深堀り）
 
