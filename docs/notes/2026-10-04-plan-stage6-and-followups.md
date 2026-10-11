@@ -899,3 +899,27 @@ spec-ids#9（`pr-scope` を `spec-ids pr-scope` として取り込む）は、�
 C9 で ci.yml を書き換える形（spec-ids の `templates/spec-gate.yml` と README の `pr-scope` の節から）: 今の `pr-scope` のジョブの 2 つの step（`node --test .github/scripts/check-pr-scope.test.mjs` と `node .github/scripts/check-pr-scope.mjs`）を、`npx spec-ids pr-scope` の 1 つの step にする。環境変数 `BASE_REF: origin/${{ github.base_ref }}`・`HEAD_REF: ${{ github.head_ref }}`、`fetch-depth: 0`、`npm ci` は今のまま使える。
 
 2026-10-11 00:02 JST: spec-ids 0.4.0 を publish した（タグ `v0.4.0` = `5ad662c`、npm の latest 0.4.0 は 2026-10-11 00:02 JST）。指示 C9 を渡せる。
+
+### C9 の後（2026-10-11 JST）
+
+| 作業 | 状態 |
+| --- | --- |
+| C9 houki-egov-mcp | 済（egov PR #119、main `d3293c2`、2026-10-11 00:33 JST。テスト 1340 件、`spec-ids check` 559 IDs。判定はコピーと同じ） |
+| C9 houki-nta-mcp | 済（nta PR #162、main `a817c9f`、00:36 JST。テスト 2164 件・skip 4、`spec-ids check` 276 IDs。判定が変わるのは決定 2〜4。VM では `TMPDIR` が `$HOME` の下にあり `doc-search-zero-hit.test.ts` の 1 件が hint の `~` 表記で落ちるので、`TMPDIR` を `$HOME` の外にして流した（PR の変更とは無関係）） |
+| C9 houki-abbreviations | 済（abbr PR #42、main `cf8b4d4`、00:38 JST。テスト 349 件、`spec-ids check` 259 IDs。判定が変わるのは決定 1。`HEAD_REF=spec/…` で 7 ファイルを範囲の外として止めることも確かめた） |
+| spec-ids#9 の作業 | 終わった（R9・C9）。3 リポジトリの `pr-scope` は spec-ids 0.4.0 の 1 つの実装になった |
+
+見つかったこと（C9 の範囲の外）: houki-nta-mcp の `doc-search-zero-hit.test.ts` は、`TMPDIR` が利用者のホームの下にあると落ちる。hint のパスでホームを `~` に置き換えるため、テストが期待する絶対パスと合わなくなる。CI（ubuntu の `/tmp`）と Mac（`/var/folders/…`）では起きない。直すなら nta のテストの PR（仕様の変更なし）。
+
+### spec-ids#8 の判断（2026-10-11 JST）
+
+spec-ids#8（spec-ids 自身の `specs/` の初版起こし、Q21 の A'、Q25' の A で #9 の後）。Issue の「決めること」1〜5 に、進め方を 6 として足した。2026-10-11 JST に確かめたこと: spec-ids の main は `5ad662c`（0.4.0）。`src/` は check・next・init・history・pr-scope・format・config・frontmatter・approval・proposals・scan、`test/` は 10 本（107 件）。`migrate` は 0.4.0 で外れた。ID の形は `SPEC-[A-Z]+-[A-Z0-9-]+-[0-9]{3}`（領域は英大文字だけ）。
+
+| # | 何を | 案 | 勧める案と理由 |
+| --- | --- | --- | --- |
+| 1 | `specs/current/<dir>` の切り方 | (A) サブコマンドごと（`check`・`next`・`init`・`history`・`pr-scope`）と共通の約束（`format`・`config`・`frontmatter`）の 8 つ / (B) `src/` のファイルごと / (C) `check` の検査 1〜7 をさらに分ける | **A**。利用側の CI が頼るのはサブコマンドの入力・出力・終了コードで、`src/` の分け方（approval・proposals・scan は `check` と `history` の内部）は変わりうる。C は `check` の 1 つの実行の約束が 7 つのページに散る |
+| 2 | `migrate` を入れるか | 0.4.0 で外れたので入れない | このとおり（Issue を書いた時点では 0.4.0 の前だった） |
+| 3 | `domain` と `dirPrefix` | `domain: SPECIDS`、`dirPrefix: ""` | このとおり。ID は `SPEC-SPECIDS-CHECK-001` の形になる |
+| 4 | `spec-gate` で使う「1 つ前の版」 | (A) workflow に版を書いて固定する（今なら `npx -y @shuji-bonji/spec-ids@0.4.0 check`）。publish の後、次の PR で必要なら上げる / (B) npm の `latest` | **A**。B は publish の直後に、検査する側が検査される側と同じ版になる。A は、PR の中で `check` を変えても、自分の `specs/` を検査するのはいつも publish 済みの決まった版になる。spec.md の形を変える変更は、publish してから版を上げる 2 段階になる |
+| 5 | `pr-scope` を spec-ids 自身にも入れるか | (A) 入れる。4 と同じ固定の版で `npx -y @shuji-bonji/spec-ids@0.4.0 pr-scope` / (B) 入れない | **A**。#9 で `spec-ids pr-scope` ができたので、Issue の「別の Issue の後」の条件を満たしている。仕様 PR と実装 PR を分ける運用を、spec-ids 自身にも当てる |
+| 6 | 進め方 | (A) PR を 2 本: ① 実装 PR（`feat/`）で `specs/spec-ids.json`・空の `specs/{current,changes,releases}/`・spec-gate の workflow（4・5 の固定の版）を足す。② 初版起こし PR（`spec-init/`）で 8 つの spec.md とテスト名の仕様 ID。② は ① の workflow の `pr-scope` に検査される / (B) 1 本にまとめる | **A**。`spec-init/` の PR が変えてよいのは `specs/current/<dir>/spec.md` とテスト名の ID だけ（operations.md 2.2）なので、設定と workflow は先に別の PR で入れる。② は、operations.md 2.2 の流れ（承認の空欄で RED、人が `approved` と `pr` を書いて GREEN）をそのまま spec-ids で試すことになる |
