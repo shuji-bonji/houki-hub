@@ -53,6 +53,7 @@ const sidebar = {
       text: 'ガイド',
       items: [
         { text: 'houki-hub とは', link: '/guide/overview' },
+        { text: '用語', link: '/guide/glossary' },
         { text: '文書の種類と拘束力', link: '/guide/document-types' },
         { text: '全体構成と責務', link: '/guide/architecture' },
         { text: '導入手順', link: '/guide/getting-started' },

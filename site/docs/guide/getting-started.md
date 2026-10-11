@@ -5,13 +5,35 @@ description: houki-egov-mcp / houki-nta-mcp / houki-research Skill を Claude De
 
 # 導入手順
 
-::: info 必要なもの
+## 0. 前提と、2 つの入れ方
+
 必要なものは Node.js 22 以上だけです。データベースの構築は任意で、なくても API 経由で動きます。
-:::
+
+```sh
+node -v   # v22.0.0 以上であること
+```
+
+Node.js が無い、または古いときは [nodejs.org](https://nodejs.org/) から LTS 版を入れてください。`npx` は Node.js に付いてくるので、別に入れる必要はありません。
+
+入れ方は 2 つあります。使っているクライアントで選んでください。
+
+| 使っているもの | 入れ方 | 読む手順 |
+| --- | --- | --- |
+| Claude Code・Cowork | **Skill の plugin を 1 つ入れる**。houki-research の plugin に 2 つの MCP サーバーも含まれているので、設定ファイルは書きません | [3. houki-research Skill を入れる](#_3-houki-research-skill-を入れる) → [4. 動作を確かめる](#_4-動作を確かめる) |
+| Claude Desktop、その他の MCP クライアント | **MCP サーバーを設定ファイルに書く**。Skill は後から、使えるクライアントなら足します | [1. MCP サーバーを設定に追加する](#_1-mcp-サーバーを設定に追加する) から順に |
+
+どちらで入れても、動く MCP サーバーは同じで、ローカル DB（手順 2）も共通です。
 
 ## 1. MCP サーバーを設定に追加する
 
-Claude Desktop の `claude_desktop_config.json`、または Claude Code の `.mcp.json` に次を追加します。
+MCP クライアントの設定ファイルに次を追加します。ファイルの場所はクライアントごとに違います。
+
+| クライアント | 設定ファイル |
+| --- | --- |
+| Claude Desktop（macOS） | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Claude Desktop（Windows） | `%APPDATA%\Claude\claude_desktop_config.json` |
+| Claude Code | プロジェクトの `.mcp.json`（プロジェクト単位）、または `claude mcp add` コマンド |
+
 まずは houki-egov-mcp だけで十分です。
 
 ```jsonc
@@ -70,16 +92,16 @@ npx -y @shuji-bonji/houki-nta-mcp@latest --bulk-download-everything
 ## 3. houki-research Skill を入れる
 
 Skill は「どの MCP をどの順に呼ぶか」「出典をどう書くか」「業法の注意喚起をいつ出すか」を LLM に指示します。
-Claude Code では、marketplace の [claude-plugins](https://github.com/shuji-bonji/claude-plugins) から plugin として入れるのが簡単です。
+Claude Code では、marketplace の [claude-plugins](https://github.com/shuji-bonji/claude-plugins) から plugin として入れます。Claude Code の入力欄で次の 2 行を順に実行します（`/plugin` は Claude Code のコマンドです）。
 
 ```text
 /plugin marketplace add shuji-bonji/claude-plugins
 /plugin install houki-research@shuji-bonji
 ```
 
-::: info houki-research v0.7.0 から
-houki-research v0.7.0 からは `houki-egov-mcp` と `houki-nta-mcp` を `dependencies` に宣言しているため、この 1 コマンドで 2 つの MCP も入ります。手順 1 の設定を手で書く必要はありません。
-:::
+この 2 行で、houki-research Skill と、それが依存する houki-egov-mcp・houki-nta-mcp の 3 つが入ります（houki-research v0.7.0 から）。手順 1 の設定ファイルを書く必要はありません。
+
+MCP サーバーだけを plugin で入れたいとき（Skill は使わないとき）は、代わりに次を実行します。
 
 ```text
 /plugin install houki-egov-mcp@shuji-bonji

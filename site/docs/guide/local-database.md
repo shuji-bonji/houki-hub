@@ -14,6 +14,24 @@ houki-egov-mcp と houki-nta-mcp は、条文や通達の本文を手元の SQLi
 何ができなくなるかは DB ごとに違うので、下の比較表と各ページを見てください。
 :::
 
+## まずこれだけ
+
+このページは長いので、最初に知っておけばよいことを 5 つにまとめます。残りは、必要になったときに読んでください。
+
+1. **DB は作らなくても動きます。** 無いと使えないのは、houki-egov-mcp では `search_fulltext`（条文本文の全文検索）1 つ、houki-nta-mcp では検索ツールと一部の取得ツール（14 のうち 9）です。
+2. **DB を作るのは、引数を付けて起動した CLI です。** MCP サーバーが勝手にダウンロードを始めることはありません。
+
+   ```sh
+   npx -y @shuji-bonji/houki-egov-mcp@latest --bulk-download-everything   # 法令。全件 zip 約 290 MB
+   npx -y @shuji-bonji/houki-nta-mcp@latest --quickstart                   # 国税庁。通達 1 本、約 3〜5 分
+   ```
+
+3. **コマンドは必ず `@latest` を付けて実行します。** 古い版の CLI で新しい版の DB を開くと、全テーブルが消えることがあります。
+4. **環境変数（`HOUKI_EGOV_DB_PATH` / `HOUKI_NTA_DB_PATH`）は、plugin で使うなら設定しないでください。** plugin は環境変数を受け取れないので、既定の場所（`~/.cache/houki-egov-mcp/laws.db`・`~/.cache/houki-nta-mcp/cache.db`）を開きます。ターミナルの CLI にだけ環境変数を設定すると、CLI が書いた DB と MCP サーバーが読む DB が別のファイルになり、作ったはずの DB が使われません。設定するのは、MCP の設定ファイルの `env` と CLI の両方に同じ値を書くときだけです。
+5. **最新にする**には、houki-egov-mcp は `--sync`、houki-nta-mcp は `--refresh-stale=N --apply` を実行します。
+
+ここまでで足りる人は、[導入手順](/guide/getting-started) に戻ってください。以下は、2 つの DB の違い、ファイルの決まり方、版をまたぐときの注意の詳細です。
+
 ## 取り込みと利用は別のコマンドです
 
 MCP サーバーが自分でダウンロードを始めることはありません。DB に書き込むのは、引数を付けて起動した CLI です（houki-nta-mcp は、国税庁サイトから取得した結果を書き戻す取得ツール 3 つも書き込みます）。

@@ -28,7 +28,7 @@ features:
     details: 「消基通」「法人税法」などの略称を正式名称と法令 ID に解決する辞書（174 エントリ・6 分野）。全角ゆらぎの正規化と鮮度判定も提供します。
     link: /lib/houki-abbreviations
   - title: houki-research Skill（手順）
-    details: 複数の MCP をどの順に呼び、出典をどう書き、業法の独占業務にどこで注意するかを定めた Skill。family 共通のエラー契約の正典でもあります。
+    details: 複数の MCP をどの順に呼び、出典をどう書き、業法の独占業務にどこで注意するかを定めた Skill。4 つの部品に共通するエラーの形（エラー契約）もここで定めています。
     link: /skills/houki-research
 ---
 
@@ -74,7 +74,7 @@ features:
 
 ## 読む場所の目安
 
-- 導入と全体の使い方 → [ガイド](/guide/overview)
+- 導入と全体の使い方 → [ガイド](/guide/overview)。見慣れない語は [用語](/guide/glossary) で確かめられます
 - ツールの引数（型・必須・既定値）と実測の呼び出し例 → [リファレンス](/reference/mcp/houki-egov/)
 - 各ツールが何をどの順に処理し、何を返さないと約束しているか → [仕様](/specs/)
 
