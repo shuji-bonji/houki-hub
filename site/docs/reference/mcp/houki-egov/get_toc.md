@@ -8,10 +8,10 @@ description: "houki-egov-mcp の get_toc：法令の目次（編・章・節・�
 <!-- GENERATED FILE — 手で編集しない。説明と引数はサーバーの tools/list、呼び出し例は scripts/reference-examples/houki-egov/ja/get_toc.md、利用者と得られる結果・扱わないこと・処理の流れ・仕様項目の一覧は specs/current/get_toc/spec.md、使いどころは scripts/spec-pages/houki-egov/get_toc.md から。 -->
 
 ::: info
-houki-egov-mcp **v0.21.0** の `tools/list` と `specs/current/get_toc/spec.md` から自動生成しました（仕様 ID 29 件・2026-10-12）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
+houki-egov-mcp **v0.21.0** の `tools/list` と `specs/current/get_toc/spec.md` から自動生成しました（仕様 ID 29 件・2026-10-14）。手で編集しないでください。再生成は `node scripts/generate-reference.mjs` です。
 :::
 
-法令の目次（編・章・節・条の構造）のみを取得する。トークン節約用。本則は `toc`、附則は改正法ごとに `suppl_provisions` へ分けて返す（現行の規定と、改正法ごとの施行日・経過措置を混ぜないため）。既定では附則は見出しと条数だけを返し、`suppl: "full"` で附則の中の条まで返す。depth で階層を浅く打ち切れる（民法・会社法のような大規模法令の概観把握向け）。応答の toc[].path（例 "Part3/Chapter2"）は get_law_range にそのまま渡せる。
+法令の目次（編・章・節・条の構造）のみを取得する。トークン節約用。本則は `toc`、附則は改正法ごとに `suppl_provisions` へ分けて返す（現行の規定と、改正法ごとの施行日・経過措置を混ぜないため）。既定では附則は見出しと条数だけを返し、`suppl: "full"` で附則の中の条まで返す。depth で階層を浅く打ち切れる（民法・会社法のような大規模法令の概観把握向け）。打ち切ったときは truncated: true と truncated_by: "depth" を返す。truncated が true になるのは depth で刈ったときだけで、応答の大きさでは打ち切らない（get_law_range の truncated は文字数の上限の意味）。応答の toc[].path（例 "Part3/Chapter2"）は get_law_range にそのまま渡せる。
 
 ## 利用者と得られる結果
 
